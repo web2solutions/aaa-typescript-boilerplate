@@ -62,6 +62,18 @@ export function throwIfReadOnly(field: string, value: boolean) {
   if (value) throw error;
 }
 
+export function throwIfPreUpdateValidationFails(id: string, data: any) {
+  let errorMessage = '';
+  if (id !== data.id) {
+    errorMessage = 'id and data.id must match';
+  }
+  if (errorMessage !== '') {
+    const error = new Error(errorMessage);
+    error.name = _DOMAIN_VALIDATION_ERROR_NAME_;
+    throw error;
+  }
+}
+
 export function canNotBeEmpty(field: string, value: any) {
   const error = new Error(`${field} can not be empty`);
   error.name = _DOMAIN_VALIDATION_ERROR_NAME_;

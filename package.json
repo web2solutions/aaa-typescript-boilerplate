@@ -1,8 +1,8 @@
 {
   "name": "aaa-typescript-boilerplate",
   "version": "1.0.0",
-  "description": "Token Transactions API",
-  "main": "express.ts",
+  "description": "This is a boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.",
+  "main": "src/fastify.ts",
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=20.0.0"

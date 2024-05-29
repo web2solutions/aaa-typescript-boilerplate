@@ -2,8 +2,8 @@ import { IDbClient } from '@src/infra/persistence/port/IDbClient';
 import { IRepoConfig } from './IRepoConfig';
 // import { IStore } from './IStore';
 
-export abstract class BaseRepo<T> {
-  // public store: IStore<T>;
+export abstract class BaseRepo<Model, RequestCreateObject, RequestUpdateObject> {
+  // public store: IStore<Model>;
   public dbClient: IDbClient;
 
   public limit: number;
@@ -15,13 +15,13 @@ export abstract class BaseRepo<T> {
     // this.store = store;
   }
 
-  public abstract create(data: T): Promise<T>;
+  public abstract create(data: RequestCreateObject): Promise<Model>;
 
-  public abstract update(id: string, data: T): Promise<T>;
+  public abstract update(id: string, data: RequestUpdateObject): Promise<Model>;
 
   public abstract delete(id: string): Promise<boolean>;
 
-  public abstract getOneById(id: string): Promise<T>;
+  public abstract getOneById(id: string): Promise<Model>;
 
-  public abstract getAll(page: number):Promise<T[]>;
+  public abstract getAll(page: number):Promise<Model[]>;
 }

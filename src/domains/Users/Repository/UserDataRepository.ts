@@ -1,68 +1,51 @@
 import { IStore } from '@src/domains/ports/persistence/IStore';
 import { BaseRepo } from '@src/domains/ports/persistence/BaseRepo';
 import { IRepoConfig } from '@src/domains/ports/persistence/IRepoConfig';
-import { throwIfNotFound } from '@src/domains/validators';
-import { IUser, User } from '..';
+import { throwIfPreUpdateValidationFails, throwIfNotFound } from '@src/domains/validators';
+import {
+  IUser,
+  User,
+  RequestCreateUser,
+  RequestUpdateUser
+} from '..';
 
 let userDataRepository: any;
 
-export class UserDataRepository extends BaseRepo<User> {
+export class UserDataRepository extends BaseRepo<User, RequestCreateUser, RequestUpdateUser> {
   public store: IStore<IUser>;
 
   public limit: number;
 
-  // private dbClient: IDbClient;
   private constructor(config: IRepoConfig) {
     super(config);
     const { limit } = config;
-    // this.dbClient = dbClient;
-    // points to a collection or table
     this.store = this.dbClient.stores.User as IStore<IUser>;
     this.limit = limit ?? 30;
   }
 
-  public async create(data: User): Promise<User> {
-    try {
-      await this.store.create(data.id, data.serialize() as unknown as IUser);
-      return Promise.resolve(data);
-    } catch (error) {
-      return Promise.reject(error);
-    }
+  public async create(data: RequestCreateUser): Promise<User> {
+    const model: User = new User(data);
+    await this.store.create(model.id, model.serialize() as IUser);
+    return model;
   }
 
-  public async update(id: string, data: User): Promise<User> {
-    await this.store.update(id, data.serialize() as unknown as IUser);
-    return data;
+  public async update(id: string, data: RequestUpdateUser): Promise<User> {
+    throwIfPreUpdateValidationFails(id, data);
+    const oldDocument = await this.getOneById(id);
+    const model: User = new User({ ...oldDocument.serialize(), ...data });
+    await this.store.update(id, model.serialize() as IUser);
+    return model;
   }
 
   public async delete(id: string): Promise<boolean> {
-    try {
-      const result = await this.store.delete(id);
-      return Promise.resolve(result);
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    const result = await this.store.delete(id);
+    return result;
   }
 
   public async getOneById(id: string): Promise<User> {
-    try {
-      const rawUser = await this.store.getOneById(id);
-      throwIfNotFound(!!rawUser);
-      return Promise.resolve(new User({ ...rawUser, readOnly: true }));
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
-
-  public async getByUserEmail(userEmail: string): Promise<User> {
-    try {
-      if (!this.store.getByUserEmail) return Promise.reject(new Error('getByUserEmail - not implemented'));
-      const rawUser = await this.store.getByUserEmail(userEmail);
-      throwIfNotFound(!!rawUser);
-      return Promise.resolve(new User({ ...rawUser, readOnly: true }));
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    const rawUser = await this.store.getOneById(id);
+    throwIfNotFound(!!rawUser);
+    return new User({ ...rawUser, readOnly: true });
   }
 
   public async getAll(page = 1): Promise<User[]> {

@@ -3,7 +3,6 @@ import { ServiceError } from '@src/domains/ports/ServiceError';
 import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
 import { IServiceConfig, TRepos } from '@src/domains/ports/IServiceConfig';
 import {
-  User,
   UserDataRepository,
   createUser,
   updateUser,
@@ -19,7 +18,8 @@ interface IUserServiceConfig extends IServiceConfig {
 
 }
 let userService: any;
-export class UserService extends BaseService<IUser, User> {
+// ResponseDataEntity, RequestCreate, RequestUpdate
+export class UserService extends BaseService<IUser, RequestCreateUser, RequestUpdateUser> {
   private repo: UserDataRepository;
 
   public repos: TRepos;
@@ -92,6 +92,6 @@ export class UserService extends BaseService<IUser, User> {
   public static compile(config: IUserServiceConfig) {
     if (userService) return userService;
     userService = new UserService(config);
-    return userService as BaseService<IUser, User>;
+    return userService as BaseService<IUser, RequestCreateUser, RequestUpdateUser>;
   }
 }
