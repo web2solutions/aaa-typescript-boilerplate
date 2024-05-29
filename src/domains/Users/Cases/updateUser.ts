@@ -1,13 +1,14 @@
-import { RequestUpdateUser } from '@src/domains/Users';
-import { BaseRepo } from '@src/domains/ports/persistence/BaseRepo';
-import { IUser, User } from '..';
+import {
+  IUser,
+  UserDataRepository,
+  RequestUpdateUser
+} from '@src/domains/Users';
 
 export const updateUser = async (
   id: string,
   payload: RequestUpdateUser,
-  repo: BaseRepo<User>
+  repo: UserDataRepository
 ): Promise<IUser> => {
-  const model: User = new User({ ...payload, id });
-  const document = await repo.update(id, model);
+  const document = await repo.update(id, payload);
   return document.serialize();
 };

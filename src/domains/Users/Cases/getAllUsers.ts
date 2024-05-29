@@ -1,9 +1,11 @@
-import { IUser, UserDataRepository } from '@src/domains/Users';
-// import { BaseRepo } from '@src/domains/ports/persistence/BaseRepo';
+import {
+  IUser,
+  UserDataRepository
+} from '@src/domains/Users';
 
 export const getAllUsers = async (
-  repoUser: UserDataRepository
+  repo: UserDataRepository
 ): Promise<IUser[]> => {
-  const users = await repoUser.getAll();
+  const users = await repo.getAll();
   return users;
 };

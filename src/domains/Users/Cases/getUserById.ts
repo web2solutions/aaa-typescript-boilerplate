@@ -1,14 +1,12 @@
-import { IUser, User } from '@src/domains/Users';
-import { BaseRepo } from '@src/domains/ports/persistence/BaseRepo';
+import {
+  IUser,
+  UserDataRepository
+} from '@src/domains/Users';
 
 export const getUserById = async (
   id: string,
-  repo: BaseRepo<User>
+  repo: UserDataRepository
 ): Promise<IUser> => {
-  try {
-    const model = await repo.getOneById(id);
-    return Promise.resolve(model.serialize());
-  } catch (err) {
-    return Promise.reject(err);
-  }
+  const model = await repo.getOneById(id);
+  return model.serialize();
 };

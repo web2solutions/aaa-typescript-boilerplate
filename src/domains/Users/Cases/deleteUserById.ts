@@ -1,14 +1,11 @@
-import { IUser } from '@src/domains/Users';
-import { BaseRepo } from '@src/domains/ports/persistence/BaseRepo';
+import {
+  UserDataRepository
+} from '@src/domains/Users';
 
 export const deleteUserById = async (
   id: string,
-  repo: BaseRepo<IUser>
+  repo: UserDataRepository
 ): Promise<boolean> => {
-  try {
-    await repo.delete(id);
-    return Promise.resolve(true);
-  } catch (err) {
-    return Promise.reject(err);
-  }
+  await repo.delete(id);
+  return true;
 };
