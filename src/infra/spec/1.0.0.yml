@@ -1,0 +1,998 @@
+openapi: 3.0.3
+info:
+  title: AnyWhere, AnyHow, AnyTime API
+  description: AnyWhere, AnyHow, AnyTime API
+  termsOfService: https://www.xpertminds.dev/terms/
+  contact:
+    email: apiteam@xpertminds.dev
+  license:
+    name: Unlicensed
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Xpertminds
+  url: http://xpertminds.dev
+servers:
+  - url: http://localhost:3000/api/1.0.0
+tags:
+  - name: user
+    description: System users
+    externalDocs:
+      description: Find out more
+      url: http://xpertminds.dev
+paths:
+  # users
+  /users:
+    get:
+      tags:
+        - user
+      summary: Get all users
+      description: Returns a collection of all users
+      operationId: getAll
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserArrayOf'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+      security:
+        - basicAuth: 
+          - read_user
+    post:
+      tags:
+        - user
+      summary: Add a new user to the store
+      description: Add a new user to the store
+      operationId: create
+      requestBody:
+        description: Create a new user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCreateUser'
+        required: true
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+      security:
+         - basicAuth: ["create_user"]
+  /users/{id}:
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: Deletes a single user
+      operationId: deleteOne
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceDeleteResponse'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+      security:
+        - basicAuth: 
+          - delete_user
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: Updates a single user
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an user from Store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateUser'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+        '409':
+          description: Conflict
+      security:
+        - basicAuth: 
+          - update_user
+    get:
+      tags:
+        - user
+      summary: Get an user by ID
+      description: Returns a single user
+      operationId: getOne
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+      security:
+        - basicAuth: 
+          - read_user
+  /users/{id}/loginUpdate:
+    put:
+      tags:
+        - user
+      summary: Updates user login data
+      description: Updates user login data
+      operationId: updateLogin
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Login data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateLogin'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+        '409':
+          description: Conflict
+      security:
+        - basicAuth: 
+          - update_user
+  /users/{id}/emailAddressCreate:
+    post:
+      tags:
+        - user
+      summary: Create email address for a given user
+      description: Create email address for a given user
+      operationId: createEmailAddress
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: EmailAddress create data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCreateEmailAddress'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailAddress'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+        '409':
+          description: Conflict
+      security:
+        - basicAuth: 
+          - update_user
+  /users/{id}/emailAddressUpdate/{emailAddressId}:
+    put:
+      tags:
+        - user
+      summary: Update emailAddress address for a given user
+      description: Update emailAddress address for a given user
+      operationId: updateEmailAddress
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+        - name: emailAddressId
+          in: path
+          description: emailAddressId to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: EmailAddress update data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateEmailAddress'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailAddress'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Resource not found
+        '409':
+          description: Conflict
+      security:
+        - basicAuth: 
+          - update_user
+  /users/{id}/emailAddressDelete/{emailAddressId}:
+    delete:
+      tags:
+        - user
+      summary: Delete email address of an user
+      description: Deletes email address of an user
+      operationId: deleteEmailAddress
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+        - name: emailAddressId
+          in: path
+          description: emailAddressId to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceDeleteResponse'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Resource not found
+      security:
+        - basicAuth: 
+          - update_user
+  /users/{id}/documentCreate:
+    post:
+      tags:
+        - user
+      summary: Create document for a given user
+      description: Create document for a given user
+      operationId: createDocument
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Document create data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCreateDocument'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+        '409':
+          description: Conflict
+      security:
+        - basicAuth: 
+          - update_user
+  /users/{id}/documentUpdate/{documentId}:
+    put:
+      tags:
+        - user
+      summary: Update document for a given user
+      description: Update document for a given user
+      operationId: updateDocument
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          description: documentId to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Document update data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateDocument'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+        '409':
+          description: Conflict
+      security:
+        - basicAuth: 
+          - update_user
+  /users/{id}/documentDelete/{documentId}:
+    delete:
+      tags:
+        - user
+      summary: Delete document of an user
+      description: Deletes document of an user
+      operationId: deleteDocument
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          description: documentId to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceDeleteResponse'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Resource not found
+      security:
+        - basicAuth: 
+          - update_user
+  /users/{id}/phoneCreate:
+    post:
+      tags:
+        - user
+      summary: Create phone address for a given user
+      description: Create phone address for a given user
+      operationId: createPhone
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Phone create data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCreatePhone'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+        '409':
+          description: Conflict
+      security:
+        - basicAuth: 
+          - update_user
+  /users/{id}/phoneUpdate/{phoneId}:
+    put:
+      tags:
+        - user
+      summary: Update phone address for a given user
+      description: Update phone address for a given user
+      operationId: updatePhone
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+        - name: phoneId
+          in: path
+          description: phoneId to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Phone update data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdatePhone'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+        '409':
+          description: Conflict
+      security:
+        - basicAuth: 
+          - update_user
+  /users/{id}/phoneDelete/{phoneId}:
+    delete:
+      tags:
+        - user
+      summary: Delete phone of an user
+      description: Deletes phone of an user
+      operationId: deletePhone
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+        - name: phoneId
+          in: path
+          description: phoneId to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceDeleteResponse'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Resource not found
+      security:
+        - basicAuth: 
+          - update_user
+components:
+  schemas:
+    # ################################ #
+    # reusable dtos
+    # ################################ #
+    ResourceDeleteResponse: 
+      required:
+        - data
+      type: object
+      properties:
+        data: 
+          type: boolean
+          default: false
+          description: Result of request to delete resource
+    RequestCreateUser: 
+      required:
+        - firstName
+        - login
+        - emails
+      type: object
+      properties:
+        id: 
+          type: string
+        firstName: 
+          type: string
+          minLength: 2
+          example: Abraham
+          description: User's first name
+        lastName: 
+          type: string
+          example: Abraham
+          nullable: true
+          description: User's last name
+        avatar: 
+          type: string
+          example: avatar.png
+          default: avatar.png
+          description: User's avatar
+        login: 
+          $ref: '#/components/schemas/LoginCustom'
+        emails: 
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: User's e-mail addresses
+          minItems: 1
+        documents: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+          description: User's attached documents
+        phones: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Phone'
+          description: User's attached documents
+        roles: 
+          type: array
+          items:
+            type: 'string'
+          description: User's access roles
+    RequestUpdateUser: 
+      type: object
+      required:
+        - id
+      properties:
+        id: 
+          type: string
+        firstName: 
+          type: string
+          minLength: 2
+          example: Abraham
+          description: User's first name
+        lastName: 
+          type: string
+          example: Abraham
+          nullable: true
+          description: User's last name
+        avatar: 
+          type: string
+          example: avatar.png
+          default: avatar.png
+          description: User's avatar
+        login: 
+          $ref: '#/components/schemas/LoginCustom'
+        emails: 
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: User's e-mail addresses
+          minItems: 1
+        documents: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+          description: User's attached documents
+        phones: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Phone'
+          description: User's attached documents
+        roles: 
+          type: array
+          items:
+            type: 'string'
+          description: User's access roles
+
+    RequestCreatePhone:
+      description: Phone number data to create 
+      type: object
+      required:
+        - countryCode
+        - localCode
+        - number
+      properties:
+        countryCode: 
+          type: integer
+        localCode: 
+          type: integer
+        number:
+          type: string
+        isPrimary: 
+          type: boolean
+          example: true
+          description: Is this the primary User's phone number?
+          default: false
+    RequestUpdatePhone:
+      description: Phone number data to update
+      type: object
+      required:
+        - id
+      properties:
+        id: 
+          type: string 
+        countryCode: 
+          type: integer
+        localCode: 
+          type: integer
+        number:
+          type: string
+        isPrimary: 
+          type: boolean
+          example: true
+          description: Is this the primary User's phone number?
+    RequestCreateEmailAddress:
+      description: E-mail address
+      type: object
+      required:
+        - email
+        - type
+      properties:
+        email: 
+          type: string 
+        type:
+          type: string
+          enum: 
+            - work
+            - personal
+        isPrimary: 
+          type: boolean
+          example: true
+          description: Is this the primary User's e-mail address?
+          default: false
+    RequestUpdateEmailAddress:
+      description: E-mail address
+      type: object
+      required:
+        - id
+      properties:
+        id: 
+          type: string 
+        email: 
+          type: string 
+        type:
+          type: string
+          enum: 
+            - work
+            - personal
+        isPrimary: 
+          type: boolean
+          example: true
+          description: Is this the primary User's e-mail address?
+    RequestCreateDocument:
+      description: Document
+      type: object
+      required:
+        - data
+        - type
+        - countryIssue
+      properties:
+        type:
+          type: string
+          enum: 
+            - CPF
+            - RG
+            - SSN
+          example: CPF
+          description: Type of document
+        countryIssue: 
+          type: string
+          example: BR
+          description: Country which emitted the document
+          enum: 
+            - BR
+            - US
+            - SSN
+        data: 
+          type: string
+    RequestUpdateDocument:
+      description: Document
+      type: object
+      required:
+        - id
+      properties:
+        id: 
+          type: string
+        type:
+          type: string
+          enum: 
+            - CPF
+            - RG
+            - SSN
+          example: CPF
+          description: Type of document
+        countryIssue: 
+          type: string
+          example: BR
+          description: Country which emitted the document
+          enum: 
+            - BR
+            - US
+            - SSN
+        data: 
+          type: string
+    RequestUpdateLogin:
+      description: User's login data
+      type: object
+      properties:
+        username: 
+          type: string
+        password: 
+          type: string
+          minLength: 8
+          format: password
+    # ################################ #
+    # reusable value objects
+    # ################################ #
+    UserArrayOf:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'    
+    Document:
+      description: Document
+      type: object
+      required:
+        - data
+        - type
+      properties:
+        id: 
+          type: string
+        type:
+          type: string
+          enum: 
+            - CPF
+            - RG
+            - SSN
+          example: CPF
+          description: Type of document
+        countryIssue: 
+          type: string
+          example: BR
+          description: Country which emitted the document
+          enum: 
+            - BR
+            - US
+        data: 
+          type: string
+    EmailAddress:
+      description: E-mail addresses
+      type: object
+      required:
+        - email
+        - type
+      properties:
+        id: 
+          type: string 
+        email: 
+          type: string 
+        type:
+          type: string
+          enum: 
+            - work
+            - personal
+        isPrimary: 
+          type: boolean
+          example: true
+          description: Is this the primary User's e-mail address?
+          default: false
+    LoginCustom:
+      description: User's login data
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username: 
+          type: string
+        password: 
+          type: string
+          minLength: 8
+          format: password
+    Phone:
+      description: Phone numbers
+      type: object
+      required:
+        - countryCode
+        - localCode
+        - number
+      properties:
+        id: 
+          type: string 
+        countryCode: 
+          type: integer
+        localCode: 
+          type: integer
+        number:
+          type: string
+        isPrimary: 
+          type: boolean
+          example: true
+          description: Is this the primary User's phone number?
+          default: false
+    Integrity:
+      type: object
+      properties:
+        status: 
+          type: string 
+          enum: 
+            - healthy
+            - risky
+    
+    # ################################ #
+    # Reusable data models
+    # ################################ #
+    User:
+      required:
+        - firstName
+        - login
+        - emails
+      type: object
+      properties:
+        id: 
+          type: string
+        firstName: 
+          type: string
+          minLength: 2
+          example: Abraham
+          description: User's first name
+        lastName: 
+          type: string
+          example: Abraham
+          nullable: true
+          description: User's last name
+        login: 
+          $ref: '#/components/schemas/LoginCustom'
+        emails: 
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: User's e-mail addresses
+          minItems: 1
+        documents: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+          description: User's attached documents
+        phones: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Phone'
+          description: User's attached documents
+        roles: 
+          type: array
+          items:
+            type: 'string'
+          description: User's access roles
+        createdAt:
+          type: string
+          format: date-time
+          
+        updatedAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

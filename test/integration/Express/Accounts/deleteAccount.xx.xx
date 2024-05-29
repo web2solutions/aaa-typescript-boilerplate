@@ -1,0 +1,114 @@
+/* global  describe, it, expect */
+import request from 'supertest';
+import { Express } from 'express';
+import { ExpressServer } from '@src/infra/server/HTTP/adapters/express/ExpressServer';
+import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
+import {
+  InMemoryDbClient
+} from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
+import {
+  RestAPI
+} from '@src/infra/RestAPI';
+
+import {
+  IAccount
+} from '@src/domains/Accounts';
+import {
+  BasicAuthorizationHeaderUser1,
+  BasicAuthorizationHeaderUser2,
+  BasicAuthorizationHeaderUser3,
+  BasicAuthorizationHeaderUser4,
+  BasicAuthorizationHeaderUserGuest,
+  account1
+} from '../mock';
+
+const webServer = new ExpressServer();
+const API = new RestAPI<Express>({
+  dbClient: InMemoryDbClient,
+  webServer,
+  infraHandlers
+});
+const server = API.server.application;
+
+describe('express -> deleteAccountById suite', () => {
+  let createdAccount: IAccount;
+  beforeAll(async () => {
+    // create account
+    const {
+      userEmail,
+      balance
+    } = account1;
+    const response = await request(server)
+      .post('/api/1.0.0/accounts')
+      .send({
+        userEmail,
+        balance
+      })
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set(BasicAuthorizationHeaderUser1);
+    createdAccount = response.body;
+  });
+  afterAll(async () => {
+    await API.stop();
+  });
+
+  it('user1 must be able to delete account', async () => {
+    expect.hasAssertions();
+    const response = await request(server)
+      .delete(`/api/1.0.0/accounts/${createdAccount.id}`)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set(BasicAuthorizationHeaderUser1);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.deleted).toBeTruthy();
+  });
+
+  it('user2 must not be able to delete an account - Forbidden: delete_account role required', async () => {
+    expect.hasAssertions();
+    const response = await request(server)
+      .delete(`/api/1.0.0/accounts/${createdAccount.id}`)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set(BasicAuthorizationHeaderUser2);
+    // console.log(response.body.message)
+    expect(response.statusCode).toBe(403);
+    expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the delete_account role');
+  });
+
+  it('user3 must not be able to delete an account - Forbidden: delete_account role required', async () => {
+    expect.hasAssertions();
+    const response = await request(server)
+      .delete(`/api/1.0.0/accounts/${createdAccount.id}`)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set(BasicAuthorizationHeaderUser3);
+    // console.log(response.body.message)
+    expect(response.statusCode).toBe(403);
+    expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the delete_account role');
+  });
+
+  it('user4 must not be able to delete an account - Forbidden: delete_account role required', async () => {
+    expect.hasAssertions();
+    const response = await request(server)
+      .delete(`/api/1.0.0/accounts/${createdAccount.id}`)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set(BasicAuthorizationHeaderUser4);
+    // console.log(response.body.message)
+    expect(response.statusCode).toBe(403);
+    expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the delete_account role');
+  });
+
+  it('guest must not be able to delete an account - Unauthorized', async () => {
+    expect.hasAssertions();
+    const response = await request(server)
+      .delete(`/api/1.0.0/accounts/${createdAccount.id}`)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set(BasicAuthorizationHeaderUserGuest);
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toBe('user not found');
+  });
+});

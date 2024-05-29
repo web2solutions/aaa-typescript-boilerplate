@@ -1,0 +1,82 @@
+import { IUser } from '@src/domains/Users';
+import { UUID } from '@src/domains/utils';
+
+const users: Array<IUser> = [{
+  id: UUID.create().toString(),
+  firstName: 'Abraham',
+  lastName: 'Lincoln',
+  emails: [],
+  avatar: 'avatar.png',
+  login: {
+    username: 'user1',
+    password: 'user1_password'
+  },
+  roles: [
+    'create_account',
+    'read_account',
+    'update_account',
+    'delete_account',
+    'create_transaction',
+    'delete_transaction',
+    'read_transaction',
+    'create_user',
+    'read_user',
+    'update_user',
+    'delete_user'
+  ]
+},
+{
+  id: UUID.create().toString(),
+  firstName: 'Barack',
+  lastName: 'Obama',
+  emails: [],
+  avatar: 'avatar.png',
+  login: {
+    username: 'user2',
+    password: 'user2_password'
+  },
+  roles: [
+    'create_transaction',
+    'read_account',
+    'read_transaction',
+    // 'create_user',
+    'read_user',
+    // 'update_user',
+    // 'delete_user'
+  ]
+},
+{
+  id: UUID.create().toString(),
+  firstName: 'Jimmy',
+  lastName: 'Carter',
+  emails: [],
+  avatar: 'avatar.png',
+  login: {
+    username: 'user3',
+    password: 'user3_password'
+  },
+  roles: [
+    'read_account',
+    'read_transaction',
+    // 'create_user',
+    'read_user',
+    // 'update_user',
+    // 'delete_user'
+  ]
+},
+{
+  id: UUID.create().toString(),
+  firstName: 'James',
+  lastName: 'Bush',
+  emails: [],
+  avatar: 'avatar.png',
+  login: {
+    username: 'user4',
+    password: 'user4_password'
+  },
+  roles: [
+    'create_transaction'
+  ]
+}
+];
+export default users;
