@@ -11,12 +11,8 @@ import { HTTPBaseServer } from '@src/infra/server/HTTP/ports/HTTPBaseServer';
 import { IDbClient } from '@src/infra/persistence/port/IDbClient';
 import { IMutexClient } from '@src/infra/mutex/port/IMutexClient';
 
-import { AccountService, AccountDataRepository } from '@src/domains/Accounts';
-import { TransactionService, TransactionDataRepository } from '@src/domains/Transactions';
 import { IUser, UserDataRepository, UserService } from '@src/domains/Users';
 
-import transactions from '@seed/transactions';
-import accounts from '@seed/accounts';
 import users from '@seed/users';
 
 import { IAPIFactory } from '@src/infra/server/HTTP/ports/IAPIFactory';
@@ -156,33 +152,7 @@ export class RestAPI<T> {
   }
 
   public async seedData(): Promise<void> {
-    await this.seedAccounts();
-    await this.seedTransactions();
-  }
-
-  public async seedAccounts(): Promise<void> {
-    const repo = AccountDataRepository.compile({ dbClient: this.#_dbClient });
-    const service = AccountService.compile({
-      repos: {
-        AccountDataRepository: repo
-      }
-    });
-    const requests = [];
-    for (const account of accounts) {
-      requests.push(new Promise((resolve) => {
-        (async () => {
-          const { userEmail, balance } = account;
-          try {
-            await service.create({ userEmail, balance });
-          } catch (error: any) {
-            // console.log(error.message)
-          }
-          resolve(true);
-        })();
-      }));
-    }
-    await Promise.all(requests);
-    // console.log('>>>> done');
+    await this.seedUsers();
   }
 
   public async seedUsers(): Promise<IUser[]> {
@@ -209,48 +179,6 @@ export class RestAPI<T> {
     }
     return Promise.all(requests);
     // console.log('>>>> done');
-  }
-
-  public async seedTransactions() {
-    const accountRepo = AccountDataRepository.compile({ dbClient: this.#_dbClient });
-    const transactionRepo = TransactionDataRepository.compile({ dbClient: this.#_dbClient });
-
-    const accountService = AccountService.compile({
-      repos: {
-        AccountDataRepository: accountRepo
-      }
-    });
-    const transactionService = TransactionService.compile({
-      repos: {
-        TransactionDataRepository: transactionRepo
-      },
-      services: {
-        AccountService: accountService
-      },
-      mutexClient: this.#_mutexClient as IMutexClient
-    });
-
-    const requests = [];
-    for (const transaction of transactions) {
-      requests.push(new Promise((resolve) => {
-        (async () => {
-          const { userEmail, amount, type } = transaction;
-          try {
-            await transactionService.create({
-              userEmail,
-              amount,
-              type
-            });
-            // console.log(r);
-          } catch (error: any) {
-            // console.log(error.message)
-          }
-
-          resolve(true);
-        })();
-      }));
-    }
-    await Promise.all(requests);
   }
 }
 
