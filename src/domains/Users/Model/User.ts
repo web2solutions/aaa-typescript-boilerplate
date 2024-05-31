@@ -118,6 +118,17 @@ export class User extends BaseModel<IUser> implements IUser {
     return false;
   }
 
+  public deletePhone(id: string): boolean {
+    throwIfReadOnly('phone', this._readOnly);
+    for (let i = 0; i < this._phones.length; i += 1) {
+      if (this._phones[i].id === id) {
+        this._phones.splice(i, 1);
+        return true;
+      }
+    }
+    return false;
+  }
+
   public createDocument(payload: RequestCreateDocument): boolean {
     throwIfReadOnly('document', this._readOnly);
     this._documents.push(new DocumentValueObject(payload));

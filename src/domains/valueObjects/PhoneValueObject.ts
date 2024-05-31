@@ -1,12 +1,12 @@
 import { UUID } from '../utils';
-import { canNotBeEmpty, mustBeNumeric, mustBePositiveNumber } from '../validators';
+import { canNotBeEmpty } from '../validators';
 
 export class PhoneValueObject {
   public id: string;
 
-  public countryCode: number;
+  public countryCode: string;
 
-  public localCode: number;
+  public localCode: string;
 
   public number: string;
 
@@ -21,10 +21,12 @@ export class PhoneValueObject {
       isPrimary
     } = payload;
     canNotBeEmpty('number', number);
-    mustBeNumeric('countryCode', countryCode);
-    mustBePositiveNumber('countryCode', countryCode);
-    mustBeNumeric('localCode', localCode);
-    mustBePositiveNumber('localCode', localCode);
+    canNotBeEmpty('localCode', localCode);
+    canNotBeEmpty('countryCode', countryCode);
+    // mustBeNumeric('countryCode', countryCode);
+    // mustBePositiveNumber('countryCode', countryCode);
+    // mustBeNumeric('localCode', localCode);
+    // mustBePositiveNumber('localCode', localCode);
     this.id = id ? UUID.parse(id).toString() : UUID.create().toString();
     this.number = number;
     this.localCode = localCode;

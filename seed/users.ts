@@ -1,6 +1,6 @@
 import { IUser } from '@src/domains/Users';
 import { UUID } from '@src/domains/utils';
-import { DocumentValueObject, EDocumentType } from '@src/domains/valueObjects';
+import { DocumentValueObject, EDocumentType, PhoneValueObject } from '@src/domains/valueObjects';
 
 const users: Array<IUser> = [{
   id: UUID.create().toString(),
@@ -41,6 +41,26 @@ const users: Array<IUser> = [{
       type: EDocumentType.PASSPORT,
       countryIssue: 'BR'
     } as DocumentValueObject
+  ],
+  phones: [
+    {
+      number: '99805-4033',
+      localCode: '27',
+      countryCode: '+55',
+      isPrimary: true
+    } as PhoneValueObject,
+    {
+      number: '98883-2732',
+      localCode: '27',
+      countryCode: '+55',
+      isPrimary: true
+    } as PhoneValueObject,
+    {
+      number: '99737-5850',
+      localCode: '27',
+      countryCode: '+55',
+      isPrimary: true
+    } as PhoneValueObject
   ]
 },
 {

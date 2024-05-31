@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: AnyWhere, AnyHow, AnyTime API
-  description: AnyWhere, AnyHow, AnyTime API
+  title: ANYWhere, ANYHow, ANYTime API
+  description:  '`REST API` built with `AnyWhere, AnyHow, AnyTime Typescript Boilerplate` and `Domain Designer`'
   termsOfService: https://www.xpertminds.dev/terms/
   contact:
     email: apiteam@xpertminds.dev
@@ -473,7 +473,7 @@ paths:
       security:
         - basicAuth: 
           - delete_user
-  /users/{id}/phoneCreate:
+  /users/{id}/createPhone:
     post:
       tags:
         - user
@@ -514,7 +514,7 @@ paths:
       security:
         - basicAuth: 
           - update_user
-  /users/{id}/phoneUpdate/{phoneId}:
+  /users/{id}/updatePhone/{phoneId}:
     put:
       tags:
         - user
@@ -985,11 +985,11 @@ components:
           items:
             type: 'string'
           description: User's access roles
-        createdAt:
+        _createdAt:
           type: string
           format: date-time
           
-        updatedAt:
+        _updatedAt:
           type: string
           format: date-time
   securitySchemes:

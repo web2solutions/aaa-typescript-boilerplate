@@ -23,3 +23,6 @@ export { updateLogin } from './Cases/updateLogin';
 export { createDocument } from './Cases/createDocument';
 export { updateDocument } from './Cases/updateDocument';
 export { deleteDocument } from './Cases/deleteDocument';
+export { createPhone } from './Cases/createPhone';
+export { updatePhone } from './Cases/updatePhone';
+export { deletePhone } from './Cases/deletePhone';

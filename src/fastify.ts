@@ -8,7 +8,7 @@ import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 
 const webServer = new FastifyServer();
 
-const API = new RestAPI<Fastify>({
+const API: RestAPI<Fastify> = new RestAPI<Fastify>({
   dbClient: InMemoryDbClient,
   webServer,
   mutexService,
@@ -19,5 +19,5 @@ const API = new RestAPI<Fastify>({
 // eslint-disable-next-line jest/require-hook
 (async () => {
   await API.start();
-  await API.seedAccounts();
+  await API.seedData();
 })();

@@ -29,8 +29,8 @@ export abstract class BaseModel<T> {
     return this._updatedAt;
   }
 
-  public set updatedAt(updatedAt: Date) {
-    this._updatedAt = updatedAt;
+  public set updatedAt(_updatedAt: Date) {
+    this._updatedAt = _updatedAt;
   }
 
   public serialize(): T {
@@ -52,8 +52,8 @@ export abstract class BaseModel<T> {
     return Object.freeze({
       id: this.id,
       ...api,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      _createdAt: this._createdAt,
+      _updatedAt: this._updatedAt
     });
   }
 }

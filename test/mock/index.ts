@@ -7,3 +7,4 @@ export { default as user1 } from './user1';
 export { default as user2 } from './user2';
 export { default as user3 } from './user3';
 export { default as documents } from './documents';
+export { default as phones } from './phones';

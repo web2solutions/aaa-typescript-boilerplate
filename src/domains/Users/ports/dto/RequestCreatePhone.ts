@@ -1,6 +1,6 @@
 export interface RequestCreatePhone {
-  countryCode: number;
-  localCode: number;
+  countryCode: string;
+  localCode: string;
   number: string;
   isPrimary?: boolean;
 }

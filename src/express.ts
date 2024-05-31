@@ -18,5 +18,5 @@ const API = new RestAPI<Express>({
 // eslint-disable-next-line jest/require-hook
 (async () => {
   await API.start();
-  await API.seedAccounts();
+  await API.seedData();
 })();

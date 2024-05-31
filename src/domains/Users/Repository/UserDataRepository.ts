@@ -9,7 +9,9 @@ import {
   RequestUpdateUser,
   RequestUpdateLogin,
   RequestCreateDocument,
-  RequestUpdateDocument
+  RequestUpdateDocument,
+  RequestUpdatePhone,
+  RequestCreatePhone
 } from '@src/domains/Users';
 
 let userDataRepository: any;
@@ -97,6 +99,38 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldDocument = await this.getOneById(userId);
     const model: User = new User({ ...oldDocument.serialize() });
     model.deleteDocument(documentId);
+    await this.store.update(userId, model.serialize() as IUser);
+    return model;
+  }
+
+  //
+  public async createPhone(userId: string, data: RequestCreatePhone): Promise<User> {
+    const oldPhone = await this.getOneById(userId);
+    const model: User = new User({ ...oldPhone.serialize() });
+    model.createPhone(data);
+    await this.store.update(userId, model.serialize() as IUser);
+    return model;
+  }
+
+  public async updatePhone(
+    userId: string,
+    phoneId: string,
+    data: RequestUpdatePhone
+  ): Promise<User> {
+    const oldPhone = await this.getOneById(userId);
+    const model: User = new User({ ...oldPhone.serialize() });
+    model.updatePhone({ ...data, id: phoneId });
+    await this.store.update(userId, model.serialize() as IUser);
+    return model;
+  }
+
+  public async deletePhone(
+    userId: string,
+    phoneId: string
+  ): Promise<User> {
+    const oldPhone = await this.getOneById(userId);
+    const model: User = new User({ ...oldPhone.serialize() });
+    model.deletePhone(phoneId);
     await this.store.update(userId, model.serialize() as IUser);
     return model;
   }
