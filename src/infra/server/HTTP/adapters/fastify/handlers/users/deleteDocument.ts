@@ -7,7 +7,6 @@ import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
 import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
   isUserAccessGranted,
-  validateRequestBody,
   validateRequestParams
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
