@@ -6,8 +6,11 @@ import {
   IUser,
   User,
   RequestCreateUser,
-  RequestUpdateUser
-} from '..';
+  RequestUpdateUser,
+  RequestUpdateLogin,
+  RequestCreateDocument,
+  RequestUpdateDocument
+} from '@src/domains/Users';
 
 let userDataRepository: any;
 
@@ -16,7 +19,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
 
   public limit: number;
 
-  private constructor(config: IRepoConfig) {
+  public constructor(config: IRepoConfig) {
     super(config);
     const { limit } = config;
     this.store = this.dbClient.stores.User as IStore<IUser>;
@@ -57,5 +60,44 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     if (userDataRepository) return userDataRepository;
     userDataRepository = new UserDataRepository(config);
     return userDataRepository;
+  }
+
+  public async updateLogin(id: string, data: RequestUpdateLogin): Promise<User> {
+    const oldDocument = await this.getOneById(id);
+    const model: User = new User({ ...oldDocument.serialize() });
+    model.login = { ...data };
+    await this.store.update(id, model.serialize() as IUser);
+    return model;
+  }
+
+  public async createDocument(userId: string, data: RequestCreateDocument): Promise<User> {
+    const oldDocument = await this.getOneById(userId);
+    const model: User = new User({ ...oldDocument.serialize() });
+    model.createDocument(data);
+    await this.store.update(userId, model.serialize() as IUser);
+    return model;
+  }
+
+  public async updateDocument(
+    userId: string,
+    documentId: string,
+    data: RequestUpdateDocument
+  ): Promise<User> {
+    const oldDocument = await this.getOneById(userId);
+    const model: User = new User({ ...oldDocument.serialize() });
+    model.updateDocument({ ...data, id: documentId });
+    await this.store.update(userId, model.serialize() as IUser);
+    return model;
+  }
+
+  public async deleteDocument(
+    userId: string,
+    documentId: string
+  ): Promise<User> {
+    const oldDocument = await this.getOneById(userId);
+    const model: User = new User({ ...oldDocument.serialize() });
+    model.deleteDocument(documentId);
+    await this.store.update(userId, model.serialize() as IUser);
+    return model;
   }
 }

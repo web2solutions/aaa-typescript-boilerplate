@@ -7,8 +7,8 @@ import {
 export const updateUser = async (
   id: string,
   payload: RequestUpdateUser,
-  repo: UserDataRepository
+  userDataRepository: UserDataRepository
 ): Promise<IUser> => {
-  const document = await repo.update(id, payload);
+  const document = await userDataRepository.update(id, payload);
   return document.serialize();
 };

@@ -1,9 +1,7 @@
 import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
 import { IServiceConfig, TRepos } from './IServiceConfig';
 
-// handles request to create, request to update, return  ResponseDataEntity
 export abstract class BaseService<ResponseDataEntity, RequestCreate, RequestUpdate> {
-  // public store: IStore<ResponseDataEntity>;
   public repos: TRepos;
 
   constructor(config: IServiceConfig) {

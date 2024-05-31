@@ -4,8 +4,8 @@ import {
 } from '@src/domains/Users';
 
 export const getAllUsers = async (
-  repo: UserDataRepository
+  userDataRepository: UserDataRepository
 ): Promise<IUser[]> => {
-  const users = await repo.getAll();
+  const users = await userDataRepository.getAll();
   return users;
 };

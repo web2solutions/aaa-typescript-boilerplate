@@ -6,8 +6,8 @@ import {
 
 export const createUser = async (
   payload: RequestCreateUser,
-  repo: UserDataRepository
+  userDataRepository: UserDataRepository
 ): Promise<IUser> => {
-  const document = await repo.create(payload);
-  return document.serialize();
+  const model = await userDataRepository.create(payload);
+  return model.serialize();
 };

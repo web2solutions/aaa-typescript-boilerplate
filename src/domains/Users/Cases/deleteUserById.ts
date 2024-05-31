@@ -4,8 +4,8 @@ import {
 
 export const deleteUserById = async (
   id: string,
-  repo: UserDataRepository
+  userDataRepository: UserDataRepository
 ): Promise<boolean> => {
-  await repo.delete(id);
+  await userDataRepository.delete(id);
   return true;
 };

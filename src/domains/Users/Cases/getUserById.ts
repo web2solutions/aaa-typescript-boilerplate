@@ -5,8 +5,8 @@ import {
 
 export const getUserById = async (
   id: string,
-  repo: UserDataRepository
+  userDataRepository: UserDataRepository
 ): Promise<IUser> => {
-  const model = await repo.getOneById(id);
+  const model = await userDataRepository.getOneById(id);
   return model.serialize();
 };

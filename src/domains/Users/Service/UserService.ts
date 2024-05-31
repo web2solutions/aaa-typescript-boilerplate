@@ -2,6 +2,7 @@ import { BaseService } from '@src/domains/ports/BaseService';
 import { ServiceError } from '@src/domains/ports/ServiceError';
 import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
 import { IServiceConfig, TRepos } from '@src/domains/ports/IServiceConfig';
+
 import {
   UserDataRepository,
   createUser,
@@ -9,23 +10,37 @@ import {
   deleteUserById,
   getUserById,
   getAllUsers,
+  updateLogin,
+  createDocument,
+  updateDocument,
+  deleteDocument,
   RequestCreateUser,
-  IUser
-} from '..';
-import { RequestUpdateUser } from '../ports/dto/RequestUpdateUser';
+  RequestUpdateUser,
+  IUser,
+  RequestUpdateLogin,
+  RequestCreateDocument,
+  RequestUpdateDocument
+} from '@src/domains/Users';
 
 interface IUserServiceConfig extends IServiceConfig {
 
 }
+
 let userService: any;
-// ResponseDataEntity, RequestCreate, RequestUpdate
+
 export class UserService extends BaseService<IUser, RequestCreateUser, RequestUpdateUser> {
+  // public userDataRepository: UserDataRepository;
+
   private repo: UserDataRepository;
 
   public repos: TRepos;
 
-  private constructor(config: IUserServiceConfig) {
+  public constructor(
+    config: IUserServiceConfig
+  ) {
     super(config);
+    // if (!userDataRepository) throw Error('No UserDataRepository provided or injected.');
+    // this.userDataRepository = userDataRepository;
     const { repos } = config;
     this.repos = repos ?? {};
     this.repo = this.repos.UserDataRepository as UserDataRepository;
@@ -93,5 +108,59 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     if (userService) return userService;
     userService = new UserService(config);
     return userService as BaseService<IUser, RequestCreateUser, RequestUpdateUser>;
+  }
+
+  public async updateLogin(id: string, data: RequestUpdateLogin): Promise<IServiceResponse<IUser>> {
+    const serviceResponse: IServiceResponse<IUser> = {};
+    try {
+      const user = await updateLogin(id, data, this.repo);
+      serviceResponse.ok = user;
+    } catch (error) {
+      serviceResponse.error = error as Error;
+    }
+    return serviceResponse;
+  }
+
+  public async createDocument(
+    id: string,
+    data: RequestCreateDocument
+  ): Promise<IServiceResponse<IUser>> {
+    const serviceResponse: IServiceResponse<IUser> = {};
+    try {
+      const user = await createDocument(id, data, this.repo);
+      serviceResponse.ok = user;
+    } catch (error) {
+      serviceResponse.error = error as Error;
+    }
+    return serviceResponse;
+  }
+
+  public async updateDocument(
+    userId: string,
+    documentId: string,
+    data: RequestUpdateDocument
+  ): Promise<IServiceResponse<IUser>> {
+    const serviceResponse: IServiceResponse<IUser> = {};
+    try {
+      const user = await updateDocument(userId, documentId, data, this.repo);
+      serviceResponse.ok = user;
+    } catch (error) {
+      serviceResponse.error = error as Error;
+    }
+    return serviceResponse;
+  }
+
+  public async deleteDocument(
+    userId: string,
+    documentId: string
+  ): Promise<IServiceResponse<IUser>> {
+    const serviceResponse: IServiceResponse<IUser> = {};
+    try {
+      const user = await deleteDocument(userId, documentId, this.repo);
+      serviceResponse.ok = user;
+    } catch (error) {
+      serviceResponse.error = error as Error;
+    }
+    return serviceResponse;
   }
 }
