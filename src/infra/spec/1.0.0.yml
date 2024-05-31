@@ -180,7 +180,7 @@ paths:
       security:
         - basicAuth: 
           - read_user
-  /users/{id}/loginUpdate:
+  /users/{id}/updateLogin:
     put:
       tags:
         - user
@@ -347,7 +347,7 @@ paths:
       security:
         - basicAuth: 
           - update_user
-  /users/{id}/documentCreate:
+  /users/{id}/createDocument:
     post:
       tags:
         - user
@@ -388,7 +388,7 @@ paths:
       security:
         - basicAuth: 
           - update_user
-  /users/{id}/documentUpdate/{documentId}:
+  /users/{id}/updateDocument/{documentId}:
     put:
       tags:
         - user
@@ -472,7 +472,7 @@ paths:
           description: Resource not found
       security:
         - basicAuth: 
-          - update_user
+          - delete_user
   /users/{id}/phoneCreate:
     post:
       tags:
