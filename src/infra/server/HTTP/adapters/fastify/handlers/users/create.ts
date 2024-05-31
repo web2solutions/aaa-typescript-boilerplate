@@ -24,11 +24,14 @@ const create: EndPointFactory = (
         const body = req.body as Record<string, any>;
         isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
         validateRequestBody(spec, endPointConfig, body);
+
+        const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({
           repos: {
-            UserDataRepository: UserDataRepository.compile({ dbClient })
+            UserDataRepository: userDataRepository
           }
         });
+
         const { ok, error } = await service.create(body as RequestCreateUser);
         if (error) {
           throw error;

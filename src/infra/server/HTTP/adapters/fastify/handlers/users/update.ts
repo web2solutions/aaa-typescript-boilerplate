@@ -29,9 +29,10 @@ const update: EndPointFactory = (
         validateRequestParams(endPointConfig, params);
         validateRequestBody(spec, endPointConfig, body);
         const userId = xss(params.id);
+        const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({
           repos: {
-            UserDataRepository: UserDataRepository.compile({ dbClient })
+            UserDataRepository: userDataRepository
           }
         });
         const { ok, error } = await service.update(userId, body as RequestUpdateUser);

@@ -26,9 +26,10 @@ const getOne: EndPointFactory = (
         validateRequestParams(endPointConfig, params);
 
         const userId = xss(params.id);
+        const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({
           repos: {
-            UserDataRepository: UserDataRepository.compile({ dbClient })
+            UserDataRepository: userDataRepository
           }
         });
         const { ok, error } = await service.getOneById(userId);

@@ -26,9 +26,10 @@ const deleteOne: EndPointFactory = (
           isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
           validateRequestParams(endPointConfig, params);
           const userId = xss(params.id);
+          const userDataRepository = UserDataRepository.compile({ dbClient });
           const service: UserService = UserService.compile({
             repos: {
-              UserDataRepository: UserDataRepository.compile({ dbClient })
+              UserDataRepository: userDataRepository
             }
           });
           const deleted = await service.delete(userId);

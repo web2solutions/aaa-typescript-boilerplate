@@ -21,9 +21,10 @@ const getAll: EndPointFactory = (
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
         isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
+        const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({
           repos: {
-            UserDataRepository: UserDataRepository.compile({ dbClient })
+            UserDataRepository: userDataRepository
           }
         });
         const { ok, error } = await service.getAll();
