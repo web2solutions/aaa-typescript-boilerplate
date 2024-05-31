@@ -1,6 +1,6 @@
 import {
   LoginCustomValueObject,
-  EmailAddressValueObject,
+  EmailValueObject,
   DocumentValueObject,
   PhoneValueObject
 } from '@src/domains/valueObjects';
@@ -11,7 +11,7 @@ export interface RequestUpdateUser {
   lastName: string;
   avatar: string;
   login: LoginCustomValueObject;
-  emails: EmailAddressValueObject[];
+  emails: EmailValueObject[];
   documents?: DocumentValueObject[]
   phones?: PhoneValueObject[];
   roles?: string[]

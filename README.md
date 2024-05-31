@@ -36,7 +36,7 @@ Actually it has 1 Domains:
       lastName: string;
       avatar: string;
       login: LoginCustomValueObject;
-      emails: EmailAddressValueObject[];
+      emails: EmailValueObject[];
       documents?: DocumentValueObject[];
       phones?: PhoneValueObject[];
       roles: string[];

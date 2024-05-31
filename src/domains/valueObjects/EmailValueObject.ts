@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { UUID } from '../utils';
 import { canNotBeEmpty } from '../validators';
-import { EEmailAddressType } from './EEmailAddressType';
+import { EEmailType } from './EEmailType';
 
-export interface EmailAddressValueObject {
+export interface EmailValueObject {
   id: string;
   email: string;
-  type: EEmailAddressType;
+  type: EEmailType;
   isPrimary: boolean;
 }
 
-export class EmailAddressValueObject {
+export class EmailValueObject {
   public id: string;
 
-  public type: EEmailAddressType;
+  public type: EEmailType;
 
   public email: string;
 

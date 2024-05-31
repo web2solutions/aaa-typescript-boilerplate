@@ -1,10 +1,10 @@
 import { BaseDomainEvent } from '@src/domains/events/BaseDomainEvent';
-import { RequestUpdateEmailAddress } from '../ports/dto/RequestUpdateEmailAddress';
+import { RequestUpdateEmail } from '../ports/dto/RequestUpdateEmail';
 
-export class EmailAddressUpdateRequestEvent extends BaseDomainEvent {
-  public payload: RequestUpdateEmailAddress;
+export class EmailUpdateRequestEvent extends BaseDomainEvent {
+  public payload: RequestUpdateEmail;
 
-  constructor(config: RequestUpdateEmailAddress) {
+  constructor(config: RequestUpdateEmail) {
     super();
     const {
       id,

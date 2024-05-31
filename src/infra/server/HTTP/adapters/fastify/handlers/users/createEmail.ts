@@ -1,29 +1,50 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import xss from 'xss';
+import {
+  FastifyRequest,
+  FastifyReply
+} from 'fastify';
 
-import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
-import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
+import {
+  IHandlerFactory
+} from '@src/infra/server/HTTP/ports/IHandlerFactory';
+import {
+  IbaseHandler
+} from '@src/infra/server/HTTP/ports/IbaseHandler';
 import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
-import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
+import {
+  EndPointFactory
+} from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
   isUserAccessGranted,
-  validateRequestBody
+  validateRequestBody,
+  validateRequestParams
 } from '@src/infra/server/HTTP/validators';
-import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
+import {
+  sendErrorResponse
+} from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
 
-import { RequestCreateUser, UserDataRepository, UserService } from '@src/domains/Users';
+import {
+  RequestCreateEmail,
+  UserDataRepository,
+  UserService
+} from '@src/domains/Users';
 
-const create: EndPointFactory = (
+const createEmail: EndPointFactory = (
   { dbClient, endPointConfig, spec }: IHandlerFactory
 ): IbaseHandler => {
   return {
-    path: '/users',
+    path: '/users/{id}/createEmail',
     method: 'post',
     securitySchemes: basicAuth,
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
+        const params = req.params as Record<string, any>;
         const body = req.body as Record<string, any>;
         isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
+        validateRequestParams(endPointConfig, params);
         validateRequestBody(spec, endPointConfig, body);
+
+        const userId = xss(params.id);
 
         const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({
@@ -32,7 +53,10 @@ const create: EndPointFactory = (
           }
         });
 
-        const { ok, error } = await service.create(body as RequestCreateUser);
+        const { ok, error } = await service.createEmail(
+          userId,
+          body as RequestCreateEmail
+        );
         if (error) {
           throw error;
         }
@@ -45,4 +69,4 @@ const create: EndPointFactory = (
   };
 };
 
-export default create;
+export default createEmail;

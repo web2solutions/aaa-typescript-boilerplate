@@ -16,7 +16,7 @@ export default function validateRequestBody(
     isPropertiesMatching(payload, schema.properties);
 
     // check for required properties
-    checkRequiredProperties(payload, schema.required);
+    checkRequiredProperties(payload, schema.required || []);
   }
 
   return true;

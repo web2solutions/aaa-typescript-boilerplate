@@ -221,13 +221,13 @@ paths:
       security:
         - basicAuth: 
           - update_user
-  /users/{id}/emailAddressCreate:
+  /users/{id}/createEmail:
     post:
       tags:
         - user
       summary: Create email address for a given user
       description: Create email address for a given user
-      operationId: createEmailAddress
+      operationId: createEmail
       parameters:
         - name: id
           in: path
@@ -236,11 +236,11 @@ paths:
           schema:
             type: string
       requestBody:
-        description: EmailAddress create data
+        description: Email create data
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestCreateEmailAddress'
+              $ref: '#/components/schemas/RequestCreateEmail'
         required: true
       responses:
         '201':
@@ -248,7 +248,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmailAddress'          
+                $ref: '#/components/schemas/Email'          
         '400':
           description: Invalid ID supplied
         '401':
@@ -262,13 +262,13 @@ paths:
       security:
         - basicAuth: 
           - update_user
-  /users/{id}/emailAddressUpdate/{emailAddressId}:
+  /users/{id}/updateEmail/{emailId}:
     put:
       tags:
         - user
-      summary: Update emailAddress address for a given user
-      description: Update emailAddress address for a given user
-      operationId: updateEmailAddress
+      summary: Update email address for a given user
+      description: Update email address for a given user
+      operationId: updateEmail
       parameters:
         - name: id
           in: path
@@ -276,18 +276,18 @@ paths:
           required: true
           schema:
             type: string
-        - name: emailAddressId
+        - name: emailId
           in: path
-          description: emailAddressId to update
+          description: emailId to update
           required: true
           schema:
             type: string
       requestBody:
-        description: EmailAddress update data
+        description: Email update data
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestUpdateEmailAddress'
+              $ref: '#/components/schemas/RequestUpdateEmail'
         required: true
       responses:
         '200':
@@ -295,7 +295,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmailAddress'          
+                $ref: '#/components/schemas/Email'          
         '400':
           description: Invalid ID supplied
         '401':
@@ -309,13 +309,13 @@ paths:
       security:
         - basicAuth: 
           - update_user
-  /users/{id}/emailAddressDelete/{emailAddressId}:
+  /users/{id}/deleteEmail/{emailId}:
     delete:
       tags:
         - user
       summary: Delete email address of an user
       description: Deletes email address of an user
-      operationId: deleteEmailAddress
+      operationId: deleteEmail
       parameters:
         - name: id
           in: path
@@ -323,9 +323,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: emailAddressId
+        - name: emailId
           in: path
-          description: emailAddressId to delete
+          description: emailId to delete
           required: true
           schema:
             type: string
@@ -346,7 +346,7 @@ paths:
           description: Resource not found
       security:
         - basicAuth: 
-          - update_user
+          - delete_user
   /users/{id}/createDocument:
     post:
       tags:
@@ -598,7 +598,7 @@ paths:
           description: Resource not found
       security:
         - basicAuth: 
-          - update_user
+          - delete_user
 components:
   schemas:
     # ################################ #
@@ -642,7 +642,7 @@ components:
         emails: 
           type: array
           items:
-            $ref: '#/components/schemas/EmailAddress'
+            $ref: '#/components/schemas/Email'
           description: User's e-mail addresses
           minItems: 1
         documents: 
@@ -687,7 +687,7 @@ components:
         emails: 
           type: array
           items:
-            $ref: '#/components/schemas/EmailAddress'
+            $ref: '#/components/schemas/Email'
           description: User's e-mail addresses
           minItems: 1
         documents: 
@@ -743,7 +743,7 @@ components:
           type: boolean
           example: true
           description: Is this the primary User's phone number?
-    RequestCreateEmailAddress:
+    RequestCreateEmail:
       description: E-mail address
       type: object
       required:
@@ -762,7 +762,7 @@ components:
           example: true
           description: Is this the primary User's e-mail address?
           default: false
-    RequestUpdateEmailAddress:
+    RequestUpdateEmail:
       description: E-mail address
       type: object
       required:
@@ -876,7 +876,7 @@ components:
             - US
         data: 
           type: string
-    EmailAddress:
+    Email:
       description: E-mail addresses
       type: object
       required:
@@ -967,7 +967,7 @@ components:
         emails: 
           type: array
           items:
-            $ref: '#/components/schemas/EmailAddress'
+            $ref: '#/components/schemas/Email'
           description: User's e-mail addresses
           minItems: 1
         documents: 

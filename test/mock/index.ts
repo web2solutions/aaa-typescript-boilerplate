@@ -8,3 +8,4 @@ export { default as user2 } from './user2';
 export { default as user3 } from './user3';
 export { default as documents } from './documents';
 export { default as phones } from './phones';
+export { default as emails } from './emails';

@@ -17,6 +17,9 @@ import {
   createPhone,
   updatePhone,
   deletePhone,
+  createEmail,
+  updateEmail,
+  deleteEmail,
   RequestCreateUser,
   RequestUpdateUser,
   IUser,
@@ -24,7 +27,9 @@ import {
   RequestCreateDocument,
   RequestUpdateDocument,
   RequestCreatePhone,
-  RequestUpdatePhone
+  RequestUpdatePhone,
+  RequestCreateEmail,
+  RequestUpdateEmail
 } from '@src/domains/Users';
 
 interface IUserServiceConfig extends IServiceConfig {
@@ -205,6 +210,49 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
       const user = await deletePhone(userId, phoneId, this.repo);
+      serviceResponse.ok = user;
+    } catch (error) {
+      serviceResponse.error = error as Error;
+    }
+    return serviceResponse;
+  }
+
+  public async createEmail(
+    id: string,
+    data: RequestCreateEmail
+  ): Promise<IServiceResponse<IUser>> {
+    const serviceResponse: IServiceResponse<IUser> = {};
+    try {
+      const user = await createEmail(id, data, this.repo);
+      serviceResponse.ok = user;
+    } catch (error) {
+      serviceResponse.error = error as Error;
+    }
+    return serviceResponse;
+  }
+
+  public async updateEmail(
+    userId: string,
+    emailId: string,
+    data: RequestUpdateEmail
+  ): Promise<IServiceResponse<IUser>> {
+    const serviceResponse: IServiceResponse<IUser> = {};
+    try {
+      const user = await updateEmail(userId, emailId, data, this.repo);
+      serviceResponse.ok = user;
+    } catch (error) {
+      serviceResponse.error = error as Error;
+    }
+    return serviceResponse;
+  }
+
+  public async deleteEmail(
+    userId: string,
+    emailId: string
+  ): Promise<IServiceResponse<IUser>> {
+    const serviceResponse: IServiceResponse<IUser> = {};
+    try {
+      const user = await deleteEmail(userId, emailId, this.repo);
       serviceResponse.ok = user;
     } catch (error) {
       serviceResponse.error = error as Error;

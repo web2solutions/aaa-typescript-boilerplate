@@ -11,7 +11,9 @@ import {
   RequestCreateDocument,
   RequestUpdateDocument,
   RequestUpdatePhone,
-  RequestCreatePhone
+  RequestCreatePhone,
+  RequestUpdateEmail,
+  RequestCreateEmail
 } from '@src/domains/Users';
 
 let userDataRepository: any;
@@ -131,6 +133,38 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldPhone = await this.getOneById(userId);
     const model: User = new User({ ...oldPhone.serialize() });
     model.deletePhone(phoneId);
+    await this.store.update(userId, model.serialize() as IUser);
+    return model;
+  }
+
+  // Email
+  public async createEmail(userId: string, data: RequestCreateEmail): Promise<User> {
+    const oldEmail = await this.getOneById(userId);
+    const model: User = new User({ ...oldEmail.serialize() });
+    model.createEmail(data);
+    await this.store.update(userId, model.serialize() as IUser);
+    return model;
+  }
+
+  public async updateEmail(
+    userId: string,
+    emailId: string,
+    data: RequestUpdateEmail
+  ): Promise<User> {
+    const oldEmail = await this.getOneById(userId);
+    const model: User = new User({ ...oldEmail.serialize() });
+    model.updateEmail({ ...data, id: emailId });
+    await this.store.update(userId, model.serialize() as IUser);
+    return model;
+  }
+
+  public async deleteEmail(
+    userId: string,
+    emailId: string
+  ): Promise<User> {
+    const oldEmail = await this.getOneById(userId);
+    const model: User = new User({ ...oldEmail.serialize() });
+    model.deleteEmail(emailId);
     await this.store.update(userId, model.serialize() as IUser);
     return model;
   }

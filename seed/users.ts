@@ -1,12 +1,28 @@
 import { IUser } from '@src/domains/Users';
 import { UUID } from '@src/domains/utils';
-import { DocumentValueObject, EDocumentType, PhoneValueObject } from '@src/domains/valueObjects';
+import { DocumentValueObject, EDocumentType, EEmailType, EmailValueObject, PhoneValueObject } from '@src/domains/valueObjects';
 
 const users: Array<IUser> = [{
   id: UUID.create().toString(),
   firstName: 'Abraham',
   lastName: 'Lincoln',
-  emails: [],
+  emails: [
+    {
+      email: 'eduardo@xpertminds.dev',
+      type: EEmailType.work,
+      isPrimary: true
+    } as EmailValueObject,
+    {
+      email: 'web2solucoes@gmail.com',
+      type: EEmailType.work,
+      isPrimary: true
+    } as EmailValueObject,
+    {
+      email: 'perottas1@hotmail.com',
+      type: EEmailType.work,
+      isPrimary: true
+    } as EmailValueObject
+  ],
   avatar: 'avatar.png',
   login: {
     username: 'user1',
@@ -61,7 +77,7 @@ const users: Array<IUser> = [{
       countryCode: '+55',
       isPrimary: true
     } as PhoneValueObject
-  ]
+  ],
 },
 {
   id: UUID.create().toString(),

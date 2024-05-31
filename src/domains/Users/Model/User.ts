@@ -7,7 +7,7 @@ import {
 } from '@src/domains/validators';
 import {
   LoginCustomValueObject,
-  EmailAddressValueObject,
+  EmailValueObject,
   DocumentValueObject,
   PhoneValueObject
 } from '@src/domains/valueObjects';
@@ -16,8 +16,8 @@ import { RequestCreatePhone } from '../ports/dto/RequestCreatePhone';
 import { RequestUpdatePhone } from '../ports/dto/RequestUpdatePhone';
 import { RequestCreateDocument } from '../ports/dto/RequestCreateDocument';
 import { RequestUpdateDocument } from '../ports/dto/RequestUpdateDocument';
-import { RequestCreateEmailAddress } from '../ports/dto/RequestCreateEmailAddress';
-import { RequestUpdateEmailAddress } from '../ports/dto/RequestUpdateEmailAddress';
+import { RequestCreateEmail } from '../ports/dto/RequestCreateEmail';
+import { RequestUpdateEmail } from '../ports/dto/RequestUpdateEmail';
 
 interface UserFactory extends RequestCreateUser {
   id?: string;
@@ -33,7 +33,7 @@ export class User extends BaseModel<IUser> implements IUser {
 
   private _login: LoginCustomValueObject = {} as LoginCustomValueObject;
 
-  private _emails: EmailAddressValueObject[] = [];
+  private _emails: EmailValueObject[] = [];
 
   private _documents: DocumentValueObject[] = [];
 
@@ -157,17 +157,28 @@ export class User extends BaseModel<IUser> implements IUser {
     return false;
   }
 
-  public createEmail(payload: RequestCreateEmailAddress): boolean {
+  public createEmail(payload: RequestCreateEmail): boolean {
     throwIfReadOnly('email', this._readOnly);
-    this._emails.push(new EmailAddressValueObject(payload));
+    this._emails.push(new EmailValueObject(payload));
     return true;
   }
 
-  public updateEmail(payload: RequestUpdateEmailAddress): boolean {
+  public updateEmail(payload: RequestUpdateEmail): boolean {
     throwIfReadOnly('email', this._readOnly);
     for (let i = 0; i < this._emails.length; i += 1) {
       if (this._emails[i].id === payload.id) {
-        this._emails[i] = new EmailAddressValueObject({ ...this._emails[i], ...payload });
+        this._emails[i] = new EmailValueObject({ ...this._emails[i], ...payload });
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public deleteEmail(id: string): boolean {
+    throwIfReadOnly('email', this._readOnly);
+    for (let i = 0; i < this._emails.length; i += 1) {
+      if (this._emails[i].id === id) {
+        this._emails.splice(i, 1);
         return true;
       }
     }
@@ -191,7 +202,7 @@ export class User extends BaseModel<IUser> implements IUser {
     return [...this._roles];
   }
 
-  public get emails(): EmailAddressValueObject[] {
+  public get emails(): EmailValueObject[] {
     return [...this._emails];
   }
 
