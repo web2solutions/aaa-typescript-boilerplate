@@ -63,9 +63,9 @@ export class User extends BaseModel<IUser> implements IUser {
     this.avatar = avatar ?? 'avatar.png';
     this.login = login;
 
-    emails.forEach((e) => this.addEmail(e));
-    documents?.forEach((d) => this.addDocument(d));
-    phones?.forEach((p) => this.addPhone(p));
+    emails.forEach((e) => this.createEmail(e));
+    documents?.forEach((d) => this.createDocument(d));
+    phones?.forEach((p) => this.createPhone(p));
     this._roles = [...(roles || [])];
 
     this._readOnly = readOnly ?? false;
@@ -101,7 +101,7 @@ export class User extends BaseModel<IUser> implements IUser {
     this._avatar = avatar;
   }
 
-  public addPhone(payload: RequestCreatePhone): boolean {
+  public createPhone(payload: RequestCreatePhone): boolean {
     throwIfReadOnly('phone', this._readOnly);
     this._phones.push(new PhoneValueObject(payload));
     return true;
@@ -118,7 +118,7 @@ export class User extends BaseModel<IUser> implements IUser {
     return false;
   }
 
-  public addDocument(payload: RequestCreateDocument): boolean {
+  public createDocument(payload: RequestCreateDocument): boolean {
     throwIfReadOnly('document', this._readOnly);
     this._documents.push(new DocumentValueObject(payload));
     return true;
@@ -135,7 +135,18 @@ export class User extends BaseModel<IUser> implements IUser {
     return false;
   }
 
-  public addEmail(payload: RequestCreateEmailAddress): boolean {
+  public deleteDocument(id: string): boolean {
+    throwIfReadOnly('document', this._readOnly);
+    for (let i = 0; i < this._documents.length; i += 1) {
+      if (this._documents[i].id === id) {
+        this._documents.splice(i, 1);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public createEmail(payload: RequestCreateEmailAddress): boolean {
     throwIfReadOnly('email', this._readOnly);
     this._emails.push(new EmailAddressValueObject(payload));
     return true;

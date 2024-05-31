@@ -1,9 +1,10 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
 import xss from 'xss';
-import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
+import { FastifyRequest, FastifyReply } from 'fastify';
+
 import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
+import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
   isUserAccessGranted,
   validateRequestBody,
@@ -11,30 +12,39 @@ import {
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
 
-import { UserDataRepository, UserService } from '@src/domains/Users';
-import { RequestUpdateUser } from '@src/domains/Users/ports/dto/RequestUpdateUser';
+import { RequestUpdateDocument, UserDataRepository, UserService } from '@src/domains/Users';
 
-const update: EndPointFactory = (
+const updateDocument: EndPointFactory = (
   { dbClient, endPointConfig, spec }: IHandlerFactory
 ): IbaseHandler => {
   return {
-    path: '/users/{id}',
+    path: '/users/{id}/updateDocument/{documentId}',
     method: 'put',
     securitySchemes: basicAuth,
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
-        const body = req.body as Record<string, any>;
         const params = req.params as Record<string, any>;
+        const body = req.body as Record<string, any>;
         isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
         validateRequestParams(endPointConfig, params);
         validateRequestBody(spec, endPointConfig, body);
+
         const userId = xss(params.id);
+        const documentId = xss(params.documentId);
+
+        const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({
           repos: {
-            UserDataRepository: UserDataRepository.compile({ dbClient })
+            UserDataRepository: userDataRepository
           }
         });
-        const { ok, error } = await service.update(userId, body as RequestUpdateUser);
+
+        const { ok, error } = await service.updateDocument(
+          userId,
+          documentId,
+          body as RequestUpdateDocument
+        );
+
         if (error) {
           throw error;
         }
@@ -47,4 +57,4 @@ const update: EndPointFactory = (
   };
 };
 
-export default update;
+export default updateDocument;
