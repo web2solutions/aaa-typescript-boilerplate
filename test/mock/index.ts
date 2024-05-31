@@ -6,9 +6,4 @@ export { default as BasicAuthorizationHeaderUserGuest } from './BasicAuthorizati
 export { default as user1 } from './user1';
 export { default as user2 } from './user2';
 export { default as user3 } from './user3';
-export { default as account1 } from './account1';
-export { default as account2 } from './account2';
-export { default as account3 } from './account3';
-export { default as transaction1 } from './transaction1';
-export { default as transaction2 } from './transaction2';
-export { default as transaction3 } from './transaction3';
+export { default as documents } from './documents';
