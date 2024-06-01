@@ -1,5 +1,4 @@
 import {
-  LoginCustomValueObject,
   EmailValueObject,
   DocumentValueObject,
   PhoneValueObject
@@ -9,8 +8,9 @@ export interface RequestUpdateUser {
   id: string;
   firstName: string;
   lastName: string;
+  username: string;
+  // password: string;
   avatar: string;
-  login: LoginCustomValueObject;
   emails: EmailValueObject[];
   documents?: DocumentValueObject[]
   phones?: PhoneValueObject[];

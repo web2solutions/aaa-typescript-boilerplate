@@ -1,5 +1,4 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-
 import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
@@ -8,7 +7,6 @@ import {
   isUserAccessGranted
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
-
 import { UserDataRepository, UserService } from '@src/domains/Users';
 
 const getAll: EndPointFactory = (

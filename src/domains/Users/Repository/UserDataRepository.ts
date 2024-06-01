@@ -1,13 +1,13 @@
 import { IStore } from '@src/domains/ports/persistence/IStore';
 import { BaseRepo } from '@src/domains/ports/persistence/BaseRepo';
 import { IRepoConfig } from '@src/domains/ports/persistence/IRepoConfig';
-import { throwIfPreUpdateValidationFails, throwIfNotFound } from '@src/domains/validators';
+import { throwIfPreUpdateValidationFails, throwIfNotFound, throwIfValuesAreDifferent } from '@src/domains/validators';
 import {
   IUser,
   User,
   RequestCreateUser,
   RequestUpdateUser,
-  RequestUpdateLogin,
+  RequestUpdatePassword,
   RequestCreateDocument,
   RequestUpdateDocument,
   RequestUpdatePhone,
@@ -66,10 +66,12 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     return userDataRepository;
   }
 
-  public async updateLogin(id: string, data: RequestUpdateLogin): Promise<User> {
+  public async updatePassword(id: string, data: RequestUpdatePassword): Promise<User> {
     const oldDocument = await this.getOneById(id);
+    throwIfValuesAreDifferent([oldDocument.password, data.oldPassword]);
+
     const model: User = new User({ ...oldDocument.serialize() });
-    model.login = { ...data };
+    model.password = data.password;
     await this.store.update(id, model.serialize() as IUser);
     return model;
   }

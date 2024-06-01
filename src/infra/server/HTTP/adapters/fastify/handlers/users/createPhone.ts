@@ -1,19 +1,9 @@
-import xss from 'xss';
-import {
-  FastifyRequest,
-  FastifyReply
-} from 'fastify';
-
-import {
-  IHandlerFactory
-} from '@src/infra/server/HTTP/ports/IHandlerFactory';
-import {
-  IbaseHandler
-} from '@src/infra/server/HTTP/ports/IbaseHandler';
+import { FastifyRequest, FastifyReply } from 'fastify';
+import { Security } from '@src/infra/security';
+import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
+import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
-import {
-  EndPointFactory
-} from '@src/infra/server/HTTP/ports/EndPointFactory';
+import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
   isUserAccessGranted,
   validateRequestBody,
@@ -44,7 +34,7 @@ const createPhone: EndPointFactory = (
         validateRequestParams(endPointConfig, params);
         validateRequestBody(spec, endPointConfig, body);
 
-        const userId = xss(params.id);
+        const userId = Security.xss(params.id);
 
         const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({

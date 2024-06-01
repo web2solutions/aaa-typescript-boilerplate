@@ -1,5 +1,4 @@
 import {
-  LoginCustomValueObject,
   EmailValueObject,
   DocumentValueObject,
   PhoneValueObject
@@ -8,8 +7,9 @@ import {
 export interface RequestCreateUser {
   firstName: string;
   lastName?: string;
+  username: string;
+  password: string;
   avatar?: string;
-  login: LoginCustomValueObject;
   emails: EmailValueObject[];
   documents?: DocumentValueObject[]
   phones?: PhoneValueObject[];

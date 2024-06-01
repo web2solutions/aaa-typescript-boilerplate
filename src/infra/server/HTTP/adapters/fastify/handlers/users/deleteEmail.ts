@@ -1,6 +1,5 @@
-import xss from 'xss';
 import { FastifyRequest, FastifyReply } from 'fastify';
-
+import { Security } from '@src/infra/security';
 import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
@@ -10,7 +9,6 @@ import {
   validateRequestParams
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
-
 import { UserDataRepository, UserService } from '@src/domains/Users';
 
 const deleteEmail: EndPointFactory = (
@@ -26,8 +24,8 @@ const deleteEmail: EndPointFactory = (
         isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
         validateRequestParams(endPointConfig, params);
 
-        const userId = xss(params.id);
-        const emailId = xss(params.emailId);
+        const userId = Security.xss(params.id);
+        const emailId = Security.xss(params.emailId);
 
         const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({

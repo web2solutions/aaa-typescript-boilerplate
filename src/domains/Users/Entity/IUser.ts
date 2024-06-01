@@ -1,5 +1,4 @@
 import {
-  LoginCustomValueObject,
   EmailValueObject,
   DocumentValueObject,
   PhoneValueObject
@@ -10,7 +9,8 @@ export interface IUser {
   firstName: string;
   lastName: string;
   avatar: string;
-  login: LoginCustomValueObject;
+  username: string;
+  password: string;
   emails: EmailValueObject[];
   documents?: DocumentValueObject[];
   phones?: PhoneValueObject[];

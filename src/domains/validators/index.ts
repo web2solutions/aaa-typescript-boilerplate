@@ -11,6 +11,15 @@ export function throwIfNotFound(found: boolean) {
   }
 }
 
+export function throwIfValuesAreDifferent(values: any[]) {
+  const set = new Set(values);
+  if (set.size > 1) {
+    const error = new Error('The provided values are different');
+    error.name = _DOMAIN_VALIDATION_ERROR_NAME_;
+    throw error;
+  }
+}
+
 export function canNotWriteDirectly(field: string) {
   const error = new Error(`The property ${field} can not be directly changed`);
   error.name = _DOMAIN_VALIDATION_ERROR_NAME_;

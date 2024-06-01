@@ -1,6 +1,5 @@
-import xss from 'xss';
 import { FastifyRequest, FastifyReply } from 'fastify';
-
+import { Security } from '@src/infra/security';
 import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
@@ -11,14 +10,13 @@ import {
   validateRequestParams
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
+import { RequestUpdatePassword, UserDataRepository, UserService } from '@src/domains/Users';
 
-import { RequestUpdateLogin, UserDataRepository, UserService } from '@src/domains/Users';
-
-const updateLogin: EndPointFactory = (
+const updatePassword: EndPointFactory = (
   { dbClient, endPointConfig, spec }: IHandlerFactory
 ): IbaseHandler => {
   return {
-    path: '/users/{id}/updateLogin',
+    path: '/users/{id}/updatePassword',
     method: 'put',
     securitySchemes: basicAuth,
     async handler(req: FastifyRequest, res: FastifyReply) {
@@ -29,7 +27,7 @@ const updateLogin: EndPointFactory = (
         validateRequestParams(endPointConfig, params);
         validateRequestBody(spec, endPointConfig, body);
 
-        const userId = xss(params.id);
+        const userId = Security.xss(params.id);
         const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({
           repos: {
@@ -37,7 +35,7 @@ const updateLogin: EndPointFactory = (
           }
         });
 
-        const { ok, error } = await service.updateLogin(userId, body as RequestUpdateLogin);
+        const { ok, error } = await service.updatePassword(userId, body as RequestUpdatePassword);
         if (error) {
           throw error;
         }
@@ -50,4 +48,4 @@ const updateLogin: EndPointFactory = (
   };
 };
 
-export default updateLogin;
+export default updatePassword;

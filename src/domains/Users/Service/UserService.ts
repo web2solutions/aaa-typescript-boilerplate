@@ -10,7 +10,7 @@ import {
   deleteUserById,
   getUserById,
   getAllUsers,
-  updateLogin,
+  updatePassword,
   createDocument,
   updateDocument,
   deleteDocument,
@@ -23,7 +23,7 @@ import {
   RequestCreateUser,
   RequestUpdateUser,
   IUser,
-  RequestUpdateLogin,
+  RequestUpdatePassword,
   RequestCreateDocument,
   RequestUpdateDocument,
   RequestCreatePhone,
@@ -120,10 +120,10 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     return userService as BaseService<IUser, RequestCreateUser, RequestUpdateUser>;
   }
 
-  public async updateLogin(id: string, data: RequestUpdateLogin): Promise<IServiceResponse<IUser>> {
+  public async updatePassword(id: string, data: RequestUpdatePassword): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await updateLogin(id, data, this.repo);
+      const user = await updatePassword(id, data, this.repo);
       serviceResponse.ok = user;
     } catch (error) {
       serviceResponse.error = error as Error;

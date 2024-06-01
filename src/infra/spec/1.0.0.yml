@@ -180,13 +180,13 @@ paths:
       security:
         - basicAuth: 
           - read_user
-  /users/{id}/updateLogin:
+  /users/{id}/updatePassword:
     put:
       tags:
         - user
-      summary: Updates user login data
-      description: Updates user login data
-      operationId: updateLogin
+      summary: Updates user password
+      description: Updates user password
+      operationId: updatePassword
       parameters:
         - name: id
           in: path
@@ -195,11 +195,11 @@ paths:
           schema:
             type: string
       requestBody:
-        description: Login data
+        description: Old and new password
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestUpdateLogin'
+              $ref: '#/components/schemas/RequestupdatePassword'
         required: true
       responses:
         '200':
@@ -616,7 +616,8 @@ components:
     RequestCreateUser: 
       required:
         - firstName
-        - login
+        - username
+        - password
         - emails
       type: object
       properties:
@@ -637,8 +638,16 @@ components:
           example: avatar.png
           default: avatar.png
           description: User's avatar
-        login: 
-          $ref: '#/components/schemas/LoginCustom'
+        username: 
+          type: string
+          format: email
+          minLength: 8
+          description: Username to access the system
+        password: 
+          type: string
+          minLength: 8
+          format: password
+          description: Password to access the system
         emails: 
           type: array
           items:
@@ -682,8 +691,11 @@ components:
           example: avatar.png
           default: avatar.png
           description: User's avatar
-        login: 
-          $ref: '#/components/schemas/LoginCustom'
+        username: 
+          type: string
+          format: email
+          minLength: 8
+          description: Username to access the system
         emails: 
           type: array
           items:
@@ -833,12 +845,14 @@ components:
             - SSN
         data: 
           type: string
-    RequestUpdateLogin:
-      description: User's login data
+    RequestUpdatePassword:
+      description: User's password
       type: object
       properties:
-        username: 
+        oldPassword: 
           type: string
+          minLength: 8
+          format: password
         password: 
           type: string
           minLength: 8
@@ -897,19 +911,6 @@ components:
           example: true
           description: Is this the primary User's e-mail address?
           default: false
-    LoginCustom:
-      description: User's login data
-      type: object
-      required:
-        - username
-        - password
-      properties:
-        username: 
-          type: string
-        password: 
-          type: string
-          minLength: 8
-          format: password
     Phone:
       description: Phone numbers
       type: object
@@ -946,14 +947,15 @@ components:
     User:
       required:
         - firstName
-        - login
+        - username
+        - password
         - emails
       type: object
       properties:
         id: 
           type: string
         firstName: 
-          type: string
+          type: strinł
           minLength: 2
           example: Abraham
           description: User's first name
@@ -962,8 +964,16 @@ components:
           example: Abraham
           nullable: true
           description: User's last name
-        login: 
-          $ref: '#/components/schemas/LoginCustom'
+        username: 
+          type: string
+          format: email
+          minLength: 8
+          description: Username to access the system
+        password: 
+          type: string
+          minLength: 8
+          format: password
+          description: Password to access the system
         emails: 
           type: array
           items:

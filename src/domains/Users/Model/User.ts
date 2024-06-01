@@ -6,7 +6,6 @@ import {
   mustBePassword
 } from '@src/domains/validators';
 import {
-  LoginCustomValueObject,
   EmailValueObject,
   DocumentValueObject,
   PhoneValueObject
@@ -29,9 +28,11 @@ export class User extends BaseModel<IUser> implements IUser {
 
   private _lastName: string = '';
 
-  private _avatar: string = 'avatar.png';
+  private _username: string = '';
 
-  private _login: LoginCustomValueObject = {} as LoginCustomValueObject;
+  private _password: string = '';
+
+  private _avatar: string = 'avatar.png';
 
   private _emails: EmailValueObject[] = [];
 
@@ -42,7 +43,8 @@ export class User extends BaseModel<IUser> implements IUser {
   private _roles: string[] = [];
 
   private _readOnly: boolean = false;
-  // private _excludeOnSerialize: string[] = ['send', 'receive'];
+
+  public _excludeOnSerialize: string[] = ['login'];
 
   constructor(payload: UserFactory) {
     super(payload.id);
@@ -50,7 +52,8 @@ export class User extends BaseModel<IUser> implements IUser {
       firstName,
       lastName,
       avatar,
-      login,
+      username,
+      password,
       emails,
       documents,
       phones,
@@ -61,7 +64,8 @@ export class User extends BaseModel<IUser> implements IUser {
     this.firstName = firstName;
     this.lastName = lastName ?? '';
     this.avatar = avatar ?? 'avatar.png';
-    this.login = login;
+    this.username = username;
+    this.password = password || '';
 
     emails.forEach((e) => this.createEmail(e));
     documents?.forEach((d) => this.createDocument(d));
@@ -69,7 +73,18 @@ export class User extends BaseModel<IUser> implements IUser {
     this._roles = [...(roles || [])];
 
     this._readOnly = readOnly ?? false;
-    this._excludeOnSerialize = ['send', 'receive'];
+
+    this._excludeOnSerialize = [
+      'createPhone',
+      'updatePhone',
+      'deletePhone',
+      'createDocument',
+      'updateDocument',
+      'deleteDocument',
+      'createEmail',
+      'updateEmail',
+      'deleteEmail'
+    ];
   }
 
   public get firstName(): string {
@@ -185,17 +200,25 @@ export class User extends BaseModel<IUser> implements IUser {
     return false;
   }
 
-  public get login(): LoginCustomValueObject {
-    return { ...this._login };
+  public get username(): string {
+    return this._username;
   }
 
-  public set login(login: LoginCustomValueObject) {
-    throwIfReadOnly('login', this._readOnly);
-    const { username, password } = login;
-    canNotBeEmpty('login.username', username);
-    canNotBeEmpty('login.password', password);
-    mustBePassword('login.password', password);
-    this._login = { username, password };
+  public set username(username: string) {
+    throwIfReadOnly('username', this._readOnly);
+    canNotBeEmpty('username', username);
+    this._username = username;
+  }
+
+  public get password(): string {
+    return this._password;
+  }
+
+  public set password(password: string) {
+    throwIfReadOnly('password', this._readOnly);
+    if (password === '') return;
+    mustBePassword('password', password);
+    this._password = password;
   }
 
   public get roles(): string[] {

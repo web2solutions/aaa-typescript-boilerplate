@@ -1,6 +1,5 @@
-import xss from 'xss';
 import { FastifyRequest, FastifyReply } from 'fastify';
-
+import { Security } from '@src/infra/security';
 import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
@@ -11,7 +10,6 @@ import {
   validateRequestParams
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
-
 import { RequestUpdateDocument, UserDataRepository, UserService } from '@src/domains/Users';
 
 const updateDocument: EndPointFactory = (
@@ -29,8 +27,8 @@ const updateDocument: EndPointFactory = (
         validateRequestParams(endPointConfig, params);
         validateRequestBody(spec, endPointConfig, body);
 
-        const userId = xss(params.id);
-        const documentId = xss(params.documentId);
+        const userId = Security.xss(params.id);
+        const documentId = Security.xss(params.documentId);
 
         const userDataRepository = UserDataRepository.compile({ dbClient });
         const service: UserService = UserService.compile({
