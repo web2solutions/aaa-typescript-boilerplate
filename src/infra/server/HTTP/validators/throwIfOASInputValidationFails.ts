@@ -3,7 +3,7 @@ import getSchema from './getSchema';
 import isPropertiesMatching from './isPropertiesMatching';
 import checkRequiredProperties from './checkRequiredProperties';
 
-export default function validateRequestBody(
+export default function throwIfOASInputValidationFails(
   spec: OpenAPIV3.Document,
   endPointConfig: Record<string, any>,
   payload: Record<string, any>
