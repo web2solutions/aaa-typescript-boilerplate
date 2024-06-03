@@ -29,6 +29,14 @@ paths:
       summary: Get all users
       description: Returns a collection of all users
       operationId: getAll
+      parameters:
+        - name: page
+          in: path
+          description: Page number to fetch
+          required: false
+          schema:
+            type: string
+          default: 1
       responses:
         '200':
           description: successful operation
@@ -154,7 +162,7 @@ paths:
         - user
       summary: Get an user by ID
       description: Returns a single user
-      operationId: getOne
+      operationId: getOneById
       parameters:
         - name: id
           in: path
@@ -199,7 +207,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestupdatePassword'
+              $ref: '#/components/schemas/RequestUpdatePassword'
         required: true
       responses:
         '200':
@@ -848,6 +856,9 @@ components:
     RequestUpdatePassword:
       description: User's password
       type: object
+      required:
+        - oldPassword
+        - password
       properties:
         oldPassword: 
           type: string
