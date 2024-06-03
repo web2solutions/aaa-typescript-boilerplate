@@ -1,5 +1,7 @@
 # Run: AnyWhere, AnyHow, AnyTime Typescript Boilertplate
 
+*PROJECT STATUS: IN PROGRESS*
+
 This is a boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.
 
 The application aims to run `Anywhere, Anytime, Anyhow`. `Dedicated servers`, `virtual machines`, `containers`, `EC2`, `ECS` or `lambdas`, with `Express`, `Fastify`, `Hyper-Express` and `serverless`.
