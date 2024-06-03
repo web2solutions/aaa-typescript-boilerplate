@@ -14,7 +14,6 @@ It is being built using TDD techniques since from the scratch. Due the lack of t
 
 It can be used as boilerplate to create `modular monolith`or `microservice` applications.
 
-<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVNq5nWJY=/?moveToViewport=-938,791,3026,1700&embedId=302302537757" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
 
 
 ### Project features high level overview
@@ -53,6 +52,11 @@ Actually it has 1 Domains:
 - *getUserById*
 - *deleteUserById*
 
+### Classes' diagram
+
+Diagram illustrating the components:
+
+https://miro.com/app/board/uXjVNq5nWJY=/?share_link_id=603404471489
 
 ### API documentation
 
