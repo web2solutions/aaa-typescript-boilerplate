@@ -29,7 +29,12 @@ import {
 import {
   IUser,
   RequestCreateDocument,
+  RequestCreateEmail,
+  RequestCreatePhone,
   RequestCreateUser,
+  RequestUpdateDocument,
+  RequestUpdateEmail,
+  RequestUpdatePhone,
   RequestUpdateUser,
   UserDataRepository,
   UserService
@@ -135,6 +140,143 @@ export class UserController implements IController {
     );
     const userId = Security.xss(event.params.id);
     const { ok, error } = await this.userService.createDocument(userId, requestCreateDocument);
+    return { ok, error };
+  }
+
+  @Authorize()
+  public async updateDocument(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser>> {
+    validateRequestParams(event.schemaOAS, event.params);
+    const requestUpdateDocument = event.input as RequestUpdateDocument;
+    throwIfOASInputValidationFails(
+      this.openApiSpecification,
+      event.schemaOAS,
+      requestUpdateDocument
+    );
+    const userId = Security.xss(event.params.id);
+    const documentId = Security.xss(event.params.documentId);
+    const { ok, error } = await this.userService.updateDocument(
+      userId,
+      documentId,
+      requestUpdateDocument
+    );
+    return { ok, error };
+  }
+
+  @Authorize()
+  public async deleteDocument(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser>> {
+    validateRequestParams(event.schemaOAS, event.params);
+    const userId = Security.xss(event.params.id);
+    const documentId = Security.xss(event.params.documentId);
+    const { ok, error } = await this.userService.deleteDocument(
+      userId,
+      documentId
+    );
+    return { ok, error };
+  }
+
+  @Authorize()
+  public async createPhone(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser>> {
+    validateRequestParams(event.schemaOAS, event.params);
+    const requestCreatePhone = event.input as RequestCreatePhone;
+    throwIfOASInputValidationFails(
+      this.openApiSpecification,
+      event.schemaOAS,
+      requestCreatePhone
+    );
+    const userId = Security.xss(event.params.id);
+    const { ok, error } = await this.userService.createPhone(userId, requestCreatePhone);
+    return { ok, error };
+  }
+
+  @Authorize()
+  public async updatePhone(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser>> {
+    validateRequestParams(event.schemaOAS, event.params);
+    const requestUpdatePhone = event.input as RequestUpdatePhone;
+    throwIfOASInputValidationFails(
+      this.openApiSpecification,
+      event.schemaOAS,
+      requestUpdatePhone
+    );
+    const userId = Security.xss(event.params.id);
+    const phoneId = Security.xss(event.params.phoneId);
+    const { ok, error } = await this.userService.updatePhone(
+      userId,
+      phoneId,
+      requestUpdatePhone
+    );
+    return { ok, error };
+  }
+
+  @Authorize()
+  public async deletePhone(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser>> {
+    validateRequestParams(event.schemaOAS, event.params);
+    const userId = Security.xss(event.params.id);
+    const phoneId = Security.xss(event.params.phoneId);
+    const { ok, error } = await this.userService.deletePhone(
+      userId,
+      phoneId
+    );
+    return { ok, error };
+  }
+
+  @Authorize()
+  public async createEmail(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser>> {
+    validateRequestParams(event.schemaOAS, event.params);
+    const requestCreateEmail = event.input as RequestCreateEmail;
+    throwIfOASInputValidationFails(
+      this.openApiSpecification,
+      event.schemaOAS,
+      requestCreateEmail
+    );
+    const userId = Security.xss(event.params.id);
+    const { ok, error } = await this.userService.createEmail(userId, requestCreateEmail);
+    return { ok, error };
+  }
+
+  @Authorize()
+  public async updateEmail(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser>> {
+    validateRequestParams(event.schemaOAS, event.params);
+    const requestUpdateEmail = event.input as RequestUpdateEmail;
+    throwIfOASInputValidationFails(
+      this.openApiSpecification,
+      event.schemaOAS,
+      requestUpdateEmail
+    );
+    const userId = Security.xss(event.params.id);
+    const emailId = Security.xss(event.params.emailId);
+    const { ok, error } = await this.userService.updateEmail(
+      userId,
+      emailId,
+      requestUpdateEmail
+    );
+    return { ok, error };
+  }
+
+  @Authorize()
+  public async deleteEmail(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser>> {
+    validateRequestParams(event.schemaOAS, event.params);
+    const userId = Security.xss(event.params.id);
+    const emailId = Security.xss(event.params.emailId);
+    const { ok, error } = await this.userService.deleteEmail(
+      userId,
+      emailId
+    );
     return { ok, error };
   }
 
