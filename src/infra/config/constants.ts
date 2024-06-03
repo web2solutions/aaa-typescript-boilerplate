@@ -5,10 +5,17 @@ const _API_PREFIX_ = '/api';
 const _MINUTES_IN_THE_FUTURE_ = 5;
 
 const _VALIDATION_ERROR_NAME_ = 'validation_error';
-const _DOMAIN_VALIDATION_ERROR_NAME_ = 'domain_validation_error';
 const _FORBIDDEN_ERROR_NAME_ = 'forbidden';
+const _UNAUTHORIZED_ERROR_NAME_ = 'unauthorized';
 const _NOT_FOUND_ERROR_NAME_ = 'not_found';
+
+const _DOMAIN_VALIDATION_ERROR_NAME_ = 'domain_validation_error';
 const _DOMAIN_NOT_FOUND_ERROR_NAME_ = 'domain_not_found';
+
+const _EVENT_INVALID_MESSAGE_ = 'event_invalid_message';
+
+const _INFRA_NOT_IMPLEMENTED_ = 'infrastructure_not_implemented';
+
 const _DATABASE_NOT_FOUND_ERROR_NAME_ = 'database_not_found';
 const _DATABASE_DUPLICATED_RECORD_ERROR_NAME_ = 'database_duplicated';
 
@@ -23,5 +30,8 @@ export {
   _NOT_FOUND_ERROR_NAME_,
   _DOMAIN_NOT_FOUND_ERROR_NAME_,
   _DATABASE_NOT_FOUND_ERROR_NAME_,
-  _DATABASE_DUPLICATED_RECORD_ERROR_NAME_
+  _DATABASE_DUPLICATED_RECORD_ERROR_NAME_,
+  _EVENT_INVALID_MESSAGE_,
+  _UNAUTHORIZED_ERROR_NAME_,
+  _INFRA_NOT_IMPLEMENTED_
 };
