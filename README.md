@@ -235,27 +235,6 @@ Commit messages must follow the [Angular Commit Message Guidelines](https://gith
 It generates a changelog following the [Commitizen conventional changelog](https://commitizen-tools.github.io/commitizen/changelog/)
 
 
-## Current Backlog
+## Backlog and project management
 
-- Turn on following lint rules and fix the code:
-
-```javascript
-      'no-underscore-dangle': 'off',
-      'import/prefer-default-export': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      'import/no-cycle' : 'off',
-      'arrow-body-style' : 'off',
-      'jest/unbound-method': 'off',
-```
-
-- Create a `Dead-Letter` queue for transactions rejected when the resource is locked by the mutex
-- Implement a ServerSentEvent (EventSource) to notify the client about the execution of the items from the `Dead-Letter` queue.
-- Implement dbClient for Mongoose
-- Implement dbClient for Sequelize
-- Implement dbClient from DynamoDB
-- Implement a IKVStore Port and a KVStoreClient Redis adapter to be used with the Mutex and AuthService (JWT implementation)
-- Implement JWT tokens and Bearer authorization into existing AuthService
-- Implement Custom User Provider and plug to existing AuthService
-- Integrate Auth0, Google login with Oauth2
-- Unit testing - test suite
-- Add filtering and paging to getAll records methods
+https://github.com/users/web2solutions/projects/1
