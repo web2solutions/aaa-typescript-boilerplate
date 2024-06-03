@@ -62,10 +62,8 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       const document = await createUser((data ?? {}), this.repo);
       serviceResponse.ok = document as IUser;
     } catch (error) {
-      // console.log(error);
       serviceResponse.error = new ServiceError(error as Error);
     }
-    // console.log(serviceResponse.error);
     return serviceResponse;
   }
 
@@ -120,7 +118,10 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     return userService as BaseService<IUser, RequestCreateUser, RequestUpdateUser>;
   }
 
-  public async updatePassword(id: string, data: RequestUpdatePassword): Promise<IServiceResponse<IUser>> {
+  public async updatePassword(
+    id: string,
+    data: RequestUpdatePassword
+  ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
       const user = await updatePassword(id, data, this.repo);

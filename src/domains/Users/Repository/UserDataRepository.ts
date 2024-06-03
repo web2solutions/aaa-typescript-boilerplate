@@ -1,7 +1,12 @@
 import { IStore } from '@src/domains/ports/persistence/IStore';
 import { BaseRepo } from '@src/domains/ports/persistence/BaseRepo';
 import { IRepoConfig } from '@src/domains/ports/persistence/IRepoConfig';
-import { throwIfPreUpdateValidationFails, throwIfNotFound, throwIfValuesAreDifferent } from '@src/domains/validators';
+import {
+  throwIfPreUpdateValidationFails,
+  throwIfNotFound,
+  throwIfValuesAreDifferent,
+  canNotBeEmpty
+} from '@src/domains/validators';
 import {
   IUser,
   User,
@@ -31,6 +36,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
   }
 
   public async create(data: RequestCreateUser): Promise<User> {
+    canNotBeEmpty('password', data.password);
     const model: User = new User(data);
     await this.store.create(model.id, model.serialize() as IUser);
     return model;
@@ -38,8 +44,11 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
 
   public async update(id: string, data: RequestUpdateUser): Promise<User> {
     throwIfPreUpdateValidationFails(id, data);
-    const oldDocument = await this.getOneById(id);
-    const model: User = new User({ ...oldDocument.serialize(), ...data });
+    const rawUser = await this.store.getOneById(id);
+    throwIfNotFound(!!rawUser);
+    const newData = { ...data };
+    delete (newData as any).password;
+    const model: User = new User({ ...rawUser, ...newData });
     await this.store.update(id, model.serialize() as IUser);
     return model;
   }
@@ -68,8 +77,9 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
 
   public async updatePassword(id: string, data: RequestUpdatePassword): Promise<User> {
     const oldDocument = await this.getOneById(id);
+    canNotBeEmpty('password', data.password);
+    canNotBeEmpty('oldPassword', data.oldPassword);
     throwIfValuesAreDifferent([oldDocument.password, data.oldPassword]);
-
     const model: User = new User({ ...oldDocument.serialize() });
     model.password = data.password;
     await this.store.update(id, model.serialize() as IUser);
