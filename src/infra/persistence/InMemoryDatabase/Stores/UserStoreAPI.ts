@@ -8,7 +8,7 @@ import {
 
 const userStore = new Map<string, unknown>();
 const userStoreUniqueIndexes = {
-  login: { username: new Map<string, unknown>() }
+  username: new Map<string, unknown>()
 };
 export const UserStoreAPI = {
   delete: async (id: string) => {
@@ -40,14 +40,14 @@ export const UserStoreAPI = {
         error.name = _DATABASE_DUPLICATED_RECORD_ERROR_NAME_;
         return Promise.reject(error);
       }
-      const username = object.login.username.toString().toLowerCase();
-      if (userStoreUniqueIndexes.login.username.has(username)) {
-        const error = new Error('login.username already in use');
+      const username = object.username.toString().toLowerCase();
+      if (userStoreUniqueIndexes.username.has(username)) {
+        const error = new Error('username already in use');
         error.name = _DATABASE_DUPLICATED_RECORD_ERROR_NAME_;
         return Promise.reject(error);
       }
       userStore.set(key, object);
-      userStoreUniqueIndexes.login.username.set(username, object);
+      userStoreUniqueIndexes.username.set(username, object);
       return Promise.resolve(value);
     } catch (error) {
       return Promise.reject(error);
@@ -61,13 +61,13 @@ export const UserStoreAPI = {
         error.name = _DATABASE_NOT_FOUND_ERROR_NAME_;
         return Promise.reject(error);
       }
-      const strOldName = (oldRecord as IUser).login.username.toString().toLowerCase();
+      const strOldName = (oldRecord as IUser).username.toString().toLowerCase();
       const object = value;
-      const username = object.login.username.toString().toLowerCase();
+      const username = object.username.toString().toLowerCase();
 
       userStore.set(key, { ...object, _updatedAt: new Date() });
-      userStoreUniqueIndexes.login.username.delete(strOldName);
-      userStoreUniqueIndexes.login.username.set(username, object);
+      userStoreUniqueIndexes.username.delete(strOldName);
+      userStoreUniqueIndexes.username.set(username, object);
       return Promise.resolve(value);
     } catch (error) {
       return Promise.reject(error);
