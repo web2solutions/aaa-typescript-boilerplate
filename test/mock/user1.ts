@@ -3,10 +3,8 @@ const user1 = {
   lastName: 'Number 1',
   emails: [],
   avatar: 'avatar.png',
-  login: {
-    username: 'usernumber1',
-    password: 'usernumber1_password'
-  },
+  username: 'usernumber1',
+  password: 'usernumber1_password',
   roles: [
     'create_account',
     'read_account',

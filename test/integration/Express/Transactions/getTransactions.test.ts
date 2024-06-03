@@ -104,6 +104,6 @@ describe('express -> get Transactions suite', () => {
       .set(BasicAuthorizationHeaderUserGuest);
     // console.log(response.body)
     expect(response.statusCode).toBe(401);
-    expect(response.body.message).toBe('user not found');
+    expect(response.body.message).toBe('Unauthorized - user not found');
   });
 });

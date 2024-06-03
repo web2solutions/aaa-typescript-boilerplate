@@ -125,6 +125,6 @@ describe('express -> getTransactionById suite', () => {
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUserGuest);
     expect(response.statusCode).toBe(401);
-    expect(response.body.message).toBe('user not found');
+    expect(response.body.message).toBe('Unauthorized - user not found');
   });
 });
