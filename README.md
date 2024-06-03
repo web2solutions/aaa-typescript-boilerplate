@@ -56,6 +56,8 @@ Actually it has 1 Domains:
 
 Diagram illustrating the components:
 
+![Diagram](doc/miro.png "Diagram")
+
 https://miro.com/app/board/uXjVNq5nWJY=/?share_link_id=603404471489
 
 ### API documentation
