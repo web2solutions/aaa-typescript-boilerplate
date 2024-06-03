@@ -18,6 +18,7 @@ import users from '@seed/users';
 import { IAPIFactory } from '@src/infra/server/HTTP/ports/IAPIFactory';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import { _API_PREFIX_, _DOCS_PREFIX_ } from './config/constants';
+import { IAuthService } from './auth/IAuthService';
 
 export class RestAPI<T> {
   #_oas: Map<string, OpenAPIV3.Document> = new Map();
@@ -32,6 +33,8 @@ export class RestAPI<T> {
 
   #_mutexClient: IMutexClient | undefined;
 
+  #_authService: IAuthService | undefined;
+
   constructor(config: IAPIFactory<T>) {
     this.#_serverType = config.serverType ?? EHTTPFrameworks.express;
     this.#_server = config.webServer;
@@ -41,6 +44,11 @@ export class RestAPI<T> {
     if (config.mutexService) {
       this.#_mutexClient = config.mutexService;
       this.#_mutexClient?.connect();
+    }
+
+    if (config.authService) {
+      this.#_authService = config.authService;
+      this.#_authService?.start();
     }
 
     this.#_buildWithOAS();
@@ -78,7 +86,9 @@ export class RestAPI<T> {
     // serve API docs as JSON
     const apiVersionsGet = config.infraHandlers.apiVersionsGetHandlerFactory({
       ...noServiceInjection,
-      apiDocs: this.#_oas
+      apiDocs: this.#_oas,
+      authService: this.#_authService || ({} as IAuthService)
+
     });
     this.#_server.endPointRegister(apiVersionsGet);
 
@@ -115,11 +125,22 @@ export class RestAPI<T> {
         for (const method of methods) {
           const endPointConfig: Record<string, any> = endPointConfigs[method];
           const domain = path.split('/')[1];
+          const fileName = `${domain.charAt(0).toUpperCase()}${domain.substring(1, domain.length - 1)}Controller`;
+          const Controller = require(`@src/infra/server/HTTP/adapters/controllers/${fileName}`)[fileName]; // UserController
+
+          const controller = new Controller({
+            authService: this.#_authService,
+            openApiSpecification: spec,
+            dbClient: this.#_dbClient
+          });
+
           const handlerFactory = require(`@src/infra/server/HTTP/adapters/${this.#_serverType}/handlers/${domain}/${endPointConfig.operationId}`).default({
             dbClient: this.#_dbClient,
             mutexClient: this.#_mutexClient,
             endPointConfig,
-            spec
+            spec,
+            authService: this.#_authService,
+            controller
           });
           this.#_server.endPointRegister({
             ...handlerFactory,
