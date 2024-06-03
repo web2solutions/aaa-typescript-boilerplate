@@ -253,6 +253,7 @@ It generates a changelog following the [Commitizen conventional changelog](https
 - Implement dbClient for Mongoose
 - Implement dbClient for Sequelize
 - Implement dbClient from DynamoDB
+- Implement a IKVStore Port and a KVStoreClient Redis adapter to be used with the Mutex and AuthService (JWT implementation)
 - Implement JWT tokens and Bearer authorization into existing AuthService
 - Implement Custom User Provider and plug to existing AuthService
 - Integrate Auth0, Google login with Oauth2
