@@ -4,6 +4,8 @@ import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
 import { RestAPI } from '@src/infra/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
+import { AuthService } from '@src/infra/auth/AuthService';
+import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import {
   BasicAuthorizationHeaderUser1,
   BasicAuthorizationHeaderUser2,
@@ -14,14 +16,14 @@ import {
   // user2,
   user3
 } from '@test/mock';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
   dbClient: InMemoryDbClient,
   webServer,
   infraHandlers,
-  serverType: EHTTPFrameworks.fastify
+  serverType: EHTTPFrameworks.fastify,
+  authService: AuthService.compile()
 });
 const server = API.server.application;
 
@@ -34,7 +36,7 @@ describe('fastify -> create User suite', () => {
     await server.close();
   });
 
-  it('user1 must be able to create an user - user data 1', async () => {
+  it('user1 must be able to create an user', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .post('/api/1.0.0/users')
@@ -48,7 +50,7 @@ describe('fastify -> create User suite', () => {
     expect(response.statusCode).toBe(201);
   });
 
-  it('user1 must not be able to create a duplicated login.username - user data 1', async () => {
+  it('user1 must not be able to create a duplicated username', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .post('/api/1.0.0/users')
@@ -57,47 +59,47 @@ describe('fastify -> create User suite', () => {
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUser1);
     // console.log(response.body);
-    expect(response.body.message).toBe('Duplicated record - login.username already in use');
+    expect(response.body.message).toBe('Duplicated record - username already in use');
     expect(response.statusCode).toBe(409);
   });
 
-  it('user1 must not be able to create a user with empty login.username - user data 1', async () => {
+  it('user1 must not be able to create a user with empty username', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .post('/api/1.0.0/users')
-      .send({ ...user1, login: { username: '', password: '123' } })
+      .send({ ...user1, username: '', password: '123' })
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - login.username can not be empty');
+    expect(response.body.message).toBe('Bad Request - username can not be empty');
     expect(response.statusCode).toBe(400);
   });
 
-  it('user1 must not be able to create a user with empty login.password - user data 1', async () => {
+  it('user1 must not be able to create a user with empty password', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .post('/api/1.0.0/users')
-      .send({ ...user1, login: { username: 'loginname', password: '' } })
+      .send({ ...user1, username: 'loginname', password: '' })
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - login.password can not be empty');
+    expect(response.body.message).toBe('Bad Request - password can not be empty');
     expect(response.statusCode).toBe(400);
   });
 
-  it('user1 must not be able to create a user with login.password having less than 8 chars - user data 1', async () => {
+  it('user1 must not be able to create a user with password having less than 8 chars', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .post('/api/1.0.0/users')
-      .send({ ...user1, login: { username: 'loginname', password: '1234567' } })
+      .send({ ...user1, username: 'loginname', password: '1234567' })
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - login.password must have at least 8 chars.');
+    expect(response.body.message).toBe('Bad Request - password must have at least 8 chars.');
     expect(response.statusCode).toBe(400);
   });
 
-  it('user1 must not be able to create an user with empty firstName - user data 3', async () => {
+  it('user1 must not be able to create an user with empty firstName', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .post('/api/1.0.0/users')
@@ -131,7 +133,7 @@ describe('fastify -> create User suite', () => {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUser1);
-
+    // console.log(response.body)
     expect(response.statusCode).toBe(400);
   });
 
@@ -183,6 +185,6 @@ describe('fastify -> create User suite', () => {
       .set(BasicAuthorizationHeaderUserGuest);
     // console.log(response.body)
     expect(response.statusCode).toBe(401);
-    expect(response.body.message).toBe('user not found');
+    expect(response.body.message).toBe('Unauthorized - user not found');
   });
 });

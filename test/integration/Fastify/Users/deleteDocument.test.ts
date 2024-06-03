@@ -4,6 +4,8 @@ import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
 import { RestAPI } from '@src/infra/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
+import { AuthService } from '@src/infra/auth/AuthService';
+import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import {
   BasicAuthorizationHeaderUser1,
   BasicAuthorizationHeaderUser2,
@@ -11,7 +13,6 @@ import {
   BasicAuthorizationHeaderUser4,
   BasicAuthorizationHeaderUserGuest
 } from '@test/mock';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import { IUser } from '@src/domains/Users';
 import { DocumentValueObject } from '@src/domains/valueObjects';
 
@@ -20,7 +21,8 @@ const API = new RestAPI<Fastify>({
   dbClient: InMemoryDbClient,
   webServer,
   infraHandlers,
-  serverType: EHTTPFrameworks.fastify
+  serverType: EHTTPFrameworks.fastify,
+  authService: AuthService.compile()
 });
 const server = API.server.application;
 
@@ -103,6 +105,6 @@ describe('fastify -> User deleteDocument suite', () => {
       .set(BasicAuthorizationHeaderUserGuest);
     // console.log(response.body)
     expect(response.statusCode).toBe(401);
-    expect(response.body.message).toBe('user not found');
+    expect(response.body.message).toBe('Unauthorized - user not found');
   });
 });

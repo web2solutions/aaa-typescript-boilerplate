@@ -2,13 +2,10 @@
 import request from 'supertest';
 import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/FastifyServer';
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
-import {
-  RestAPI
-} from '@src/infra/RestAPI';
-import {
-  InMemoryDbClient
-} from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
-
+import { RestAPI } from '@src/infra/RestAPI';
+import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
+import { AuthService } from '@src/infra/auth/AuthService';
+import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import users from '@seed/users';
 import {
   BasicAuthorizationHeaderUser1,
@@ -17,14 +14,14 @@ import {
   BasicAuthorizationHeaderUser4,
   BasicAuthorizationHeaderUserGuest
 } from '@test/mock';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
   dbClient: InMemoryDbClient,
   webServer,
   infraHandlers,
-  serverType: EHTTPFrameworks.fastify
+  serverType: EHTTPFrameworks.fastify,
+  authService: AuthService.compile()
 });
 const server = API.server.application;
 
@@ -45,7 +42,6 @@ describe('fastify -> get Users suite', () => {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUser1);
-    // console.log(response.body);
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveLength(users.length);
     expect(response.body[0].firstName).toBe(users[0].firstName);
@@ -101,6 +97,6 @@ describe('fastify -> get Users suite', () => {
       .set(BasicAuthorizationHeaderUserGuest);
     // console.log(response.body)
     expect(response.statusCode).toBe(401);
-    expect(response.body.message).toBe('user not found');
+    expect(response.body.message).toBe('Unauthorized - user not found');
   });
 });
