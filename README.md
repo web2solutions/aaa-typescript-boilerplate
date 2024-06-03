@@ -237,7 +237,7 @@ It generates a changelog following the [Commitizen conventional changelog](https
 
 ## Backlog
 
-1 . Turn on following lint rules and fix the code:
+- Turn on following lint rules and fix the code:
 
 ```javascript
       'no-underscore-dangle': 'off',
@@ -248,11 +248,13 @@ It generates a changelog following the [Commitizen conventional changelog](https
       'jest/unbound-method': 'off',
 ```
 
-2. Create a `Dead-Letter` queue for transactions rejected when the resource is locked by the mutex
-3. Implement a ServerSentEvent (EventSource) to notify the client about the execution of the items from the `Dead-Letter` queue.
-4. Implement dbClient for Mongoose
-5. Implement dbClient for Sequelize
-6. Implement dbClient from DynamoDB
-7. Implement JWT tokens and Bearer authorization
-8. Unit testing - test suite
-9. Add filtering and paging to getAll records methods.
+- Create a `Dead-Letter` queue for transactions rejected when the resource is locked by the mutex
+- Implement a ServerSentEvent (EventSource) to notify the client about the execution of the items from the `Dead-Letter` queue.
+- Implement dbClient for Mongoose
+- Implement dbClient for Sequelize
+- Implement dbClient from DynamoDB
+- Implement JWT tokens and Bearer authorization into existing AuthService
+- Implement Custom User Provider and plug to existing AuthService
+- Integrate Auth0, Google login with Oauth2
+- Unit testing - test suite
+- Add filtering and paging to getAll records methods
