@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { Security } from '@src/infra/security';
 import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
-import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
+
 import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
   isUserAccessGranted,
@@ -17,7 +17,7 @@ const deleteDocument: EndPointFactory = (
   return {
     path: '/users/{id}/deleteDocument/{documentId}',
     method: 'delete',
-    securitySchemes: basicAuth,
+
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
         const params = req.params as Record<string, any>;

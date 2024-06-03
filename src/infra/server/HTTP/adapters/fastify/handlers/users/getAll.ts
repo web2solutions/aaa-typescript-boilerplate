@@ -1,34 +1,34 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
-import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
-import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
-import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
 import {
-  isUserAccessGranted
-} from '@src/infra/server/HTTP/validators';
-import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
-import { UserDataRepository, UserService } from '@src/domains/Users';
+  IHandlerFactory,
+  IbaseHandler,
+  EndPointFactory
+} from '@src/infra/server/HTTP';
+import {
+  sendErrorResponse
+} from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
+import { UserGetAllRequestEvent } from '@src/domains/Users/events/UserGetAllRequestEvent';
 
 const getAll: EndPointFactory = (
-  { dbClient, endPointConfig }: IHandlerFactory
+  {
+    endPointConfig,
+    controller
+  }: IHandlerFactory
 ): IbaseHandler => {
   return {
     path: '/users',
     method: 'get',
-    securitySchemes: basicAuth,
+
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
-        isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
-        const userDataRepository = UserDataRepository.compile({ dbClient });
-        const service: UserService = UserService.compile({
-          repos: {
-            UserDataRepository: userDataRepository
-          }
-        });
-        const { ok, error } = await service.getAll();
-        if (error) {
-          throw error;
-        }
+        const queryString = req.query as Record<string, any> || {};
+        if (!queryString.page) queryString.page = 1;
+        const { ok, error } = await controller!.getAll(new UserGetAllRequestEvent({
+          authorization: req.headers.authorization ?? '',
+          schemaOAS: endPointConfig,
+          queryString
+        }));
+        if (error) throw error;
         res.code(200);
         return ok;
       } catch (error: unknown) {

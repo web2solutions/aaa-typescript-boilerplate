@@ -7,28 +7,28 @@ import {
 import {
   sendErrorResponse
 } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
-import {
-  UserCreateRequestEvent
-} from '@src/domains/Users/events/UserCreateRequestEvent';
+import { UserGetOneRequestEvent } from '@src/domains/Users/events/UserGetOneRequestEvent';
 
-const create: EndPointFactory = (
+const getOneById: EndPointFactory = (
   {
     endPointConfig,
     controller
   }: IHandlerFactory
 ): IbaseHandler => {
   return {
-    path: '/users',
-    method: 'post',
+    path: '/users/{id}',
+    method: 'get',
+
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
-        const { ok, error } = await controller!.create(new UserCreateRequestEvent({
+        const params = req.params as Record<string, any>;
+        const { ok, error } = await controller!.getOneById(new UserGetOneRequestEvent({
           authorization: req.headers.authorization ?? '',
-          input: req.body,
-          schemaOAS: endPointConfig
+          schemaOAS: endPointConfig,
+          params
         }));
         if (error) throw error;
-        res.code(201);
+        res.code(200);
         return ok;
       } catch (error: unknown) {
         return sendErrorResponse(error as Error, res);
@@ -37,4 +37,4 @@ const create: EndPointFactory = (
   };
 };
 
-export default create;
+export default getOneById;

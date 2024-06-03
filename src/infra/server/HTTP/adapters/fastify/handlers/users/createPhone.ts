@@ -2,11 +2,11 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { Security } from '@src/infra/security';
 import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
-import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
+
 import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
   isUserAccessGranted,
-  validateRequestBody,
+  throwIfOASInputValidationFails,
   validateRequestParams
 } from '@src/infra/server/HTTP/validators';
 import {
@@ -25,14 +25,14 @@ const createPhone: EndPointFactory = (
   return {
     path: '/users/{id}/createPhone',
     method: 'post',
-    securitySchemes: basicAuth,
+
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
         const params = req.params as Record<string, any>;
         const body = req.body as Record<string, any>;
         isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
         validateRequestParams(endPointConfig, params);
-        validateRequestBody(spec, endPointConfig, body);
+        throwIfOASInputValidationFails(spec, endPointConfig, body);
 
         const userId = Security.xss(params.id);
 

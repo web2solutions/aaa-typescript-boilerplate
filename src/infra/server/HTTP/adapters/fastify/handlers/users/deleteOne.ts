@@ -1,42 +1,35 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { Security } from '@src/infra/security';
-import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
-import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
-import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
-import basicAuth from '@src/infra/server/HTTP/adapters/fastify/auth/basicAuth';
 import {
-  isUserAccessGranted,
-  validateRequestParams
-} from '@src/infra/server/HTTP/validators';
+  IHandlerFactory,
+  IbaseHandler,
+  EndPointFactory
+} from '@src/infra/server/HTTP';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
-import { UserDataRepository, UserService } from '@src/domains/Users';
+import { UserDeleteRequestEvent } from '@src/domains/Users/events/UserDeleteRequestEvent';
 
 const deleteOne: EndPointFactory = (
-  { dbClient, endPointConfig }: IHandlerFactory
+  {
+    endPointConfig,
+    controller
+  }: IHandlerFactory
 ): IbaseHandler => {
   return {
     path: '/users/{id}',
     method: 'delete',
-    securitySchemes: basicAuth,
-    handler(req: FastifyRequest, res: FastifyReply) {
-      (async () => {
-        try {
-          const params = req.params as Record<string, any>;
-          isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
-          validateRequestParams(endPointConfig, params);
-          const userId = Security.xss(params.id);
-          const userDataRepository = UserDataRepository.compile({ dbClient });
-          const service: UserService = UserService.compile({
-            repos: {
-              UserDataRepository: userDataRepository
-            }
-          });
-          const deleted = await service.delete(userId);
-          res.code(200).send({ deleted: !!deleted });
-        } catch (error: unknown) {
-          sendErrorResponse(error as Error, res);
-        }
-      })();
+    async handler(req: FastifyRequest, res: FastifyReply) {
+      try {
+        const params = req.params as Record<string, any>;
+        const { ok, error } = await controller!.delete(new UserDeleteRequestEvent({
+          authorization: req.headers.authorization ?? '',
+          schemaOAS: endPointConfig,
+          params
+        }));
+        if (error) throw error;
+        res.code(200);
+        return ok;
+      } catch (error: unknown) {
+        return sendErrorResponse(error as Error, res);
+      }
     }
   };
 };
