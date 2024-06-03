@@ -235,7 +235,7 @@ Commit messages must follow the [Angular Commit Message Guidelines](https://gith
 It generates a changelog following the [Commitizen conventional changelog](https://commitizen-tools.github.io/commitizen/changelog/)
 
 
-## Technical Debits
+## Backlog
 
 1 . Turn on following lint rules and fix the code:
 
@@ -253,6 +253,6 @@ It generates a changelog following the [Commitizen conventional changelog](https
 4. Implement dbClient for Mongoose
 5. Implement dbClient for Sequelize
 6. Implement dbClient from DynamoDB
-7. Implement WebServer for Hyper-Express
+7. Implement JWT tokens and Bearer authorization
 8. Unit testing - test suite
 9. Add filtering and paging to getAll records methods.

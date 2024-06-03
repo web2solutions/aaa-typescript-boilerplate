@@ -1,55 +1,37 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { Security } from '@src/infra/security';
-import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
-import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
-
-import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
-  isUserAccessGranted,
-  throwIfOASInputValidationFails,
-  validateRequestParams
-} from '@src/infra/server/HTTP/validators';
+  IHandlerFactory,
+  IbaseHandler,
+  EndPointFactory,
+  UserController
+} from '@src/infra/server/HTTP';
 import {
   sendErrorResponse
 } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
 
-import {
-  RequestCreateEmail,
-  UserDataRepository,
-  UserService
-} from '@src/domains/Users';
+import { UserEmailCreateRequestEvent } from '@src/domains/Users/events/UserEmailCreateRequestEvent';
+import { RequestCreateEmail } from '@src/domains/Users';
 
 const createEmail: EndPointFactory = (
-  { dbClient, endPointConfig, spec }: IHandlerFactory
+  {
+    endPointConfig,
+    controller
+  }: IHandlerFactory
 ): IbaseHandler => {
   return {
     path: '/users/{id}/createEmail',
     method: 'post',
-
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
         const params = req.params as Record<string, any>;
-        const body = req.body as Record<string, any>;
-        isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
-        validateRequestParams(endPointConfig, params);
-        throwIfOASInputValidationFails(spec, endPointConfig, body);
-
-        const userId = Security.xss(params.id);
-
-        const userDataRepository = UserDataRepository.compile({ dbClient });
-        const service: UserService = UserService.compile({
-          repos: {
-            UserDataRepository: userDataRepository
-          }
-        });
-
-        const { ok, error } = await service.createEmail(
-          userId,
-          body as RequestCreateEmail
-        );
-        if (error) {
-          throw error;
-        }
+        const { ok, error } = await (controller! as UserController)
+          .createEmail(new UserEmailCreateRequestEvent({
+            authorization: req.headers.authorization ?? '',
+            params,
+            input: req.body as RequestCreateEmail,
+            schemaOAS: endPointConfig
+          }));
+        if (error) throw error;
         res.code(201);
         return ok;
       } catch (error: unknown) {
