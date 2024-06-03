@@ -40,7 +40,7 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
       if (handlerFactory.securitySchemes) {
         (this._application as any)[handlerFactory.method](
           handlerFactory.path,
-          { preHandler: [handlerFactory.securitySchemes] },
+          // { preHandler: [handlerFactory.securitySchemes] },
           handlerFactory.handler
         );
         return;

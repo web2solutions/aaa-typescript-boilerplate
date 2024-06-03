@@ -21,7 +21,7 @@ const getTransaction: EndPointFactory = ({
   return {
     path: '/transactions/{id}',
     method: 'get',
-    securitySchemes: basicAuth,
+
     handler(req: Request, res: Response) {
       (async () => {
         try {

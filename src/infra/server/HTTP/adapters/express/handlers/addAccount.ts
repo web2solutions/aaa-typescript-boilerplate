@@ -6,7 +6,7 @@ import basicAuth from '@src/infra/server/HTTP/adapters/express/auth/basicAuth';
 import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
   isUserAccessGranted,
-  validateRequestBody
+  throwIfOASInputValidationFails
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/express/responses/sendErrorResponse';
 
@@ -18,12 +18,12 @@ const addAccount: EndPointFactory = (
   return {
     path: '/accounts',
     method: 'post',
-    securitySchemes: basicAuth,
+
     handler(req: Request, res: Response) {
       (async () => {
         try {
           isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
-          validateRequestBody(spec, endPointConfig, req.body);
+          throwIfOASInputValidationFails(spec, endPointConfig, req.body);
           const service = AccountService.compile({
             repos: {
               AccountDataRepository: AccountDataRepository.compile({ dbClient })

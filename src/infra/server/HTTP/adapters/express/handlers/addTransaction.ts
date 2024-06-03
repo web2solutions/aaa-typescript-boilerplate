@@ -6,7 +6,7 @@ import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import basicAuth from '@src/infra/server/HTTP/adapters/express/auth/basicAuth';
 import {
   isUserAccessGranted,
-  validateRequestBody
+  throwIfOASInputValidationFails
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/express/responses/sendErrorResponse';
 
@@ -29,12 +29,12 @@ const addTransaction: EndPointFactory = (
   return {
     path: '/transactions',
     method: 'post',
-    securitySchemes: basicAuth,
+
     handler(req: Request, res: Response) {
       (async () => {
         try {
           isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
-          validateRequestBody(spec, endPointConfig, req.body);
+          throwIfOASInputValidationFails(spec, endPointConfig, req.body);
 
           const accountService = AccountService.compile({
             repos: {

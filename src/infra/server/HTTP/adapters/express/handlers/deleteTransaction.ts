@@ -23,7 +23,7 @@ const deleteTransaction: EndPointFactory = ({
   return {
     path: '/transactions/{id}',
     method: 'delete',
-    securitySchemes: basicAuth,
+
     handler(req: Request, res: Response) {
       (async () => {
         try {

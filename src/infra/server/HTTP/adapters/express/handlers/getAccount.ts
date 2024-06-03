@@ -18,7 +18,7 @@ const getAccount: EndPointFactory = (
   return {
     path: '/accounts/{id}',
     method: 'get',
-    securitySchemes: basicAuth,
+
     handler(req: Request, res: Response) {
       (async () => {
         try {
