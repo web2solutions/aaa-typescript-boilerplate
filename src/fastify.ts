@@ -5,6 +5,7 @@ import { mutexService } from '@src/infra/mutex/adapter/MutexService';
 import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/FastifyServer';
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/fastify/handlers/infraHandlers';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
+import { AuthService } from './infra/auth/AuthService';
 
 const webServer = new FastifyServer();
 
@@ -13,7 +14,8 @@ const API: RestAPI<Fastify> = new RestAPI<Fastify>({
   webServer,
   mutexService,
   infraHandlers,
-  serverType: EHTTPFrameworks.fastify
+  serverType: EHTTPFrameworks.fastify,
+  authService: AuthService.compile()
 });
 
 // eslint-disable-next-line jest/require-hook
