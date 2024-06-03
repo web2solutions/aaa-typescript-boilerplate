@@ -6,7 +6,7 @@ import basicAuth from '@src/infra/server/HTTP/adapters/hyper-express/auth/basicA
 import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
   isUserAccessGranted,
-  validateRequestBody
+  throwIfOASInputValidationFails
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/hyper-express/responses/sendErrorResponse';
 
@@ -18,13 +18,13 @@ const addAccount: EndPointFactory = (
   return {
     path: '/accounts',
     method: 'post',
-    securitySchemes: basicAuth,
+
     handler(req: HyperExpress.Request, res: HyperExpress.Response) {
       (async () => {
         try {
           isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
           const body = await req.json();
-          validateRequestBody(spec, endPointConfig, body);
+          throwIfOASInputValidationFails(spec, endPointConfig, body);
           const service = AccountService.compile({
             repos: {
               AccountDataRepository: AccountDataRepository.compile({ dbClient })

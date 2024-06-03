@@ -18,7 +18,7 @@ const deleteAccount: EndPointFactory = (
   return {
     path: '/accounts/{id}',
     method: 'delete',
-    securitySchemes: basicAuth,
+
     handler(req: HyperExpress.Request, res: HyperExpress.Response) {
       (async () => {
         try {

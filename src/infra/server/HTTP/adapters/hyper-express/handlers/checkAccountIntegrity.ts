@@ -19,7 +19,7 @@ const checkAccountIntegrity: EndPointFactory = (
   return {
     path: '/accounts/{id}/checkIntegrity',
     method: 'get',
-    securitySchemes: basicAuth,
+
     handler(req: HyperExpress.Request, res: HyperExpress.Response) {
       (async () => {
         try {

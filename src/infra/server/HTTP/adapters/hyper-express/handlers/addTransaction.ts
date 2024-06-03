@@ -6,7 +6,7 @@ import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import basicAuth from '@src/infra/server/HTTP/adapters/hyper-express/auth/basicAuth';
 import {
   isUserAccessGranted,
-  validateRequestBody
+  throwIfOASInputValidationFails
 } from '@src/infra/server/HTTP/validators';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/hyper-express/responses/sendErrorResponse';
 
@@ -29,13 +29,13 @@ const addTransaction: EndPointFactory = (
   return {
     path: '/transactions',
     method: 'post',
-    securitySchemes: basicAuth,
+
     handler(req: HyperExpress.Request, res: HyperExpress.Response) {
       (async () => {
         try {
           isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
           const body = await req.json();
-          validateRequestBody(spec, endPointConfig, body);
+          throwIfOASInputValidationFails(spec, endPointConfig, body);
 
           const accountService = AccountService.compile({
             repos: {
