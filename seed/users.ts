@@ -30,10 +30,8 @@ const users: Array<IUser> = [{
     } as EmailValueObject
   ],
   avatar: 'avatar.png',
-  login: {
-    username: 'user1',
-    password: 'user1_password'
-  },
+  username: 'user1',
+  password: 'user1_password',
   roles: [
     'create_account',
     'read_account',
@@ -91,10 +89,8 @@ const users: Array<IUser> = [{
   lastName: 'Obama',
   emails: [],
   avatar: 'avatar.png',
-  login: {
-    username: 'user2',
-    password: 'user2_password'
-  },
+  username: 'user2',
+  password: 'user2_password',
   roles: [
     'create_transaction',
     'read_account',
@@ -111,10 +107,8 @@ const users: Array<IUser> = [{
   lastName: 'Carter',
   emails: [],
   avatar: 'avatar.png',
-  login: {
-    username: 'user3',
-    password: 'user3_password'
-  },
+  username: 'user3',
+  password: 'user3_password',
   roles: [
     'read_account',
     'read_transaction',
@@ -130,10 +124,8 @@ const users: Array<IUser> = [{
   lastName: 'Bush',
   emails: [],
   avatar: 'avatar.png',
-  login: {
-    username: 'user4',
-    password: 'user4_password'
-  },
+  username: 'user4',
+  password: 'user4_password',
   roles: [
     'create_transaction'
   ]
