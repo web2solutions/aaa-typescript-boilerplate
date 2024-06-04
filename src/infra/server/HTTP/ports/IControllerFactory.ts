@@ -1,8 +1,8 @@
 import { IAuthService } from '@src/infra/auth/IAuthService';
-import { IDbClient } from '@src/infra/persistence/port/IDbClient';
+import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 
 export interface IControllerFactory {
   authService: IAuthService;
   openApiSpecification: any;
-  dbClient: IDbClient;
+  databaseClient: IDatabaseClient;
 }

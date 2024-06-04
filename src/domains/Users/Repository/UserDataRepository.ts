@@ -31,7 +31,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
   public constructor(config: IRepoConfig) {
     super(config);
     const { limit } = config;
-    this.store = this.dbClient.stores.User as IStore<IUser>;
+    this.store = this.databaseClient.stores.User as IStore<IUser>;
     this.limit = limit ?? 30;
   }
 

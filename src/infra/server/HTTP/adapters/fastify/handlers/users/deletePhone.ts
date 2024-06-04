@@ -1,18 +1,20 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { Security } from '@src/infra/security';
-import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
-import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
-
-import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import {
-  isUserAccessGranted,
-  validateRequestParams
-} from '@src/infra/server/HTTP/validators';
-import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
-import { UserDataRepository, UserService } from '@src/domains/Users';
+  IHandlerFactory,
+  IbaseHandler,
+  EndPointFactory,
+  UserController
+} from '@src/infra/server/HTTP';
+import {
+  sendErrorResponse
+} from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
+import { UserPhoneDeleteRequestEvent } from '@src/domains/Users/events/UserPhoneDeleteRequestEvent';
 
 const deletePhone: EndPointFactory = (
-  { dbClient, endPointConfig/* , spec */ }: IHandlerFactory
+  {
+    endPointConfig,
+    controller
+  }: IHandlerFactory
 ): IbaseHandler => {
   return {
     path: '/users/{id}/deletePhone/{phoneId}',
@@ -21,27 +23,13 @@ const deletePhone: EndPointFactory = (
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
         const params = req.params as Record<string, any>;
-        isUserAccessGranted(((req as any).profile ?? {}), endPointConfig);
-        validateRequestParams(endPointConfig, params);
-
-        const userId = Security.xss(params.id);
-        const phoneId = Security.xss(params.phoneId);
-
-        const userDataRepository = UserDataRepository.compile({ dbClient });
-        const service: UserService = UserService.compile({
-          repos: {
-            UserDataRepository: userDataRepository
-          }
-        });
-
-        const { ok, error } = await service.deletePhone(
-          userId,
-          phoneId
-        );
-
-        if (error) {
-          throw error;
-        }
+        const { ok, error } = await (controller! as UserController)
+          .deletePhone(new UserPhoneDeleteRequestEvent({
+            authorization: req.headers.authorization ?? '',
+            params,
+            schemaOAS: endPointConfig
+          }));
+        if (error) throw error;
         res.code(200);
         return ok;
       } catch (error: unknown) {

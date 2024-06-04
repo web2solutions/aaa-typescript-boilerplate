@@ -8,7 +8,7 @@ import { OpenAPIV3 } from 'openapi-types';
 import { replaceVars } from '@src/infra/utils';
 
 import { HTTPBaseServer } from '@src/infra/server/HTTP/ports/HTTPBaseServer';
-import { IDbClient } from '@src/infra/persistence/port/IDbClient';
+import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IMutexClient } from '@src/infra/mutex/port/IMutexClient';
 
 import { IUser, UserDataRepository, UserService } from '@src/domains/Users';
@@ -29,7 +29,7 @@ export class RestAPI<T> {
 
   #_serverType: EHTTPFrameworks;
 
-  #_dbClient: IDbClient;
+  #_dbClient: IDatabaseClient;
 
   #_mutexClient: IMutexClient | undefined;
 
@@ -39,7 +39,7 @@ export class RestAPI<T> {
     this.#_serverType = config.serverType ?? EHTTPFrameworks.express;
     this.#_server = config.webServer;
 
-    this.#_dbClient = config.dbClient;
+    this.#_dbClient = config.databaseClient;
 
     if (config.mutexService) {
       this.#_mutexClient = config.mutexService;
@@ -65,7 +65,7 @@ export class RestAPI<T> {
     });
   }
 
-  public get dbClient(): IDbClient {
+  public get databaseClient(): IDatabaseClient {
     return this.#_dbClient;
   }
 
@@ -75,7 +75,7 @@ export class RestAPI<T> {
 
   #_buildInfraEndPoints(config: IAPIFactory<T>): void {
     const noServiceInjection = {
-      dbClient: {} as IDbClient,
+      databaseClient: {} as IDatabaseClient,
       spec: {} as OpenAPIV3.Document,
       endPointConfig: {}
     };
@@ -97,7 +97,7 @@ export class RestAPI<T> {
         ...config.infraHandlers.apiDocGetHandlerFactory({
           spec,
           version,
-          dbClient: {} as IDbClient,
+          databaseClient: {} as IDatabaseClient,
           endPointConfig: {}
         }),
         path: `${_DOCS_PREFIX_}/${version}`
@@ -131,11 +131,11 @@ export class RestAPI<T> {
           const controller = new Controller({
             authService: this.#_authService,
             openApiSpecification: spec,
-            dbClient: this.#_dbClient
+            databaseClient: this.#_dbClient
           });
 
           const handlerFactory = require(`@src/infra/server/HTTP/adapters/${this.#_serverType}/handlers/${domain}/${endPointConfig.operationId}`).default({
-            dbClient: this.#_dbClient,
+            databaseClient: this.#_dbClient,
             mutexClient: this.#_mutexClient,
             endPointConfig,
             spec,
@@ -177,7 +177,7 @@ export class RestAPI<T> {
   }
 
   public async seedUsers(): Promise<IUser[]> {
-    const repo = UserDataRepository.compile({ dbClient: this.#_dbClient });
+    const repo = UserDataRepository.compile({ databaseClient: this.#_dbClient });
     const service = UserService.compile({
       repos: {
         UserDataRepository: repo

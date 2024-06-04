@@ -2,8 +2,8 @@ import {
   IAuthService
 } from '@src/infra/auth/IAuthService';
 import {
-  IDbClient
-} from '@src/infra/persistence/port/IDbClient';
+  IDatabaseClient
+} from '@src/infra/persistence/port/IDatabaseClient';
 import {
   Security
 } from '@src/infra/security';
@@ -34,6 +34,7 @@ import {
   RequestCreateUser,
   RequestUpdateDocument,
   RequestUpdateEmail,
+  RequestUpdatePassword,
   RequestUpdatePhone,
   RequestUpdateUser,
   UserDataRepository,
@@ -51,7 +52,7 @@ export class UserController implements IController {
 
   public openApiSpecification: any;
 
-  public dbClient: IDbClient;
+  public databaseClient: IDatabaseClient;
 
   constructor(factory: IControllerFactory) {
     this.authService = factory.authService || {};
@@ -61,10 +62,10 @@ export class UserController implements IController {
       throw error;
     }
     this.openApiSpecification = factory.openApiSpecification;
-    this.dbClient = factory.dbClient;
+    this.databaseClient = factory.databaseClient;
     this.userService = UserService.compile({
       repos: {
-        UserDataRepository: UserDataRepository.compile({ dbClient: this.dbClient })
+        UserDataRepository: UserDataRepository.compile({ databaseClient: this.databaseClient })
       }
     });
   }
@@ -96,6 +97,22 @@ export class UserController implements IController {
     );
     const userId = Security.xss(event.params.id);
     const { ok, error } = await this.userService.update(userId, requestUpdateUser);
+    return { ok, error };
+  }
+
+  @Authorize()
+  public async updatePassword(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser>> {
+    validateRequestParams(event.schemaOAS, event.params);
+    const requestUpdatePassword = event.input as RequestUpdatePassword;
+    throwIfOASInputValidationFails(
+      this.openApiSpecification,
+      event.schemaOAS,
+      requestUpdatePassword
+    );
+    const userId = Security.xss(event.params.id);
+    const { ok, error } = await this.userService.updatePassword(userId, requestUpdatePassword);
     return { ok, error };
   }
 

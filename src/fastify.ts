@@ -10,7 +10,7 @@ import { AuthService } from './infra/auth/AuthService';
 const webServer = new FastifyServer();
 
 const API: RestAPI<Fastify> = new RestAPI<Fastify>({
-  dbClient: InMemoryDbClient,
+  databaseClient: InMemoryDbClient,
   webServer,
   mutexService,
   infraHandlers,

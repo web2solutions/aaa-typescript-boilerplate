@@ -9,7 +9,7 @@ export interface IDbStores {
     [key: string]: IStore<StoreDomains>;
 }
 
-export interface IDbClient {
+export interface IDatabaseClient {
     connect(): Promise<void>;
     disconnect(): Promise<void>;
     stores: IDbStores;

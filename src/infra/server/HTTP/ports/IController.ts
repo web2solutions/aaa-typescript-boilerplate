@@ -1,12 +1,12 @@
 import { BaseDomainEvent } from '@src/domains/events/BaseDomainEvent';
 import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
 import { IAuthService } from '@src/infra/auth/IAuthService';
-import { IDbClient } from '@src/infra/persistence/port/IDbClient';
+import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 
 export interface IController {
   authService: IAuthService;
   openApiSpecification: any;
-  dbClient: IDbClient;
+  databaseClient: IDatabaseClient;
   create(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   update(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   delete(event: BaseDomainEvent): Promise<IServiceResponse<any>>;

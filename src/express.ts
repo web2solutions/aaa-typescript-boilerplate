@@ -9,7 +9,7 @@ import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/
 const webServer = new ExpressServer();
 
 const API = new RestAPI<Express>({
-  dbClient: InMemoryDbClient,
+  databaseClient: InMemoryDbClient,
   webServer,
   mutexService,
   infraHandlers

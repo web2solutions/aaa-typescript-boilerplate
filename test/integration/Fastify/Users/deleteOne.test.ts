@@ -17,7 +17,7 @@ import { IUser } from '@src/domains/Users/Entity/IUser';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
-  dbClient: InMemoryDbClient,
+  databaseClient: InMemoryDbClient,
   webServer,
   infraHandlers,
   serverType: EHTTPFrameworks.fastify,

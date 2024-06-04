@@ -17,7 +17,7 @@ import { RequestUpdatePassword, IUser } from '@src/domains/Users';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
-  dbClient: InMemoryDbClient,
+  databaseClient: InMemoryDbClient,
   webServer,
   infraHandlers,
   serverType: EHTTPFrameworks.fastify,

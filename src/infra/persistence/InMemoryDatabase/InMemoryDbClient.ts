@@ -1,8 +1,8 @@
 // import { Account } from '@src/domains/Accounts';
-import { IDbClient, IDbStores } from '../port/IDbClient';
+import { IDatabaseClient, IDbStores } from '../port/IDatabaseClient';
 import { UserStoreAPI } from './Stores/UserStoreAPI';
 
-export const InMemoryDbClient: IDbClient = ((): IDbClient => {
+export const InMemoryDbClient: IDatabaseClient = ((): IDatabaseClient => {
   const stores: IDbStores = {
     User: UserStoreAPI
   };

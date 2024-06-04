@@ -10,7 +10,7 @@ import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
-  dbClient: InMemoryDbClient,
+  databaseClient: InMemoryDbClient,
   webServer,
   infraHandlers,
   serverType: EHTTPFrameworks.fastify

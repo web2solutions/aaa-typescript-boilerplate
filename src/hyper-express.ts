@@ -10,7 +10,7 @@ import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 const webServer = new HyperExpressServer();
 
 const API = new RestAPI<HyperExpress.Server>({
-  dbClient: InMemoryDbClient,
+  databaseClient: InMemoryDbClient,
   webServer,
   mutexService,
   infraHandlers,

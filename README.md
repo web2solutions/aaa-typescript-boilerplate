@@ -24,35 +24,9 @@ It implements incoming data validation, in the infrastructure level, through cus
 
 It implements basic HTTP auth mechanism with a custom role system. Replaceable with other auth mechanisms. Tied to the API OAS spec.
 
-It implements a HTTP web server port actually using an adapter for Express.js. It is easily replaceable with Fastify, Hyper-Express, etc.
+It implements a HTTP web server port actually implementing adapters for Express.js,  Fastify and Hyper-Express. A serverless implementation is coming soon.
 
-It implements an agnostic data repository port that actually writes/reads data from a In Memory database. It is easily replaceable with Mongoose, Sequelize, etc.
-
-Actually it has 1 Domains:
-
-1. Users
-
-```typescript
-    interface IUser {
-      id: string;
-      firstName: string;
-      lastName: string;
-      avatar: string;
-      login: LoginCustomValueObject;
-      emails: EmailValueObject[];
-      documents?: DocumentValueObject[];
-      phones?: PhoneValueObject[];
-      roles: string[];
-    }
-```
-
-`Full implemented Use Cases`:
-
-- *createUser*
-- *updateUser*
-- *getAllUsers*
-- *getUserById*
-- *deleteUserById*
+It implements an agnostic data repository port that actually writes/reads data from a In Memory database adapter. It is easily replaceable with Mongoose, Sequelize, etc.
 
 ### Classes' diagram
 
@@ -70,11 +44,11 @@ The API doc might be visualized at: http://localhost:3000/doc/
 
 ### Request data workflow through the architecture's components
 
-Request Handler -> Domain Service -> Domain Use Case -> Data Repository -> Data Adapter
+Request Handler -> Controller -> Domain Service -> Domain Use Case -> Data Repository -> Data Adapter -> DBClient
 
 ### Response data workflow through the architecture's components
 
-Request Handler <- Domain Service <- Domain Use Case <- Data Repository <- Data Adapter
+Request Handler <- Controller <- Domain Service <- Domain Use Case <- Data Repository <- Data Adapter <- DBClient
 
 ### Main components and their responsibility scope
 
@@ -107,7 +81,7 @@ May works as aggregation root / bounded contexts talking directly to injected do
 
 It should be the unique option working as communication interface between `infrastructure` and `domain components`.
 
-It has a dbClient adapter and a mutexClient adapter injected on it instance.
+It has a databaseClient adapter and a mutexClient adapter injected on it instance.
 
 It may lock resources to avoid race conditions by using the injected mutexClient.
 

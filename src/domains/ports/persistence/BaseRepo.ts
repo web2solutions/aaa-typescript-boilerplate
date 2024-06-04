@@ -1,16 +1,16 @@
-import { IDbClient } from '@src/infra/persistence/port/IDbClient';
+import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IRepoConfig } from './IRepoConfig';
 // import { IStore } from './IStore';
 
 export abstract class BaseRepo<Model, RequestCreateObject, RequestUpdateObject> {
   // public store: IStore<Model>;
-  public dbClient: IDbClient;
+  public databaseClient: IDatabaseClient;
 
   public limit: number;
 
   constructor(config: IRepoConfig) {
-    const { limit, dbClient } = config;
-    this.dbClient = dbClient;
+    const { limit, databaseClient } = config;
+    this.databaseClient = databaseClient;
     this.limit = limit ?? 30;
     // this.store = store;
   }

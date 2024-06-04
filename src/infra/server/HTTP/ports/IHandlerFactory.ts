@@ -1,11 +1,11 @@
 import { OpenAPIV3 } from 'openapi-types';
-import { IDbClient } from '@src/infra/persistence/port/IDbClient';
+import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IMutexClient } from '@src/infra/mutex/port/IMutexClient';
 import { IAuthService } from '@src/infra/auth/IAuthService';
 import { IController } from './IController';
 
 export interface IHandlerFactory {
-    dbClient: IDbClient;
+    databaseClient: IDatabaseClient;
     mutexClient?: IMutexClient;
     endPointConfig: Record<string, any>;
     spec: OpenAPIV3.Document;

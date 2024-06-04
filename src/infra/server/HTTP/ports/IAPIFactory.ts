@@ -1,4 +1,4 @@
-import { IDbClient } from '@src/infra/persistence/port/IDbClient';
+import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IHTTPServer } from '@src/infra/server/HTTP/ports/IHTTPServer';
 import { IMutexClient } from '@src/domains/ports/mutex/IMutexClient';
 import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
@@ -6,7 +6,7 @@ import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import { IAuthService } from '@src/infra/auth/IAuthService';
 
 export interface IAPIFactory<ServerType> {
-  dbClient: IDbClient,
+  databaseClient: IDatabaseClient,
   webServer: IHTTPServer<ServerType>,
   serverType?: EHTTPFrameworks;
   mutexService?: IMutexClient,
