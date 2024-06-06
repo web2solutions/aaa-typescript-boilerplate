@@ -1,4 +1,4 @@
-# Run: AnyWhere, AnyHow, AnyTime Typescript Boilertplate
+# Run: AnyWhere, AnyHow, AnyTime Typescript Boilertplate [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main) [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/dev) [![Known Vulnerabilities](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate/badge.svg)](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate)
 
 This is a boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.
 
@@ -13,12 +13,6 @@ It follows an 100% agnostic approach totally focused on `architecture principles
 It is being built using TDD techniques since from the scratch. Due the lack of time, actually it just provide test suites for `integration tests`. It actually covers 100% of the end points.
 
 It can be used as boilerplate to create `modular monolith`or `microservice` applications.
-
-`CI status:`
-
-- main branch
-
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main)
 
 ### Project features high level overview
 
