@@ -20,6 +20,10 @@ It can be used as boilerplate to create `modular monolith`or `microservice` appl
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main)
 
+- dev branch
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/dev)
+
 ### Project features high level overview
 
 It implements incoming data validation, in the infrastructure level, through custom logic and based in the Open API specification.
