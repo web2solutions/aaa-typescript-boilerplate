@@ -12,9 +12,9 @@ import { _UNAUTHORIZED_ERROR_NAME_ } from '../config/constants';
 let authService: IAuthService;
 
 export class AuthService implements IAuthService {
-  constructor() {
-    // console.log('start auth service');
-  }
+  // constructor() {
+  // console.log('start auth service');
+  // }
 
   public async start() {
     //
