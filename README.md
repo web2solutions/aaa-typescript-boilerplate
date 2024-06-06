@@ -2,6 +2,10 @@
 
 *PROJECT STATUS: IN PROGRESS*
 
+`CI status:`
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main)
+
 This is a boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.
 
 The application aims to run `Anywhere, Anytime, Anyhow`. `Dedicated servers`, `virtual machines`, `containers`, `EC2`, `ECS` or `lambdas`, with `Express`, `Fastify`, `Hyper-Express` and `serverless`.

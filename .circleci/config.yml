@@ -33,6 +33,9 @@ jobs:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
       - run:
+          name: Run lint
+          command: npm run lint
+      - run:
           name: Run tests
           command: npm test
 
