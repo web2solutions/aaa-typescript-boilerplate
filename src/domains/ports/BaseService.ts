@@ -1,5 +1,6 @@
 import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
 import { IServiceConfig, TRepos } from './IServiceConfig';
+import { IPagingRequest } from './persistence/IPagingRequest';
 
 export abstract class BaseService<ResponseDataEntity, RequestCreate, RequestUpdate> {
   public repos: TRepos;
@@ -19,5 +20,8 @@ export abstract class BaseService<ResponseDataEntity, RequestCreate, RequestUpda
 
   public abstract getOneById(id: string): Promise<IServiceResponse<ResponseDataEntity>>;
 
-  public abstract getAll(page: number):Promise<IServiceResponse<ResponseDataEntity[]>>;
+  public abstract getAll(
+    filters: Record<string, string|number>,
+    paging: IPagingRequest
+  ):Promise<IServiceResponse<ResponseDataEntity[]>>;
 }

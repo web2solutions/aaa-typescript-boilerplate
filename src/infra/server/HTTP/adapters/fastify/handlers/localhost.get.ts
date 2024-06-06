@@ -6,7 +6,7 @@ const localhostGetHandlerFactory = (): IbaseHandler => {
     path: '/',
     method: 'get',
     async handler(): Promise<any> {
-      return { status: 'ok' };
+      return { status: 'result' };
     }
   };
 };

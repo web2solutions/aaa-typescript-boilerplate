@@ -20,6 +20,9 @@ import {
   RequestUpdateEmail,
   RequestCreateEmail
 } from '@src/domains/Users';
+import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
+import { IPagingResponse } from '@src/domains/ports/persistence/IPagingResponse';
+import { _DEFAULT_PAGE_SIZE_ } from '@src/infra/config/constants';
 
 let userDataRepository: any;
 
@@ -32,7 +35,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     super(config);
     const { limit } = config;
     this.store = this.databaseClient.stores.User as IStore<IUser>;
-    this.limit = limit ?? 30;
+    this.limit = limit ?? _DEFAULT_PAGE_SIZE_;
   }
 
   public async create(data: RequestCreateUser): Promise<User> {
@@ -64,9 +67,20 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     return new User({ ...rawUser, readOnly: true });
   }
 
-  public async getAll(page = 1): Promise<User[]> {
-    const result = await this.store.getAll(page, this.limit);
-    return result as unknown as User[];
+  public async getAll(
+    filters: Record<string, string|number>,
+    paging: IPagingRequest
+  ): Promise<IPagingResponse<User[]>> {
+    const {
+      result, page, size, total
+    } = await this.store.getAll(filters, paging);
+    const pagedResponse: IPagingResponse<User[]> = {
+      page,
+      size,
+      total,
+      result: result.map((rawDoc: IUser) => new User(rawDoc)) as User[]
+    };
+    return pagedResponse;
   }
 
   public static compile(config: IRepoConfig): UserDataRepository {

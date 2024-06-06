@@ -18,6 +18,9 @@ const _INFRA_NOT_IMPLEMENTED_ = 'infrastructure_not_implemented';
 
 const _DATABASE_NOT_FOUND_ERROR_NAME_ = 'database_not_found';
 const _DATABASE_DUPLICATED_RECORD_ERROR_NAME_ = 'database_duplicated';
+const _DATABASE_PAGING_ERROR_ = 'database_paging_error';
+
+const _DEFAULT_PAGE_SIZE_ = 30;
 
 export {
   _HTTP_PORT_,
@@ -33,5 +36,7 @@ export {
   _DATABASE_DUPLICATED_RECORD_ERROR_NAME_,
   _EVENT_INVALID_MESSAGE_,
   _UNAUTHORIZED_ERROR_NAME_,
-  _INFRA_NOT_IMPLEMENTED_
+  _INFRA_NOT_IMPLEMENTED_,
+  _DEFAULT_PAGE_SIZE_,
+  _DATABASE_PAGING_ERROR_
 };

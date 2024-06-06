@@ -24,7 +24,7 @@ const createEmail: EndPointFactory = (
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
         const params = req.params as Record<string, any>;
-        const { ok, error } = await (controller! as UserController)
+        const { result, error } = await (controller! as UserController)
           .createEmail(new UserEmailCreateRequestEvent({
             authorization: req.headers.authorization ?? '',
             params,
@@ -33,7 +33,7 @@ const createEmail: EndPointFactory = (
           }));
         if (error) throw error;
         res.code(201);
-        return ok;
+        return result;
       } catch (error: unknown) {
         return sendErrorResponse(error as Error, res);
       }

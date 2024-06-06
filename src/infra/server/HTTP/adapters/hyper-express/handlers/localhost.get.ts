@@ -10,7 +10,7 @@ const localhostGetHandlerFactory: EndPointFactory = ({}): IbaseHandler => {
     method: 'get',
     // securitySchemes: basicAuth,
     handler(req: HyperExpress.Request, res: HyperExpress.Response): void {
-      res.status(200).json({ status: 'ok' });
+      res.status(200).json({ status: 'result' });
     }
   };
 };

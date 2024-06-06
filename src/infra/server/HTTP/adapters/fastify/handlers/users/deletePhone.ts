@@ -23,7 +23,7 @@ const deletePhone: EndPointFactory = (
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
         const params = req.params as Record<string, any>;
-        const { ok, error } = await (controller! as UserController)
+        const { result, error } = await (controller! as UserController)
           .deletePhone(new UserPhoneDeleteRequestEvent({
             authorization: req.headers.authorization ?? '',
             params,
@@ -31,7 +31,7 @@ const deletePhone: EndPointFactory = (
           }));
         if (error) throw error;
         res.code(200);
-        return ok;
+        return result;
       } catch (error: unknown) {
         return sendErrorResponse(error as Error, res);
       }

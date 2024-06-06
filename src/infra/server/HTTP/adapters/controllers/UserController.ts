@@ -41,6 +41,9 @@ import {
   UserService
 } from '@src/domains/Users';
 import { _INFRA_NOT_IMPLEMENTED_ } from '@src/infra/config/constants';
+import { setFilter } from '@src/domains/ports/persistence/setFilter';
+import { setPaging } from '@src/domains/ports/persistence/setPaging';
+import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
 // import { BaseService } from '@src/domains/ports/BaseService';
 
 let userController: any;
@@ -80,8 +83,8 @@ export class UserController implements IController {
       event.schemaOAS,
       requestCreateUser
     );
-    const { ok, error } = await this.userService.create(requestCreateUser);
-    return { ok, error };
+    const { result, error } = await this.userService.create(requestCreateUser);
+    return { result, error };
   }
 
   @Authorize()
@@ -96,8 +99,8 @@ export class UserController implements IController {
       requestUpdateUser
     );
     const userId = Security.xss(event.params.id);
-    const { ok, error } = await this.userService.update(userId, requestUpdateUser);
-    return { ok, error };
+    const { result, error } = await this.userService.update(userId, requestUpdateUser);
+    return { result, error };
   }
 
   @Authorize()
@@ -112,8 +115,8 @@ export class UserController implements IController {
       requestUpdatePassword
     );
     const userId = Security.xss(event.params.id);
-    const { ok, error } = await this.userService.updatePassword(userId, requestUpdatePassword);
-    return { ok, error };
+    const { result, error } = await this.userService.updatePassword(userId, requestUpdatePassword);
+    return { result, error };
   }
 
   @Authorize()
@@ -122,8 +125,8 @@ export class UserController implements IController {
   ): Promise<IServiceResponse<boolean>> {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
-    const { ok, error } = await this.userService.delete(userId);
-    return { ok, error };
+    const { result, error } = await this.userService.delete(userId);
+    return { result, error };
   }
 
   @Authorize()
@@ -132,16 +135,22 @@ export class UserController implements IController {
   ): Promise<IServiceResponse<IUser>> {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
-    const { ok, error } = await this.userService.getOneById(userId);
-    return { ok, error };
+    const { result, error } = await this.userService.getOneById(userId);
+    return { result, error };
   }
 
   @Authorize()
-  public async getAll(/* event: BaseDomainEvent */): Promise<IServiceResponse<IUser[]>> {
+  public async getAll(event: BaseDomainEvent): Promise<IServiceResponse<IUser[]>> {
     // validateRequestParams(event.schemaOAS, event.params);
     // const page = parseInt(Security.xss(event.params.page || 0), 2);
-    const { ok, error } = await this.userService.getAll();
-    return { ok, error };
+    const filters = setFilter(event);
+    const paging = setPaging(event);
+    const result = await this.userService.getAll(
+      { ...filters },
+        paging as IPagingRequest
+    );
+    // console.log(result);
+    return result;
   }
 
   @Authorize()
@@ -156,8 +165,8 @@ export class UserController implements IController {
       requestCreateDocument
     );
     const userId = Security.xss(event.params.id);
-    const { ok, error } = await this.userService.createDocument(userId, requestCreateDocument);
-    return { ok, error };
+    const { result, error } = await this.userService.createDocument(userId, requestCreateDocument);
+    return { result, error };
   }
 
   @Authorize()
@@ -173,12 +182,12 @@ export class UserController implements IController {
     );
     const userId = Security.xss(event.params.id);
     const documentId = Security.xss(event.params.documentId);
-    const { ok, error } = await this.userService.updateDocument(
+    const { result, error } = await this.userService.updateDocument(
       userId,
       documentId,
       requestUpdateDocument
     );
-    return { ok, error };
+    return { result, error };
   }
 
   @Authorize()
@@ -188,11 +197,11 @@ export class UserController implements IController {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
     const documentId = Security.xss(event.params.documentId);
-    const { ok, error } = await this.userService.deleteDocument(
+    const { result, error } = await this.userService.deleteDocument(
       userId,
       documentId
     );
-    return { ok, error };
+    return { result, error };
   }
 
   @Authorize()
@@ -207,8 +216,8 @@ export class UserController implements IController {
       requestCreatePhone
     );
     const userId = Security.xss(event.params.id);
-    const { ok, error } = await this.userService.createPhone(userId, requestCreatePhone);
-    return { ok, error };
+    const { result, error } = await this.userService.createPhone(userId, requestCreatePhone);
+    return { result, error };
   }
 
   @Authorize()
@@ -224,12 +233,12 @@ export class UserController implements IController {
     );
     const userId = Security.xss(event.params.id);
     const phoneId = Security.xss(event.params.phoneId);
-    const { ok, error } = await this.userService.updatePhone(
+    const { result, error } = await this.userService.updatePhone(
       userId,
       phoneId,
       requestUpdatePhone
     );
-    return { ok, error };
+    return { result, error };
   }
 
   @Authorize()
@@ -239,11 +248,11 @@ export class UserController implements IController {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
     const phoneId = Security.xss(event.params.phoneId);
-    const { ok, error } = await this.userService.deletePhone(
+    const { result, error } = await this.userService.deletePhone(
       userId,
       phoneId
     );
-    return { ok, error };
+    return { result, error };
   }
 
   @Authorize()
@@ -258,8 +267,8 @@ export class UserController implements IController {
       requestCreateEmail
     );
     const userId = Security.xss(event.params.id);
-    const { ok, error } = await this.userService.createEmail(userId, requestCreateEmail);
-    return { ok, error };
+    const { result, error } = await this.userService.createEmail(userId, requestCreateEmail);
+    return { result, error };
   }
 
   @Authorize()
@@ -275,12 +284,12 @@ export class UserController implements IController {
     );
     const userId = Security.xss(event.params.id);
     const emailId = Security.xss(event.params.emailId);
-    const { ok, error } = await this.userService.updateEmail(
+    const { result, error } = await this.userService.updateEmail(
       userId,
       emailId,
       requestUpdateEmail
     );
-    return { ok, error };
+    return { result, error };
   }
 
   @Authorize()
@@ -290,11 +299,11 @@ export class UserController implements IController {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
     const emailId = Security.xss(event.params.emailId);
-    const { ok, error } = await this.userService.deleteEmail(
+    const { result, error } = await this.userService.deleteEmail(
       userId,
       emailId
     );
-    return { ok, error };
+    return { result, error };
   }
 
   public static compile(factory: IControllerFactory) {

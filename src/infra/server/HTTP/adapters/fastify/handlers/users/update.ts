@@ -19,7 +19,7 @@ const update: EndPointFactory = (
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
         const params = req.params as Record<string, any>;
-        const { ok, error } = await controller!.update(new UserUpdateRequestEvent({
+        const { result, error } = await controller!.update(new UserUpdateRequestEvent({
           authorization: req.headers.authorization ?? '',
           input: req.body,
           schemaOAS: endPointConfig,
@@ -27,7 +27,7 @@ const update: EndPointFactory = (
         }));
         if (error) throw error;
         res.code(200);
-        return ok;
+        return result;
       } catch (error: unknown) {
         return sendErrorResponse(error as Error, res);
       }

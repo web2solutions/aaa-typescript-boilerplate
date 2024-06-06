@@ -53,7 +53,7 @@ class ExpressServer extends HTTPBaseServer<Express> {
         this._application.listen(_HTTP_PORT_, () => {
           // eslint-disable-next-line no-console
           console.log(`Express App Listening on Port ${_HTTP_PORT_}`);
-          resolve('ok');
+          resolve('result');
         });
       } catch (error) {
         // console.error(`An error occurred: ${JSON.stringify(error)}`);

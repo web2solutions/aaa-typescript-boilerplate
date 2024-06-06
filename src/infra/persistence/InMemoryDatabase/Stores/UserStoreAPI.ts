@@ -1,9 +1,12 @@
 import { IUser } from '@src/domains/Users/Entity/IUser';
+import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
+import { IPagingResponse } from '@src/domains/ports/persistence/IPagingResponse';
 import { IStore } from '@src/domains/ports/persistence/IStore';
 
 import {
   _DATABASE_NOT_FOUND_ERROR_NAME_,
-  _DATABASE_DUPLICATED_RECORD_ERROR_NAME_
+  _DATABASE_DUPLICATED_RECORD_ERROR_NAME_,
+  _DATABASE_PAGING_ERROR_
 } from '@src/infra/config/constants';
 
 const userStore = new Map<string, unknown>();
@@ -14,11 +17,11 @@ export const UserStoreAPI = {
   delete: async (id: string) => {
     try {
       const result = userStore.delete(id);
-      return Promise.resolve(!!result);
+      return !!result;
     } catch (err) {
       const error = new Error('Record not found - can not delete');
       error.name = _DATABASE_NOT_FOUND_ERROR_NAME_;
-      return Promise.reject(error);
+      throw error;
     }
   },
   getOneById: async (id: string) => {
@@ -28,7 +31,7 @@ export const UserStoreAPI = {
     } catch (err) {
       const error = new Error('Record not found');
       error.name = _DATABASE_NOT_FOUND_ERROR_NAME_;
-      return Promise.reject(error);
+      throw error;
     }
   },
   // values: userStore.values.bind(userStore),
@@ -38,19 +41,20 @@ export const UserStoreAPI = {
       if (userStore.has(key)) {
         const error = new Error('Duplicated id');
         error.name = _DATABASE_DUPLICATED_RECORD_ERROR_NAME_;
-        return Promise.reject(error);
+        throw error;
       }
       const username = object.username.toString().toLowerCase();
       if (userStoreUniqueIndexes.username.has(username)) {
         const error = new Error('username already in use');
         error.name = _DATABASE_DUPLICATED_RECORD_ERROR_NAME_;
-        return Promise.reject(error);
+        throw error;
       }
       userStore.set(key, object);
       userStoreUniqueIndexes.username.set(username, object);
       return Promise.resolve(value);
     } catch (error) {
-      return Promise.reject(error);
+      console.log(error);
+      throw error;
     }
   },
   update: async (key, value: IUser): Promise<IUser> => {
@@ -59,7 +63,7 @@ export const UserStoreAPI = {
       if (!oldRecord) {
         const error = new Error('Record not found');
         error.name = _DATABASE_NOT_FOUND_ERROR_NAME_;
-        return Promise.reject(error);
+        throw error;
       }
       const strOldName = (oldRecord as IUser).username.toString().toLowerCase();
       const object = value;
@@ -70,38 +74,51 @@ export const UserStoreAPI = {
       userStoreUniqueIndexes.username.set(username, object);
       return Promise.resolve(value);
     } catch (error) {
-      return Promise.reject(error);
+      console.log(error)
+      throw error;
     }
   },
 
-  getAll: async (page = 1, limit = 10) : Promise<IUser[]> => {
+  getAll: async (
+    filters: Record<string, string|number>,
+    paging: IPagingRequest
+  ) : Promise<IPagingResponse<IUser[]>> => {
+    const { page, size } = paging;
+    const limit = size;
+    // eslint-disable-next-line no-useless-catch
     try {
       if (page < 1) {
-        return Promise.reject(new Error('page must be greater than 0'));
+        throw new Error('page must be greater than 0');
       }
-      const records: IUser[] = [];
+      const result: IUser[] = [];
       let pages = 1;
-      const count = userStore.size;
-      pages = Math.ceil(count / limit);
-      if (page > pages && count > 0) {
-        return Promise.reject(new Error('page number must be less than the number of total pages'));
+      const total = userStore.size;
+      pages = Math.ceil(total / limit);
+      if (page > pages && total > 0) {
+        throw new Error('page number must be smaller than the number of total pages');
       }
-      // const startAt = (page * limit) - limit;
-      // let iterated = 0;
+      const startAt = (page * limit) - limit;
+      let iterated = 0;
       // eslint-disable-next-line no-restricted-syntax
       for (const value of userStore.values()) {
         // eslint-disable-next-line operator-assignment
-        // iterated = iterated + 1;
-        // if (iterated > startAt) {
-        // if (records.length < limit) {
-        records.push(value as IUser);
-        // }
-        // }
+        iterated = iterated + 1;
+        if (iterated > startAt) {
+          if (result.length < limit) {
+            result.push(value as IUser);
+          }
+        }
       }
 
-      return Promise.resolve(records);
+      return {
+        result,
+        total,
+        page,
+        size
+      };
     } catch (error) {
-      return Promise.reject(error);
+      (error as Error).name = _DATABASE_PAGING_ERROR_;
+      throw error;
     }
   }
 } as IStore<IUser>;

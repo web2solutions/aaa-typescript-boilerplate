@@ -22,14 +22,14 @@ const create: EndPointFactory = (
     method: 'post',
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
-        const { ok, error } = await controller!.create(new UserCreateRequestEvent({
+        const { result, error } = await controller!.create(new UserCreateRequestEvent({
           authorization: req.headers.authorization ?? '',
           input: req.body,
           schemaOAS: endPointConfig
         }));
         if (error) throw error;
         res.code(201);
-        return ok;
+        return result;
       } catch (error: unknown) {
         return sendErrorResponse(error as Error, res);
       }

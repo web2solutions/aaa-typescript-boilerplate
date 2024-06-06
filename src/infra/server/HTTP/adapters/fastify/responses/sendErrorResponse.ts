@@ -10,7 +10,8 @@ import {
   _DATABASE_DUPLICATED_RECORD_ERROR_NAME_,
   _EVENT_INVALID_MESSAGE_,
   _UNAUTHORIZED_ERROR_NAME_,
-  _INFRA_NOT_IMPLEMENTED_
+  _INFRA_NOT_IMPLEMENTED_,
+  _DATABASE_PAGING_ERROR_
 
 } from '@src/infra/config/constants';
 
@@ -21,6 +22,7 @@ export function sendErrorResponse(error: Error, res: FastifyReply) {
     error.name === _VALIDATION_ERROR_NAME_
     || error.name === _DOMAIN_VALIDATION_ERROR_NAME_
     || error.name === _EVENT_INVALID_MESSAGE_
+    || error.name === _DATABASE_PAGING_ERROR_
   ) {
     status = 400;
     message = `Bad Request - ${error.message}`;

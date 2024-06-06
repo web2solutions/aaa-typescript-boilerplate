@@ -190,7 +190,7 @@ export class RestAPI<T> {
           try {
             // await service.create(user);
             const newUser = await service.create(user);
-            resolve(newUser.ok);
+            resolve(newUser.result);
           } catch (error: any) {
             // console.log(error.message);
             reject(error);

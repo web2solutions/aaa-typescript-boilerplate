@@ -1,5 +1,8 @@
 export interface IServiceResponse<T> {
   // public store: IStore<T>;
-  ok?: T;
+  result?: T;
+  page?: number,
+  size?: number;
+  total?: number;
   error?: Error;
 }
