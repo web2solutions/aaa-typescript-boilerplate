@@ -4,13 +4,9 @@ This is a boilerplate to build REST APIs, Monolithic Modular and Microservice ap
 
 The application aims to run `Anywhere, Anytime, Anyhow`. `Dedicated servers`, `virtual machines`, `containers`, `EC2`, `ECS` or `lambdas`, with `Express`, `Fastify`, `Hyper-Express` and `serverless`.
 
-It was built based on a simplistic interpretation of Hexagonal Architecture and the Domain Driven Design philosophy.
+It is built over a simplistic interpretation of Hexagonal Architecture, the Domain Driven Design and Event Driven Architecture philosophies.
 
-It implements concurrency control through a mutex implementation to achieve data consistency between the different domains.
-
-It follows an 100% agnostic approach totally focused on `architecture principles` rather than `vendor based` solutions.
-
-It is being built using TDD techniques since from the scratch. Due the lack of time, actually it just provide test suites for `integration tests`. It actually covers 100% of the end points.
+It aims to be as much agnostic as possible, avoiding to add any frameworks or libraries to the stack.
 
 It can be used as boilerplate to create `modular monolith`or `microservice` applications.
 
