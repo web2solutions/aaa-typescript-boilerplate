@@ -7,13 +7,15 @@ import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemo
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/fastify/handlers/infraHandlers';
 import { BasicAuthorizationHeaderUser1 } from '@test/mock';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
+import { AuthService } from '@src/infra/auth/AuthService';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
   databaseClient: InMemoryDbClient,
   webServer,
   infraHandlers,
-  serverType: EHTTPFrameworks.fastify
+  serverType: EHTTPFrameworks.fastify,
+  authService: AuthService.compile()
 });
 // eslint-disable-next-line prefer-destructuring
 const application = API.server.application;

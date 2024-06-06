@@ -36,6 +36,7 @@ export const UserStoreAPI = {
   },
   // values: userStore.values.bind(userStore),
   create: async (key, value: IUser): Promise<IUser> => {
+    // eslint-disable-next-line no-useless-catch
     try {
       const object = value;
       if (userStore.has(key)) {
@@ -51,13 +52,14 @@ export const UserStoreAPI = {
       }
       userStore.set(key, object);
       userStoreUniqueIndexes.username.set(username, object);
-      return Promise.resolve(value);
+      return value;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       throw error;
     }
   },
   update: async (key, value: IUser): Promise<IUser> => {
+    // eslint-disable-next-line no-useless-catch
     try {
       const oldRecord = userStore.get(key);
       if (!oldRecord) {
@@ -72,9 +74,9 @@ export const UserStoreAPI = {
       userStore.set(key, { ...object, _updatedAt: new Date() });
       userStoreUniqueIndexes.username.delete(strOldName);
       userStoreUniqueIndexes.username.set(username, object);
-      return Promise.resolve(value);
+      return value;
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       throw error;
     }
   },
