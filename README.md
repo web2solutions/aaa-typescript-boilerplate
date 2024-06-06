@@ -14,9 +14,6 @@ It is being built using TDD techniques since from the scratch. Due the lack of t
 
 It can be used as boilerplate to create `modular monolith`or `microservice` applications.
 
-
-*PROJECT STATUS: IN PROGRESS*
-
 `CI status:`
 
 - main branch
