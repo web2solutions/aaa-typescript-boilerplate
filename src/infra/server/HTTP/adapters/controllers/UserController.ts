@@ -45,11 +45,14 @@ import { setFilter } from '@src/domains/ports/persistence/setFilter';
 import { setPaging } from '@src/domains/ports/persistence/setPaging';
 import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
 // import { BaseService } from '@src/domains/ports/BaseService';
+import { PasswordCryptoService } from '../../../../security/PasswordCryptoService';
 
 let userController: any;
 
 export class UserController implements IController {
   public authService: IAuthService;
+
+  private passwordCryptoService: PasswordCryptoService = {} as PasswordCryptoService;
 
   private userService: UserService;
 
@@ -59,6 +62,14 @@ export class UserController implements IController {
 
   constructor(factory: IControllerFactory) {
     this.authService = factory.authService || {};
+
+    this.passwordCryptoService = factory.passwordCryptoService || {} as PasswordCryptoService;
+    if (!this.passwordCryptoService.hash) {
+      const error = new Error('PasswordCryptoService is not implemented');
+      error.name = _INFRA_NOT_IMPLEMENTED_;
+      throw error;
+    }
+
     if (!this.authService.authenticate) {
       const error = new Error('AuthService is not implemented');
       error.name = _INFRA_NOT_IMPLEMENTED_;
@@ -67,9 +78,7 @@ export class UserController implements IController {
     this.openApiSpecification = factory.openApiSpecification;
     this.databaseClient = factory.databaseClient;
     this.userService = UserService.compile({
-      repos: {
-        UserDataRepository: UserDataRepository.compile({ databaseClient: this.databaseClient })
-      }
+      repo: UserDataRepository.compile({ databaseClient: this.databaseClient })
     });
   }
 
@@ -83,6 +92,11 @@ export class UserController implements IController {
       event.schemaOAS,
       requestCreateUser
     );
+    if (requestCreateUser.password !== '') {
+      const { hash, salt } = await this.passwordCryptoService.hash(requestCreateUser.password);
+      requestCreateUser.password = hash;
+      requestCreateUser.salt = salt;
+    }
     const { result, error } = await this.userService.create(requestCreateUser);
     return { result, error };
   }

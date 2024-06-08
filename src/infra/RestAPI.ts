@@ -19,6 +19,7 @@ import { IAPIFactory } from '@src/infra/server/HTTP/ports/IAPIFactory';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import { _API_PREFIX_, _DOCS_PREFIX_ } from './config/constants';
 import { IAuthService } from './auth/IAuthService';
+import { IPasswordCryptoService } from './security/PasswordCryptoService';
 
 export class RestAPI<T> {
   #_oas: Map<string, OpenAPIV3.Document> = new Map();
@@ -35,6 +36,8 @@ export class RestAPI<T> {
 
   #_authService: IAuthService | undefined;
 
+  #_passwordCryptoService: IPasswordCryptoService | undefined;
+
   constructor(config: IAPIFactory<T>) {
     this.#_serverType = config.serverType ?? EHTTPFrameworks.express;
     this.#_server = config.webServer;
@@ -49,6 +52,10 @@ export class RestAPI<T> {
     if (config.authService) {
       this.#_authService = config.authService;
       this.#_authService?.start();
+    }
+
+    if (config.passwordCryptoService) {
+      this.#_passwordCryptoService = config.passwordCryptoService;
     }
 
     this.#_buildWithOAS();
@@ -131,7 +138,8 @@ export class RestAPI<T> {
           const controller = new Controller({
             authService: this.#_authService,
             openApiSpecification: spec,
-            databaseClient: this.#_dbClient
+            databaseClient: this.#_dbClient,
+            passwordCryptoService: this.#_passwordCryptoService
           });
 
           const handlerFactory = require(`@src/infra/server/HTTP/adapters/${this.#_serverType}/handlers/${domain}/${endPointConfig.operationId}`).default({
@@ -178,11 +186,7 @@ export class RestAPI<T> {
 
   public async seedUsers(): Promise<IUser[]> {
     const repo = UserDataRepository.compile({ databaseClient: this.#_dbClient });
-    const service = UserService.compile({
-      repos: {
-        UserDataRepository: repo
-      }
-    });
+    const service = UserService.compile({ repo });
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
       requests.push(new Promise((resolve, reject) => {
