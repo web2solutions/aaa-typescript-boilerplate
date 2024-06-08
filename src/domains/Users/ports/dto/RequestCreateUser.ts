@@ -9,6 +9,7 @@ export interface RequestCreateUser {
   lastName?: string;
   username: string;
   password: string;
+  salt?: string;
   avatar?: string;
   emails: EmailValueObject[];
   documents?: DocumentValueObject[]
