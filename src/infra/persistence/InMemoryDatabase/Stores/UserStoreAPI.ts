@@ -68,7 +68,7 @@ export const UserStoreAPI = {
         throw error;
       }
       const strOldName = (oldRecord as IUser).username.toString().toLowerCase();
-      const object = value;
+      const object = { ...oldRecord, ...value };
       const username = object.username.toString().toLowerCase();
 
       userStore.set(key, { ...object, _updatedAt: new Date() });

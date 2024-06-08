@@ -40,20 +40,30 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
 
   public async create(data: RequestCreateUser): Promise<User> {
     canNotBeEmpty('password', data.password);
+    // hash password
     const model: User = new User(data);
     await this.store.create(model.id, model.serialize() as IUser);
+    model.password = '********';
+    model.salt = '***';
     return model;
   }
 
   public async update(id: string, data: RequestUpdateUser): Promise<User> {
     throwIfPreUpdateValidationFails(id, data);
-    const rawUser = await this.store.getOneById(id);
-    throwIfNotFound(!!rawUser);
+    // const rawUser = await this.store.getOneById(id);
+    // throwIfNotFound(!!rawUser);
     const newData = { ...data };
     delete (newData as any).password;
-    const model: User = new User({ ...rawUser, ...newData });
-    await this.store.update(id, model.serialize() as IUser);
-    return model;
+    delete (newData as any).salt;
+    // const model: User = new User({
+    //  ...rawUser,
+    //  ...newData
+    // });
+    // const rawNewDoc = { ...model.serialize() };
+    // delete (rawNewDoc as any).password;
+    // delete (rawNewDoc as any).salt;
+    const updatedDoc = await this.store.update(id, newData as IUser);
+    return new User(updatedDoc);
   }
 
   public async delete(id: string): Promise<boolean> {
