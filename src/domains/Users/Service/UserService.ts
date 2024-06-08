@@ -43,7 +43,7 @@ let userService: any;
 export class UserService extends BaseService<IUser, RequestCreateUser, RequestUpdateUser> {
   // public userDataRepository: UserDataRepository;
 
-  private repo: UserDataRepository;
+  public repo: UserDataRepository;
 
   public repos: TRepos;
 
@@ -53,9 +53,9 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     super(config);
     // if (!userDataRepository) throw Error('No UserDataRepository provided or injected.');
     // this.userDataRepository = userDataRepository;
-    const { repos } = config;
+    const { repos, repo } = config;
     this.repos = repos ?? {};
-    this.repo = this.repos.UserDataRepository as UserDataRepository;
+    this.repo = repo as UserDataRepository;
   }
 
   public async create(data: RequestCreateUser): Promise<IServiceResponse<IUser>> {
@@ -116,12 +116,6 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     }
     // console.log(serviceResponse);
     return serviceResponse;
-  }
-
-  public static compile(config: IUserServiceConfig) {
-    if (userService) return userService;
-    userService = new UserService(config);
-    return userService as BaseService<IUser, RequestCreateUser, RequestUpdateUser>;
   }
 
   public async updatePassword(
@@ -265,5 +259,11 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       serviceResponse.error = error as Error;
     }
     return serviceResponse;
+  }
+
+  public static compile(config: IUserServiceConfig) {
+    if (userService) return userService;
+    userService = new UserService(config);
+    return userService as BaseService<IUser, RequestCreateUser, RequestUpdateUser>;
   }
 }
