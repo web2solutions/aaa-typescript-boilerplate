@@ -185,8 +185,8 @@ export class RestAPI<T> {
   }
 
   public async seedUsers(): Promise<IUser[]> {
-    const repo = UserDataRepository.compile({ databaseClient: this.#_dbClient });
-    const service = UserService.compile({ repo });
+    const dataRepository = UserDataRepository.compile({ databaseClient: this.#_dbClient });
+    const service = UserService.compile({ dataRepository });
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
       requests.push(new Promise((resolve, reject) => {

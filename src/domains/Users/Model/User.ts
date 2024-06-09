@@ -223,7 +223,7 @@ export class User extends BaseModel<IUser> implements IUser {
     throwIfReadOnly('password', this._readOnly);
     if (password === '') return;
     // canNotBeEmpty('password', password);
-    mustBePassword('password', password);
+    // mustBePassword('password', password);
     this._password = password;
   }
 

@@ -6,10 +6,10 @@ import { BaseModel } from './persistence/BaseModel';
 
 export abstract class BaseService<ResponseDataEntity, RequestCreateDTO, RequestUpdateDTO> {
   /**
-   * repo is the main data repo associated to the service.
+   * dataRepository is the main data dataRepository associated to the service.
    * Mandatory
    */
-  public repo: BaseRepo<BaseModel<Record<any, any>>, Record<any, any>, Record<any, any>>;
+  public dataRepository: BaseRepo<BaseModel<Record<any, any>>, Record<any, any>, Record<any, any>>;
 
   /**
    * repos hold a collection of injected repos to be used when needed inside the service
@@ -26,8 +26,8 @@ export abstract class BaseService<ResponseDataEntity, RequestCreateDTO, RequestU
   constructor(config: IServiceConfig) {
     this.repos = config.repos ?? {};
     this.services = config.repos ?? {};
-    if (!config.repo) throw Error('You must provide a data repository when creating a service instance.');
-    this.repo = config.repo;
+    if (!config.dataRepository) throw Error('You must provide a data repository when creating a service instance.');
+    this.dataRepository = config.dataRepository;
   }
 
   public abstract create(data: RequestCreateDTO): Promise<IServiceResponse<ResponseDataEntity>>;

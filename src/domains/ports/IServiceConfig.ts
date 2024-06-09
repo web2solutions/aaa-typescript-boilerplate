@@ -8,5 +8,5 @@ export type TServices = Record<any, any>
 export interface IServiceConfig {
   repos?: TRepos;
   services?: TServices;
-  repo: BaseRepo<BaseModel<Record<any, any>>, Record<any, any>, Record<any, any>>
+  dataRepository: BaseRepo<BaseModel<Record<any, any>>, Record<any, any>, Record<any, any>>
 }
