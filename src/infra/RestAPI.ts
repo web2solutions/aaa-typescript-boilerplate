@@ -30,7 +30,7 @@ export class RestAPI<T> {
 
   #_serverType: EHTTPFrameworks;
 
-  #_dbClient: IDatabaseClient;
+  #_databaseClient: IDatabaseClient;
 
   #_mutexClient: IMutexClient | undefined;
 
@@ -42,7 +42,7 @@ export class RestAPI<T> {
     this.#_serverType = config.serverType ?? EHTTPFrameworks.express;
     this.#_server = config.webServer;
 
-    this.#_dbClient = config.databaseClient;
+    this.#_databaseClient = config.databaseClient;
 
     if (config.mutexService) {
       this.#_mutexClient = config.mutexService;
@@ -73,7 +73,7 @@ export class RestAPI<T> {
   }
 
   public get databaseClient(): IDatabaseClient {
-    return this.#_dbClient;
+    return this.#_databaseClient;
   }
 
   public get mutexClient(): IMutexClient | undefined {
@@ -138,12 +138,12 @@ export class RestAPI<T> {
           const controller = new Controller({
             authService: this.#_authService,
             openApiSpecification: spec,
-            databaseClient: this.#_dbClient,
+            databaseClient: this.#_databaseClient,
             passwordCryptoService: this.#_passwordCryptoService
           });
 
           const handlerFactory = require(`@src/infra/server/HTTP/adapters/${this.#_serverType}/handlers/${domain}/${endPointConfig.operationId}`).default({
-            databaseClient: this.#_dbClient,
+            databaseClient: this.#_databaseClient,
             mutexClient: this.#_mutexClient,
             endPointConfig,
             spec,
@@ -165,7 +165,7 @@ export class RestAPI<T> {
 
   public async start(): Promise<void> {
     if (this.#_started) return;
-    await this.#_dbClient.connect();
+    await this.#_databaseClient.connect();
     await this.#_server.start();
     this.#_started = true;
   }
@@ -173,7 +173,7 @@ export class RestAPI<T> {
   public async stop(): Promise<void> {
     // quit db
     // quit all
-    await this.#_dbClient.disconnect();
+    await this.#_databaseClient.disconnect();
     if (this.#_mutexClient) {
       await this.#_mutexClient.disconnect();
     }
@@ -185,7 +185,7 @@ export class RestAPI<T> {
   }
 
   public async seedUsers(): Promise<IUser[]> {
-    const dataRepository = UserDataRepository.compile({ databaseClient: this.#_dbClient });
+    const dataRepository = UserDataRepository.compile({ databaseClient: this.#_databaseClient });
     const service = UserService.compile({ dataRepository });
     const requests: Promise<IUser>[] = [];
     for (const user of users) {

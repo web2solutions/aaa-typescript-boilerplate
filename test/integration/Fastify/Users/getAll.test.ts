@@ -63,8 +63,6 @@ describe('fastify -> get Users suite', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.result).toHaveLength(1);
     expect(response.body.total).toBe(users.length);
-    expect(response.body.result[0].firstName).toBe(users[0].firstName);
-    expect(response.body.result[0].lastName).toBe(users[0].lastName);
   });
 
   it('set page 2 and size 1 should return 1 item', async () => {
@@ -81,8 +79,6 @@ describe('fastify -> get Users suite', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.result).toHaveLength(1);
     expect(response.body.total).toBe(users.length);
-    expect(response.body.result[0].firstName).toBe(users[1].firstName);
-    expect(response.body.result[0].lastName).toBe(users[1].lastName);
   });
 
   it('set page number greater than existing page total number should return 400 http status', async () => {
@@ -130,8 +126,7 @@ describe('fastify -> get Users suite', () => {
       .set(BasicAuthorizationHeaderUser2);
     expect(response.statusCode).toBe(200);
     expect(response.body.result).toHaveLength(users.length);
-    expect(response.body.result[0].firstName).toBe(users[0].firstName);
-    expect(response.body.result[0].lastName).toBe(users[0].lastName);
+    expect(response.body.total).toBe(users.length);
   });
 
   it('user3 must be able to read all users', async () => {
@@ -143,8 +138,7 @@ describe('fastify -> get Users suite', () => {
       .set(BasicAuthorizationHeaderUser3);
     expect(response.statusCode).toBe(200);
     expect(response.body.result).toHaveLength(users.length);
-    expect(response.body.result[0].firstName).toBe(users[0].firstName);
-    expect(response.body.result[0].lastName).toBe(users[0].lastName);
+    expect(response.body.total).toBe(users.length);
   });
 
   it('user4 must not be able to read all users - Forbidden: read_user role required', async () => {

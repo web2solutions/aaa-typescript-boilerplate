@@ -4,7 +4,7 @@ import { IRepoConfig } from '@src/domains/ports/persistence/IRepoConfig';
 import {
   throwIfPreUpdateValidationFails,
   throwIfNotFound,
-  throwIfValuesAreDifferent,
+  // throwIfValuesAreDifferent,
   canNotBeEmpty
 } from '@src/domains/validators';
 import {
@@ -102,10 +102,10 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
   public async updatePassword(id: string, data: RequestUpdatePassword): Promise<User> {
     const oldDocument = await this.getOneById(id);
     canNotBeEmpty('password', data.password);
-    canNotBeEmpty('oldPassword', data.oldPassword);
-    throwIfValuesAreDifferent([oldDocument.password, data.oldPassword]);
+    // throwIfValuesAreDifferent([oldDocument.password, data.oldPassword]);
     const model: User = new User({ ...oldDocument.serialize() });
     model.password = data.password;
+    model.salt = data.salt!;
     await this.store.update(id, model.serialize() as IUser);
     return model;
   }

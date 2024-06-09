@@ -33,7 +33,7 @@ import {
 } from '@src/domains/Users';
 import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
 import { IPagingResponse } from '@src/domains/ports/persistence/IPagingResponse';
-import { mustBePassword } from '@src/domains/validators';
+import { canNotBeEmpty, mustBePassword } from '@src/domains/validators';
 
 interface IUserServiceConfig extends IServiceConfig {
 
@@ -130,6 +130,13 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
+      canNotBeEmpty('password', data.password);
+      mustBePassword('password', data.password);
+
+      const newData = { ...data };
+      const { hash, salt } = await this.services.passwordCryptoService.hash(data.password);
+      newData.password = hash;
+      newData.salt = salt;
       const user = await updatePassword(id, data, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {

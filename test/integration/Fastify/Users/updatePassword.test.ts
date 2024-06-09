@@ -39,8 +39,8 @@ describe('fastify -> User updatePassword suite', () => {
 
   beforeEach(async () => {
     const requestUpdatePassword: RequestUpdatePassword = {
-      password: 'user1_password',
-      oldPassword: 'new_password_xxxxxxxxxxxxxxxxxx'
+      password: 'user1_password'
+      // oldPassword: 'new_password_xxxxxxxxxxxxxxxxxx'
     };
     await request(server.server)
       .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
@@ -58,8 +58,8 @@ describe('fastify -> User updatePassword suite', () => {
   it('user1 must be able to update an user password', async () => {
     expect.hasAssertions();
     const requestUpdatePassword: RequestUpdatePassword = {
-      password: 'new_password_xxxxxxxxxxxxxxxxxx',
-      oldPassword: user1.password
+      password: 'new_password_xxxxxxxxxxxxxxxxxx'
+      // oldPassword: user1.password
     };
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
@@ -75,8 +75,8 @@ describe('fastify -> User updatePassword suite', () => {
   it('user1 must not be able to update an user password with empty password', async () => {
     expect.hasAssertions();
     const requestUpdatePassword: RequestUpdatePassword = {
-      password: '',
-      oldPassword: 'user1_password'//
+      password: ''
+      // oldPassword: 'user1_password'//
     };
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
@@ -89,27 +89,11 @@ describe('fastify -> User updatePassword suite', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it('user1 must not be able to update an user password with empty oldPassword', async () => {
-    expect.hasAssertions();
-    const requestUpdatePassword: RequestUpdatePassword = {
-      password: 'new_password_xxxxxxxxxxxxxxxxxx',
-      oldPassword: ''
-    };
-    const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
-      .send(requestUpdatePassword)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
-      .set(BasicAuthorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - oldPassword can not be empty');
-    expect(response.statusCode).toBe(400);
-  });
-
   it('user1 must not be able to update an user password with password having less than 8 chars', async () => {
     expect.hasAssertions();
     const requestUpdatePassword: RequestUpdatePassword = {
-      password: '1234567',
-      oldPassword: user1.password
+      password: '1234567'
+      // oldPassword: user1.password
     };
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
