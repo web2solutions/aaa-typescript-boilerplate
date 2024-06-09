@@ -8,6 +8,7 @@ import { infraHandlers } from '@src/infra/server/HTTP/adapters/fastify/handlers/
 import { BasicAuthorizationHeaderUser1 } from '@test/mock';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import { AuthService } from '@src/infra/auth/AuthService';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
@@ -15,7 +16,8 @@ const API = new RestAPI<Fastify>({
   webServer,
   infraHandlers,
   serverType: EHTTPFrameworks.fastify,
-  authService: AuthService.compile()
+  authService: AuthService.compile(),
+  passwordCryptoService: PasswordCryptoService.compile()
 });
 // eslint-disable-next-line prefer-destructuring
 const application = API.server.application;

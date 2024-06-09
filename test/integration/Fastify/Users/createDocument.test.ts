@@ -17,6 +17,7 @@ import {
 
 import { IUser, RequestCreateDocument } from '@src/domains/Users';
 import { DocumentValueObject } from '@src/domains/valueObjects';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
@@ -24,7 +25,8 @@ const API = new RestAPI<Fastify>({
   webServer,
   infraHandlers,
   serverType: EHTTPFrameworks.fastify,
-  authService: AuthService.compile()
+  authService: AuthService.compile(),
+  passwordCryptoService: PasswordCryptoService.compile()
 });
 const server = API.server.application;
 

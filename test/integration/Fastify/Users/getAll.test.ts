@@ -14,6 +14,7 @@ import {
   BasicAuthorizationHeaderUser4,
   BasicAuthorizationHeaderUserGuest
 } from '@test/mock';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
@@ -21,7 +22,8 @@ const API = new RestAPI<Fastify>({
   webServer,
   infraHandlers,
   serverType: EHTTPFrameworks.fastify,
-  authService: AuthService.compile()
+  authService: AuthService.compile(),
+  passwordCryptoService: PasswordCryptoService.compile()
 });
 const server = API.server.application;
 

@@ -16,7 +16,7 @@ import {
 } from '@test/mock';
 import { IUser, RequestCreateEmail } from '@src/domains/Users';
 import { EmailValueObject } from '@src/domains/valueObjects';
-// import { EEmailType } from '@src/domains/valueObjects';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
@@ -24,7 +24,8 @@ const API = new RestAPI<Fastify>({
   webServer,
   infraHandlers,
   serverType: EHTTPFrameworks.fastify,
-  authService: AuthService.compile()
+  authService: AuthService.compile(),
+  passwordCryptoService: PasswordCryptoService.compile()
 });
 const server = API.server.application;
 
