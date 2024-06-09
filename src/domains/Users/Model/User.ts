@@ -3,8 +3,8 @@
 import { BaseModel } from '@src/domains/ports/persistence/BaseModel';
 import {
   canNotBeEmpty,
-  throwIfReadOnly,
-  mustBePassword
+  throwIfReadOnly
+  // mustBePassword
 } from '@src/domains/validators';
 import {
   EmailValueObject,
