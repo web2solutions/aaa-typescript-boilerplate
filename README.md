@@ -6,7 +6,7 @@ The application aims to run `Anywhere, Anytime, Anyhow`. `Dedicated servers`, `v
 
 `See it running as Fastify implementation at:`
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/...)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/web2solutions/aaa-typescript-boilerplate)
 
 It is built over a simplistic interpretation of Hexagonal Architecture, the Domain Driven Design and Event Driven Architecture philosophies.
 
