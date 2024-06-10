@@ -115,12 +115,12 @@ export class AuthService implements IAuthService {
 
   public async updatePassword(
     username: string,
-    oldPassword: string,
+    // oldPassword: string,
     newPassword: string
   ): Promise<boolean> {
     console.log({
       username,
-      oldPassword,
+      // oldPassword,
       newPassword
     });
     return true;

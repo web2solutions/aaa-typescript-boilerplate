@@ -16,6 +16,7 @@ import {
   // user2,
   user3
 } from '@test/mock';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
 const webServer = new FastifyServer();
 const API = new RestAPI<Fastify>({
@@ -23,7 +24,8 @@ const API = new RestAPI<Fastify>({
   webServer,
   infraHandlers,
   serverType: EHTTPFrameworks.fastify,
-  authService: AuthService.compile()
+  authService: AuthService.compile(),
+  passwordCryptoService: PasswordCryptoService.compile()
 });
 const server = API.server.application;
 
@@ -44,7 +46,7 @@ describe('fastify -> create User suite', () => {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUser1);
-    // console.log(response.body);
+
     expect(response.body.firstName).toBe(user1.firstName);
     expect(response.body.lastName).toBe(user1.lastName);
     expect(response.statusCode).toBe(201);
@@ -67,7 +69,7 @@ describe('fastify -> create User suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .post('/api/1.0.0/users')
-      .send({ ...user1, username: '', password: '123' })
+      .send({ ...user1, username: '', password: '12345678' })
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUser1);
@@ -83,7 +85,8 @@ describe('fastify -> create User suite', () => {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .set(BasicAuthorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - password can not be empty');
+    // console.log(response.body);
+    expect(response.body.message).toBe('Bad Request - password must have at least 8 chars.');
     expect(response.statusCode).toBe(400);
   });
 

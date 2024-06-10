@@ -1,6 +1,7 @@
 import {
   _DOMAIN_VALIDATION_ERROR_NAME_,
-  _DOMAIN_NOT_FOUND_ERROR_NAME_
+  _DOMAIN_NOT_FOUND_ERROR_NAME_,
+  _PASSWORD_MIN_LENGTH_
 } from '@src/infra/config/constants';
 
 export function throwIfNotFound(found: boolean) {
@@ -49,7 +50,7 @@ export function mustBePassword(field: string, value: string) {
   let errorMessage = '';
   if (typeof value !== 'string') errorMessage = `${field} must be a string.`;
 
-  if (value.length < 8) errorMessage = `${field} must have at least 8 chars.`;
+  if (value.length < _PASSWORD_MIN_LENGTH_) errorMessage = `${field} must have at least 8 chars.`;
 
   const error = new Error(errorMessage);
   error.name = _DOMAIN_VALIDATION_ERROR_NAME_;

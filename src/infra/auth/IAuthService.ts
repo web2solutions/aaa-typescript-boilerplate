@@ -14,7 +14,7 @@ export interface IAuthService {
   authorize(/* identity: IAuthSchema */ header: string): Promise<any>;
   updatePassword(
     username: string,
-    oldPassword: string,
+    // oldPassword: string,
     newPassword: string
   ): Promise<boolean>;
   logout(): Promise<void>;

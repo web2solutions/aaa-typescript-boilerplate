@@ -1,4 +1,5 @@
 export interface RequestUpdatePassword {
-  oldPassword: string;
+  // oldPassword: string;
   password: string;
+  salt?: string;
 }

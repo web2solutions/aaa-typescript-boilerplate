@@ -1,7 +1,7 @@
 import { BaseService } from '@src/domains/ports/BaseService';
 import { ServiceError } from '@src/domains/ports/ServiceError';
 import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
-import { IServiceConfig, TRepos } from '@src/domains/ports/IServiceConfig';
+import { IServiceConfig } from '@src/domains/ports/IServiceConfig';
 
 import {
   UserDataRepository,
@@ -33,6 +33,7 @@ import {
 } from '@src/domains/Users';
 import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
 import { IPagingResponse } from '@src/domains/ports/persistence/IPagingResponse';
+import { canNotBeEmpty, mustBePassword } from '@src/domains/validators';
 
 interface IUserServiceConfig extends IServiceConfig {
 
@@ -41,27 +42,28 @@ interface IUserServiceConfig extends IServiceConfig {
 let userService: any;
 
 export class UserService extends BaseService<IUser, RequestCreateUser, RequestUpdateUser> {
-  // public userDataRepository: UserDataRepository;
-
-  private repo: UserDataRepository;
-
-  public repos: TRepos;
+  public dataRepository: UserDataRepository;
 
   public constructor(
     config: IUserServiceConfig
   ) {
     super(config);
-    // if (!userDataRepository) throw Error('No UserDataRepository provided or injected.');
-    // this.userDataRepository = userDataRepository;
-    const { repos } = config;
-    this.repos = repos ?? {};
-    this.repo = this.repos.UserDataRepository as UserDataRepository;
+    const { dataRepository, services } = config;
+    this.dataRepository = dataRepository as UserDataRepository;
+    this.services.passwordCryptoService = services!.passwordCryptoService;
   }
 
   public async create(data: RequestCreateUser): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const document = await createUser((data ?? {}), this.repo);
+      mustBePassword('password', data.password);
+
+      const newData = { ...data };
+      const { hash, salt } = await this.services.passwordCryptoService.hash(data.password);
+      newData.password = hash;
+      newData.salt = salt;
+
+      const document = await createUser((newData ?? {}), this.dataRepository);
       serviceResponse.result = document as IUser;
     } catch (error) {
       serviceResponse.error = new ServiceError(error as Error);
@@ -73,7 +75,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   public async update(id: string, data: RequestUpdateUser): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await updateUser(id, data, this.repo);
+      const user = await updateUser(id, data, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -84,7 +86,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   public async delete(id: string): Promise<IServiceResponse<boolean>> {
     const serviceResponse: IServiceResponse<boolean> = {};
     try {
-      const deleted = await deleteUserById(id, this.repo);
+      const deleted = await deleteUserById(id, this.dataRepository);
       serviceResponse.result = deleted;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -95,7 +97,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   public async getOneById(id: string): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await getUserById(id, this.repo);
+      const user = await getUserById(id, this.dataRepository);
       serviceResponse.result = user as IUser;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -109,7 +111,11 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser[]>> {
     let serviceResponse: IServiceResponse<IUser[]> = {};
     try {
-      const result: IPagingResponse<IUser[]> = await getAllUsers(filters, paging, this.repo);
+      const result: IPagingResponse<IUser[]> = await getAllUsers(
+        filters,
+        paging,
+        this.dataRepository
+      );
       serviceResponse = { ...result };
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -118,19 +124,20 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     return serviceResponse;
   }
 
-  public static compile(config: IUserServiceConfig) {
-    if (userService) return userService;
-    userService = new UserService(config);
-    return userService as BaseService<IUser, RequestCreateUser, RequestUpdateUser>;
-  }
-
   public async updatePassword(
     id: string,
     data: RequestUpdatePassword
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await updatePassword(id, data, this.repo);
+      canNotBeEmpty('password', data.password);
+      mustBePassword('password', data.password);
+
+      const newData = { ...data };
+      const { hash, salt } = await this.services.passwordCryptoService.hash(data.password);
+      newData.password = hash;
+      newData.salt = salt;
+      const user = await updatePassword(id, data, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -144,7 +151,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await createDocument(id, data, this.repo);
+      const user = await createDocument(id, data, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -159,7 +166,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await updateDocument(userId, documentId, data, this.repo);
+      const user = await updateDocument(userId, documentId, data, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -173,7 +180,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await deleteDocument(userId, documentId, this.repo);
+      const user = await deleteDocument(userId, documentId, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -187,7 +194,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await createPhone(id, data, this.repo);
+      const user = await createPhone(id, data, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -202,7 +209,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await updatePhone(userId, phoneId, data, this.repo);
+      const user = await updatePhone(userId, phoneId, data, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -216,7 +223,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await deletePhone(userId, phoneId, this.repo);
+      const user = await deletePhone(userId, phoneId, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -230,7 +237,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await createEmail(id, data, this.repo);
+      const user = await createEmail(id, data, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -245,7 +252,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await updateEmail(userId, emailId, data, this.repo);
+      const user = await updateEmail(userId, emailId, data, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
@@ -259,11 +266,17 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   ): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await deleteEmail(userId, emailId, this.repo);
+      const user = await deleteEmail(userId, emailId, this.dataRepository);
       serviceResponse.result = user;
     } catch (error) {
       serviceResponse.error = error as Error;
     }
     return serviceResponse;
+  }
+
+  public static compile(config: IUserServiceConfig) {
+    if (userService) return userService;
+    userService = new UserService(config);
+    return userService as BaseService<IUser, RequestCreateUser, RequestUpdateUser>;
   }
 }

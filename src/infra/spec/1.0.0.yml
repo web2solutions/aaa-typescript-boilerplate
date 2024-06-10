@@ -857,13 +857,13 @@ components:
       description: User's password
       type: object
       required:
-        - oldPassword
+        #- oldPassword
         - password
       properties:
-        oldPassword: 
-          type: string
-          minLength: 8
-          format: password
+        #oldPassword: 
+        #  type: string
+        #  minLength: 8
+        #  format: password
         password: 
           type: string
           minLength: 8

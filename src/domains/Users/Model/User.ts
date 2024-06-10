@@ -1,9 +1,10 @@
 /* eslint-disable no-underscore-dangle */
+// import * as bcrypt from 'bcrypt';
 import { BaseModel } from '@src/domains/ports/persistence/BaseModel';
 import {
   canNotBeEmpty,
-  throwIfReadOnly,
-  mustBePassword
+  throwIfReadOnly
+  // mustBePassword
 } from '@src/domains/validators';
 import {
   EmailValueObject,
@@ -32,6 +33,8 @@ export class User extends BaseModel<IUser> implements IUser {
 
   private _password: string = '';
 
+  private _salt: string = '';
+
   private _avatar: string = 'avatar.png';
 
   private _emails: EmailValueObject[] = [];
@@ -54,6 +57,7 @@ export class User extends BaseModel<IUser> implements IUser {
       avatar,
       username,
       password,
+      salt,
       emails,
       documents,
       phones,
@@ -66,6 +70,7 @@ export class User extends BaseModel<IUser> implements IUser {
     this.avatar = avatar ?? 'avatar.png';
     this.username = username;
     this.password = password || '';
+    this.salt = salt || '';
 
     emails.forEach((e) => this.createEmail(e));
     documents?.forEach((d) => this.createDocument(d));
@@ -218,8 +223,18 @@ export class User extends BaseModel<IUser> implements IUser {
     throwIfReadOnly('password', this._readOnly);
     if (password === '') return;
     // canNotBeEmpty('password', password);
-    mustBePassword('password', password);
+    // mustBePassword('password', password);
     this._password = password;
+  }
+
+  public get salt(): string {
+    return this._salt;
+  }
+
+  public set salt(salt: string) {
+    throwIfReadOnly('salt', this._readOnly);
+    if (salt === '') return;
+    this._salt = salt;
   }
 
   public get roles(): string[] {

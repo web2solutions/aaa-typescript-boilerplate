@@ -9,5 +9,8 @@ export const createUser = async (
   userDataRepository: UserDataRepository
 ): Promise<IUser> => {
   const model = await userDataRepository.create(payload);
-  return model.serialize();
+  const rawDoc = { ...model.serialize() };
+  delete (rawDoc as any).password;
+  delete (rawDoc as any).salt;
+  return rawDoc;
 };
