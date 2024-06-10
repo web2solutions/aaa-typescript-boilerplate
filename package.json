@@ -30,7 +30,6 @@
     "@fastify/formbody": "^7.4.0",
     "@fastify/helmet": "^11.1.1",
     "@fastify/static": "^7.0.1",
-    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -87,7 +86,7 @@
   "hooks": {
     "pre-commit": "npm run lint && npm run test"
   },
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/web2solutions/aaa-typescript-boilerplate/issues"
   },
