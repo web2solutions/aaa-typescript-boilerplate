@@ -20,7 +20,7 @@ window.onload = async () => {
     a.innerHTML = `Version - ${version}`;
     // a.href = `${window.location.origin}/docs/${version}`;
     a.onclick = function () {
-      document.body.innerHTML = '';
+      // document.body.innerHTML = '';
       renderDoc(`${window.location.origin}/docs/${version}`);
     };
     document.body.appendChild(a);
