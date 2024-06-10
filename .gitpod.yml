@@ -6,5 +6,7 @@
 
 tasks:
   - init: npm install
+    command: npm run test
+  - command: npm run dev:fastify
 
 
