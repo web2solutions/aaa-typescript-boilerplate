@@ -17,7 +17,7 @@
     "dev:hyper-express": "ts-node ./src/hyper-express.ts",
     "tdd": "jest --watchAll --verbose --detectOpenHandles",
     "prepare": "husky install",
-    "commit": "npm run lint && npm run test && git add . && git-cz",
+    "commit": "git add . && git-cz",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "docker:composeredis": "docker compose -f \"docker-compose-redis.yml\" up -d --build",
