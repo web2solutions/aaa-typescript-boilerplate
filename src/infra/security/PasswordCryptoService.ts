@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { _BCRYPT_SALT_ROUNDS_ } from '../config/constants';
 
 interface IHash {
