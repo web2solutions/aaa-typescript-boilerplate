@@ -35,7 +35,7 @@ describe('/localhost suite', () => {
     expect.hasAssertions();
     const response = await request(application.server)
       .get('/')
-      .set('Accept', 'application/json')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     expect(response.statusCode).toBe(200);
   });

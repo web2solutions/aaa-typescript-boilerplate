@@ -1,3 +1,4 @@
+// file deepcode ignore NoHardcodedPasswords: <mocked passwords>
 import { IUser } from '@src/domains/Users';
 import { UUID } from '@src/domains/utils';
 import {

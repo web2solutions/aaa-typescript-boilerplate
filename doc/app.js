@@ -12,7 +12,7 @@ function renderDoc(url) {
 }
 
 window.onload = async () => {
-  const resp = await fetch(`${window.location.origin}/versions`);
+  /* const resp = await fetch(`${window.location.origin}/versions`);
   const { versions } = await resp.json();
   // console.log(versions);
   Object.keys(versions).forEach((version) => {
@@ -24,5 +24,6 @@ window.onload = async () => {
       renderDoc(`${window.location.origin}/docs/${version}`);
     };
     document.body.appendChild(a);
-  });
+  }); */
+  renderDoc(`${window.location.origin}/docs/1.0.0`);
 };

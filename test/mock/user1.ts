@@ -1,3 +1,4 @@
+// file deepcode ignore NoHardcodedPasswords/test: <mocked password>
 const user1 = {
   firstName: 'User',
   lastName: 'Number 1',

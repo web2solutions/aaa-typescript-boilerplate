@@ -6,7 +6,7 @@
 
 tasks:
   - init: npm install
-    command: npm run test
-  - command: npm run dev:fastify
+    name: Install Dependencies
+  - command: npm run test && npm run dev:fastify
 
 

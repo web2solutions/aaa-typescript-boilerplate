@@ -38,8 +38,8 @@ describe('fastify -> getUserById suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     createdUser = response.body;
   });
@@ -52,8 +52,8 @@ describe('fastify -> getUserById suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .get(`/api/1.0.0/users/${createdUser.id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
 
     expect(response.statusCode).toBe(200);
@@ -64,8 +64,8 @@ describe('fastify -> getUserById suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .get(`/api/1.0.0/users/${createdUser.id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser2);
 
     expect(response.statusCode).toBe(200);
@@ -76,8 +76,8 @@ describe('fastify -> getUserById suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .get(`/api/1.0.0/users/${createdUser.id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser3);
 
     expect(response.statusCode).toBe(200);
@@ -88,8 +88,8 @@ describe('fastify -> getUserById suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .get(`/api/1.0.0/users/${createdUser.id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser4);
     // console.log(response.body.message)
     expect(response.statusCode).toBe(403);
@@ -100,8 +100,8 @@ describe('fastify -> getUserById suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .get(`/api/1.0.0/users/${createdUser.id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUserGuest);
     expect(response.statusCode).toBe(401);
     expect(response.body.message).toBe('Unauthorized - user not found');

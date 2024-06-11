@@ -26,9 +26,10 @@ export function throwIfIsNotObject(field: string, value: any) {
   // console.log(values)
   const error = new Error(`The property ${field} must be an object`);
   error.name = _DOMAIN_VALIDATION_ERROR_NAME_;
-  if (typeof value !== 'object') {
-    throw error;
-  } else if (typeof value === 'object' && Array.isArray(value)) {
+  if (
+    (typeof value !== 'object')
+    || (typeof value === 'object' && Array.isArray(value))
+  ) {
     throw error;
   }
 }

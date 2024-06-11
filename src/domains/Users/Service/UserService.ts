@@ -1,3 +1,5 @@
+// file deepcode ignore WrongNumberOfArguments: <same name but different functions>
+// file deepcode ignore MissingArgument: <same name but different functions>
 import { BaseService } from '@src/domains/ports/BaseService';
 import { ServiceError } from '@src/domains/ports/ServiceError';
 import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
@@ -34,6 +36,7 @@ import {
 import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
 import { IPagingResponse } from '@src/domains/ports/persistence/IPagingResponse';
 import { canNotBeEmpty, mustBePassword } from '@src/domains/validators';
+import { ServiceResponse } from '@src/infra/service/adapter/ServiceResponse';
 
 interface IUserServiceConfig extends IServiceConfig {
 
@@ -142,7 +145,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     } catch (error) {
       serviceResponse.error = error as Error;
     }
-    return serviceResponse;
+    return new ServiceResponse(serviceResponse);
   }
 
   public async createDocument(
