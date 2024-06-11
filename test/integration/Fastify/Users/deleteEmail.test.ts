@@ -49,8 +49,8 @@ describe('fastify -> User deleteEmail suite', () => {
     expect(user1.emails).toHaveLength(3);
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${user1.id}/deleteEmail/${email1.id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     // console.log(response.body);
     expect(response.body.emails).toHaveLength(2);
@@ -64,8 +64,8 @@ describe('fastify -> User deleteEmail suite', () => {
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${user1.id}/deleteEmail/${email1.id}`)
       .send({ ...user1, id: user1.id })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser2);
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the delete_user role');
@@ -76,8 +76,8 @@ describe('fastify -> User deleteEmail suite', () => {
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${user1.id}/deleteEmail/${email1.id}`)
       .send({ ...user1, id: user1.id })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser3);
     // console.log(response.body);
     expect(response.statusCode).toBe(403);
@@ -89,8 +89,8 @@ describe('fastify -> User deleteEmail suite', () => {
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${user1.id}/deleteEmail/${email1.id}`)
       .send({ ...user1, id: user1.id })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser4);
     // console.log(response.body.message)
     expect(response.statusCode).toBe(403);
@@ -102,8 +102,8 @@ describe('fastify -> User deleteEmail suite', () => {
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${user1.id}/deleteEmail/${email1.id}`)
       .send({ ...user1, id: user1.id })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUserGuest);
     // console.log(response.body)
     expect(response.statusCode).toBe(401);

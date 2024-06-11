@@ -1,3 +1,4 @@
+// file deepcode ignore ServerLeak: <error information is available only for authorized users>
 import { FastifyReply } from 'fastify';
 
 import {

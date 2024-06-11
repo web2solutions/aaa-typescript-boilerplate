@@ -26,6 +26,8 @@ const _BCRYPT_SALT_ROUNDS_ = 10;
 
 const _PASSWORD_MIN_LENGTH_ = 8;
 
+const _KV_KEY_NAME_PREFIX_ = 'my_prefix';
+
 export {
   _HTTP_PORT_,
   _DOCS_PREFIX_,
@@ -44,5 +46,6 @@ export {
   _DEFAULT_PAGE_SIZE_,
   _DATABASE_PAGING_ERROR_,
   _BCRYPT_SALT_ROUNDS_,
-  _PASSWORD_MIN_LENGTH_
+  _PASSWORD_MIN_LENGTH_,
+  _KV_KEY_NAME_PREFIX_
 };

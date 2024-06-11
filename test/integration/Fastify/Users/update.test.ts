@@ -1,4 +1,5 @@
 /* global  describe, it, expect */
+// file deepcode ignore NoHardcodedPasswords: <mocked passwords>
 import request from 'supertest';
 import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/FastifyServer';
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
@@ -52,8 +53,8 @@ describe('fastify -> update User suite', () => {
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${usersAll[0].id}`)
       .send(payload)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     // console.log(response.body);
     expect(response.body.firstName).toBe(user1.firstName);
@@ -67,8 +68,8 @@ describe('fastify -> update User suite', () => {
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${usersAll[0].id}`)
       .send({ ...user1, id: usersAll[0].id, username: '' })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - username can not be empty');
     expect(response.statusCode).toBe(400);
@@ -84,8 +85,8 @@ describe('fastify -> update User suite', () => {
         id: usersAll[0].id,
         password: 'xxxxxxxx'
       })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - The property password from input payload does not exist inside the domain.');
     expect(response.statusCode).toBe(400);
@@ -97,8 +98,8 @@ describe('fastify -> update User suite', () => {
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${usersAll[2].id}`)
       .send({ ...user3, id: usersAll[2].id, firstName: '' })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - firstName can not be empty');
     expect(response.statusCode).toBe(400);
@@ -111,8 +112,8 @@ describe('fastify -> update User suite', () => {
       .send({
         invalidFieldName: 50
       })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - The property invalidFieldName from input payload does not exist inside the domain.');
     expect(response.statusCode).toBe(400);
@@ -123,8 +124,8 @@ describe('fastify -> update User suite', () => {
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${usersAll[0].id}`)
       .send({})
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
 
     expect(response.statusCode).toBe(400);
@@ -135,8 +136,8 @@ describe('fastify -> update User suite', () => {
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${usersAll[0].id}`)
       .send({ ...user1, id: usersAll[0].id })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser2);
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the update_user role');
@@ -147,8 +148,8 @@ describe('fastify -> update User suite', () => {
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${usersAll[0].id}`)
       .send({ ...user1, id: usersAll[0].id })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser3);
     // console.log(response.body);
     expect(response.statusCode).toBe(403);
@@ -160,8 +161,8 @@ describe('fastify -> update User suite', () => {
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${usersAll[0].id}`)
       .send({ ...user1, id: usersAll[0].id })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser4);
     // console.log(response.body.message)
     expect(response.statusCode).toBe(403);
@@ -173,8 +174,8 @@ describe('fastify -> update User suite', () => {
     const response = await request(server.server)
       .put(`/api/1.0.0/users/${usersAll[0].id}`)
       .send({ ...user1, id: usersAll[0].id })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUserGuest);
     // console.log(response.body)
     expect(response.statusCode).toBe(401);

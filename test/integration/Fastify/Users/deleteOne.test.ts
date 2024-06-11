@@ -42,8 +42,8 @@ describe('fastify -> delete User suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${usersAll[1].id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     // console.log(response.body)
     expect(response.body).toBeTruthy();
@@ -54,8 +54,8 @@ describe('fastify -> delete User suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${usersAll[0].id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser2);
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the delete_user role');
@@ -65,8 +65,8 @@ describe('fastify -> delete User suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${usersAll[0].id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser3);
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the delete_user role');
@@ -76,8 +76,8 @@ describe('fastify -> delete User suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${usersAll[0].id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser4);
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the delete_user role');
@@ -87,8 +87,8 @@ describe('fastify -> delete User suite', () => {
     expect.hasAssertions();
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${usersAll[0].id}`)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUserGuest);
     expect(response.statusCode).toBe(401);
     expect(response.body.message).toBe('Unauthorized - user not found');

@@ -2,7 +2,7 @@
 import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-// import helmet from 'helmet';
+import helmet from 'helmet';
 import { _HTTP_PORT_ } from '@src/infra/config/constants';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import { HTTPBaseServer } from '@src/infra/server/HTTP/ports/HTTPBaseServer';
@@ -14,7 +14,7 @@ class ExpressServer extends HTTPBaseServer<Express> {
     super();
     this._application = express();
     this._application.use(cors());
-    // this._application.use(helmet());
+    this._application.use(helmet());
     this._application.use(bodyParser.json({ limit: '100mb' }));
     // this._application.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
     this.createDocEndPoint();

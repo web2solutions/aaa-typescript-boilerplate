@@ -1,4 +1,6 @@
 /* global  describe, it, expect */
+// file deepcode ignore NoHardcodedPasswords: <mocked passwords>
+// file deepcode ignore NoHardcodedCredentials/test: <fake credential>
 import request from 'supertest';
 import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/FastifyServer';
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
@@ -43,8 +45,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
 
     expect(response.body.firstName).toBe(user1.firstName);
@@ -57,8 +59,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     // console.log(response.body);
     expect(response.body.message).toBe('Duplicated record - username already in use');
@@ -70,8 +72,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({ ...user1, username: '', password: '12345678' })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - username can not be empty');
     expect(response.statusCode).toBe(400);
@@ -82,8 +84,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({ ...user1, username: 'loginname', password: '' })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     // console.log(response.body);
     expect(response.body.message).toBe('Bad Request - password must have at least 8 chars.');
@@ -95,8 +97,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({ ...user1, username: 'loginname', password: '1234567' })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - password must have at least 8 chars.');
     expect(response.statusCode).toBe(400);
@@ -107,8 +109,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({ ...user3, firstName: '' })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - firstName can not be empty');
     expect(response.statusCode).toBe(400);
@@ -121,8 +123,8 @@ describe('fastify -> create User suite', () => {
       .send({
         invalidFieldName: 50
       })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - The property invalidFieldName from input payload does not exist inside the domain.');
     expect(response.statusCode).toBe(400);
@@ -133,8 +135,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({})
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     // console.log(response.body)
     expect(response.statusCode).toBe(400);
@@ -145,8 +147,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser2);
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the create_user role');
@@ -157,8 +159,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser3);
     // console.log(response.body);
     expect(response.statusCode).toBe(403);
@@ -170,8 +172,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser4);
     // console.log(response.body.message)
     expect(response.statusCode).toBe(403);
@@ -183,8 +185,8 @@ describe('fastify -> create User suite', () => {
     const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUserGuest);
     // console.log(response.body)
     expect(response.statusCode).toBe(401);
