@@ -75,6 +75,7 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
 
   // eslint-disable-next-line class-methods-use-this
   public async stop(code: number = 0) {
+    this._application.close();
     process.exit(code);
   }
 }
