@@ -9,7 +9,7 @@ import { replaceVars } from '@src/infra/utils';
 
 import { HTTPBaseServer } from '@src/infra/server/HTTP/ports/HTTPBaseServer';
 import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
-import { IMutexClient } from '@src/infra/mutex/port/IMutexClient';
+import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 
 import { IUser, UserDataRepository, UserService } from '@src/domains/Users';
 
@@ -20,46 +20,52 @@ import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import { _API_PREFIX_, _DOCS_PREFIX_ } from './config/constants';
 import { IAuthService } from './auth/IAuthService';
 import { IPasswordCryptoService } from './security/PasswordCryptoService';
+import { IKeyValueStorageClient } from './persistence/KeyValueStorage/IKeyValueStorageClient';
 
 export class RestAPI<T> {
-  #_oas: Map<string, OpenAPIV3.Document> = new Map();
+  private _oas: Map<string, OpenAPIV3.Document> = new Map();
 
-  #_started: boolean = false;
+  private _started: boolean = false;
 
-  #_server: HTTPBaseServer<T>;
+  private _server: HTTPBaseServer<T>;
 
-  #_serverType: EHTTPFrameworks;
+  private _serverType: EHTTPFrameworks;
 
-  #_databaseClient: IDatabaseClient;
+  private _databaseClient: IDatabaseClient;
 
-  #_mutexClient: IMutexClient | undefined;
+  private _mutexClient: IMutexService | undefined;
 
-  #_authService: IAuthService | undefined;
+  private _authService: IAuthService | undefined;
 
-  #_passwordCryptoService: IPasswordCryptoService | undefined;
+  private _passwordCryptoService: IPasswordCryptoService | undefined;
+
+  private _keyValueStorageClient: IKeyValueStorageClient | undefined;
 
   constructor(config: IAPIFactory<T>) {
-    this.#_serverType = config.serverType ?? EHTTPFrameworks.express;
-    this.#_server = config.webServer;
+    this._serverType = config.serverType ?? EHTTPFrameworks.express;
+    this._server = config.webServer;
 
-    this.#_databaseClient = config.databaseClient;
+    this._databaseClient = config.databaseClient;
+
+    if (config.keyValueStorageClient) {
+      this._keyValueStorageClient = config.keyValueStorageClient;
+    }
 
     if (config.mutexService) {
-      this.#_mutexClient = config.mutexService;
-      this.#_mutexClient?.connect();
+      this._mutexClient = config.mutexService;
     }
 
     if (config.authService) {
-      this.#_authService = config.authService;
-      this.#_authService?.start();
+      this._authService = config.authService;
+      this._authService?.start();
     }
 
     if (config.passwordCryptoService) {
-      this.#_passwordCryptoService = config.passwordCryptoService;
+      this._passwordCryptoService = config.passwordCryptoService;
     }
 
-    this.#_buildWithOAS();
-    this.#_buildInfraEndPoints(config);
+    this._buildWithOAS();
+    this._buildInfraEndPoints(config);
 
     process.on('exit', () => {
       this.stop();
@@ -73,14 +79,14 @@ export class RestAPI<T> {
   }
 
   public get databaseClient(): IDatabaseClient {
-    return this.#_databaseClient;
+    return this._databaseClient;
   }
 
-  public get mutexClient(): IMutexClient | undefined {
-    return this.#_mutexClient;
+  public get mutexService(): IMutexService | undefined {
+    return this._mutexClient;
   }
 
-  #_buildInfraEndPoints(config: IAPIFactory<T>): void {
+  _buildInfraEndPoints(config: IAPIFactory<T>): void {
     const noServiceInjection = {
       databaseClient: {} as IDatabaseClient,
       spec: {} as OpenAPIV3.Document,
@@ -88,19 +94,19 @@ export class RestAPI<T> {
     };
 
     const localhostGet = config.infraHandlers.localhostGetHandlerFactory({ ...noServiceInjection });
-    this.#_server.endPointRegister(localhostGet);
+    this._server.endPointRegister(localhostGet);
 
     // serve API docs as JSON
     const apiVersionsGet = config.infraHandlers.apiVersionsGetHandlerFactory({
       ...noServiceInjection,
-      apiDocs: this.#_oas,
-      authService: this.#_authService || ({} as IAuthService)
+      apiDocs: this._oas,
+      authService: this._authService || ({} as IAuthService)
 
     });
-    this.#_server.endPointRegister(apiVersionsGet);
+    this._server.endPointRegister(apiVersionsGet);
 
-    for (const [version, spec] of this.#_oas) {
-      this.#_server.endPointRegister({
+    for (const [version, spec] of this._oas) {
+      this._server.endPointRegister({
         ...config.infraHandlers.apiDocGetHandlerFactory({
           spec,
           version,
@@ -112,20 +118,20 @@ export class RestAPI<T> {
     }
   }
 
-  #_buildWithOAS(): void {
+  _buildWithOAS(): void {
     // console.time('Load spec files');
     const specs = fs.readdirSync('./src/infra/spec');
     for (const version of specs) {
       const file = fs.readFileSync(`./src/infra/spec/${version}`, 'utf8');
       const jsonOAS: OpenAPIV3.Document = YAML.parse(file);
-      this.#_oas.set(jsonOAS.info.version, jsonOAS);
+      this._oas.set(jsonOAS.info.version, jsonOAS);
     }
-    this.#_buildEndPoints();
+    this._buildEndPoints();
     // console.timeEnd('Load spec files');
   }
 
-  #_buildEndPoints(): void {
-    for (const [version, spec] of this.#_oas) {
+  _buildEndPoints(): void {
+    for (const [version, spec] of this._oas) {
       for (const path of Object.keys(spec.paths)) {
         const endPointConfigs: Record<string, any> = spec.paths[path] ?? {};
         const methods: string[] = Object.keys(endPointConfigs);
@@ -136,21 +142,23 @@ export class RestAPI<T> {
           const Controller = require(`@src/infra/server/HTTP/adapters/controllers/${fileName}`)[fileName]; // UserController
 
           const controller = new Controller({
-            authService: this.#_authService,
+            authService: this._authService,
             openApiSpecification: spec,
-            databaseClient: this.#_databaseClient,
-            passwordCryptoService: this.#_passwordCryptoService
+            databaseClient: this._databaseClient,
+            mutexService: this._mutexClient,
+            passwordCryptoService: this._passwordCryptoService
           });
 
-          const handlerFactory = require(`@src/infra/server/HTTP/adapters/${this.#_serverType}/handlers/${domain}/${endPointConfig.operationId}`).default({
-            databaseClient: this.#_databaseClient,
-            mutexClient: this.#_mutexClient,
+          const handlerFileName = `@src/infra/server/HTTP/adapters/${this._serverType}/handlers/${domain}/${endPointConfig.operationId}`;
+          const handlerFactory = require(handlerFileName).default({
+            databaseClient: this._databaseClient,
+            mutexService: this._mutexClient,
             endPointConfig,
             spec,
-            authService: this.#_authService,
+            authService: this._authService,
             controller
           });
-          this.#_server.endPointRegister({
+          this._server.endPointRegister({
             ...handlerFactory,
             path: `${_API_PREFIX_}/${version}${replaceVars(handlerFactory.path)}`
           });
@@ -160,23 +168,27 @@ export class RestAPI<T> {
   }
 
   public get server(): HTTPBaseServer<T> {
-    return this.#_server;
+    return this._server;
   }
 
   public async start(): Promise<void> {
-    if (this.#_started) return;
-    await this.#_databaseClient.connect();
-    await this.#_server.start();
-    this.#_started = true;
+    if (this._started) return;
+    if (this._keyValueStorageClient) {
+      await this._keyValueStorageClient.connect();
+    }
+
+    await this._databaseClient.connect();
+    await this._server.start();
+    this._started = true;
   }
 
   public async stop(): Promise<void> {
+    if (this._keyValueStorageClient) {
+      await this._keyValueStorageClient.disconnect();
+    }
     // quit db
     // quit all
-    await this.#_databaseClient.disconnect();
-    if (this.#_mutexClient) {
-      await this.#_mutexClient.disconnect();
-    }
+    await this._databaseClient.disconnect();
     // process.exit(0);
   }
 
@@ -185,7 +197,7 @@ export class RestAPI<T> {
   }
 
   public async seedUsers(): Promise<IUser[]> {
-    const dataRepository = UserDataRepository.compile({ databaseClient: this.#_databaseClient });
+    const dataRepository = UserDataRepository.compile({ databaseClient: this._databaseClient });
     const service = UserService.compile({ dataRepository });
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
@@ -197,7 +209,7 @@ export class RestAPI<T> {
             resolve(newUser.result);
           } catch (error: any) {
             // console.log(error.message);
-            reject(error);
+            reject(new Error(error.message));
           }
         })();
       }));

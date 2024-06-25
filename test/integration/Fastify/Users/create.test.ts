@@ -8,6 +8,9 @@ import { RestAPI } from '@src/infra/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { AuthService } from '@src/infra/auth/AuthService';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import {
   BasicAuthorizationHeaderUser1,
   BasicAuthorizationHeaderUser2,
@@ -18,26 +21,45 @@ import {
   // user2,
   user3
 } from '@test/mock';
-import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
 const webServer = new FastifyServer();
-const API = new RestAPI<Fastify>({
-  databaseClient: InMemoryDbClient,
-  webServer,
-  infraHandlers,
-  serverType: EHTTPFrameworks.fastify,
-  authService: AuthService.compile(),
-  passwordCryptoService: PasswordCryptoService.compile()
-});
-const server = API.server.application;
+
+const databaseClient = InMemoryDbClient;
+const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+const mutexService = MutexService.compile(keyValueStorageClient);
+
+const authService = AuthService.compile();
+const passwordCryptoService = PasswordCryptoService.compile();
+
+const serverType = EHTTPFrameworks.fastify;
+
+let API: any;
+let server: any;
 
 describe('fastify -> create User suite', () => {
   beforeAll(async () => {
+    // await keyValueStorageClient.connect();
+
+    API = new RestAPI<Fastify>({
+      databaseClient,
+      webServer,
+      infraHandlers,
+      serverType,
+      authService,
+      passwordCryptoService,
+      keyValueStorageClient,
+      mutexService
+    });
+
+    server = API.server.application;
+
+    await API.start();
     await server.ready();
   });
   afterAll(async () => {
     await API.stop();
     await server.close();
+    // await keyValueStorageClient.disconnect();
   });
 
   it('user1 must be able to create an user', async () => {

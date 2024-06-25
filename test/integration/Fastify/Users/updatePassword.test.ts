@@ -7,6 +7,8 @@ import { RestAPI } from '@src/infra/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { AuthService } from '@src/infra/auth/AuthService';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
+import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import {
   BasicAuthorizationHeaderUser1,
   BasicAuthorizationHeaderUser2,
@@ -18,21 +20,38 @@ import { RequestUpdatePassword, IUser } from '@src/domains/Users';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
 const webServer = new FastifyServer();
-const API = new RestAPI<Fastify>({
-  databaseClient: InMemoryDbClient,
-  webServer,
-  infraHandlers,
-  serverType: EHTTPFrameworks.fastify,
-  authService: AuthService.compile(),
-  passwordCryptoService: PasswordCryptoService.compile()
-});
-const server = API.server.application;
+
+const databaseClient = InMemoryDbClient;
+const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+const mutexService = MutexService.compile(keyValueStorageClient);
+
+const authService = AuthService.compile();
+const passwordCryptoService = PasswordCryptoService.compile();
+
+const serverType = EHTTPFrameworks.fastify;
+
+let API: any;
+let server: any;
 
 describe('fastify -> User updatePassword suite', () => {
   let usersAll: IUser[];
   let user1: IUser;
 
   beforeAll(async () => {
+    API = new RestAPI<Fastify>({
+      databaseClient,
+      webServer,
+      infraHandlers,
+      serverType,
+      authService,
+      passwordCryptoService,
+      keyValueStorageClient,
+      mutexService
+    });
+
+    server = API.server.application;
+
+    await API.start();
     await server.ready();
     usersAll = await API.seedUsers();
     [user1] = usersAll;

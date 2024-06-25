@@ -77,9 +77,9 @@ May works as aggregation root / bounded contexts talking directly to injected do
 
 It should be the unique option working as communication interface between `infrastructure` and `domain components`.
 
-It has a databaseClient adapter and a mutexClient adapter injected on it instance.
+It has a databaseClient adapter and a mutexService adapter injected on it instance.
 
-It may lock resources to avoid race conditions by using the injected mutexClient.
+It may lock resources to avoid race conditions by using the injected mutexService.
 
 It knows it internal domain use cases.
 

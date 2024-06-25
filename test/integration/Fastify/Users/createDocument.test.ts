@@ -6,6 +6,11 @@ import { RestAPI } from '@src/infra/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { AuthService } from '@src/infra/auth/AuthService';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+// import { RedisKeyValueStorageClient } from
+// '@src/infra/persistence/KeyValueStorage/RedisKeyValueStorageClient';
+import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import {
   BasicAuthorizationHeaderUser1,
   BasicAuthorizationHeaderUser2,
@@ -17,25 +22,43 @@ import {
 
 import { IUser, RequestCreateDocument } from '@src/domains/Users';
 import { DocumentValueObject } from '@src/domains/valueObjects';
-import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
 const webServer = new FastifyServer();
-const API = new RestAPI<Fastify>({
-  databaseClient: InMemoryDbClient,
-  webServer,
-  infraHandlers,
-  serverType: EHTTPFrameworks.fastify,
-  authService: AuthService.compile(),
-  passwordCryptoService: PasswordCryptoService.compile()
-});
-const server = API.server.application;
+
+const databaseClient = InMemoryDbClient;
+const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+// const redisKeyValueStorageClient = RedisKeyValueStorageClient.compile();
+const mutexService = MutexService.compile(keyValueStorageClient);
+
+const authService = AuthService.compile();
+const passwordCryptoService = PasswordCryptoService.compile();
+
+const serverType = EHTTPFrameworks.fastify;
+
+let API: any;
+let server: any;
 
 describe('fastify -> User createDocument suite', () => {
   let usersAll: IUser[];
   let user1: IUser;
   let document1: DocumentValueObject;
   beforeAll(async () => {
+    API = new RestAPI<Fastify>({
+      databaseClient,
+      webServer,
+      infraHandlers,
+      serverType,
+      authService,
+      passwordCryptoService,
+      keyValueStorageClient,
+      mutexService
+    });
+
+    server = API.server.application;
+
+    await API.start();
     await server.ready();
+
     usersAll = await API.seedUsers();
     [user1] = usersAll;
     [document1] = documents;
