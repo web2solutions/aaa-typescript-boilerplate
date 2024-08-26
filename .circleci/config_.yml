@@ -10,7 +10,6 @@ version: 2.1
 orbs:
   # See the Node orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
   node: circleci/node@5.2
-  codecov: codecov/codecov@4.0.1
 
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
@@ -49,7 +48,3 @@ workflows:
       - lint-and-test
       # For running simple node tests, you could optionally use the node/test job from the orb to replicate and replace the job above in fewer lines.
       # - node/test
-  upload-to-codecov:
-    jobs:
-      - checkout 
-      - codecov/upload
