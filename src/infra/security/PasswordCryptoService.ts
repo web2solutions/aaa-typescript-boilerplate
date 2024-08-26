@@ -1,15 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import { _BCRYPT_SALT_ROUNDS_ } from '../config/constants';
-
-interface IHash {
-  hash: string;
-  salt: string;
-}
-
-export interface IPasswordCryptoService {
-  hash(password: string): Promise<IHash>;
-  compare(plainPassword: string, hash: string): Promise<boolean>;
-}
+import { IPasswordCryptoService, IHash } from './IPasswordCryptoService';
 
 let passwordCryptoService: IPasswordCryptoService;
 

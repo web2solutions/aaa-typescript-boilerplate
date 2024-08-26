@@ -15,7 +15,7 @@ export function throwIfNotFound(found: boolean) {
 export function throwIfValuesAreDifferent(values: any[]) {
   // console.log(values)
   const set = new Set(values);
-  if (set.size > 1) {
+  if (set.size === values.length) {
     const error = new Error('The provided values are different');
     error.name = _DOMAIN_VALIDATION_ERROR_NAME_;
     throw error;
@@ -67,16 +67,33 @@ export function mustBeArray<T>(field: string, value: T[]) {
 }
 
 export function mustBeGreaterThanZero(field: string, value: number) {
-  const error = new Error(`${field} must be greater than 0`);
-  error.name = _DOMAIN_VALIDATION_ERROR_NAME_;
-
-  if (value <= 0) throw error;
+  let msg = '';
+  if (typeof value !== 'number') {
+    msg = `${field} must be a number.`;
+  }
+  if (value <= 0) {
+    msg = `${field} must be greater than 0`;
+  }
+  if (msg !== '') {
+    const error = new Error(msg);
+    error.name = _DOMAIN_VALIDATION_ERROR_NAME_;
+    throw error;
+  }
 }
 
 export function mustBePositiveNumber(field: string, value: number) {
-  const error = new Error(`${field} must be a positive number`);
-  error.name = _DOMAIN_VALIDATION_ERROR_NAME_;
-  if (value < 0) throw error;
+  let msg = '';
+  if (typeof value !== 'number') {
+    msg = `${field} must be a number.`;
+  }
+  if (value < 0) {
+    msg = `${field} must be a positive number`;
+  }
+  if (msg !== '') {
+    const error = new Error(msg);
+    error.name = _DOMAIN_VALIDATION_ERROR_NAME_;
+    throw error;
+  }
 }
 
 export function throwIfReadOnly(field: string, value: boolean) {
@@ -108,7 +125,8 @@ export function canNotBeEmpty(field: string, value: any) {
 
   if (typeof value === 'object' && (!Array.isArray(value))) {
     if (Object.keys(value).length === 0) throw error;
-    else if (typeof value === 'object' && (Array.isArray(value))) if (value.length === 0) throw error;
+  } else if (typeof value === 'object' && (Array.isArray(value))) {
+    if (value.length === 0) throw error;
   }
 }
 export function mustEndsAtLeastInMinutes(_eventDate: Date, minutesIntheFuture: number): void {

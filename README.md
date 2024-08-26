@@ -1,4 +1,24 @@
-# Run: AnyWhere, AnyHow, AnyTime Typescript Boilertplate [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main) [![Known Vulnerabilities](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate/badge.svg)](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate)
+# Run: AnyWhere, AnyHow, AnyTime Typescript Boilertplate
+
+`Tests in Main:`
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main)
+
+`Tests in Dev:`
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/dev)
+
+`Security monitoring:`
+
+[![Known Vulnerabilities](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate/badge.svg)](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate)
+
+`Coverage in Main:`
+
+[![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate)
+
+`Coverage in Dev:`
+
+[![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/branch/dev/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate)
 
 This is a boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.
 
@@ -77,9 +97,9 @@ May works as aggregation root / bounded contexts talking directly to injected do
 
 It should be the unique option working as communication interface between `infrastructure` and `domain components`.
 
-It has a databaseClient adapter and a mutexClient adapter injected on it instance.
+It has a databaseClient adapter and a mutexService adapter injected on it instance.
 
-It may lock resources to avoid race conditions by using the injected mutexClient.
+It may lock resources to avoid race conditions by using the injected mutexService.
 
 It knows it internal domain use cases.
 

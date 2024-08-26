@@ -24,6 +24,17 @@ import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
 import { IPagingResponse } from '@src/domains/ports/persistence/IPagingResponse';
 import { _DEFAULT_PAGE_SIZE_ } from '@src/infra/config/constants';
 
+export function exclude<T, Key extends keyof T>(
+  record: T,
+  keys: Key[]
+): Omit<T, Key> {
+  for (const key of keys) {
+    // eslint-disable-next-line no-param-reassign
+    delete record[key];
+  }
+  return record;
+}
+
 let userDataRepository: any;
 
 export class UserDataRepository extends BaseRepo<User, RequestCreateUser, RequestUpdateUser> {
@@ -45,6 +56,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     await this.store.create(model.id, model.serialize() as IUser);
     model.password = '********';
     model.salt = '***';
+
     return model;
   }
 
@@ -52,7 +64,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     throwIfPreUpdateValidationFails(id, data);
     // const rawUser = await this.store.getOneById(id);
     // throwIfNotFound(!!rawUser);
-    const newData = { ...data };
+    const newData = { ...(new User({ ...data, password: '' })).serialize() };
     delete (newData as any).password;
     delete (newData as any).salt;
     // const model: User = new User({
@@ -62,7 +74,9 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     // const rawNewDoc = { ...model.serialize() };
     // delete (rawNewDoc as any).password;
     // delete (rawNewDoc as any).salt;
+    // console.log('newData', newData)
     const updatedDoc = await this.store.update(id, newData as IUser);
+    // console.log('updatedDoc', updatedDoc)
     return new User(updatedDoc);
   }
 

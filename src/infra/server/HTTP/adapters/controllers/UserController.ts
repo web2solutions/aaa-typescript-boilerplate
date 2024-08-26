@@ -1,31 +1,15 @@
-import {
-  IAuthService
-} from '@src/infra/auth/IAuthService';
-import {
-  IDatabaseClient
-} from '@src/infra/persistence/port/IDatabaseClient';
-import {
-  Security
-} from '@src/infra/security';
+import { BaseController } from '@src/infra/server/HTTP/adapters/controllers/BaseController';
+import { Security } from '@src/infra/security';
 import {
   throwIfOASInputValidationFails,
   validateRequestParams
 } from '@src/infra/server/HTTP/validators';
-import {
-  IController
-} from '@src/infra/server/HTTP/ports/IController';
-import {
-  IControllerFactory
-} from '@src/infra/server/HTTP/ports/IControllerFactory';
-import {
-  Authorize
-} from '@src/infra/server/HTTP/adapters/guard/Authorize';
-import {
-  BaseDomainEvent
-} from '@src/domains/events/BaseDomainEvent';
-import {
-  IServiceResponse
-} from '@src/domains/ports/IServiceResponse';
+import { IController } from '@src/infra/server/HTTP/ports/IController';
+import { IControllerFactory } from '@src/infra/server/HTTP/ports/IControllerFactory';
+import { Authorize } from '@src/infra/server/HTTP/adapters/guard/Authorize';
+
+import { BaseDomainEvent } from '@src/domains/events/BaseDomainEvent';
+import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
 import {
   IUser,
   RequestCreateDocument,
@@ -40,47 +24,25 @@ import {
   UserDataRepository,
   UserService
 } from '@src/domains/Users';
-import { _INFRA_NOT_IMPLEMENTED_ } from '@src/infra/config/constants';
 import { setFilter } from '@src/domains/ports/persistence/setFilter';
 import { setPaging } from '@src/domains/ports/persistence/setPaging';
 import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
-// import { BaseService } from '@src/domains/ports/BaseService';
-import { PasswordCryptoService } from '../../../../security/PasswordCryptoService';
 
 let userController: any;
 
-export class UserController implements IController {
-  public authService: IAuthService;
-
-  private passwordCryptoService: PasswordCryptoService = {} as PasswordCryptoService;
-
+export class UserController extends BaseController implements IController {
   private userService: UserService;
 
-  public openApiSpecification: any;
-
-  public databaseClient: IDatabaseClient;
-
   constructor(factory: IControllerFactory) {
-    this.authService = factory.authService || {};
-    if (!this.authService.authenticate) {
-      const error = new Error('AuthService is not implemented');
-      error.name = _INFRA_NOT_IMPLEMENTED_;
-      throw error;
-    }
-
-    this.passwordCryptoService = factory.passwordCryptoService || {} as PasswordCryptoService;
-    if (!this.passwordCryptoService.hash) {
-      const error = new Error('PasswordCryptoService is not implemented');
-      error.name = _INFRA_NOT_IMPLEMENTED_;
-      throw error;
-    }
-
-    this.openApiSpecification = factory.openApiSpecification;
-    this.databaseClient = factory.databaseClient;
+    super(factory);
+    const dataRepository = UserDataRepository.compile({
+      databaseClient: this.databaseClient
+    });
     this.userService = UserService.compile({
-      dataRepository: UserDataRepository.compile({ databaseClient: this.databaseClient }),
+      dataRepository,
       services: {
-        passwordCryptoService: this.passwordCryptoService
+        passwordCryptoService: this.passwordCryptoService,
+        mutexService: this.mutexService
       }
     });
   }
@@ -111,7 +73,10 @@ export class UserController implements IController {
       requestUpdateUser
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.update(userId, requestUpdateUser);
+    const { result, error } = await this.userService.update(
+      userId,
+      requestUpdateUser
+    );
     return { result, error };
   }
 
@@ -127,7 +92,10 @@ export class UserController implements IController {
       requestUpdatePassword
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.updatePassword(userId, requestUpdatePassword);
+    const { result, error } = await this.userService.updatePassword(
+      userId,
+      requestUpdatePassword
+    );
     return { result, error };
   }
 
@@ -152,14 +120,16 @@ export class UserController implements IController {
   }
 
   @Authorize()
-  public async getAll(event: BaseDomainEvent): Promise<IServiceResponse<IUser[]>> {
+  public async getAll(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IUser[]>> {
     // validateRequestParams(event.schemaOAS, event.params);
     // const page = parseInt(Security.xss(event.params.page || 0), 2);
     const filters = setFilter(event);
     const paging = setPaging(event);
     const result = await this.userService.getAll(
       { ...filters },
-        paging as IPagingRequest
+      paging as IPagingRequest
     );
     // console.log(result);
     return result;
@@ -177,7 +147,10 @@ export class UserController implements IController {
       requestCreateDocument
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.createDocument(userId, requestCreateDocument);
+    const { result, error } = await this.userService.createDocument(
+      userId,
+      requestCreateDocument
+    );
     return { result, error };
   }
 
@@ -228,7 +201,10 @@ export class UserController implements IController {
       requestCreatePhone
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.createPhone(userId, requestCreatePhone);
+    const { result, error } = await this.userService.createPhone(
+      userId,
+      requestCreatePhone
+    );
     return { result, error };
   }
 
@@ -279,7 +255,10 @@ export class UserController implements IController {
       requestCreateEmail
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.createEmail(userId, requestCreateEmail);
+    const { result, error } = await this.userService.createEmail(
+      userId,
+      requestCreateEmail
+    );
     return { result, error };
   }
 

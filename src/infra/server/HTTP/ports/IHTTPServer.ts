@@ -4,6 +4,6 @@ export interface IHTTPServer<T> {
   // _application: HTTPServerTypes;
   endPointRegister (handlerFactory: IbaseHandler): void;
   application: T;
-  start(): void;
-  stop(): void;
+  start(): Promise<void>;
+  stop(): Promise<void>;
 }

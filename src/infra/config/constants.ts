@@ -27,6 +27,7 @@ const _BCRYPT_SALT_ROUNDS_ = 10;
 const _PASSWORD_MIN_LENGTH_ = 8;
 
 const _KV_KEY_NAME_PREFIX_ = 'my_prefix';
+const _MUTEX_KEY_NAME_PREFIX_ = 'mutex';
 
 export {
   _HTTP_PORT_,
@@ -47,5 +48,6 @@ export {
   _DATABASE_PAGING_ERROR_,
   _BCRYPT_SALT_ROUNDS_,
   _PASSWORD_MIN_LENGTH_,
-  _KV_KEY_NAME_PREFIX_
+  _KV_KEY_NAME_PREFIX_,
+  _MUTEX_KEY_NAME_PREFIX_
 };

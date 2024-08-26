@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   RedisClientType,
   RedisFunctions,
@@ -10,27 +11,30 @@ import { _KV_KEY_NAME_PREFIX_ } from '@src/infra/config/constants';
 import { redisConfig } from '@src/infra/config/redis';
 import { IServiceResponse } from '@src/infra/service/port/IServiceResponse';
 import { ServiceResponse } from '@src/infra/service/adapter/ServiceResponse';
-import { IKeyValueStorageClient } from './IKeyValueStorageClient';
+import { BaseKeyValueStorageClient } from './BaseKeyValueStorageClient';
 
-export class RedisKeyValueStorageClient implements IKeyValueStorageClient {
-  private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+let redisKeyValueStorageClient: any;
 
-  private prefix: string;
+export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
+  public client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
 
-  private connected: boolean;
+  public prefix: string;
 
-  constructor() {
+  public connected: boolean;
+
+  private constructor() {
+    super();
     this.client = createClient(redisConfig);
-    // this.client.on('error', (err) => console.log('Redis Client Error', err));
+    this.client.on('error', (err) => console.log('Redis Client Error', err));
     this.client.on('connect', () => {
-      // console.log('Redis connected');
+      console.log('Redis connected');
       this.connected = true;
     });
     this.client.on('end', () => {
-      // console.log('Redis disconnected');
+      console.log('Redis disconnected');
       this.connected = false;
     });
-    // this.client.on('ready', () => console.log('Redis ready'));
+    this.client.on('ready', () => console.log('Redis ready'));
 
     this.prefix = `${_KV_KEY_NAME_PREFIX_}__`;
     this.connected = false;
@@ -39,8 +43,19 @@ export class RedisKeyValueStorageClient implements IKeyValueStorageClient {
   public async get(keyName: string): Promise<IServiceResponse> {
     try {
       await this.connect();
-      const value = await this.client.get(`${this.prefix}:${keyName}`);
-      return { result: !!value };
+      const result = await this.client.get(`${this.prefix}:${keyName}`);
+      return { result };
+    } catch (error: unknown) {
+      // console.log(error);
+      return new ServiceResponse({ error: error as Error });
+    }
+  }
+
+  public async del(keyName: string): Promise<IServiceResponse> {
+    try {
+      await this.connect();
+      const result = await this.client.del(`${this.prefix}:${keyName}`);
+      return { result };
     } catch (error: unknown) {
       // console.log(error);
       return new ServiceResponse({ error: error as Error });
@@ -51,7 +66,7 @@ export class RedisKeyValueStorageClient implements IKeyValueStorageClient {
     try {
       await this.connect();
       const result = await this.client.set(`${this.prefix}:${keyName}`, value);
-      return { result: !!result };
+      return { result };
     } catch (error: unknown) {
       // console.log(error);
       return new ServiceResponse({ error: error as Error });
@@ -77,6 +92,7 @@ export class RedisKeyValueStorageClient implements IKeyValueStorageClient {
     try {
       if (!this.connected) {
         await this.client.connect();
+        this.connected = true;
       }
       return {
         result: {
@@ -87,5 +103,11 @@ export class RedisKeyValueStorageClient implements IKeyValueStorageClient {
       // console.log(error);
       return new ServiceResponse({ error: error as Error });
     }
+  }
+
+  public static compile(): RedisKeyValueStorageClient {
+    if (redisKeyValueStorageClient) return redisKeyValueStorageClient;
+    redisKeyValueStorageClient = new RedisKeyValueStorageClient();
+    return redisKeyValueStorageClient;
   }
 }

@@ -1,47 +1,31 @@
-import {
-  RedisClientType,
-  RedisFunctions,
-  RedisScripts,
-  RedisModules,
-  createClient
-} from 'redis';
-
-import { redisConfig } from '@src/infra/config/redis';
-import { IMutexClient } from '@src/infra/mutex/port/IMutexClient';
+import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IServiceResponse } from '@src/infra/service/port/IServiceResponse';
 import { ServiceResponse } from '@src/infra/service/adapter/ServiceResponse';
+import { IKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/IKeyValueStorageClient';
+import { _MUTEX_KEY_NAME_PREFIX_ } from '@src/infra/config/constants';
 
-class MutexService implements IMutexClient {
-  private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+let mutexService: any;
 
-  private prefix: string;
+export class MutexService implements IMutexService {
+  private keyValueStorageClient: IKeyValueStorageClient;
 
-  private connected: boolean;
+  public prefix: string;
 
-  constructor() {
-    this.client = createClient(redisConfig);
-    // this.client.on('error', (err) => console.log('Redis Client Error', err));
-    this.client.on('connect', () => {
-      // console.log('Redis connected');
-      this.connected = true;
-    });
-    this.client.on('end', () => {
-      // console.log('Redis disconnected');
-      this.connected = false;
-    });
-    // this.client.on('ready', () => console.log('Redis ready'));
-
-    this.prefix = 'mutex__';
-    this.connected = false;
+  private constructor(keyValueStorageClient: IKeyValueStorageClient) {
+    if (!keyValueStorageClient) {
+      throw new Error('MutexService depends on KeyValueStorageClient implementation');
+    }
+    this.keyValueStorageClient = keyValueStorageClient;
+    this.prefix = `${_MUTEX_KEY_NAME_PREFIX_}:`;
   }
 
   public async lock(resourceName: string, uuid: string): Promise<IServiceResponse> {
     try {
-      const wasAlreadyLocked = await this.isLocked(resourceName, uuid);
-      if (wasAlreadyLocked.result) return { result: { wasAlreadyLocked: wasAlreadyLocked.result } };
-      await this.connect();
-      await this.client.set(`${this.prefix}:${resourceName}:${uuid}`, 'locked');
-      return new ServiceResponse({ result: { locked: true } });
+      const previouslyLocked = await this.isLocked(resourceName, uuid);
+      if (previouslyLocked.result) return { result: { previouslyLocked: previouslyLocked.result } };
+      const { result, error } = await this.keyValueStorageClient.set(`${this.prefix}:${resourceName}:${uuid}`, 'locked');
+      if (error) throw error;
+      return new ServiceResponse({ result });
     } catch (error: unknown) {
       // console.log(error);
       return new ServiceResponse({ error: error as Error });
@@ -50,9 +34,9 @@ class MutexService implements IMutexClient {
 
   public async isLocked(resourceName: string, uuid: string): Promise<IServiceResponse> {
     try {
-      await this.connect();
-      const value = await this.client.get(`${this.prefix}:${resourceName}:${uuid}`);
-      return { result: !!value };
+      const { result, error } = await this.keyValueStorageClient.get(`${this.prefix}:${resourceName}:${uuid}`);
+      if (error) throw error;
+      return new ServiceResponse({ result: !!result });
     } catch (error: unknown) {
       // console.log(error);
       return new ServiceResponse({ error: error as Error });
@@ -61,45 +45,18 @@ class MutexService implements IMutexClient {
 
   public async unlock(resourceName: string, uuid: string): Promise<IServiceResponse> {
     try {
-      await this.connect();
-      const value = await this.client.del(`${this.prefix}:${resourceName}:${uuid}`);
-      return { result: value };
+      const { result, error } = await this.keyValueStorageClient.del(`${this.prefix}:${resourceName}:${uuid}`);
+      if (error) throw error;
+      return new ServiceResponse({ result });
     } catch (error: unknown) {
       // console.log(error);
       return new ServiceResponse({ error: error as Error });
     }
   }
 
-  public async disconnect(): Promise<IServiceResponse> {
-    try {
-      await this.client.quit();
-      this.connected = false;
-      return {
-        result: {
-          connected: this.connected
-        }
-      };
-    } catch (error: unknown) {
-      // console.log(error);
-      return new ServiceResponse({ error: error as Error });
-    }
-  }
-
-  public async connect(): Promise<IServiceResponse> {
-    try {
-      if (!this.connected) {
-        await this.client.connect();
-      }
-      return {
-        result: {
-          connected: this.connected
-        }
-      };
-    } catch (error: unknown) {
-      // console.log(error);
-      return new ServiceResponse({ error: error as Error });
-    }
+  public static compile(keyValueStorageClient: IKeyValueStorageClient): MutexService {
+    if (mutexService) return mutexService;
+    mutexService = new MutexService(keyValueStorageClient);
+    return mutexService;
   }
 }
-
-export const mutexService = new MutexService();
