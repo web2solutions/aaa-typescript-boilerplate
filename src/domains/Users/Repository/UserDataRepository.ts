@@ -64,7 +64,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     throwIfPreUpdateValidationFails(id, data);
     // const rawUser = await this.store.getOneById(id);
     // throwIfNotFound(!!rawUser);
-    const newData = { ...data };
+    const newData = { ...(new User({ ...data, password: '' })).serialize() };
     delete (newData as any).password;
     delete (newData as any).salt;
     // const model: User = new User({
@@ -74,7 +74,9 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     // const rawNewDoc = { ...model.serialize() };
     // delete (rawNewDoc as any).password;
     // delete (rawNewDoc as any).salt;
+    // console.log('newData', newData)
     const updatedDoc = await this.store.update(id, newData as IUser);
+    // console.log('updatedDoc', updatedDoc)
     return new User(updatedDoc);
   }
 

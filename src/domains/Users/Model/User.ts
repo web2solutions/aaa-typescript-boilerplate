@@ -11,17 +11,21 @@ import {
   DocumentValueObject,
   PhoneValueObject
 } from '@src/domains/valueObjects';
-import { IUser, RequestCreateUser } from '..';
-import { RequestCreatePhone } from '../ports/dto/RequestCreatePhone';
-import { RequestUpdatePhone } from '../ports/dto/RequestUpdatePhone';
-import { RequestCreateDocument } from '../ports/dto/RequestCreateDocument';
-import { RequestUpdateDocument } from '../ports/dto/RequestUpdateDocument';
-import { RequestCreateEmail } from '../ports/dto/RequestCreateEmail';
-import { RequestUpdateEmail } from '../ports/dto/RequestUpdateEmail';
+import {
+  IUser,
+  RequestCreateUser,
+  RequestCreatePhone,
+  RequestUpdatePhone,
+  RequestCreateDocument,
+  RequestUpdateDocument,
+  RequestCreateEmail,
+  RequestUpdateEmail
+} from '../index';
 
 interface UserFactory extends RequestCreateUser {
   id?: string;
   readOnly?: boolean;
+  active?: boolean;
 }
 
 export class User extends BaseModel<IUser> implements IUser {
@@ -48,6 +52,8 @@ export class User extends BaseModel<IUser> implements IUser {
   private _readOnly: boolean = false;
 
   public _excludeOnSerialize: string[] = ['login'];
+
+  public _active: boolean = true;
 
   constructor(payload: UserFactory) {
     super(payload.id);

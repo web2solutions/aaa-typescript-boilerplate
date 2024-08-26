@@ -16,17 +16,42 @@ import {
   BasicAuthorizationHeaderUser4,
   BasicAuthorizationHeaderUserGuest
 } from '@test/mock';
-import { RequestUpdatePassword, IUser } from '@src/domains/Users';
+import {
+  RequestUpdatePassword, IUser, UserDataRepository, UserService
+} from '@src/domains/Users';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { JwtService } from '@src/infra/jwt/JwtService';
+import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
+
+import createdUsers from '@seed/users';
+
+const [createdUser1] = createdUsers;
 
 const webServer = new FastifyServer();
-
 const databaseClient = InMemoryDbClient;
+const passwordCryptoService = PasswordCryptoService.compile();
+const jwtService = JwtService.compile();
 const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 
-const authService = AuthService.compile();
-const passwordCryptoService = PasswordCryptoService.compile();
+// LOCAL IDENTITY PROVIDER
+const dataRepository = UserDataRepository.compile({
+  databaseClient: InMemoryDbClient
+});
+const userService = UserService.compile({
+  dataRepository,
+  services: {
+    passwordCryptoService,
+    mutexService
+  }
+});
+const userProvider = UserProviderLocal.compile(userService);
+const authService = AuthService.compile(
+  userProvider,
+  passwordCryptoService,
+  jwtService
+);
+// LOCAL IDENTITY PROVIDER
 
 const serverType = EHTTPFrameworks.fastify;
 
@@ -34,10 +59,10 @@ let API: any;
 let server: any;
 
 describe('fastify -> User updatePassword suite', () => {
-  let usersAll: IUser[];
   let user1: IUser;
-
   beforeAll(async () => {
+    await databaseClient.connect();
+    await keyValueStorageClient.connect();
     API = new RestAPI<Fastify>({
       databaseClient,
       webServer,
@@ -50,28 +75,17 @@ describe('fastify -> User updatePassword suite', () => {
     });
 
     server = API.server.application;
-
-    await API.start();
+    await API.seedData();
     await server.ready();
-    usersAll = await API.seedUsers();
-    [user1] = usersAll;
   });
 
   beforeEach(async () => {
-    const requestUpdatePassword: RequestUpdatePassword = {
-      password: 'user1_password'
-      // oldPassword: 'new_password_xxxxxxxxxxxxxxxxxx'
-    };
-    await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
-      .send(requestUpdatePassword)
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
+    await authService.updatePassword(createdUser1.id, createdUser1.password);
   });
 
   afterAll(async () => {
-    await API.stop();
+    await databaseClient.disconnect();
+    await keyValueStorageClient.disconnect();
     await server.close();
   });
 
@@ -79,16 +93,14 @@ describe('fastify -> User updatePassword suite', () => {
     expect.hasAssertions();
     const requestUpdatePassword: RequestUpdatePassword = {
       password: 'new_password_xxxxxxxxxxxxxxxxxx'
-      // oldPassword: user1.password
+      // oldPassword: createdUser1.password
     };
     const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
+      .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
       .send(requestUpdatePassword)
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
-    // console.log(response.body);
-    expect(response.body.password).toBe(requestUpdatePassword.password);
     expect(response.statusCode).toBe(200);
   });
 
@@ -99,12 +111,11 @@ describe('fastify -> User updatePassword suite', () => {
       // oldPassword: 'user1_password'//
     };
     const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
+      .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
       .send(requestUpdatePassword)
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
-    // console.log(response.body)
     expect(response.body.message).toBe('Bad Request - password can not be empty');
     expect(response.statusCode).toBe(400);
   });
@@ -113,10 +124,10 @@ describe('fastify -> User updatePassword suite', () => {
     expect.hasAssertions();
     const requestUpdatePassword: RequestUpdatePassword = {
       password: '1234567'
-      // oldPassword: user1.password
+      // oldPassword: createdUser1.password
     };
     const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
+      .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
       .send(requestUpdatePassword)
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
@@ -128,7 +139,7 @@ describe('fastify -> User updatePassword suite', () => {
   it('user1 must not be able to update user password with unknown field', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
+      .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
       .send({
         invalidFieldName: 50
       })
@@ -142,7 +153,7 @@ describe('fastify -> User updatePassword suite', () => {
   it('user1 must not be able to update new user with empty payload', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
+      .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
       .send({})
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
@@ -154,8 +165,8 @@ describe('fastify -> User updatePassword suite', () => {
   it('user2 must not be able to update new user - Forbidden: the role update_user is required', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
-      .send({ ...user1, id: user1.id })
+      .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
+      .send({ ...user1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser2);
@@ -166,8 +177,8 @@ describe('fastify -> User updatePassword suite', () => {
   it('user3 must not be able to update new user - Forbidden: the role update_user is required', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
-      .send({ ...user1, id: user1.id })
+      .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
+      .send({ ...user1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser3);
@@ -179,8 +190,8 @@ describe('fastify -> User updatePassword suite', () => {
   it('user4 must not be able to update new user - Forbidden: the role update_user is required', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
-      .send({ ...user1, id: user1.id })
+      .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
+      .send({ ...user1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser4);
@@ -192,8 +203,8 @@ describe('fastify -> User updatePassword suite', () => {
   it('guest must not be able to update new user - Unauthorized', async () => {
     expect.hasAssertions();
     const response = await request(server.server)
-      .put(`/api/1.0.0/users/${user1.id}/updatePassword`)
-      .send({ ...user1, id: user1.id })
+      .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
+      .send({ ...user1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUserGuest);

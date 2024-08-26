@@ -15,18 +15,37 @@ import {
   BasicAuthorizationHeaderUser4,
   BasicAuthorizationHeaderUserGuest
 } from '@test/mock';
-import { IUser } from '@src/domains/Users';
+import { IUser, UserDataRepository, UserService } from '@src/domains/Users';
 import { DocumentValueObject } from '@src/domains/valueObjects';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { JwtService } from '@src/infra/jwt/JwtService';
+import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
 
 const webServer = new FastifyServer();
-
 const databaseClient = InMemoryDbClient;
+const passwordCryptoService = PasswordCryptoService.compile();
+const jwtService = JwtService.compile();
 const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 
-const authService = AuthService.compile();
-const passwordCryptoService = PasswordCryptoService.compile();
+// LOCAL IDENTITY PROVIDER
+const dataRepository = UserDataRepository.compile({
+  databaseClient: InMemoryDbClient
+});
+const userService = UserService.compile({
+  dataRepository,
+  services: {
+    passwordCryptoService,
+    mutexService
+  }
+});
+const userProvider = UserProviderLocal.compile(userService);
+const authService = AuthService.compile(
+  userProvider,
+  passwordCryptoService,
+  jwtService
+);
+// LOCAL IDENTITY PROVIDER
 
 const serverType = EHTTPFrameworks.fastify;
 
@@ -38,6 +57,9 @@ describe('fastify -> User deleteDocument suite', () => {
   let user1: IUser;
   let document1: DocumentValueObject;
   beforeAll(async () => {
+    await databaseClient.connect();
+    await keyValueStorageClient.connect();
+
     API = new RestAPI<Fastify>({
       databaseClient,
       webServer,
@@ -51,7 +73,6 @@ describe('fastify -> User deleteDocument suite', () => {
 
     server = API.server.application;
 
-    await API.start();
     await server.ready();
     usersAll = await API.seedUsers();
     [user1] = usersAll;
@@ -59,7 +80,8 @@ describe('fastify -> User deleteDocument suite', () => {
     // delete .id;
   });
   afterAll(async () => {
-    await API.stop();
+    await databaseClient.disconnect();
+    await keyValueStorageClient.disconnect();
     await server.close();
   });
 

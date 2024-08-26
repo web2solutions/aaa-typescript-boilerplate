@@ -69,12 +69,12 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`An error occurred: ${JSON.stringify(error)}`);
-      this.stop(1);
+      this.stop();
     }
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public async stop(code: number = 0) {
+  public async stop(/* code: number = 0 */) {
     this._application.close();
     // process.exit(code);
   }

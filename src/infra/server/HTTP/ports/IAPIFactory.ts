@@ -4,7 +4,7 @@ import { IHTTPServer } from '@src/infra/server/HTTP/ports/IHTTPServer';
 import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import { IAuthService } from '@src/infra/auth/IAuthService';
-import { IPasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 import { IKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/IKeyValueStorageClient';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 

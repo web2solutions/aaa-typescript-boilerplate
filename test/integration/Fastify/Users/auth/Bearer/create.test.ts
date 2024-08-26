@@ -12,33 +12,62 @@ import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import {
-  BasicAuthorizationHeaderUser1,
-  BasicAuthorizationHeaderUser2,
-  BasicAuthorizationHeaderUser3,
-  BasicAuthorizationHeaderUser4,
   BasicAuthorizationHeaderUserGuest,
   user1,
   // user2,
   user3
 } from '@test/mock';
 
-const webServer = new FastifyServer();
+import createdUsers from '@seed/users';
 
+import { UserDataRepository, UserService } from '@src/domains/Users';
+import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
+import { JwtService } from '@src/infra/jwt/JwtService';
+import { IAuthorizationHeader } from '@src/infra/auth/IAuthorizationHeader';
+import { EAuthSchemaType } from '@src/infra/auth/EAuthSchemaType';
+
+const [createdUser1, createdUser2, createdUser3, createdUser4] = createdUsers;
+
+const webServer = new FastifyServer();
 const databaseClient = InMemoryDbClient;
+const passwordCryptoService = PasswordCryptoService.compile();
+const jwtService = JwtService.compile();
 const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 
-const authService = AuthService.compile();
-const passwordCryptoService = PasswordCryptoService.compile();
+// LOCAL IDENTITY PROVIDER
+const dataRepository = UserDataRepository.compile({
+  databaseClient: InMemoryDbClient
+});
+const userService = UserService.compile({
+  dataRepository,
+  services: {
+    passwordCryptoService,
+    mutexService
+  }
+});
+const userProvider = UserProviderLocal.compile(userService);
+
+const authService = AuthService.compile(
+  userProvider,
+  passwordCryptoService,
+  jwtService
+);
+// LOCAL IDENTITY PROVIDER
 
 const serverType = EHTTPFrameworks.fastify;
 
-let API: any;
+let API: RestAPI<Fastify>;
 let server: any;
+let authorizationHeaderUser1: IAuthorizationHeader;
+let authorizationHeaderUser2: IAuthorizationHeader;
+let authorizationHeaderUser3: IAuthorizationHeader;
+let authorizationHeaderUser4: IAuthorizationHeader;
 
-describe('fastify -> create User suite', () => {
+describe('fastify -> create User suite - Auth -> Bearer', () => {
   beforeAll(async () => {
-    // await keyValueStorageClient.connect();
+    await databaseClient.connect();
+    await keyValueStorageClient.connect();
 
     API = new RestAPI<Fastify>({
       databaseClient,
@@ -53,11 +82,42 @@ describe('fastify -> create User suite', () => {
 
     server = API.server.application;
 
-    await API.start();
+    await API.seedData();
     await server.ready();
+
+    authorizationHeaderUser1 = {
+      ...(await authService.authenticate(
+        createdUser1.username,
+        createdUser1.password,
+        EAuthSchemaType.Basic
+      ))
+    };
+    authorizationHeaderUser2 = {
+      ...(await authService.authenticate(
+        createdUser2.username,
+        createdUser2.password,
+        EAuthSchemaType.Basic
+      ))
+    };
+    authorizationHeaderUser3 = {
+      ...(await authService.authenticate(
+        createdUser3.username,
+        createdUser3.password,
+        EAuthSchemaType.Basic
+      ))
+    };
+    authorizationHeaderUser4 = {
+      ...(await authService.authenticate(
+        createdUser4.username,
+        createdUser4.password,
+        EAuthSchemaType.Basic
+      ))
+    };
   });
+
   afterAll(async () => {
-    await API.stop();
+    await databaseClient.disconnect();
+    await keyValueStorageClient.disconnect();
     await server.close();
     // await keyValueStorageClient.disconnect();
   });
@@ -69,11 +129,10 @@ describe('fastify -> create User suite', () => {
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
-
+      .set(authorizationHeaderUser1);
+    expect(response.statusCode).toBe(201);
     expect(response.body.firstName).toBe(user1.firstName);
     expect(response.body.lastName).toBe(user1.lastName);
-    expect(response.statusCode).toBe(201);
   });
 
   it('user1 must not be able to create a duplicated username', async () => {
@@ -83,7 +142,7 @@ describe('fastify -> create User suite', () => {
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
+      .set(authorizationHeaderUser1);
     // console.log(response.body);
     expect(response.body.message).toBe('Duplicated record - username already in use');
     expect(response.statusCode).toBe(409);
@@ -96,7 +155,7 @@ describe('fastify -> create User suite', () => {
       .send({ ...user1, username: '', password: '12345678' })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
+      .set(authorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - username can not be empty');
     expect(response.statusCode).toBe(400);
   });
@@ -108,7 +167,7 @@ describe('fastify -> create User suite', () => {
       .send({ ...user1, username: 'loginname', password: '' })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
+      .set(authorizationHeaderUser1);
     // console.log(response.body);
     expect(response.body.message).toBe('Bad Request - password must have at least 8 chars.');
     expect(response.statusCode).toBe(400);
@@ -121,7 +180,7 @@ describe('fastify -> create User suite', () => {
       .send({ ...user1, username: 'loginname', password: '1234567' })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
+      .set(authorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - password must have at least 8 chars.');
     expect(response.statusCode).toBe(400);
   });
@@ -133,7 +192,7 @@ describe('fastify -> create User suite', () => {
       .send({ ...user3, firstName: '' })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
+      .set(authorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - firstName can not be empty');
     expect(response.statusCode).toBe(400);
   });
@@ -147,7 +206,7 @@ describe('fastify -> create User suite', () => {
       })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
+      .set(authorizationHeaderUser1);
     expect(response.body.message).toBe('Bad Request - The property invalidFieldName from input payload does not exist inside the domain.');
     expect(response.statusCode).toBe(400);
   });
@@ -159,7 +218,7 @@ describe('fastify -> create User suite', () => {
       .send({})
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
+      .set(authorizationHeaderUser1);
     // console.log(response.body)
     expect(response.statusCode).toBe(400);
   });
@@ -171,7 +230,7 @@ describe('fastify -> create User suite', () => {
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser2);
+      .set(authorizationHeaderUser2);
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the create_user role');
   });
@@ -183,7 +242,7 @@ describe('fastify -> create User suite', () => {
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser3);
+      .set(authorizationHeaderUser3);
     // console.log(response.body);
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the create_user role');
@@ -196,7 +255,7 @@ describe('fastify -> create User suite', () => {
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser4);
+      .set(authorizationHeaderUser4);
     // console.log(response.body.message)
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the create_user role');

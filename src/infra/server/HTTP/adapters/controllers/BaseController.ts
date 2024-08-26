@@ -3,7 +3,7 @@ import { IAuthService } from '@src/infra/auth/IAuthService';
 import { IControllerFactory } from '@src/infra/server/HTTP/ports/IControllerFactory';
 import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
-import { IPasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 
 export abstract class BaseController {
   private _authService: IAuthService = {} as IAuthService;

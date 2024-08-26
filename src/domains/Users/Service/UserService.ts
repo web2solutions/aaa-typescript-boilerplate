@@ -38,7 +38,7 @@ import { IPagingResponse } from '@src/domains/ports/persistence/IPagingResponse'
 import { canNotBeEmpty, mustBePassword } from '@src/domains/validators';
 import { ServiceResponse } from '@src/infra/service/adapter/ServiceResponse';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
-import { IPasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 
 interface IUserServiceConfig extends IServiceConfig {
 
@@ -69,10 +69,11 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   public async create(data: RequestCreateUser): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      mustBePassword('password', data.password);
+      const password = data.password || '';
+      mustBePassword('password', password);
 
       const newData = { ...data };
-      const { hash, salt } = await this.passwordCryptoService.hash(data.password);
+      const { hash, salt } = await this.passwordCryptoService.hash(password);
       newData.password = hash;
       newData.salt = salt;
 
@@ -90,14 +91,15 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     try {
       const { result: { previouslyLocked } } = await this.mutexService.lock(this.entityName, id);
       if (previouslyLocked) throw new Error(`${this.entityName} locked`);
-
+      // console.log('data', data);
       const user = await updateUser(id, data, this.dataRepository);
+      // console.log('user', user)
       serviceResponse.result = user;
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
       serviceResponse.error = error as Error;
-
+      // console.log(error);
       await this.mutexService.unlock(this.entityName, id);
     }
     return serviceResponse;
@@ -166,7 +168,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       const { hash, salt } = await this.passwordCryptoService.hash(data.password);
       newData.password = hash;
       newData.salt = salt;
-      const user = await updatePassword(id, data, this.dataRepository);
+      const user = await updatePassword(id, newData, this.dataRepository);
       serviceResponse.result = user;
 
       await this.mutexService.unlock(this.entityName, id);

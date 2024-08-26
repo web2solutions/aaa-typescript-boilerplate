@@ -9,6 +9,16 @@ import {
   _DATABASE_PAGING_ERROR_
 } from '@src/infra/config/constants';
 
+export const matchAllFilters = (record: any, filters: any): boolean => {
+  const filterProperties = Object.keys(filters);
+  const mustMatch = filterProperties.length;
+  let totalMatched = 0;
+  for (const propertyName of filterProperties) {
+    if (filters[propertyName] === record[propertyName]) totalMatched += 1;
+  }
+  return totalMatched === mustMatch;
+};
+
 const userStore = new Map<string, unknown>();
 const userStoreUniqueIndexes = {
   username: new Map<string, unknown>()
@@ -107,7 +117,8 @@ export const UserStoreAPI = {
         iterated = iterated + 1;
         if (iterated > startAt) {
           if (result.length < limit) {
-            result.push(value as IUser);
+            // console.log('XXXXXXXX', filters);
+            if (matchAllFilters(value, filters)) result.push(value as IUser);
           }
         }
       }

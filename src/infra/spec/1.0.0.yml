@@ -55,6 +55,8 @@ paths:
       security:
         - basicAuth: 
           - read_user
+        - bearerAuth: 
+          - read_user
     post:
       tags:
         - user
@@ -85,6 +87,7 @@ paths:
           description: Conflict
       security:
          - basicAuth: ["create_user"]
+         - bearerAuth: ["create_user"]
   /users/{id}:
     delete:
       tags:
@@ -116,6 +119,8 @@ paths:
           description: User not found
       security:
         - basicAuth: 
+          - delete_user
+        - bearerAuth: 
           - delete_user
     put:
       tags:
@@ -157,6 +162,8 @@ paths:
       security:
         - basicAuth: 
           - update_user
+        - bearerAuth: 
+          - update_user
     get:
       tags:
         - user
@@ -187,6 +194,8 @@ paths:
           description: User not found
       security:
         - basicAuth: 
+          - read_user
+        - bearerAuth: 
           - read_user
   /users/{id}/updatePassword:
     put:
@@ -229,6 +238,8 @@ paths:
       security:
         - basicAuth: 
           - update_user
+        - bearerAuth: 
+          - update_user
   /users/{id}/createEmail:
     post:
       tags:
@@ -269,6 +280,8 @@ paths:
           description: Conflict
       security:
         - basicAuth: 
+          - update_user
+        - bearerAuth: 
           - update_user
   /users/{id}/updateEmail/{emailId}:
     put:
@@ -317,6 +330,8 @@ paths:
       security:
         - basicAuth: 
           - update_user
+        - bearerAuth: 
+          - update_user
   /users/{id}/deleteEmail/{emailId}:
     delete:
       tags:
@@ -355,6 +370,8 @@ paths:
       security:
         - basicAuth: 
           - delete_user
+        - bearerAuth: 
+          - update_user
   /users/{id}/createDocument:
     post:
       tags:
@@ -395,6 +412,8 @@ paths:
           description: Conflict
       security:
         - basicAuth: 
+          - update_user
+        - bearerAuth: 
           - update_user
   /users/{id}/updateDocument/{documentId}:
     put:
@@ -443,6 +462,8 @@ paths:
       security:
         - basicAuth: 
           - update_user
+        - bearerAuth: 
+          - update_user
   /users/{id}/documentDelete/{documentId}:
     delete:
       tags:
@@ -480,6 +501,8 @@ paths:
           description: Resource not found
       security:
         - basicAuth: 
+          - delete_user
+        - bearerAuth: 
           - delete_user
   /users/{id}/createPhone:
     post:
@@ -521,6 +544,8 @@ paths:
           description: Conflict
       security:
         - basicAuth: 
+          - update_user
+        - bearerAuth: 
           - update_user
   /users/{id}/updatePhone/{phoneId}:
     put:
@@ -569,6 +594,8 @@ paths:
       security:
         - basicAuth: 
           - update_user
+        - bearerAuth: 
+          - update_user
   /users/{id}/phoneDelete/{phoneId}:
     delete:
       tags:
@@ -606,6 +633,8 @@ paths:
           description: Resource not found
       security:
         - basicAuth: 
+          - delete_user
+        - bearerAuth: 
           - delete_user
 components:
   schemas:
@@ -943,15 +972,6 @@ components:
           example: true
           description: Is this the primary User's phone number?
           default: false
-    Integrity:
-      type: object
-      properties:
-        status: 
-          type: string 
-          enum: 
-            - healthy
-            - risky
-    
     # ################################ #
     # Reusable data models
     # ################################ #
@@ -1009,7 +1029,6 @@ components:
         _createdAt:
           type: string
           format: date-time
-          
         _updatedAt:
           type: string
           format: date-time
@@ -1017,3 +1036,6 @@ components:
     basicAuth:
       type: http
       scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
