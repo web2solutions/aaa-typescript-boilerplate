@@ -11,7 +11,6 @@
   "scripts": {
     "check-node-version": "node check-node-version.js",
     "preinstall": "npm run check-node-version",
-    "pretest": "npm run lint:fix",
     "test": "jest --verbose --collect-coverage --detectOpenHandles",
     "test:unit": "jest ./test/unit --verbose --collect-coverage --detectOpenHandles",
     "test:integration": "jest ./test/integration --verbose --detectOpenHandles --collect-coverage",
