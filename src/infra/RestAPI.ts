@@ -19,7 +19,7 @@ import { IAPIFactory } from '@src/infra/server/HTTP/ports/IAPIFactory';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 import { _API_PREFIX_, _DOCS_PREFIX_ } from './config/constants';
 import { IAuthService } from './auth/IAuthService';
-import { IPasswordCryptoService } from './security/PasswordCryptoService';
+import { IPasswordCryptoService } from './security/IPasswordCryptoService';
 import { IKeyValueStorageClient } from './persistence/KeyValueStorage/IKeyValueStorageClient';
 
 export class RestAPI<T> {
@@ -185,6 +185,7 @@ export class RestAPI<T> {
   public async stop(): Promise<void> {
     if (this._keyValueStorageClient) {
       await this._keyValueStorageClient.disconnect();
+      this._keyValueStorageClient = undefined;
     }
     // quit db
     // quit all
