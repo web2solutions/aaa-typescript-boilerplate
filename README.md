@@ -1,4 +1,4 @@
-# Run: AnyWhere, AnyHow, AnyTime Typescript Boilertplate
+# AnyWhere, AnyHow, AnyTime - Typescript Boilertplate
 
 `The ultimate boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.`
 
@@ -27,9 +27,9 @@ It can be used as boilerplate to create `modular monolith`or `microservice` appl
 
 It implements incoming data validation, in the infrastructure level, through custom logic and based in the Open API specification.
 
-It implements basic HTTP auth mechanism with a custom role system. Replaceable with other auth mechanisms. Tied to the API OAS spec.
+It implements Basic and Bearer HTTP auth mechanism with a custom role system. Replaceable with other auth mechanisms. Tied to the API OAS spec.
 
-It implements a HTTP web server port actually implementing adapters for Express.js,  Fastify and Hyper-Express. A serverless implementation is coming soon.
+It implements a HTTP web server port actually implementing adapters for Express.js, Fastify and Hyper-Express. A serverless implementation is coming soon.
 
 It implements an agnostic data repository port that actually writes/reads data from a In Memory database adapter. It is easily replaceable with Mongoose, Sequelize, etc.
 
@@ -49,21 +49,21 @@ The API doc might be visualized at: http://localhost:3000/doc/
 
 ### Request data workflow through the architecture's components
 
-Request Handler -> Controller -> Domain Service -> Domain Use Case -> Data Repository -> Data Adapter -> DBClient
+Request Handler -> Controller -> Domain Service -> Domain Use Case -> Data Repository -> Data Adapter
 
 ### Response data workflow through the architecture's components
 
-Request Handler <- Controller <- Domain Service <- Domain Use Case <- Data Repository <- Data Adapter <- DBClient
+Request Handler <- Controller <- Domain Service <- Domain Use Case <- Data Repository <- Data Adapter
 
 ### Main components and their responsibility scope
 
-#### 1.`Request Handlers`
+#### 1.`HTTP Request Handlers`
 
-It is the entry point in a request to the service. 
+It is the entry point in a `HTTP` request made to the service.
 
 `It is a infrastructure's component.`
 
-It performs params, body, url and access permission validations against the incoming request, using the associated OAS specification for each end point.
+It composes a `Domain Event` using it income parameters such as `body` and `headers`. The domain event is passed to the `Controller` by calling an associated method.
 
 It may offers adapters for different outside service interfaces:
 
@@ -76,7 +76,15 @@ It may offers adapters for different outside service interfaces:
 - Events/SNS
 - Events/etc
 
-#### 2.`Domain Service`
+#### 2.`Controllers`
+
+Controllers are responsible to forward the `incoming Domain Events` to their specific corelated method in the `Domain Service`.
+
+`It is a infrastructure's component.`
+
+It performs input data validation and access permission validation against the incoming `Domain Events` using an associated OAS specification
+
+#### 3.`Domain Service`
 
 It is the entry point for the application core (domains).
 
@@ -94,7 +102,7 @@ It knows it internal domain use cases.
 
 It doesn't knows external domain use cases.
 
-#### 3.`Use Case`
+#### 4.`Use Case`
 
 The `Use Cases`, as the meaning of the words, are the use cases implemented in the Product. 
 
@@ -106,7 +114,7 @@ They are the point entry for all `Data Repository` calls. They handle `Data Mode
 
 They have an associated `Data Repository` that is injected into it scope when calling `Use Case` clojure.
 
-#### 4.`Data Repository`
+#### 5.`Data Repository`
 
 The `Data Repository` layer implements, in a agnostic manner, all actions related to the data persistency.
 
@@ -114,7 +122,7 @@ It does not talk directly to a database. I has a port to adapt different Databas
 
 `It is a domain's component.` They are consumed by `Use Case` component only.
 
-#### 5.`Data Adapter`
+#### 6.`Data Adapter`
 
 The `Data adapter` is a kind of database client implementation that respect the `Data Repository` port.
 
