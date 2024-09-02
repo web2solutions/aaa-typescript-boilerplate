@@ -7,7 +7,7 @@ jobs:
   test-source:
     docker:
       - image: cimg/node:22.7
-      - image: circleci/redis:4.0.9-alpine
+      - image: circleci/redis:latest
         command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     steps:
       - checkout
@@ -27,7 +27,7 @@ jobs:
           environment:
             DOCKERIZE_VERSION: v0.6.1
       - run:
-          name: Waiting for Redis primary to be ready
+          name: Waiting for Redis to be ready
           command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run Tests
