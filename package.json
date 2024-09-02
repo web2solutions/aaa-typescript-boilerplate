@@ -11,9 +11,11 @@
   "scripts": {
     "check-node-version": "node check-node-version.js",
     "preinstall": "npm run check-node-version",
-    "test": "jest --verbose --collect-coverage --detectOpenHandles",
+    "test": "npx jest --verbose --collect-coverage --detectOpenHandles",
     "test:unit": "jest ./test/unit --verbose --collect-coverage --detectOpenHandles",
-    "test:integration": "jest ./test/integration --verbose --detectOpenHandles --collect-coverage",
+    "test:integration": "npm run test:integration:express && npm run test:integration:fastify",
+    "test:integration:express": "jest ./test/integration/Express --verbose --detectOpenHandles --collect-coverage",
+    "test:integration:fastify": "jest ./test/integration/Fastify --verbose --detectOpenHandles --collect-coverage",
     "dev:express": "ts-node ./src/express.ts",
     "dev:fastify": "ts-node ./src/fastify.ts",
     "dev:hyper-express": "ts-node ./src/hyper-express.ts",

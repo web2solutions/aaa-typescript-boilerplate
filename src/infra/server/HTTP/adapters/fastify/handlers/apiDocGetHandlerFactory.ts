@@ -1,9 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 
-import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
-import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
-import { IHandlerFactory } from '@src/infra/server/HTTP/ports/IHandlerFactory';
-
+import { EndPointFactory, IbaseHandler, IHandlerFactory } from '@src/infra/server/HTTP/ports';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/fastify/responses/sendErrorResponse';
 
 const apiDocGetHandlerFactory: EndPointFactory = (

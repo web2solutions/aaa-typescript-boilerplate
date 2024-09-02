@@ -47,24 +47,24 @@ class ExpressServer extends HTTPBaseServer<Express> {
     this._application.use('/doc', express.static('doc'));
   }
 
-  public start(): Promise<string | Error> {
+  public start(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         this._application.listen(_HTTP_PORT_, () => {
           // eslint-disable-next-line no-console
           console.log(`Express App Listening on Port ${_HTTP_PORT_}`);
-          resolve('result');
+          resolve();
         });
       } catch (error) {
         // console.error(`An error occurred: ${JSON.stringify(error)}`);
-        reject(new Error(`${error}`));
         this.stop();
+        reject(error);
       }
     });
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public stop() {
+  public stop(): Promise<void> {
     //     this._application.
     process.exit(0);
   }

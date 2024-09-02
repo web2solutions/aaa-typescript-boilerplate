@@ -150,10 +150,36 @@ It may implement database access through native drivers or ORMs and ODMs.
     npm run docker:composeredis
 ```
 
-### Run the entire test suite
+### Testing
+
+`Run the entire test suite`
 
 ```bash
     npm test
+```
+
+`Run unit tests`
+
+```bash
+    npm run test:unit
+```
+
+`Run integration tests`
+
+```bash
+    npm run test:integration
+```
+
+`Run integration tests - express`
+
+```bash
+    npm run test:integration:express
+```
+
+`Run integration tests - fastify`
+
+```bash
+    npm run test:integration:fastify
 ```
 
 ### Run the API - 3000 port

@@ -15,7 +15,7 @@ import {
   mustEndsAtLeastInMinutes
 } from '@src/domains/validators';
 
-describe('authentication', () => {
+describe('domain validators', () => {
   it('throwIfNotFound must throw', async () => {
     expect(
       () => {

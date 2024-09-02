@@ -64,7 +64,7 @@ let authorizationHeaderUser2: IAuthorizationHeader;
 let authorizationHeaderUser3: IAuthorizationHeader;
 let authorizationHeaderUser4: IAuthorizationHeader;
 
-describe('fastify -> create User suite - Auth -> Basic', () => {
+describe('fastify -> Auth -> Basic suite', () => {
   beforeAll(async () => {
     await databaseClient.connect();
     await keyValueStorageClient.connect();
