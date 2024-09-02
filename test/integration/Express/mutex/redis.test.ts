@@ -10,7 +10,8 @@ import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemo
 import { AuthService } from '@src/infra/auth/AuthService';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
-import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { RedisKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/RedisKeyValueStorageClient';
+
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import {
   BasicAuthorizationHeaderUserGuest,
@@ -33,7 +34,7 @@ const webServer = new ExpressServer();
 const databaseClient = InMemoryDbClient;
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();
-const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+const keyValueStorageClient = RedisKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 
 // LOCAL IDENTITY PROVIDER
@@ -65,7 +66,7 @@ let authorizationHeaderUser2: IAuthorizationHeader;
 let authorizationHeaderUser3: IAuthorizationHeader;
 let authorizationHeaderUser4: IAuthorizationHeader;
 
-describe('express -> Auth -> Bearer suite', () => {
+describe('express -> Mutex -> Redis client', () => {
   beforeAll(async () => {
     await databaseClient.connect();
     await keyValueStorageClient.connect();

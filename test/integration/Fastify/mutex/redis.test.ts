@@ -2,15 +2,14 @@
 // file deepcode ignore NoHardcodedPasswords: <mocked passwords>
 // file deepcode ignore NoHardcodedCredentials/test: <fake credential>
 import request from 'supertest';
-import { Express } from 'express';
-import { ExpressServer } from '@src/infra/server/HTTP/adapters/express/ExpressServer';
+import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/FastifyServer';
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
 import { RestAPI } from '@src/infra/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { AuthService } from '@src/infra/auth/AuthService';
 import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
-import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { RedisKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/RedisKeyValueStorageClient';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import {
   BasicAuthorizationHeaderUserGuest,
@@ -29,11 +28,11 @@ import { EAuthSchemaType } from '@src/infra/auth/EAuthSchemaType';
 
 const [createdUser1, createdUser2, createdUser3, createdUser4] = createdUsers;
 
-const webServer = new ExpressServer();
+const webServer = new FastifyServer();
 const databaseClient = InMemoryDbClient;
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();
-const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+const keyValueStorageClient = RedisKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 
 // LOCAL IDENTITY PROVIDER
@@ -56,21 +55,21 @@ const authService = AuthService.compile(
 );
 // LOCAL IDENTITY PROVIDER
 
-const serverType = EHTTPFrameworks.express;
+const serverType = EHTTPFrameworks.fastify;
 
-let API: RestAPI<Express>;
+let API: RestAPI<Fastify>;
 let server: any;
 let authorizationHeaderUser1: IAuthorizationHeader;
 let authorizationHeaderUser2: IAuthorizationHeader;
 let authorizationHeaderUser3: IAuthorizationHeader;
 let authorizationHeaderUser4: IAuthorizationHeader;
 
-describe('express -> Auth -> Bearer suite', () => {
+describe('fastify -> Mutex -> Redis client', () => {
   beforeAll(async () => {
     await databaseClient.connect();
     await keyValueStorageClient.connect();
 
-    API = new RestAPI<Express>({
+    API = new RestAPI<Fastify>({
       databaseClient,
       webServer,
       infraHandlers,
@@ -84,7 +83,7 @@ describe('express -> Auth -> Bearer suite', () => {
     server = API.server.application;
 
     await API.seedData();
-    // await server.ready();
+    await server.ready();
 
     authorizationHeaderUser1 = {
       ...(await authService.authenticate(
@@ -119,13 +118,13 @@ describe('express -> Auth -> Bearer suite', () => {
   afterAll(async () => {
     await databaseClient.disconnect();
     await keyValueStorageClient.disconnect();
-    // await server.close();
+    await server.close();
     // await keyValueStorageClient.disconnect();
   });
 
   it('user1 must be able to create an user', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -138,7 +137,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user1 must not be able to create a duplicated username', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -151,7 +150,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user1 must not be able to create a user with empty username', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({ ...user1, username: '', password: '12345678' })
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -163,7 +162,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user1 must not be able to create a user with empty password', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({ ...user1, username: 'loginname', password: '' })
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -176,7 +175,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user1 must not be able to create a user with password having less than 8 chars', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({ ...user1, username: 'loginname', password: '1234567' })
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -188,7 +187,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user1 must not be able to create an user with empty firstName', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({ ...user3, firstName: '' })
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -200,7 +199,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user1 must not be able to create new user with unknown field', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({
         invalidFieldName: 50
@@ -214,7 +213,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user1 must not be able to create new user with empty payload', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send({})
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -226,7 +225,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user2 must not be able to create new user - Forbidden: the role create_user is required', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -238,7 +237,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user3 must not be able to create new user - Forbidden: the role create_user is required', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -251,7 +250,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('user4 must not be able to create new user - Forbidden: the role create_user is required', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')
@@ -264,7 +263,7 @@ describe('express -> Auth -> Bearer suite', () => {
 
   it('guest must not be able to create new user - Unauthorized', async () => {
     expect.hasAssertions();
-    const response = await request(server)
+    const response = await request(server.server)
       .post('/api/1.0.0/users')
       .send(user1)
       .set('Content-Type', 'application/json; charset=utf-8')

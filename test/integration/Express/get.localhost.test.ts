@@ -7,7 +7,7 @@ import { RestAPI } from '@src/infra/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
 import { BasicAuthorizationHeaderUser1 } from '@test/mock';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
+import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports';
 import { AuthService } from '@src/infra/auth/AuthService';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { UserDataRepository, UserService } from '@src/domains/Users';

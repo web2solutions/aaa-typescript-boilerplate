@@ -135,7 +135,6 @@ It may implement database access through native drivers or ORMs and ODMs.
 - yaml - yaml parser
 - Express
 
-
 ## Evaluating the application
 
 1. Install the project
@@ -211,6 +210,21 @@ Run with Fastify
 
 3. Make your changes.
 4. Commit it
+
+`commit`
+
+It will run `lint` and `test` before asking info about the commit
+
+```bash
+  npm run commit
+```
+
+`Commiting code`
+
+Commit messages must follow the [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines)
+
+It generates a changelog following the [Commitizen conventional changelog](https://commitizen-tools.github.io/commitizen/changelog/)
+
 5. Ask for PR
 
 
@@ -227,20 +241,6 @@ Run with Fastify
 ```bash
   npm run lint:fix
 ```
-
-`commit`
-
-It will run `lint` and `test` before asking info about the commit
-
-```bash
-  npm run commit
-```
-
-`Commiting code`
-
-Commit messages must follow the [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines)
-
-It generates a changelog following the [Commitizen conventional changelog](https://commitizen-tools.github.io/commitizen/changelog/)
 
 
 ## Backlog and project management

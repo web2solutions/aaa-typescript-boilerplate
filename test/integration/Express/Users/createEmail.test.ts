@@ -6,9 +6,12 @@ import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/
 import { RestAPI } from '@src/infra/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { AuthService } from '@src/infra/auth/AuthService';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
+import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { JwtService } from '@src/infra/jwt/JwtService';
+import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
 import {
   BasicAuthorizationHeaderUser1,
   BasicAuthorizationHeaderUser2,
@@ -21,9 +24,6 @@ import {
   IUser, RequestCreateEmail, UserDataRepository, UserService
 } from '@src/domains/Users';
 import { EmailValueObject } from '@src/domains/valueObjects';
-import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
-import { JwtService } from '@src/infra/jwt/JwtService';
-import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
 
 const webServer = new ExpressServer();
 const databaseClient = InMemoryDbClient;
