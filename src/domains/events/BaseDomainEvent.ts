@@ -35,7 +35,6 @@ export abstract class BaseDomainEvent {
     if (typeof input === 'string') {
       this.input = JSON.parse(input);
     }
-    this.input = input;
     this.authorization = authorization;
     this.entity = entity || '';
     this.action = action || '';

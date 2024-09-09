@@ -11,13 +11,15 @@
   "scripts": {
     "check-node-version": "node check-node-version.js",
     "preinstall": "npm run check-node-version",
-    "test": "npx jest --verbose --collect-coverage --detectOpenHandles",
-    "test:unit": "jest ./test/unit --verbose --collect-coverage --detectOpenHandles",
-    "test:integration": "npm run test:integration:express && npm run test:integration:fastify",
-    "test:integration:express": "jest ./test/integration/Express --verbose --detectOpenHandles --collect-coverage",
-    "test:integration:fastify": "jest ./test/integration/Fastify --verbose --detectOpenHandles --collect-coverage",
+    "test": "NODE_ENV=ci npx jest --verbose --collect-coverage --detectOpenHandles",
+    "test:unit": "NODE_ENV=ci jest ./test/unit --verbose --collect-coverage --detectOpenHandles",
+    "test:integration": "NODE_ENV=ci npm run test:integration:express && npm run test:integration:fastify",
+    "test:integration:express": "NODE_ENV=ci jest ./test/integration/Express --verbose --detectOpenHandles --collect-coverage",
+    "test:integration:fastify": "NODE_ENV=ci jest ./test/integration/Fastify --verbose --detectOpenHandles --collect-coverage",
+    "test:integration:lambda": "NODE_ENV=ci jest ./test/integration/Lambda --verbose --detectOpenHandles --collect-coverage",
     "dev:express": "ts-node ./src/express.ts",
     "dev:fastify": "ts-node ./src/fastify.ts",
+    "dev:serverless": "npm run lint && NODE_ENV=dev serverless dev",
     "dev:hyper-express": "ts-node ./src/hyper-express.ts",
     "tdd": "jest --watchAll --verbose --detectOpenHandles",
     "prepare": "husky install",
@@ -34,6 +36,7 @@
     "@fastify/formbody": "^7.4.0",
     "@fastify/helmet": "^11.1.1",
     "@fastify/static": "^7.0.1",
+    "aws-lambda": "^1.0.7",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -47,6 +50,7 @@
     "redis": "^4.6.13",
     "reflect-metadata": "^0.2.2",
     "semver": "^7.6.2",
+    "serverless": "^4.2.4",
     "uuid": "^9.0.1",
     "xss": "^1.0.15",
     "yaml": "^2.3.4"
@@ -54,6 +58,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
+    "@types/aws-lambda": "^8.10.145",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/body-parser": "^1.19.5",
@@ -62,6 +67,7 @@
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.19",
+    "@types/serverless": "^3.12.22",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -83,6 +89,9 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.2"
+  },
+  "resolutions": {
+    "serverless": "^4.1.12"
   },
   "config": {
     "commitizen": {

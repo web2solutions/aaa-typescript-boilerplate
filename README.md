@@ -13,7 +13,7 @@ Applications built with this boilerplate aims to run `Anywhere, Anytime, Anyhow`
 
 [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/graphs/tree.svg?token=eEF1QUBbj9)](https://codecov.io/web2solutions/aaa-typescript-boilerplate)
 
-`See it running as Fastify implementation at:`
+`See it running as a Fastify application at:`
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/web2solutions/aaa-typescript-boilerplate)
 
@@ -29,7 +29,7 @@ It implements incoming data validation, in the infrastructure level, through cus
 
 It implements Basic and Bearer HTTP auth mechanism with a custom role system. Replaceable with other auth mechanisms. Tied to the API OAS spec.
 
-It implements a HTTP web server port actually implementing adapters for Express.js, Fastify and Hyper-Express. A serverless implementation is coming soon.
+It implements a HTTP web server port actually implementing adapters for `aws Lambda`, `Express.js`, `Fastify` and `Hyper-Express`.
 
 It implements an agnostic data repository port that actually writes/reads data from a In Memory database adapter. It is easily replaceable with Mongoose, Sequelize, etc.
 
@@ -186,6 +186,12 @@ It may implement database access through native drivers or ORMs and ODMs.
     npm run test:integration:fastify
 ```
 
+`Run integration tests - aws lambda`
+
+```bash
+    npm run test:integration:lambda
+```
+
 ### Run the API - 3000 port
 
 Run with Express
@@ -203,6 +209,13 @@ Run with Fastify
 1. Reach the URL http://localhost:3000/doc/ and click in the `Version 1.0.0`. It will open the API documentation.
 2. Reach http://localhost:3000/docs/1.0.0 to see the JSON version of the API documentation.
 
+### Run `aws Lambda dev mode` through the `serverless framework`
+
+```bash
+  npm run dev:serverless
+```
+
+![serverless dev mode](sls.png "serverless dev mode")
 
 ## Contributing to the project
 
@@ -223,12 +236,6 @@ It will run `lint` and `test` before asking info about the commit
 ```bash
   npm run commit
 ```
-
-`Commiting code`
-
-Commit messages must follow the [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines)
-
-It generates a changelog following the [Commitizen conventional changelog](https://commitizen-tools.github.io/commitizen/changelog/)
 
 5. Ask for PR
 
