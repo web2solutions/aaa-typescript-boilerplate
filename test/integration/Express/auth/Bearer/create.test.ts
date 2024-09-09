@@ -90,28 +90,28 @@ describe('express -> Auth -> Bearer suite', () => {
       ...(await authService.authenticate(
         createdUser1.username,
         createdUser1.password,
-        EAuthSchemaType.Basic
+        EAuthSchemaType.Bearer
       ))
     };
     authorizationHeaderUser2 = {
       ...(await authService.authenticate(
         createdUser2.username,
         createdUser2.password,
-        EAuthSchemaType.Basic
+        EAuthSchemaType.Bearer
       ))
     };
     authorizationHeaderUser3 = {
       ...(await authService.authenticate(
         createdUser3.username,
         createdUser3.password,
-        EAuthSchemaType.Basic
+        EAuthSchemaType.Bearer
       ))
     };
     authorizationHeaderUser4 = {
       ...(await authService.authenticate(
         createdUser4.username,
         createdUser4.password,
-        EAuthSchemaType.Basic
+        EAuthSchemaType.Bearer
       ))
     };
   });
