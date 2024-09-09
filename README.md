@@ -49,7 +49,7 @@ The API doc might be visualized at: http://localhost:3000/doc/
 
 ### Request data workflow through the architecture's components
 
-Request Handler -> Controller -> Domain Service -> Domain Use Case -> Data Repository -> Data Adapter
+Request Handler - Controller - Domain Service - Domain Use Case - Data Repository - Data Adapter
 
 ### Response data workflow through the architecture's components
 
@@ -254,6 +254,67 @@ It will run `lint` and `test` before asking info about the commit
   npm run lint:fix
 ```
 
+## Dependencies
+
+### Application
+
+> bcryptjs - ^2.4.3
+>
+> jsonwebtoken - ^9.0.2
+>
+> openapi-types - ^12.1.3
+>
+> reflect-metadata - ^0.2.2
+>
+> uuid - ^9.0.1
+>
+> xss - ^1.0.15
+>
+> yaml - ^2.3.4
+>
+
+### Infra - Express server
+
+> express - ^4.18.2
+>
+> body-parser - ^1.20.2
+>
+> cors - ^2.8.5
+>
+> helmet - ^7.1.0
+>
+
+### Infra - Fastify server
+
+> fastify - ^4.26.2
+>
+> @fastify/cors - ^9.0.1
+>
+> @fastify/formbody - ^7.4.0
+>
+> @fastify/helmet - ^11.1.1
+>
+> @fastify/static - ^7.0.1
+>
+
+### Infra - Hyper-Express server
+
+> hyper-express - ^6.14.12
+>
+> live-directory - ^3.0.3
+>
+
+### aws Lambda - serverless
+
+> aws-lambda - ^1.0.7
+>
+> serverless - ^4.2.4
+>
+
+### Distributed KeyValue Storage
+
+> redis - ^4.6.13
+>
 
 ## Backlog and project management
 

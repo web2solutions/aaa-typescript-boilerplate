@@ -21,7 +21,7 @@
     "dev:fastify": "ts-node ./src/fastify.ts",
     "dev:serverless": "npm run lint && NODE_ENV=dev serverless dev",
     "dev:hyper-express": "ts-node ./src/hyper-express.ts",
-    "tdd": "jest --watchAll --verbose --detectOpenHandles",
+    "tdd": "NODE_ENV=ci npx jest --verbose --detectOpenHandles --watchAll",
     "prepare": "husky install",
     "commit": "git add . && git-cz",
     "lint": "eslint . --ext .ts",
