@@ -304,14 +304,14 @@ It will run `lint` and `test` before asking info about the commit
 > live-directory - ^3.0.3
 >
 
-### aws Lambda - serverless
+### Infra - aws Lambda - serverless
 
 > aws-lambda - ^1.0.7
 >
 > serverless - ^4.2.4
 >
 
-### Distributed KeyValue Storage
+### Infra - Distributed KeyValue Storage
 
 > redis - ^4.6.13
 >
