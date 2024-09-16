@@ -1,4 +1,4 @@
-# AnyWhere, AnyHow, AnyTime - Typescript Boilertplate
+# AnyWhere, AnyHow, AnyTime - Typescript Boilerplate
 
 `The ultimate boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.`
 
