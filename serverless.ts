@@ -9,8 +9,7 @@ const serverlessConfiguration: Serverless = {
     name: 'aws',
     runtime: 'nodejs20.x',
     environment: {
-      NODE_ENV: 'dev',
-      DD_API_KEY: '31356d8e99d805b6be862452e648e67d'
+      NODE_ENV: 'dev'
     },
     apiGateway: {
       minimumCompressionSize: 1024
