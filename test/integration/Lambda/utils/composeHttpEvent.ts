@@ -8,8 +8,8 @@ export const composeHttpEvent = ({
   const event = {
     body: body ? JSON.stringify(body) : '',
     headers: headers || {},
-    httpMethod: method || 'GET',
-    path: path || '',
+    httpMethod: method ?? 'GET',
+    path: path ?? '',
     isBase64Encoded: false,
     pathParameters: {},
     queryStringParameters: {}

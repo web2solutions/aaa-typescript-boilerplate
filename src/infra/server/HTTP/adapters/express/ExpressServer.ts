@@ -58,7 +58,7 @@ class ExpressServer extends HTTPBaseServer<Express> {
       } catch (error) {
         // console.error(`An error occurred: ${JSON.stringify(error)}`);
         this.stop();
-        reject(error);
+        reject(new Error((error as Error).message));
       }
     });
   }

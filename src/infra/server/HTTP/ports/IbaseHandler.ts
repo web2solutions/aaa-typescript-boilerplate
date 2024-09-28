@@ -4,6 +4,6 @@ import { IHTTPResponse } from './IHTTPResponse';
 export interface IbaseHandler {
     method: string;
     path: string;
-    handler(req: IHTTPRequest, res: IHTTPResponse): void;
+    handler(req: IHTTPRequest, res: IHTTPResponse): void | Promise<any>;
     securitySchemes?(req: IHTTPRequest, res: IHTTPResponse, next: typeof Function): void;
 }
