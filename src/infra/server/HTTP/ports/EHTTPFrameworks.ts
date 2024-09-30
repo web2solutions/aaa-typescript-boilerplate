@@ -2,5 +2,6 @@
 export enum EHTTPFrameworks {
   express = 'express',
   fastify = 'fastify',
+  restify = 'restify',
   hyper_express = 'hyper-express',
 }
