@@ -1,4 +1,4 @@
-import { Request, Response, Next } from 'restify';
+import { Request, Response } from 'restify';
 import { EndPointFactory, IbaseHandler, IHandlerFactory } from '@src/infra/server/HTTP/ports';
 import { sendErrorResponse } from '@src/infra/server/HTTP/adapters/restify/responses/sendErrorResponse';
 
@@ -8,13 +8,11 @@ const apiDocGetHandlerFactory: EndPointFactory = (
   return {
     path: `/${version}`,
     method: 'get',
-    handler(req: Request, res: Response, next: Next) {
+    async handler(req: Request, res: Response): Promise<any> {
       try {
-        res.json(spec);
-        return next();
+        return res.json(spec);
       } catch (error: unknown) {
-        sendErrorResponse(error as Error, res);
-        return next(error as Error);
+        return sendErrorResponse(error as Error, res);
       }
     }
   };

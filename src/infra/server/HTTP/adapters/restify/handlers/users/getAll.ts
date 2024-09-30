@@ -1,4 +1,4 @@
-import { Request, Response, Next } from 'restify';
+import { Request, Response } from 'restify';
 import {
   IHandlerFactory,
   IbaseHandler,
@@ -19,7 +19,7 @@ const getAll: EndPointFactory = (
     path: '/users',
     method: 'get',
 
-    async handler(req: Request, res: Response, next: Next) {
+    async handler(req: Request, res: Response) {
       try {
         const queryString = req.query as Record<string, any> || {};
         if (!queryString.page) queryString.page = 1;
@@ -33,13 +33,11 @@ const getAll: EndPointFactory = (
         // console.log({ error });
         if (error) throw error;
         res.status(200);
-        res.json({
+        return res.json({
           result, error, page, size, total
         });
-        return next();
       } catch (error: unknown) {
-        sendErrorResponse(error as Error, res);
-        return next(error as Error);
+        return sendErrorResponse(error as Error, res);
       }
     }
   };

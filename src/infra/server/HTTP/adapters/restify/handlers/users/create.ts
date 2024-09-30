@@ -1,4 +1,4 @@
-import { Request, Response, Next } from 'restify';
+import { Request, Response } from 'restify';
 import {
   IHandlerFactory,
   IbaseHandler,
@@ -20,7 +20,7 @@ const create: EndPointFactory = (
   return {
     path: '/users',
     method: 'post',
-    async handler(req: Request, res: Response, next: Next) {
+    async handler(req: Request, res: Response) {
       try {
         const { result, error } = await controller!.create(new UserCreateRequestEvent({
           authorization: req.headers.authorization ?? '',
@@ -29,11 +29,9 @@ const create: EndPointFactory = (
         }));
         if (error) throw error;
         res.status(201);
-        res.json(result);
-        return next();
+        return res.json(result);
       } catch (error: unknown) {
-        sendErrorResponse(error as Error, res);
-        return next(error as Error);
+        return sendErrorResponse(error as Error, res);
       }
     }
   };

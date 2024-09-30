@@ -1,4 +1,4 @@
-import { Request, Response, Next } from 'restify';
+import { Request, Response } from 'restify';
 import { _DOCS_PREFIX_ } from '@src/infra/config/constants';
 import { IbaseHandler, EndPointFactory, IHandlerFactory } from '@src/infra/server/HTTP/ports';
 
@@ -8,7 +8,7 @@ const apiVersionsGetHandlerFactory: EndPointFactory = (
   return {
     path: '/versions',
     method: 'get',
-    handler(req: Request, res: Response, next: Next): void {
+    async handler(req: Request, res: Response): Promise<any> {
       const versions: Record<string, string> = {};
       if (typeof apiDocs !== 'undefined') {
         for (const [version] of apiDocs) {
@@ -16,9 +16,7 @@ const apiVersionsGetHandlerFactory: EndPointFactory = (
         }
       }
       res.status(200);
-      res.json({ versions });
-
-      return next();
+      return res.json({ versions });
     }
   };
 };

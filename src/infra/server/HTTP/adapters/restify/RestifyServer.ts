@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import restify from 'restify';
 import { _HTTP_PORT_ } from '@src/infra/config/constants';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
@@ -29,20 +28,21 @@ class RestifyServer extends HTTPBaseServer<Restify> {
   }
 
   public endPointRegister(handlerFactory: IbaseHandler): void {
+    const { method, handler } = handlerFactory;
+    let verb = method;
     try {
       /* if (handlerFactory.securitySchemes) {
-        (this._application as any)[handlerFactory.method](
+        (this._application as any)[method](
           handlerFactory.path,
           handlerFactory.securitySchemes,
-          handlerFactory.handler
+          handler
         );
         return;
       } */
-      (this._application as any)[handlerFactory.method](
-        handlerFactory.path,
-        handlerFactory.handler
-      );
-      // console.log((this._application as any)[handlerFactory.method]);
+      if (verb === 'delete') {
+        verb = 'del';
+      }
+      (this._application as any)[verb](handlerFactory.path, handler);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
@@ -74,7 +74,7 @@ class RestifyServer extends HTTPBaseServer<Restify> {
 
   // eslint-disable-next-line class-methods-use-this
   public stop(): Promise<void> {
-    //     this._application.
+    this._application.close();
     process.exit(0);
   }
 }
