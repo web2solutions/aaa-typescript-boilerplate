@@ -27,14 +27,16 @@ export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
     this.client = createClient(redisConfig);
     this.client.on('error', (err) => console.log('Redis Client Error', err));
     this.client.on('connect', () => {
-      console.log('Redis connected');
+      // console.log('Redis connected');
       this.connected = true;
     });
     this.client.on('end', () => {
-      console.log('Redis disconnected');
+      // console.log('Redis disconnected');
       this.connected = false;
     });
-    this.client.on('ready', () => console.log('Redis ready'));
+    this.client.on('ready', () => {
+      // console.log('Redis ready');
+    });
 
     this.prefix = `${_KV_KEY_NAME_PREFIX_}__`;
     this.connected = false;

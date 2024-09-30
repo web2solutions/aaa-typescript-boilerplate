@@ -1,18 +1,18 @@
 /* eslint-disable quote-props */
-import { RestAPI } from '@src/infra/RestAPI';
-
 import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/FastifyServer';
 import { infraHandlers } from '@src/infra/server/HTTP/adapters/fastify/handlers/infraHandlers';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
 
-import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
+import { AuthService } from '@src/infra/auth/AuthService';
+import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
-import { AuthService } from './infra/auth/AuthService';
-import { PasswordCryptoService } from './infra/security/PasswordCryptoService';
-import { InMemoryKeyValueStorageClient } from './infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
-import { UserProviderLocal } from './infra/auth/UserProviderLocal';
-import { UserDataRepository, UserService } from './domains/Users';
-import { JwtService } from './infra/jwt/JwtService';
+import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
+import { JwtService } from '@src/infra/jwt/JwtService';
+import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
+import { RestAPI } from '@src/infra/RestAPI';
+
+import { UserDataRepository, UserService } from '@src/domains/Users';
 
 const serverType = EHTTPFrameworks.fastify;
 const webServer = new FastifyServer();

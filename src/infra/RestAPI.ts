@@ -138,10 +138,12 @@ export class RestAPI<T> {
         for (const method of methods) {
           const endPointConfig: Record<string, any> = endPointConfigs[method];
           const domain = path.split('/')[1];
-          const fileName = `${domain.charAt(0).toUpperCase()}${domain.substring(1, domain.length - 1)}Controller`;
-          const Controller = require(`@src/infra/server/HTTP/adapters/controllers/${fileName}`)[fileName]; // UserController
 
-          const controller = new Controller({
+          const fileName = `${domain.charAt(0).toUpperCase()}${domain.substring(1, domain.length - 1)}Controller`;
+          const controllerPath = `@src/infra/server/HTTP/adapters/controllers/${fileName}`;
+          const ControllerModule = require(controllerPath)[fileName];
+
+          const controller = new ControllerModule({
             authService: this._authService,
             openApiSpecification: spec,
             databaseClient: this._databaseClient,
@@ -149,8 +151,8 @@ export class RestAPI<T> {
             passwordCryptoService: this._passwordCryptoService
           });
 
-          const handlerFileName = `@src/infra/server/HTTP/adapters/${this._serverType}/handlers/${domain}/${endPointConfig.operationId}`;
-          const handlerFactory = require(handlerFileName).default({
+          const handlerPath = `@src/infra/server/HTTP/adapters/${this._serverType}/handlers/${domain}/${endPointConfig.operationId}`;
+          const handlerFactory = require(handlerPath).default({
             databaseClient: this._databaseClient,
             mutexService: this._mutexClient,
             endPointConfig,
@@ -158,6 +160,7 @@ export class RestAPI<T> {
             authService: this._authService,
             controller
           });
+
           this._server.endPointRegister({
             ...handlerFactory,
             path: `${_API_PREFIX_}/${version}${replaceVars(handlerFactory.path)}`

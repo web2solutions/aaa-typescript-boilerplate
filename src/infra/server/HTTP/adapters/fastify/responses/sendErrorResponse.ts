@@ -47,7 +47,7 @@ export function sendErrorResponse(error: Error, res: FastifyReply) {
     status = 501;
     message = `Not implemented - ${error.message}`;
   }
-  res.status(status).send({
+  res.code(status).send({
     message,
     error,
     stack: error.stack

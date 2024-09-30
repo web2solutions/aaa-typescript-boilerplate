@@ -1,7 +1,6 @@
-// import { FastifyRequest, FastifyReply } from 'fastify';
-import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
+import { EndPointFactory, IbaseHandler } from '@src/infra/server/HTTP/ports';
 
-const localhostGetHandlerFactory = (): IbaseHandler => {
+const localhostGetHandlerFactory: EndPointFactory = (): IbaseHandler => {
   return {
     path: '/',
     method: 'get',

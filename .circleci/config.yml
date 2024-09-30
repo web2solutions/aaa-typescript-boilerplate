@@ -7,6 +7,8 @@ jobs:
   test-source:
     docker:
       - image: cimg/node:22.7
+      - image: circleci/redis:latest
+        command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     steps:
       - checkout
       - restore_cache:
@@ -19,6 +21,14 @@ jobs:
           key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
           paths:
             - ~/.npm
+      - run:
+          name: Install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.6.1
+      - run:
+          name: Waiting for Redis to be ready
+          command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run Tests
           command: npm run test

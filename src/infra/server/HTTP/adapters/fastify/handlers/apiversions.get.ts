@@ -1,8 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { _DOCS_PREFIX_ } from '@src/infra/config/constants';
-import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
-import { EndPointFactory } from '@src/infra/server/HTTP/ports/EndPointFactory';
-import { IHandlerFactory } from '../../../ports/IHandlerFactory';
+import { IbaseHandler, EndPointFactory, IHandlerFactory } from '@src/infra/server/HTTP/ports';
 
 const apiVersionsGetHandlerFactory: EndPointFactory = (
   { apiDocs }: IHandlerFactory

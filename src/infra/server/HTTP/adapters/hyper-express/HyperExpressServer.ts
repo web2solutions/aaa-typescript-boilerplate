@@ -86,7 +86,7 @@ class HyperExpressServer extends HTTPBaseServer<HyperExpress.Server> {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public stop(code: number = 0) {
+  public stop(code: number = 0): Promise<void> {
     process.exit(code);
   }
 }

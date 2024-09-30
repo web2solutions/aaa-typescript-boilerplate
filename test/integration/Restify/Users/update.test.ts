@@ -1,34 +1,30 @@
 /* global  describe, it, expect */
 // file deepcode ignore NoHardcodedPasswords: <mocked passwords>
-// file deepcode ignore NoHardcodedCredentials/test: <fake credential>
 import request from 'supertest';
-import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/FastifyServer';
-import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
+import { Server as Restify } from 'restify';
+import { RestifyServer } from '@src/infra/server/HTTP/adapters/restify/RestifyServer';
+import { infraHandlers } from '@src/infra/server/HTTP/adapters/restify/handlers/infraHandlers';
 import { RestAPI } from '@src/infra/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { AuthService } from '@src/infra/auth/AuthService';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports/EHTTPFrameworks';
-import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import {
-  BasicAuthorizationHeaderUserGuest,
-  user1,
-  // user2,
-  user3
+  BasicAuthorizationHeaderUserGuest
 } from '@test/mock';
+import { UserDataRepository, UserService } from '@src/domains/Users';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { JwtService } from '@src/infra/jwt/JwtService';
+import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
 
 import createdUsers from '@seed/users';
-
-import { UserDataRepository, UserService } from '@src/domains/Users';
-import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
-import { JwtService } from '@src/infra/jwt/JwtService';
-import { IAuthorizationHeader } from '@src/infra/auth/IAuthorizationHeader';
 import { EAuthSchemaType } from '@src/infra/auth/EAuthSchemaType';
+import { IAuthorizationHeader } from '@src/infra/auth/IAuthorizationHeader';
 
 const [createdUser1, createdUser2, createdUser3, createdUser4] = createdUsers;
 
-const webServer = new FastifyServer();
+const webServer = new RestifyServer();
 const databaseClient = InMemoryDbClient;
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();
@@ -47,7 +43,6 @@ const userService = UserService.compile({
   }
 });
 const userProvider = UserProviderLocal.compile(userService);
-
 const authService = AuthService.compile(
   userProvider,
   passwordCryptoService,
@@ -55,21 +50,20 @@ const authService = AuthService.compile(
 );
 // LOCAL IDENTITY PROVIDER
 
-const serverType = EHTTPFrameworks.fastify;
+const serverType = EHTTPFrameworks.restify;
 
-let API: RestAPI<Fastify>;
+let API: any;
 let server: any;
 let authorizationHeaderUser1: IAuthorizationHeader;
 let authorizationHeaderUser2: IAuthorizationHeader;
 let authorizationHeaderUser3: IAuthorizationHeader;
 let authorizationHeaderUser4: IAuthorizationHeader;
 
-describe('fastify -> create User suite - Auth -> Bearer', () => {
+describe('restify -> update User suite', () => {
   beforeAll(async () => {
     await databaseClient.connect();
     await keyValueStorageClient.connect();
-
-    API = new RestAPI<Fastify>({
+    API = new RestAPI<Restify>({
       databaseClient,
       webServer,
       infraHandlers,
@@ -81,9 +75,8 @@ describe('fastify -> create User suite - Auth -> Bearer', () => {
     });
 
     server = API.server.application;
-
-    await API.seedData();
-    await server.ready();
+    await API.seedUsers();
+    // await server.ready();
 
     authorizationHeaderUser1 = {
       ...(await authService.authenticate(
@@ -116,80 +109,56 @@ describe('fastify -> create User suite - Auth -> Bearer', () => {
   });
 
   afterAll(async () => {
-    await databaseClient.disconnect();
-    await keyValueStorageClient.disconnect();
+    await API.stop();
     await server.close();
-    // await keyValueStorageClient.disconnect();
   });
 
-  it('user1 must be able to create an user', async () => {
+  it('user1 must be able to update an user', async () => {
     expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send(user1)
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .set('Accept', 'application/json; charset=utf-8')
-      .set(authorizationHeaderUser1);
-    expect(response.statusCode).toBe(201);
-    expect(response.body.firstName).toBe(user1.firstName);
-    expect(response.body.lastName).toBe(user1.lastName);
-  });
-
-  it('user1 must not be able to create a duplicated username', async () => {
-    expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send(user1)
+    const payload = {
+      ...createdUser1,
+      id: createdUser1.id
+    };
+    delete (payload as any).password;
+    const response = await request(server)
+      .put(`/api/1.0.0/users/${createdUser1.id}`)
+      .send(payload)
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser1);
     // console.log(response.body);
-    expect(response.body.message).toBe('Duplicated record - username already in use');
-    expect(response.statusCode).toBe(409);
+    expect(response.body.firstName).toBe(payload.firstName);
+    expect(response.body.lastName).toBe(payload.lastName);
+    expect(response.statusCode).toBe(200);
   });
 
-  it('user1 must not be able to create a user with empty username', async () => {
+  it('user1 must not be able to update a user with password', async () => {
     expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send({ ...user1, username: '', password: '12345678' })
+    delete (createdUser1 as any).password;
+    const response = await request(server)
+      .put(`/api/1.0.0/users/${createdUser1.id}`)
+      .send({
+        ...createdUser1,
+        id: createdUser1.id,
+        password: 'xxxxxxxx'
+      })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - username can not be empty');
+    expect(response.body.message).toBe('Bad Request - The property password from input payload does not exist inside the domain.');
     expect(response.statusCode).toBe(400);
   });
 
-  it('user1 must not be able to create a user with empty password', async () => {
+  it('user1 must not be able to update an user with empty firstName', async () => {
     expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send({ ...user1, username: 'loginname', password: '' })
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .set('Accept', 'application/json; charset=utf-8')
-      .set(authorizationHeaderUser1);
-    // console.log(response.body);
-    expect(response.body.message).toBe('Bad Request - password must have at least 8 chars.');
-    expect(response.statusCode).toBe(400);
-  });
-
-  it('user1 must not be able to create a user with password having less than 8 chars', async () => {
-    expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send({ ...user1, username: 'loginname', password: '1234567' })
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .set('Accept', 'application/json; charset=utf-8')
-      .set(authorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - password must have at least 8 chars.');
-    expect(response.statusCode).toBe(400);
-  });
-
-  it('user1 must not be able to create an user with empty firstName', async () => {
-    expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send({ ...user3, firstName: '' })
+    delete (createdUser4 as any).password;
+    const response = await request(server)
+      .put(`/api/1.0.0/users/${createdUser4.id}`)
+      .send({
+        ...createdUser4,
+        id: createdUser4.id,
+        firstName: ''
+      })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser1);
@@ -197,13 +166,11 @@ describe('fastify -> create User suite - Auth -> Bearer', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it('user1 must not be able to create new user with unknown field', async () => {
+  it('user1 must not be able to update user with unknown field', async () => {
     expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send({
-        invalidFieldName: 50
-      })
+    const response = await request(server)
+      .put(`/api/1.0.0/users/${createdUser1.id}`)
+      .send({ ...createdUser1, id: createdUser1.id, invalidFieldName: 50 })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser1);
@@ -211,61 +178,60 @@ describe('fastify -> create User suite - Auth -> Bearer', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it('user1 must not be able to create new user with empty payload', async () => {
+  it('user1 must not be able to update new user with empty payload', async () => {
     expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
+    const response = await request(server)
+      .put(`/api/1.0.0/users/${createdUser1.id}`)
       .send({})
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser1);
-    // console.log(response.body)
+
     expect(response.statusCode).toBe(400);
   });
 
-  it('user2 must not be able to create new user - Forbidden: the role create_user is required', async () => {
+  it('user2 must not be able to update new user - Forbidden: the role update_user is required', async () => {
     expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send(user1)
+    const response = await request(server)
+      .put(`/api/1.0.0/users/${createdUser2.id}`)
+      .send({ ...createdUser2, id: createdUser2.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser2);
     expect(response.statusCode).toBe(403);
-    expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the create_user role');
+    expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the update_user role');
   });
 
-  it('user3 must not be able to create new user - Forbidden: the role create_user is required', async () => {
+  it('user3 must not be able to update new user - Forbidden: the role update_user is required', async () => {
     expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send(user1)
+    const response = await request(server)
+      .put(`/api/1.0.0/users/${createdUser1.id}`)
+      .send({ ...createdUser1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser3);
-    // console.log(response.body);
     expect(response.statusCode).toBe(403);
-    expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the create_user role');
+    expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the update_user role');
   });
 
-  it('user4 must not be able to create new user - Forbidden: the role create_user is required', async () => {
+  it('user4 must not be able to update new user - Forbidden: the role update_user is required', async () => {
     expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send(user1)
+    const response = await request(server)
+      .put(`/api/1.0.0/users/${createdUser1.id}`)
+      .send({ ...createdUser1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser4);
     // console.log(response.body.message)
     expect(response.statusCode).toBe(403);
-    expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the create_user role');
+    expect(response.body.message).toBe('Forbidden - Insufficient permission - user must have the update_user role');
   });
 
-  it('guest must not be able to create new user - Unauthorized', async () => {
+  it('guest must not be able to update new user - Unauthorized', async () => {
     expect.hasAssertions();
-    const response = await request(server.server)
-      .post('/api/1.0.0/users')
-      .send(user1)
+    const response = await request(server)
+      .put(`/api/1.0.0/users/${createdUser1.id}`)
+      .send({ ...createdUser1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUserGuest);
