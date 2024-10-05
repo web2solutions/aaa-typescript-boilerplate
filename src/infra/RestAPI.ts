@@ -57,7 +57,7 @@ export class RestAPI<T> {
 
     if (config.authService) {
       this._authService = config.authService;
-      this._authService?.start();
+      // this._authService?.start();
     }
 
     if (config.passwordCryptoService) {
@@ -205,6 +205,29 @@ export class RestAPI<T> {
     const service = UserService.compile({ dataRepository });
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
+      requests.push(new Promise((resolve, reject) => {
+        (async () => {
+          try {
+            // await service.create(user);
+            const newUser = await service.create(user);
+            resolve(newUser.result);
+          } catch (error: any) {
+            // console.log(error.message);
+            reject(new Error(error.message));
+          }
+        })();
+      }));
+    }
+    return Promise.all(requests);
+    // console.log('>>>> done');
+  }
+
+  public async deleteUsers(): Promise<IUser[]> {
+    const dataRepository = UserDataRepository.compile({ databaseClient: this._databaseClient });
+    const service = UserService.compile({ dataRepository });
+    const requests: Promise<IUser>[] = [];
+    const allUsers = await await service.getAll();
+    for (const user of allUsers) {
       requests.push(new Promise((resolve, reject) => {
         (async () => {
           try {

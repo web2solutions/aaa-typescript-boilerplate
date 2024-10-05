@@ -76,7 +76,7 @@ export class User extends BaseModel<IUser> implements IUser {
     this.avatar = avatar ?? 'avatar.png';
     this.username = username;
     this.password = password || '';
-    this.salt = salt || '';
+    this.salt = salt ?? '';
 
     emails.forEach((e) => this.createEmail(e));
     documents?.forEach((d) => this.createDocument(d));

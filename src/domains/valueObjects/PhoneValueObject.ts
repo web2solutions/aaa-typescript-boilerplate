@@ -31,6 +31,6 @@ export class PhoneValueObject {
     this.number = number;
     this.localCode = localCode;
     this.countryCode = countryCode;
-    this.isPrimary = !!isPrimary ?? false;
+    this.isPrimary = !!isPrimary || false;
   }
 }

@@ -77,8 +77,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       newData.password = hash;
       newData.salt = salt;
 
-      const document = await createUser((newData ?? {}), this.dataRepository);
-      serviceResponse.result = document as IUser;
+      serviceResponse.result = await createUser((newData ?? {}), this.dataRepository);
     } catch (error) {
       serviceResponse.error = new ServiceError(error as Error);
     }
@@ -126,8 +125,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   public async getOneById(id: string): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      const user = await getUserById(id, this.dataRepository);
-      serviceResponse.result = user as IUser;
+      serviceResponse.result = await getUserById(id, this.dataRepository);
     } catch (error) {
       serviceResponse.error = error as Error;
     }

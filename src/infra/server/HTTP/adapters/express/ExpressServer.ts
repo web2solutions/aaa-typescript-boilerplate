@@ -65,7 +65,7 @@ class ExpressServer extends HTTPBaseServer<Express> {
 
   // eslint-disable-next-line class-methods-use-this
   public stop(): Promise<void> {
-    //     this._application.
+    // this._application.
     process.exit(0);
   }
 }
