@@ -29,7 +29,7 @@ It implements incoming data validation, in the infrastructure level, through cus
 
 It implements Basic and Bearer HTTP auth mechanism with a custom role system. Replaceable with other auth mechanisms. Tied to the API OAS spec.
 
-It implements a HTTP web server port actually implementing adapters for `aws Lambda`, `Express.js`, `Fastify` and `Hyper-Express`.
+It implements a HTTP web server port actually implementing adapters for `aws Lambda`, `Express.js`, `Fastify`, `Restify` and `Hyper-Express`.
 
 It implements an agnostic data repository port that actually writes/reads data from a In Memory database adapter. It is easily replaceable with Mongoose, Sequelize, etc.
 
@@ -132,13 +132,12 @@ It may implement database access through native drivers or ORMs and ODMs.
 
 ## Required stack
 
-- Node.js (20 preferred)
+- Node.js  (^20 preferred)
 - Typescript
 - Jest
 - Redis - used to implement mutex (included as Docker image)
 - OpenAPI official typings
 - yaml - yaml parser
-- Express
 
 ## Evaluating the application
 
@@ -174,16 +173,22 @@ It may implement database access through native drivers or ORMs and ODMs.
     npm run test:integration
 ```
 
-`Run integration tests - express`
+`Run integration tests - Express`
 
 ```bash
     npm run test:integration:express
 ```
 
-`Run integration tests - fastify`
+`Run integration tests - Fastify`
 
 ```bash
     npm run test:integration:fastify
+```
+
+`Run integration tests - Restify`
+
+```bash
+    npm run test:integration:restify
 ```
 
 `Run integration tests - aws lambda`
@@ -295,6 +300,12 @@ It will run `lint` and `test` before asking info about the commit
 > @fastify/helmet - ^11.1.1
 >
 > @fastify/static - ^7.0.1
+>
+
+### Infra - Restify
+
+> restify - ^11.1.0
+> bunyan - ^1.8.15
 >
 
 ### Infra - Hyper-Express server

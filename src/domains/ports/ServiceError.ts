@@ -10,6 +10,6 @@ export class ServiceError extends Error {
     super(error.message);
     this.name = error.name;
     this.message = error.message;
-    this.stack = error.stack || undefined;
+    this.stack = error.stack ?? undefined;
   }
 }

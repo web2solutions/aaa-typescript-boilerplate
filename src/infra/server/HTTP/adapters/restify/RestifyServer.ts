@@ -1,4 +1,5 @@
 import restify from 'restify';
+import bunyan from 'bunyan';
 import { _HTTP_PORT_ } from '@src/infra/config/constants';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import { HTTPBaseServer } from '@src/infra/server/HTTP/ports/HTTPBaseServer';
@@ -11,7 +12,15 @@ class RestifyServer extends HTTPBaseServer<Restify> {
 
   constructor() {
     super();
-    this._application = restify.createServer();
+    this._application = restify.createServer({
+      log: bunyan.createLogger({
+        name: 'api',
+        streams: [{
+          stream: process.stdout,
+          level: bunyan.FATAL + 1
+        }]
+      })
+    });
     // this._application.use(cors());
     // this._application.use(helmet());
     this._application.use(restify.plugins.gzipResponse());

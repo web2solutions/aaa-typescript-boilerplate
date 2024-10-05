@@ -71,6 +71,7 @@ describe('fastify -> get Users suite', () => {
     server = API.server.application;
 
     await server.ready();
+    await API.deleteUsers();
     await API.seedUsers();
   });
   afterAll(async () => {

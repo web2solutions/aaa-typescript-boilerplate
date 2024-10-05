@@ -31,6 +31,6 @@ export class EmailValueObject {
     this.id = id ? UUID.parse(id).toString() : UUID.create().toString();
     this.email = email;
     this.type = type;
-    this.isPrimary = !!isPrimary ?? false;
+    this.isPrimary = !!isPrimary || false;
   }
 }

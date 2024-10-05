@@ -13,30 +13,29 @@ export class PasswordCryptoService implements IPasswordCryptoService {
 
   private genSalt(): Promise<string> {
     return new Promise((resolve, reject) => {
-      bcrypt.genSalt(this.saltRounds, (err: unknown, salt: unknown) => {
+      bcrypt.genSalt(this.saltRounds, (err: Error | null, salt: unknown) => {
         if (err) {
           return reject(err);
         }
-        return resolve(salt as unknown as string);
+        return resolve(salt as string);
       });
     });
   }
 
   public hash(password: string): Promise<IHash> {
-    // eslint-disable-next-line no-async-promise-executor, @typescript-eslint/no-misused-promises
-    return new Promise(async (resolve, reject) => {
-      const salt = await this.genSalt();
-      // eslint-disable-next-line no-console
-      // console.log('salt', salt);
-      bcrypt.hash(password, salt, (err: unknown, hash: string) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve({
-          hash,
-          salt
-        } as unknown as IHash);
-      });
+    return new Promise((resolve, reject) => {
+      (async () => {
+        const salt = await this.genSalt();
+        bcrypt.hash(password, salt, (err: Error | null, hash: string) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve({
+            hash,
+            salt
+          } as unknown as IHash);
+        });
+      })();
     });
   }
 
@@ -55,6 +54,6 @@ export class PasswordCryptoService implements IPasswordCryptoService {
   public static compile() {
     if (passwordCryptoService) return passwordCryptoService;
     passwordCryptoService = new PasswordCryptoService();
-    return passwordCryptoService as IPasswordCryptoService;
+    return passwordCryptoService;
   }
 }

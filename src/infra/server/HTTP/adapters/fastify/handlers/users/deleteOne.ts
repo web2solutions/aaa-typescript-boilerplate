@@ -18,7 +18,7 @@ const deleteOne: EndPointFactory = (
     method: 'delete',
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
-        const params = req.params as Record<string, any>;
+        const params = JSON.parse(JSON.stringify(req.params));
         const { result, error } = await controller!.delete(new UserDeleteRequestEvent({
           authorization: req.headers.authorization ?? '',
           schemaOAS: endPointConfig,

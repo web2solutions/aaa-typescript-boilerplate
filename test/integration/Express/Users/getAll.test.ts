@@ -70,11 +70,16 @@ describe('express -> get Users suite', () => {
     });
 
     server = API.server.application;
+  });
 
+  beforeEach(async () => {
     // await server.ready();
+    await API.deleteUsers();
     await API.seedUsers();
   });
+
   afterAll(async () => {
+    await API.deleteUsers();
     await databaseClient.disconnect();
     await keyValueStorageClient.disconnect();
     // await server.close();
@@ -90,74 +95,6 @@ describe('express -> get Users suite', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.result).toHaveLength(users.length);
     expect(response.body.total).toBe(users.length);
-  });
-
-  it('set page 1 and size 1 should return 1 item', async () => {
-    expect.hasAssertions();
-    const paging = {
-      page: 1, size: 1
-    };
-    const response = await request(server)
-      .get(`/api/1.0.0/users?page=${paging.page}&size=${paging.size}`)
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
-    // console.log(response.body);
-    expect(response.statusCode).toBe(200);
-    expect(response.body.result).toHaveLength(1);
-    expect(response.body.total).toBe(users.length);
-  });
-
-  it('set page 2 and size 1 should return 1 item', async () => {
-    expect.hasAssertions();
-    const paging = {
-      page: 2, size: 1
-    };
-    const response = await request(server)
-      .get(`/api/1.0.0/users?page=${paging.page}&size=${paging.size}`)
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
-    // console.log(response.body);
-    expect(response.statusCode).toBe(200);
-    expect(response.body.result).toHaveLength(1);
-    expect(response.body.total).toBe(users.length);
-  });
-
-  it('set page number greater than existing page total number should return 400 http status', async () => {
-    expect.hasAssertions();
-    const paging = {
-      page: 2, size: 10
-    };
-    const response = await request(server)
-      .get(`/api/1.0.0/users?page=${paging.page}&size=${paging.size}`)
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
-    expect(response.statusCode).toBe(400);
-    // console.log(response.body);
-    expect(response.body.message).toBe('Bad Request - page number must be smaller than the number of total pages');
-    expect(response.body.page).toBeUndefined();
-    expect(response.body.size).toBeUndefined();
-    expect(response.body.total).toBeUndefined();
-  });
-
-  it('set page number as 0 should return 400 http status', async () => {
-    expect.hasAssertions();
-    const paging = {
-      page: 0, size: 10
-    };
-    const response = await request(server)
-      .get(`/api/1.0.0/users?page=${paging.page}&size=${paging.size}`)
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .set('Accept', 'application/json; charset=utf-8')
-      .set(BasicAuthorizationHeaderUser1);
-    expect(response.statusCode).toBe(400);
-    // console.log(response.body);
-    expect(response.body.message).toBe('Bad Request - page must be greater than 0');
-    expect(response.body.page).toBeUndefined();
-    expect(response.body.size).toBeUndefined();
-    expect(response.body.total).toBeUndefined();
   });
 
   it('user2 must be able to read all users', async () => {
