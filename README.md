@@ -304,7 +304,8 @@ It will run `lint` and `test` before asking info about the commit
 
 ### Infra - Restify
 
-> restify - ^11.1.0"
+> restify - ^11.1.0
+> bunyan - ^1.8.15
 >
 
 ### Infra - Hyper-Express server
