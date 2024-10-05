@@ -19,7 +19,7 @@ jobs:
           command: npm install pnpm@latest
       - run:
           name: install packages
-          command: pnpm i
+          command: pnpm install --no-frozen-lockfile
       #- save_cache:
       #    key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
       #    paths:
