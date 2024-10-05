@@ -87,7 +87,6 @@ describe('fastify -> User deleteEmail suite', () => {
     expect(user1.emails).toHaveLength(3);
     const response = await request(server.server)
       .delete(`/api/1.0.0/users/${user1.id}/deleteEmail/${email1.id}`)
-      .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
     // console.log(response.body);

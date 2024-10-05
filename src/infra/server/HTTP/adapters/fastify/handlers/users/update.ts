@@ -18,7 +18,8 @@ const update: EndPointFactory = (
     method: 'put',
     async handler(req: FastifyRequest, res: FastifyReply) {
       try {
-        const params = req.params as Record<string, any>;
+        const params = JSON.parse(JSON.stringify(req.params));
+        // console.log(params, Object.keys(params));
         const { result, error } = await controller!.update(new UserUpdateRequestEvent({
           authorization: req.headers.authorization ?? '',
           input: req.body,
