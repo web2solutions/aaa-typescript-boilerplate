@@ -226,7 +226,7 @@ export class RestAPI<T> {
     const dataRepository = UserDataRepository.compile({ databaseClient: this._databaseClient });
     const service = UserService.compile({ dataRepository });
     const requests: Promise<IUser>[] = [];
-    const allUsers = await await service.getAll();
+    const allUsers = (await service.getAll({}, { page: 1, size: 1000 })).result || [];
     for (const user of allUsers) {
       requests.push(new Promise((resolve, reject) => {
         (async () => {

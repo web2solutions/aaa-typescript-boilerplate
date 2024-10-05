@@ -11,7 +11,7 @@
   "scripts": {
     "check-node-version": "node check-node-version.js",
     "preinstall": "npm run check-node-version",
-    "test": "npm run test:unit && npm run test:integration",
+    "test": "NODE_ENV=ci npx jest ./test --verbose --collect-coverage --detectOpenHandles",
     "test:unit": "NODE_ENV=ci jest ./test/unit --verbose --collect-coverage --detectOpenHandles",
     "test:integration": "NODE_ENV=ci npm run test:integration:express && npm run test:integration:fastify && npm run test:integration:restify",
     "test:integration:express": "NODE_ENV=ci jest ./test/integration/Express --verbose --detectOpenHandles --collect-coverage",

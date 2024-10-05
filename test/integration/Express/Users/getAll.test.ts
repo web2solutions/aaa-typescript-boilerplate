@@ -70,11 +70,16 @@ describe('express -> get Users suite', () => {
     });
 
     server = API.server.application;
+  });
 
+  beforeEach(async () => {
     // await server.ready();
+    await API.deleteUsers();
     await API.seedUsers();
   });
+
   afterAll(async () => {
+    await API.deleteUsers();
     await databaseClient.disconnect();
     await keyValueStorageClient.disconnect();
     // await server.close();
