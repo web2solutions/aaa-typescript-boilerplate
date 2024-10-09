@@ -16,7 +16,7 @@ jobs:
       #      - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
       - run:
           name: install pnpm
-          command: npm install pnpm@latest
+          command: npm install -g pnpm
       - run:
           name: install packages
           command: pnpm install --no-frozen-lockfile
