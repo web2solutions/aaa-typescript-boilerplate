@@ -4,6 +4,8 @@ import { _HTTP_PORT_ } from '@src/infra/config/constants';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
 import { HTTPBaseServer } from '@src/infra/server/HTTP/ports/HTTPBaseServer';
 import path from 'path';
+import { Context } from '@src/infra/context/Context';
+import { v4 } from 'uuid';
 
 type Restify = restify.Server;
 
@@ -27,6 +29,18 @@ class RestifyServer extends HTTPBaseServer<Restify> {
     this._application.use(restify.plugins.queryParser());
     this._application.use(restify.plugins.urlEncodedBodyParser());
     this._application.use(restify.plugins.dateParser());
+    this._application.use((req, res, next) => {
+      const store = new Map();
+      Context.run(store, () => {
+        store.set('correlationId', v4());
+        store.set('timeStart', +new Date());
+        store.set('request', req);
+        store.set('authorization', req.headers.authorization || '');
+
+        // requestLogger('request started');
+        next();
+      });
+    });
     // this._application.use(bodyParser.json({ limit: '100mb' }));
     // this._application.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
     this.createDocEndPoint();
