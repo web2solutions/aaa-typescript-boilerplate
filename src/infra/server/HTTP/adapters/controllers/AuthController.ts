@@ -87,7 +87,7 @@ export class AuthController extends BaseController implements IController {
       userId = decodedToken.id;
 
       const lockUserId = await this.mutexService.lock('user', userId);
-      if (lockUserId && lockUserId.result.wasAlreadyLocked) {
+      if (lockUserId?.result.wasAlreadyLocked) {
         throw new Error('user locked');
       }
 

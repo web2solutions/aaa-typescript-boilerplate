@@ -93,8 +93,8 @@ describe('express -> User deleteEmail suite', () => {
       .set(BasicAuthorizationHeaderUser1);
     // console.log(response.body);
     expect(response.body.emails).toHaveLength(2);
-    expect(response.body.emails[0].email).toBe(user1.emails![1].email);
-    expect(response.body.emails[0].type).toBe(user1.emails![1].type);
+    expect(response.body.emails[0].email).toBe(user1.emails[1].email);
+    expect(response.body.emails[0].type).toBe(user1.emails[1].type);
     expect(response.statusCode).toBe(200);
   });
 
