@@ -15,15 +15,12 @@ jobs:
       #- restore_cache:
       #    keys:
       #      - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
-      #- run:
-      #    name: install pnpm
-      #    command: npm install pnpm@latest
-      - node/install-packages:
-          override-ci-command: pnpm i
-          pkg-manager: pnpm
-      #- run:
-      #    name: install packages
-      #    command: pnpm install --no-frozen-lockfile
+      - run:
+          name: install pnpm
+          command: sudo npm install -g pnpm@latest
+      - run:
+          name: install packages
+          command: pnpm install --no-frozen-lockfile
       #- save_cache:
       #    key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
       #    paths:
