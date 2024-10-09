@@ -1,9 +1,10 @@
-import fastify from 'fastify';
+import fastify /* , { FastifyRequest, FastifyReply } */ from 'fastify';
 import cors from '@fastify/cors';
 // import helmet from '@fastify/helmet';
 import fastifyStatic from '@fastify/static';
 import formBody from '@fastify/formbody';
 import path from 'node:path';
+// import { Context } from '@src/infra/context/Context';
 
 import { _HTTP_PORT_ } from '@src/infra/config/constants';
 import { IbaseHandler } from '@src/infra/server/HTTP/ports/IbaseHandler';
@@ -27,6 +28,21 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
       }
     }); */
     this._application.register(formBody);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    /* await this._application.register(require('middie'));
+
+    this._application.use((req: FastifyRequest, res: FastifyReply, next: any) => {
+      const store = new Map();
+      Context.run(store, () => {
+        store.set('correlationId', v4());
+        store.set('timeStart', +new Date());
+        store.set('request', req);
+        store.set('authorization', req.headers.authorization || '');
+
+        // requestLogger('request started');
+        next();
+      });
+    }); */
 
     this.createDocEndPoint();
   }
