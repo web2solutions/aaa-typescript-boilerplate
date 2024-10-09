@@ -39,11 +39,11 @@ Diagram illustrating the components:
 
 ![Diagram](doc/miro.png "Diagram")
 
-https://miro.com/app/board/uXjVNq5nWJY=/?share_link_id=603404471489
+<https://miro.com/app/board/uXjVNq5nWJY=/?share_link_id=603404471489>
 
 ### API documentation
 
-The API doc might be visualized at: http://localhost:3000/doc/
+The API doc might be visualized at: <http://localhost:3000/doc/>
 
 ***Note:*** Remember to start the application before trying to reach it through the browser.
 
@@ -104,7 +104,7 @@ It doesn't knows external domain use cases.
 
 #### 4.`Use Case`
 
-The `Use Cases`, as the meaning of the words, are the use cases implemented in the Product. 
+The `Use Cases`, as the meaning of the words, are the use cases implemented in the Product.
 
 They represents the features delivered to the customers.
 
@@ -132,7 +132,7 @@ It may implement database access through native drivers or ORMs and ODMs.
 
 ## Required stack
 
-- Node.js  (^20 preferred)
+- Node.js  (^20 preferred) and pnpm
 - Typescript
 - Jest
 - Redis - used to implement mutex (included as Docker image)
@@ -144,13 +144,13 @@ It may implement database access through native drivers or ORMs and ODMs.
 1. Install the project
 
 ```bash
-    npm install
+    pnpm install
 ```
 
 2. Run Redis (if you don't have already)
 
 ```bash
-    npm run docker:composeredis
+    pnpm run docker:composeredis
 ```
 
 ### Testing
@@ -158,43 +158,43 @@ It may implement database access through native drivers or ORMs and ODMs.
 `Run the entire test suite`
 
 ```bash
-    npm test
+    pnpm test
 ```
 
 `Run unit tests`
 
 ```bash
-    npm run test:unit
+    pnpm run test:unit
 ```
 
 `Run integration tests`
 
 ```bash
-    npm run test:integration
+    pnpm run test:integration
 ```
 
 `Run integration tests - Express`
 
 ```bash
-    npm run test:integration:express
+    pnpm run test:integration:express
 ```
 
 `Run integration tests - Fastify`
 
 ```bash
-    npm run test:integration:fastify
+    pnpm run test:integration:fastify
 ```
 
 `Run integration tests - Restify`
 
 ```bash
-    npm run test:integration:restify
+    pnpm run test:integration:restify
 ```
 
 `Run integration tests - aws lambda`
 
 ```bash
-    npm run test:integration:lambda
+    pnpm run test:integration:lambda
 ```
 
 ### Run the API - 3000 port
@@ -202,22 +202,22 @@ It may implement database access through native drivers or ORMs and ODMs.
 Run with Express
 
 ```bash
-    npm run dev:fastify
+    pnpm run dev:fastify
 ```
 
 Run with Fastify
 
 ```bash
-    npm run dev:fastify
+    pnpm run dev:fastify
 ```
 
-1. Reach the URL http://localhost:3000/doc/ and click in the `Version 1.0.0`. It will open the API documentation.
-2. Reach http://localhost:3000/docs/1.0.0 to see the JSON version of the API documentation.
+1. Reach the URL <http://localhost:3000/doc/> and click in the `Version 1.0.0`. It will open the API documentation.
+2. Reach <http://localhost:3000/docs/1.0.0> to see the JSON version of the API documentation.
 
 ### Run `aws Lambda dev mode` through the `serverless framework`
 
 ```bash
-  npm run dev:serverless
+  pnpm run dev:serverless
 ```
 
 ![serverless dev mode](sls.png "serverless dev mode")
@@ -228,10 +228,11 @@ Run with Fastify
 2. `Run the app in TDD mode - live reload of tests`
 
 ```bash
-  npm run tdd
+  pnpm run tdd
 ```
 
 3. Make your changes.
+
 4. Commit it
 
 `commit`
@@ -239,24 +240,23 @@ Run with Fastify
 It will run `lint` and `test` before asking info about the commit
 
 ```bash
-  npm run commit
+  pnpm run commit
 ```
 
 5. Ask for PR
-
 
 ### Tooling
 
 `lint code`
 
 ```bash
-  npm run lint
+  pnpm run lint
 ```
 
 `lint && fix code`
 
 ```bash
-  npm run lint:fix
+  pnpm run lint:fix
 ```
 
 ## Dependencies
@@ -329,4 +329,4 @@ It will run `lint` and `test` before asking info about the commit
 
 ## Backlog and project management
 
-https://github.com/users/web2solutions/projects/1
+<https://github.com/users/web2solutions/projects/1>

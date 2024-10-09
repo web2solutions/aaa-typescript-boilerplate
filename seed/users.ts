@@ -22,18 +22,19 @@ const users: Array<IUser> = [{
     {
       email: 'web2solucoes@gmail.com',
       type: EEmailType.work,
-      isPrimary: true
+      isPrimary: false
     } as EmailValueObject,
     {
       email: 'perottas1@hotmail.com',
       type: EEmailType.work,
-      isPrimary: true
+      isPrimary: false
     } as EmailValueObject
   ],
   avatar: 'avatar.png',
-  username: 'user1',
+  username: 'eduardo@xpertminds.dev',
   password: 'user1_password',
   roles: [
+    'access_allow',
     'create_account',
     'read_account',
     'update_account',
@@ -88,11 +89,16 @@ const users: Array<IUser> = [{
   id: UUID.create().toString(),
   firstName: 'Barack',
   lastName: 'Obama',
-  emails: [],
+  emails: [{
+    email: 'user2@xpertminds.dev',
+    type: EEmailType.work,
+    isPrimary: true
+  } as EmailValueObject],
   avatar: 'avatar.png',
   username: 'user2',
   password: 'user2_password',
   roles: [
+    'access_allow',
     'create_transaction',
     'read_account',
     'read_transaction',
@@ -106,11 +112,16 @@ const users: Array<IUser> = [{
   id: UUID.create().toString(),
   firstName: 'Jimmy',
   lastName: 'Carter',
-  emails: [],
+  emails: [{
+    email: 'user3@xpertminds.dev',
+    type: EEmailType.work,
+    isPrimary: true
+  } as EmailValueObject],
   avatar: 'avatar.png',
-  username: 'user3',
+  username: 'user3@xpertminds.dev',
   password: 'user3_password',
   roles: [
+    'access_allow',
     'read_account',
     'read_transaction',
     // 'create_user',
@@ -123,11 +134,16 @@ const users: Array<IUser> = [{
   id: UUID.create().toString(),
   firstName: 'James',
   lastName: 'Bush',
-  emails: [],
+  emails: [{
+    email: 'user4@xpertminds.dev',
+    type: EEmailType.work,
+    isPrimary: true
+  } as EmailValueObject],
   avatar: 'avatar.png',
-  username: 'user4',
+  username: 'user4@xpertminds.dev',
   password: 'user4_password',
   roles: [
+    'access_allow',
     'create_transaction'
   ]
 }

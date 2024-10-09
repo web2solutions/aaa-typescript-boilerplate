@@ -164,7 +164,7 @@ describe('restify -> User createPhone suite', () => {
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - The property invalidFieldName from input payload does not exist inside the domain.');
+    expect(response.body.message).toBe('Bad Request - The property invalidFieldName from input payload does not exist.');
     expect(response.statusCode).toBe(400);
   });
 

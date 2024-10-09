@@ -20,7 +20,7 @@ const update: EndPointFactory = (
       try {
         const params = JSON.parse(JSON.stringify(req.params));
         // console.log(params, Object.keys(params));
-        const { result, error } = await controller!.update(new UserUpdateRequestEvent({
+        const { result, error } = await controller!.update!(new UserUpdateRequestEvent({
           authorization: req.headers.authorization ?? '',
           input: req.body,
           schemaOAS: endPointConfig,

@@ -11,7 +11,7 @@ import {
   _DATABASE_DUPLICATED_RECORD_ERROR_NAME_,
   _EVENT_INVALID_MESSAGE_,
   _UNAUTHORIZED_ERROR_NAME_,
-  _INFRA_NOT_IMPLEMENTED_,
+  // _INFRA_NOT_IMPLEMENTED_,
   _DATABASE_PAGING_ERROR_
 
 } from '@src/infra/config/constants';
@@ -43,10 +43,10 @@ export function sendErrorResponse(error: Error, res: FastifyReply) {
   } else if (error.name === _DATABASE_DUPLICATED_RECORD_ERROR_NAME_) {
     status = 409;
     message = `Duplicated record - ${error.message}`;
-  } else if (error.name === _INFRA_NOT_IMPLEMENTED_) {
+  } /* else if (error.name === _INFRA_NOT_IMPLEMENTED_) {
     status = 501;
     message = `Not implemented - ${error.message}`;
-  }
+  } */
   res.code(status).send({
     message,
     error,

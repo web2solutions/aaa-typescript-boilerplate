@@ -1,11 +1,11 @@
 import { IEventMessage } from './IEventMessage';
 
-export abstract class BaseDomainEvent {
+export abstract class BaseDomainEvent<TPayload = any> {
   public type: string = this.constructor.name;
 
   public authorization: string = '';
 
-  public input: any = {};
+  public input: TPayload = {} as TPayload;
 
   public params: any = {};
 
@@ -31,11 +31,13 @@ export abstract class BaseDomainEvent {
       queryString,
       schemaOAS
     } = message;
-    this.input = input;
+    this.input = input || {};
     if (typeof input === 'string') {
       this.input = JSON.parse(input);
     }
-    this.authorization = authorization;
+    if (authorization) {
+      this.authorization = authorization;
+    }
     this.entity = entity ?? '';
     this.action = action ?? '';
     if (params) {

@@ -19,7 +19,7 @@ const update: EndPointFactory = (
     async handler(req: Request, res: Response) {
       try {
         const params = req.params as Record<string, any>;
-        const { result, error } = await controller!.update(new UserUpdateRequestEvent({
+        const { result, error } = await controller!.update!(new UserUpdateRequestEvent({
           authorization: req.headers.authorization ?? '',
           input: req.body,
           schemaOAS: endPointConfig,

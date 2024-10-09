@@ -83,28 +83,28 @@ describe('express -> update User suite', () => {
         createdUser1.username,
         createdUser1.password,
         EAuthSchemaType.Basic
-      ))
+      )).result!
     };
     authorizationHeaderUser2 = {
       ...(await authService.authenticate(
         createdUser2.username,
         createdUser2.password,
         EAuthSchemaType.Basic
-      ))
+      )).result!
     };
     authorizationHeaderUser3 = {
       ...(await authService.authenticate(
         createdUser3.username,
         createdUser3.password,
         EAuthSchemaType.Basic
-      ))
+      )).result!
     };
     authorizationHeaderUser4 = {
       ...(await authService.authenticate(
         createdUser4.username,
         createdUser4.password,
         EAuthSchemaType.Basic
-      ))
+      )).result!
     };
   });
 
@@ -145,7 +145,7 @@ describe('express -> update User suite', () => {
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - The property password from input payload does not exist inside the domain.');
+    expect(response.body.message).toBe('Bad Request - The property password from input payload does not exist.');
     expect(response.statusCode).toBe(400);
   });
 
@@ -174,7 +174,7 @@ describe('express -> update User suite', () => {
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(authorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - The property invalidFieldName from input payload does not exist inside the domain.');
+    expect(response.body.message).toBe('Bad Request - The property invalidFieldName from input payload does not exist.');
     expect(response.statusCode).toBe(400);
   });
 

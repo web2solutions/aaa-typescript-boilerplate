@@ -5,7 +5,7 @@ export default function isPropertiesMatching(
   const propertyNames = Object.keys(properties);
   for (const name of Object.keys(payload)) {
     if (propertyNames.indexOf(name) === -1) {
-      const error = new Error(`The property ${name} from input payload does not exist inside the domain.`);
+      const error = new Error(`The property ${name} from input payload does not exist.`);
       error.name = 'validation_error';
       throw error;
     }

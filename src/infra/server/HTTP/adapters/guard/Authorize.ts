@@ -12,7 +12,8 @@ export function Authorize(): Function {
         authorizedUser,
         args[0].schemaOAS
       );
-      return originalMethod.apply(this, args);
+      // (this as any).authorizedUser = authorizedUser;
+      return originalMethod.apply(this, [...args]);
     };
     return descriptor;
   };

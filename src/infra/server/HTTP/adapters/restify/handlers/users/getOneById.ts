@@ -22,7 +22,7 @@ const getOneById: EndPointFactory = (
     async handler(req: Request, res: Response) {
       try {
         const params = req.params as Record<string, any>;
-        const { result, error } = await controller!.getOneById(new UserGetOneRequestEvent({
+        const { result, error } = await controller!.getOneById!(new UserGetOneRequestEvent({
           authorization: req.headers.authorization ?? '',
           schemaOAS: endPointConfig,
           params

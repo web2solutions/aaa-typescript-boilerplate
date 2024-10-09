@@ -1,6 +1,6 @@
-import { JwtPayload } from 'jsonwebtoken';
+import { ITokenObject } from '../auth/ITokenObject';
 
 export interface IJwtService {
-  decodeToken(token: string): JwtPayload | null;
+  decodeToken(token: string): ITokenObject | null;
   generateToken(user: Record<any, any>): string;
 }

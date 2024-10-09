@@ -20,7 +20,119 @@ tags:
     externalDocs:
       description: Find out more
       url: http://xpertminds.dev
+  - name: auth
+    description: API access end points
 paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Do login
+      description: Do login
+      operationId: login
+      requestBody:
+        description: Do login in the system
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestLogin'
+        required: true
+      responses:
+        '200':
+          description: User did login successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationHeader'          
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+  /auth/logout:
+    post:
+      tags:
+        - auth
+      summary: Do logout
+      description: Do logout
+      operationId: logout
+      requestBody:
+        description: Logout of the system
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestLogout'
+        required: true
+      responses:
+        '200':
+          description: User did logout successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: true
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+      security:
+        - basicAuth: 
+          - access_allow
+        - bearerAuth: 
+          - access_allow
+  /auth/updatePassword:
+    post:
+      tags:
+        - auth
+      summary: Update password
+      description: Update password
+      operationId: updatePassword
+      requestBody:
+        description: Update password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdatePassword'
+        required: true
+      responses:
+        '200':
+          description: User did update password successfully
+          content:
+            text/plain:
+              schema:
+                type: string  
+                example: true      
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+      security:
+        - basicAuth: 
+          - access_allow
+        - bearerAuth: 
+          - access_allow
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register an account
+      description: Register an account
+      operationId: register
+      requestBody:
+        description: Create a new account
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRegister'
+        required: true
+      responses:
+        '201':
+          description: User did update password successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request
   # users
   /users:
     get:
@@ -650,6 +762,71 @@ components:
           type: boolean
           default: false
           description: Result of request to delete resource
+    RequestLogin:
+      required:
+        - username
+        - password
+      type: object
+      properties:
+        username: 
+          type: string
+          minLength: 2
+          example: me@mydomain.com
+          description: Username
+        password: 
+          type: string
+          description: Password
+          minLength: 2
+          format: password
+        schemaType: 
+          type: string
+          example: Basic
+          default: Bearer
+          description: HTTP token schema type
+          enum: 
+            - Bearer
+            - Basic
+    RequestLogout:
+      required:
+        - username
+      type: object
+      properties:
+        username: 
+          type: string
+          minLength: 2
+          example: me@mydomain.com
+          description: Username
+    RequestRegister: 
+      required:
+        - firstName
+        - username
+        - password
+      type: object
+      properties:
+        firstName: 
+          type: string
+          minLength: 2
+          example: Abraham
+          description: User's first name
+        username: 
+          type: string
+          format: email
+          minLength: 8
+          description: Username to access the system
+        password: 
+          type: string
+          minLength: 8
+          format: password
+          description: Password to access the system
+    AuthorizationHeader:
+      required:
+        - Authorization
+      type: object
+      properties:
+        Authorization: 
+          type: string
+          example: Bearer saiudyas87dahsd8sahdas87dhas8d7hsa87dhas78dh=
+          description: Authorization Header
     RequestCreateUser: 
       required:
         - firstName
@@ -986,7 +1163,7 @@ components:
         id: 
           type: string
         firstName: 
-          type: strinł
+          type: string
           minLength: 2
           example: Abraham
           description: User's first name

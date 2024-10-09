@@ -8,14 +8,15 @@ const apiVersionsGetHandlerFactory: EndPointFactory = (
   return {
     path: '/versions',
     method: 'get',
-    handler(req: FastifyRequest, res: FastifyReply): void {
+    async handler(req: FastifyRequest, res: FastifyReply): Promise<any> {
       const versions: Record<string, string> = {};
       if (typeof apiDocs !== 'undefined') {
         for (const [version] of apiDocs) {
           versions[version] = `${_DOCS_PREFIX_}/${version}`;
         }
       }
-      res.code(200).send({ versions });
+      res.code(200);
+      return Promise.resolve({ versions });
     }
   };
 };

@@ -18,7 +18,7 @@ import {
   BasicAuthorizationHeaderUserGuest
 } from '@test/mock';
 import {
-  RequestUpdatePassword, IUser, UserDataRepository, UserService
+  RequestUpdatePassword, UserDataRepository, UserService
 } from '@src/domains/Users';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { JwtService } from '@src/infra/jwt/JwtService';
@@ -60,7 +60,6 @@ let API: any;
 let server: any;
 
 describe('express -> User updatePassword suite', () => {
-  let user1: IUser;
   beforeAll(async () => {
     await databaseClient.connect();
     await keyValueStorageClient.connect();
@@ -147,7 +146,7 @@ describe('express -> User updatePassword suite', () => {
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser1);
-    expect(response.body.message).toBe('Bad Request - The property invalidFieldName from input payload does not exist inside the domain.');
+    expect(response.body.message).toBe('Bad Request - The property invalidFieldName from input payload does not exist.');
     expect(response.statusCode).toBe(400);
   });
 
@@ -167,7 +166,7 @@ describe('express -> User updatePassword suite', () => {
     expect.hasAssertions();
     const response = await request(server)
       .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
-      .send({ ...user1, id: createdUser1.id })
+      .send({ ...createdUser1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser2);
@@ -179,7 +178,7 @@ describe('express -> User updatePassword suite', () => {
     expect.hasAssertions();
     const response = await request(server)
       .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
-      .send({ ...user1, id: createdUser1.id })
+      .send({ ...createdUser1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser3);
@@ -192,7 +191,7 @@ describe('express -> User updatePassword suite', () => {
     expect.hasAssertions();
     const response = await request(server)
       .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
-      .send({ ...user1, id: createdUser1.id })
+      .send({ ...createdUser1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUser4);
@@ -205,7 +204,7 @@ describe('express -> User updatePassword suite', () => {
     expect.hasAssertions();
     const response = await request(server)
       .put(`/api/1.0.0/users/${createdUser1.id}/updatePassword`)
-      .send({ ...user1, id: createdUser1.id })
+      .send({ ...createdUser1, id: createdUser1.id })
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set(BasicAuthorizationHeaderUserGuest);
