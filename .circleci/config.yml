@@ -7,7 +7,7 @@ jobs:
   test-source:
     docker:
       - image: cimg/node:22.7
-      - image: cimg/redis:latest
+      - image: cimg/redis:7.4.1
         command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     steps:
       - checkout
