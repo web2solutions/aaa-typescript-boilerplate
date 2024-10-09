@@ -28,6 +28,6 @@ jobs:
         cache: 'npm'
     - run: npm install -g pnpm@latest
     - run: pnpm install
-    - run: pnpm ci
+    - run: pnpm i
     # - run: pnpm run build --if-present
     - run: pnpm test
