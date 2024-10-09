@@ -138,8 +138,11 @@ export class RestAPI<T> {
         for (const method of methods) {
           const endPointConfig: Record<string, any> = endPointConfigs[method];
           const domain = path.split('/')[1];
-
-          const fileName = `${domain.charAt(0).toUpperCase()}${domain.substring(1, domain.length - 1)}Controller`;
+          let fileName = `${domain.charAt(0).toUpperCase()}${domain.substring(1, domain.length - 1)}Controller`;
+          if (domain === 'auth') {
+            // domain = 'auth';
+            fileName = 'AuthController';
+          }
           const controllerPath = `@src/infra/server/HTTP/adapters/controllers/${fileName}`;
           const ControllerModule = require(controllerPath)[fileName];
 

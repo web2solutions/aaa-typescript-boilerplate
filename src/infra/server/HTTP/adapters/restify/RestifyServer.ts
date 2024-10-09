@@ -54,7 +54,7 @@ class RestifyServer extends HTTPBaseServer<Restify> {
       (this._application as any)[verb](handlerFactory.path, handler);
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log(error);
+      // console.log(error);
     }
   }
 

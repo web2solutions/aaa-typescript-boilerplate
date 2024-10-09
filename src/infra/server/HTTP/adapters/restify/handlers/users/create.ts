@@ -22,7 +22,7 @@ const create: EndPointFactory = (
     method: 'post',
     async handler(req: Request, res: Response) {
       try {
-        const { result, error } = await controller!.create(new UserCreateRequestEvent({
+        const { result, error } = await controller!.create!(new UserCreateRequestEvent({
           authorization: req.headers.authorization ?? '',
           input: req.body,
           schemaOAS: endPointConfig

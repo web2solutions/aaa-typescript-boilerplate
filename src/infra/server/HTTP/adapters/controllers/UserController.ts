@@ -1,11 +1,10 @@
+import { IController, IControllerFactory } from '@src/infra/server/HTTP/ports';
 import { BaseController } from '@src/infra/server/HTTP/adapters/controllers/BaseController';
 import { Security } from '@src/infra/security';
 import {
   throwIfOASInputValidationFails,
   validateRequestParams
 } from '@src/infra/server/HTTP/validators';
-import { IController } from '@src/infra/server/HTTP/ports/IController';
-import { IControllerFactory } from '@src/infra/server/HTTP/ports/IControllerFactory';
 import { Authorize } from '@src/infra/server/HTTP/adapters/guard/Authorize';
 
 import { BaseDomainEvent } from '@src/domains/events/BaseDomainEvent';

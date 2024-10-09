@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as jwt from 'jsonwebtoken';
-import { JwtPayload } from 'jsonwebtoken';
 
 import { IJwtService } from './IJwtService';
 import { _JWT_TOKEN_SECRET_KEY_, _JWT_TOKEN_EXPIRES_IN_ } from '../config/jwt';
+import { ITokenObject } from '../auth/ITokenObject';
 
 let jwtService: any;
 
@@ -17,12 +17,12 @@ export class JwtService implements IJwtService {
     this.expiresIn = _JWT_TOKEN_EXPIRES_IN_;
   }
 
-  public decodeToken(token: string): JwtPayload | null {
+  public decodeToken(token: string): ITokenObject | null {
     // eslint-disable-next-line no-console
     // console.log('+++++++  decodeToken() SECRET', this.secret);
     let valid = null;
     try {
-      valid = jwt.verify(token, this.secret, { }) as JwtPayload;
+      valid = jwt.verify(token, this.secret, { }) as ITokenObject;
     } catch (error) {
       valid = null;
     }

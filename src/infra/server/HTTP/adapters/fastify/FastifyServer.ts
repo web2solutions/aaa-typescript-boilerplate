@@ -37,14 +37,6 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
 
   public endPointRegister(handlerFactory: IbaseHandler): void {
     try {
-      if (handlerFactory.securitySchemes) {
-        (this._application as any)[handlerFactory.method](
-          handlerFactory.path,
-          // { preHandler: [handlerFactory.securitySchemes] },
-          handlerFactory.handler
-        );
-        return;
-      }
       (this._application as any)[handlerFactory.method](
         handlerFactory.path,
         handlerFactory.handler

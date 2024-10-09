@@ -1,21 +1,21 @@
 /* eslint-disable no-console */
 /* eslint-disable no-shadow */
 /* eslint-disable class-methods-use-this */
+import { _FORBIDDEN_ERROR_NAME_, _UNAUTHORIZED_ERROR_NAME_, _VALIDATION_ERROR_NAME_ } from '@src/infra/config/constants';
+
+import { IAuthService } from '@src/infra/auth/IAuthService';
+import { IAuthSchema } from '@src/infra/auth/IAuthSchema';
+import { EAuthSchemaType } from '@src/infra/auth/EAuthSchemaType';
+import { IUserProvider } from '@src/infra/auth/IUserProvider';
+import { IAuthorizationHeader } from '@src/infra/auth/IAuthorizationHeader';
+import { ITokenObject } from '@src/infra/auth/ITokenObject';
+
+import { IJwtService } from '@src/infra/jwt/IJwtService';
+import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 
 import { IUser } from '@src/domains/Users';
-import { mustBePassword } from '@src/domains/validators';
-
 import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
-import { _UNAUTHORIZED_ERROR_NAME_ } from '../config/constants';
-
-import { IAuthService } from './IAuthService';
-import { IAuthSchema } from './IAuthSchema';
-import { EAuthSchemaType } from './EAuthSchemaType';
-import { IUserProvider } from './IUserProvider';
-import { IAuthorizationHeader } from './IAuthorizationHeader';
-import { IPasswordCryptoService } from '../security/IPasswordCryptoService';
-import { IJwtService } from '../jwt/IJwtService';
-import { ITokenObject } from './ITokenObject';
+import { EEmailType, EmailValueObject } from '@src/domains/valueObjects';
 
 const tokenKeys = [
   'id',
@@ -32,7 +32,7 @@ export class AuthService implements IAuthService {
   constructor(
     private userProvider: IUserProvider,
     private passwordCryptoService: IPasswordCryptoService,
-    private jwtService: IJwtService
+    public jwtService: IJwtService
   ) {
     // console.log('start auth service');
   }
@@ -81,30 +81,52 @@ export class AuthService implements IAuthService {
     return decodedToken as ITokenObject;
   }
 
+  public async decodeToken(AuthorizationHeader: string): Promise<ITokenObject | null> {
+    const authArray = AuthorizationHeader.split(' ');
+    const [schema, token] = authArray;
+    if (schema === EAuthSchemaType.Bearer) {
+      return this.jwtService.decodeToken(token) || null;
+    }
+
+    const [username] = Buffer.from(token, 'base64').toString().split(':');
+    const { id } = await this.findUser(username);
+    if (!id) {
+      return null;
+    }
+    // get id from db
+    return { id, username } as ITokenObject;
+  }
+
   public async authenticate(
     username: string,
     password: string,
     schema: EAuthSchemaType
-  ): Promise<IAuthorizationHeader> {
-    mustBePassword('password', password);
-    const userFound = await this.findUser(username);
-    const passwordMatch = await this.passwordCryptoService.compare(password, userFound.password);
-    if (!passwordMatch) {
-      const error = new Error('password does not matches');
-      error.name = _UNAUTHORIZED_ERROR_NAME_;
-      throw error;
+  ): Promise<IServiceResponse<IAuthorizationHeader>> {
+    const serviceResponse: IServiceResponse<IAuthorizationHeader> = {};
+    try {
+      // mustBePassword('password', password); // this kind of validation is a security flag
+      const userFound = await this.findUser(username);
+      const passwordMatch = await this.passwordCryptoService.compare(password, userFound.password);
+      if (!passwordMatch) {
+        const error = new Error('password does not matches');
+        error.name = _UNAUTHORIZED_ERROR_NAME_;
+        throw error;
+      }
+      let token: string;
+      const AuthorizationHeader = {
+        Authorization: ''
+      };
+      if (schema === EAuthSchemaType.Basic) {
+        token = Buffer.from(`${username}:${password}`, 'utf8').toString('base64');
+      } else {
+        token = this.jwtService.generateToken(userFound);
+      }
+      AuthorizationHeader.Authorization = `${schema} ${token}`;
+      serviceResponse.result = AuthorizationHeader;
+    } catch (error) {
+      serviceResponse.error = error as Error;
     }
-    let token: string;
-    const AuthorizationHeader = {
-      Authorization: ''
-    };
-    if (schema === EAuthSchemaType.Basic) {
-      token = Buffer.from(`${username}:${password}`, 'utf8').toString('base64');
-    } else {
-      token = this.jwtService.generateToken(userFound);
-    }
-    AuthorizationHeader.Authorization = `${schema} ${token}`;
-    return AuthorizationHeader;
+    return serviceResponse;
   }
 
   public async authorizeBasedInTokenType(authRequest: IAuthSchema): Promise<ITokenObject> {
@@ -145,22 +167,42 @@ export class AuthService implements IAuthService {
     id: string,
     // oldPassword: string,
     newPassword: string
-  ): Promise<boolean> {
-    const { result: userFound } = await this.userProvider.updatePassword(id, newPassword);
-    if (!userFound) {
-      const error = new Error('user not found');
-      error.name = _UNAUTHORIZED_ERROR_NAME_;
-      throw error;
+  ): Promise<IServiceResponse<boolean>> {
+    const serviceResponse: IServiceResponse<boolean> = {};
+    try {
+      const { result: userFound } = await this.userProvider.updatePassword(id, newPassword);
+      if (!userFound) {
+        const error = new Error('user not found');
+        error.name = _UNAUTHORIZED_ERROR_NAME_;
+        throw error;
+      }
+      serviceResponse.result = true;
+    } catch (error) {
+      serviceResponse.error = error as Error;
     }
-    return !!userFound;
+    return serviceResponse;
   }
 
-  public async logout() {
-    //
+  public async logout(): Promise<IServiceResponse<boolean>> {
+    const serviceResponse: IServiceResponse<boolean> = {
+      result: true
+    };
+    return Promise.resolve(serviceResponse);
   }
 
   public async register(data: Record<string, any>): Promise<IServiceResponse<Record<string, any>>> {
-    return this.userProvider.register(data);
+    // eslint-disable-next-line no-param-reassign
+    const record = {
+      ...data,
+      // set default email
+      emails: [{
+        email: data.username,
+        type: EEmailType.work,
+        isPrimary: true
+      } as EmailValueObject],
+      roles: ['access_allow']
+    };
+    return this.userProvider.register(record);
   }
 
   public async updateUser(
@@ -178,6 +220,11 @@ export class AuthService implements IAuthService {
     user: IUser,
     endPointConfig: Record<string, any>
   ) {
+    if (!endPointConfig.security) {
+      const error = new Error('The route Controller is secured by guard rails but there is no security schema defined in the Open API specification file.');
+      error.name = _VALIDATION_ERROR_NAME_;
+      throw error;
+    }
     const authName = Object.keys(endPointConfig.security[0])[0];
     // if end point has an auth schema
     if (authName) {
@@ -185,14 +232,14 @@ export class AuthService implements IAuthService {
       // if route has any required permission
       if (!user.roles) {
         const error = new Error('Insufficient permission - invalid user - user.roles is missing');
-        error.name = 'forbidden';
+        error.name = _FORBIDDEN_ERROR_NAME_;
         throw error;
       }
       if (routePermission.length > 0) {
         for (const permission of routePermission) {
           if (user.roles.indexOf(permission) === -1) {
             const error = new Error(`Insufficient permission - user must have the ${permission} role`);
-            error.name = 'forbidden';
+            error.name = _FORBIDDEN_ERROR_NAME_;
             throw error;
           }
         }

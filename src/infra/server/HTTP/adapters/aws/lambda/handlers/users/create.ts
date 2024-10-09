@@ -71,7 +71,7 @@ Promise<APIGatewayProxyResult> => {
   try {
     const endPointConfigs: Record<string, any> = openApiSpecification.paths[endPoint] ?? {};
     const endPointConfig: Record<string, any> = endPointConfigs[method];
-    const { result, error } = await controller!.create(new UserCreateRequestEvent({
+    const { result, error } = await controller!.create!(new UserCreateRequestEvent({
       authorization,
       input: event.body,
       schemaOAS: endPointConfig

@@ -25,7 +25,7 @@ const getAll: EndPointFactory = (
         if (!queryString.page) queryString.page = 1;
         const {
           result, error, page, size, total
-        } = await controller!.getAll(new UserGetAllRequestEvent({
+        } = await controller!.getAll!(new UserGetAllRequestEvent({
           authorization: req.headers.authorization ?? '',
           schemaOAS: endPointConfig,
           queryString

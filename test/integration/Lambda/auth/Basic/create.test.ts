@@ -83,28 +83,28 @@ describe('aws lambda -> Auth -> Basic suite', () => {
         createdUser1.username,
         createdUser1.password,
         EAuthSchemaType.Basic
-      ))
+      )).result!
     };
     authorizationHeaderUser2 = {
       ...(await authService.authenticate(
         createdUser2.username,
         createdUser2.password,
         EAuthSchemaType.Basic
-      ))
+      )).result!
     };
     authorizationHeaderUser3 = {
       ...(await authService.authenticate(
         createdUser3.username,
         createdUser3.password,
         EAuthSchemaType.Basic
-      ))
+      )).result!
     };
     authorizationHeaderUser4 = {
       ...(await authService.authenticate(
         createdUser4.username,
         createdUser4.password,
         EAuthSchemaType.Basic
-      ))
+      )).result!
     };
   });
 
@@ -218,7 +218,7 @@ describe('aws lambda -> Auth -> Basic suite', () => {
       }
     }), composeContext(), () => {});
     const { message } = JSON.parse(body);
-    expect(message).toBe('Bad Request - The property invalidFieldName from input payload does not exist inside the domain.');
+    expect(message).toBe('Bad Request - The property invalidFieldName from input payload does not exist.');
     expect(statusCode).toBe(400);
   });
 

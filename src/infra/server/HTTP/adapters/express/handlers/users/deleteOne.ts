@@ -19,7 +19,7 @@ const deleteOne: EndPointFactory = (
     async handler(req: Request, res: Response) {
       try {
         const params = req.params as Record<string, any>;
-        const { result, error } = await controller!.delete(new UserDeleteRequestEvent({
+        const { result, error } = await controller!.delete!(new UserDeleteRequestEvent({
           authorization: req.headers.authorization ?? '',
           schemaOAS: endPointConfig,
           params
