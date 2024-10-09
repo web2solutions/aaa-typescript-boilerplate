@@ -11,15 +11,19 @@ jobs:
         command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     steps:
       - checkout
+      - run: sudo npm install -g npm@latest
       #- restore_cache:
       #    keys:
       #      - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
-      - run:
-          name: install pnpm
-          command: npm install pnpm
-      - run:
-          name: install packages
-          command: pnpm install --no-frozen-lockfile
+      #- run:
+      #    name: install pnpm
+      #    command: npm install pnpm@latest
+      - node/install-packages:
+          override-ci-command: pnpm i
+          pkg-manager: pnpm
+      #- run:
+      #    name: install packages
+      #    command: pnpm install --no-frozen-lockfile
       #- save_cache:
       #    key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
       #    paths:
@@ -34,7 +38,7 @@ jobs:
           command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run Tests
-          command: npm run test
+          command: pnpm run test
       - codecov/upload
 
 workflows:
