@@ -7,7 +7,7 @@ jobs:
   test-source:
     docker:
       - image: cimg/node:22.7
-      - image: circleci/redis:latest
+      - image: cimg/redis:latest
         command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     steps:
       - checkout
@@ -16,7 +16,7 @@ jobs:
       #      - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
       - run:
           name: install pnpm
-          command: npm install -g pnpm
+          command: npm install pnpm
       - run:
           name: install packages
           command: pnpm install --no-frozen-lockfile
