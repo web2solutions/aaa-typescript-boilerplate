@@ -25,6 +25,7 @@ export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
 
   private constructor() {
     super();
+    // console.log(redisConfig);
     this.client = createClient(redisConfig);
     this.client.on('error', (err) => console.log('Redis Client Error', err));
     this.client.on('connect', () => {

@@ -1,5 +1,5 @@
 import { Response } from 'restify';
-import { formatErrorMessage, toHttpStatus } from '@src/infra/utils';
+import { formatErrorMessage, toHttpStatus } from '@src/shared/utils';
 import { BaseError, EErrorStringCodes } from '@src/infra/exceptions';
 
 export function sendErrorResponse(error: BaseError, res: Response) {

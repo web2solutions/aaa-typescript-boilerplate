@@ -6,7 +6,7 @@ import YAML from 'yaml';
 import { OpenAPIV3 } from 'openapi-types';
 
 import { _API_PREFIX_, _DOCS_PREFIX_ } from '@src/config/constants';
-import { replaceVars } from '@src/infra/utils';
+import { replaceVars } from '@src/shared/utils';
 import { IAPIFactory, EHTTPFrameworks, HTTPBaseServer } from '@src/interface/HTTP/ports';
 
 import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';

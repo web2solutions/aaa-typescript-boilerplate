@@ -1,5 +1,5 @@
 import { BaseError, EErrorStringCodes } from '@src/infra/exceptions';
-import { formatErrorMessage, toHttpStatus } from '@src/infra/utils';
+import { formatErrorMessage, toHttpStatus } from '@src/shared/utils';
 
 export function sendErrorResponse(error: BaseError) {
   return {

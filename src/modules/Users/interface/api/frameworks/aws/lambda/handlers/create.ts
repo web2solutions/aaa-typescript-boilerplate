@@ -25,12 +25,7 @@ import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemo
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
-const ENV = process.env.NODE_ENV || 'dev';
-let OasFilePath = path.resolve('../../spec/1.0.0.yml');
-
-if (ENV === 'ci') {
-  OasFilePath = path.resolve('./spec/1.0.0.yml');
-}
+const OasFilePath = path.resolve('./spec/1.0.0.yml');
 
 const OasYmlfile = fs.readFileSync(path.resolve(OasFilePath), 'utf8');
 const openApiSpecification: OpenAPIV3.Document = YAML.parse(OasYmlfile);

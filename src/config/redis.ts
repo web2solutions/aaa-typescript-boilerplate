@@ -3,8 +3,8 @@ import {
 } from 'redis';
 
 export const redisConfig = {
-  host: '127.0.0.1',
-  port: 6379,
-  database: 7,
-  password: 'eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81'
+  host: process.env.AAA_REDIS_HOST,
+  port: process.env.AAA_REDIS_PORT,
+  database: process.env.AAA_REDIS_DATABASE,
+  password: process.env.AAA_REDIS_PASSWORD
 } as RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>;

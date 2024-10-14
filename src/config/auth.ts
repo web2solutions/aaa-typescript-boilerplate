@@ -1,14 +1,14 @@
-export const authConfig = {
-  accessTokenPrivateKey: 'ACCESS_TOKEN_PRIVATE_KEY',
-  accessTokenPublicKey: 'ACCESS_TOKEN_PUBLIC_KEY',
-  refreshTokenPrivateKey: 'REFRESH_TOKEN_PRIVATE_KEY',
-  refreshTokenPublicKey: 'REFRESH_TOKEN_PUBLIC_KEY',
+/* export const authConfig = {
+  accessTokenPrivateKey: process.env.ACCESS_TOKEN_PRIVATE_KEY,
+  accessTokenPublicKey: process.env.ACCESS_TOKEN_PUBLIC_KEY,
+  refreshTokenPrivateKey: process.env.REFRESH_TOKEN_PRIVATE_KEY,
+  refreshTokenPublicKey: process.env.REFRESH_TOKEN_PUBLIC_KEY,
 
-  googleClientId: 'GOOGLE_OAUTH_CLIENT_ID',
-  googleClientSecret: 'GOOGLE_OAUTH_CLIENT_SECRET',
-  googleOauthRedirect: 'GOOGLE_OAUTH_REDIRECT_URL',
+  googleClientId: process.env.GOOGLE_OAUTH_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+  googleOauthRedirect: process.env.GOOGLE_OAUTH_REDIRECT_URL,
 
-  githubClientId: 'GITHUB_OAUTH_CLIENT_ID',
-  githubClientSecret: 'GITHUB_OAUTH_CLIENT_SECRET',
-  githubOauthRedirect: 'GITHUB_OAUTH_REDIRECT_URL'
-};
+  githubClientId: process.env.GITHUB_OAUTH_CLIENT_ID,
+  githubClientSecret: process.env.GITHUB_OAUTH_CLIENT_SECRET,
+  githubOauthRedirect: process.env.GITHUB_OAUTH_REDIRECT_URL
+}; */

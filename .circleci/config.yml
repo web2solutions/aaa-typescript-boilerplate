@@ -8,7 +8,7 @@ jobs:
     docker:
       - image: cimg/node:22.7
       - image: cimg/redis:7.4.1
-        command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+        command: redis-server --save 20 1 --loglevel warning --requirepass ${PROJECT_AAA_REDIS_PASSWORD}
     steps:
       - checkout
       - run: sudo npm install -g npm@latest
@@ -35,7 +35,7 @@ jobs:
           command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run Tests
-          command: pnpm run test
+          command: pnpm run ci:test
       - codecov/upload
 
 workflows:

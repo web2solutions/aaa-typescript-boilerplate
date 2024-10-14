@@ -8,7 +8,7 @@ import {
   _DATABASE_CONFLICT_ERROR_NAME_,
   _EVENT_INVALID_MESSAGE_,
   _UNAUTHORIZED_ERROR_NAME_,
-  // _INFRA_NOT_IMPLEMENTED_,
+  _INFRA_NOT_IMPLEMENTED_,
   _DATABASE_PAGING_ERROR_,
   _LOCKED_RESOURCE_ERROR_NAME_
 
@@ -46,6 +46,8 @@ export function formatErrorMessage(error: BaseError) {
     message = `Not Found - ${error.message}`;
   } else if (error.name === _DATABASE_CONFLICT_ERROR_NAME_) {
     message = `Conflict - ${error.message}`;
+  } else if (error.name === _INFRA_NOT_IMPLEMENTED_) {
+    message = `Not Implemented - ${error.message}`;
   }
 
   return message;
