@@ -16,25 +16,21 @@ const LiveAssets = new LiveDirectory(path.join(__dirname, '../../../../../../doc
 });
 
 class HyperExpressServer extends HTTPBaseServer<HyperExpress.Server> {
-  private _application: HyperExpress.Server;
+  public readonly application: HyperExpress.Server;
 
   constructor() {
     super();
-    this._application = new HyperExpress.Server();
-    this._application.use(cors());
-    // this._application.use('/*', helmet());
+    this.application = new HyperExpress.Server();
+    this.application.use(cors());
+    // this.application.use('/*', helmet());
     // https://github.com/kartikk221/hyper-express-body-parser
     this.createDocEndPoint();
-  }
-
-  get application(): HyperExpress.Server {
-    return this._application;
   }
 
   public endPointRegister(handlerFactory: IbaseHandler): void {
     try {
       if (handlerFactory.securitySchemes) {
-        (this._application as any)[handlerFactory.method](
+        (this.application as any)[handlerFactory.method](
           handlerFactory.path,
           {
             middlewares: [handlerFactory.securitySchemes]
@@ -43,7 +39,7 @@ class HyperExpressServer extends HTTPBaseServer<HyperExpress.Server> {
         );
         return;
       }
-      (this._application as any)[handlerFactory.method](
+      (this.application as any)[handlerFactory.method](
         handlerFactory.path,
         handlerFactory.handler
       );
@@ -53,7 +49,7 @@ class HyperExpressServer extends HTTPBaseServer<HyperExpress.Server> {
   }
 
   private createDocEndPoint() {
-    this._application.get('/doc/*', (request: HyperExpress.Request, response: HyperExpress.Response) => {
+    this.application.get('/doc/*', (request: HyperExpress.Request, response: HyperExpress.Response) => {
       try {
         const filePath = request.path.replace('/doc/', '');
         const file = LiveAssets.get(filePath);
@@ -74,7 +70,7 @@ class HyperExpressServer extends HTTPBaseServer<HyperExpress.Server> {
 
   public async start(): Promise<void> {
     try {
-      await this._application.listen(_HTTP_PORT_);
+      await this.application.listen(_HTTP_PORT_);
       // eslint-disable-next-line no-console
       console.log(`HyperExpress App Listening on Port ${_HTTP_PORT_}`);
     } catch (error) {

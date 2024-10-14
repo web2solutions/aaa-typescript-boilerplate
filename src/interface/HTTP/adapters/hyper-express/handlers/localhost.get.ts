@@ -4,7 +4,7 @@ import { EndPointFactory } from '@src/interface/HTTP/ports/EndPointFactory';
 // import basicAuth from '../auth/basicAuth';
 
 // eslint-disable-next-line no-empty-pattern
-const localhostGetHandlerFactory: EndPointFactory = ({}): IbaseHandler => {
+const localhostGetHandlerFactory: EndPointFactory = (): IbaseHandler => {
   return {
     path: '/',
     method: 'get',

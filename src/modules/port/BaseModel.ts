@@ -2,11 +2,11 @@
 import { UUID } from '@src/modules/port';
 
 export abstract class BaseModel<T> {
-  private _createdAt: Date;
+  private readonly _createdAt: Date;
 
   private _updatedAt: Date;
 
-  private _id: string;
+  private readonly _id: string;
 
   public _excludeOnSerialize: string[] = [];
 

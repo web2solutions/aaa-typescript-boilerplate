@@ -45,7 +45,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
   public constructor(config: IRepoConfig) {
     super(config);
     const { limit } = config;
-    this.store = this.databaseClient.stores.User as IStore<IUser>;
+    this.store = this.databaseClient.stores.User;
     this.limit = limit ?? _DEFAULT_PAGE_SIZE_;
   }
 
@@ -53,7 +53,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     canNotBeEmpty('password', data.password);
     // hash password
     const model: User = new User(data);
-    await this.store.create(model.id, model.serialize() as IUser);
+    await this.store.create(model.id, model.serialize());
     model.password = '********';
     model.salt = '***';
 
@@ -102,7 +102,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
       page,
       size,
       total,
-      result: result.map((rawDoc: IUser) => new User(rawDoc)) as User[]
+      result: result.map((rawDoc: IUser) => new User(rawDoc))
     };
     return pagedResponse;
   }
@@ -120,7 +120,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const model: User = new User({ ...oldDocument.serialize() });
     model.password = data.password;
     model.salt = data.salt!;
-    await this.store.update(id, model.serialize() as IUser);
+    await this.store.update(id, model.serialize());
     return model;
   }
 
@@ -128,7 +128,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldDocument = await this.getOneById(userId);
     const model: User = new User({ ...oldDocument.serialize() });
     model.createDocument(data);
-    await this.store.update(userId, model.serialize() as IUser);
+    await this.store.update(userId, model.serialize());
     return model;
   }
 
@@ -140,7 +140,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldDocument = await this.getOneById(userId);
     const model: User = new User({ ...oldDocument.serialize() });
     model.updateDocument({ ...data, id: documentId });
-    await this.store.update(userId, model.serialize() as IUser);
+    await this.store.update(userId, model.serialize());
     return model;
   }
 
@@ -151,7 +151,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldDocument = await this.getOneById(userId);
     const model: User = new User({ ...oldDocument.serialize() });
     model.deleteDocument(documentId);
-    await this.store.update(userId, model.serialize() as IUser);
+    await this.store.update(userId, model.serialize());
     return model;
   }
 
@@ -160,7 +160,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldPhone = await this.getOneById(userId);
     const model: User = new User({ ...oldPhone.serialize() });
     model.createPhone(data);
-    await this.store.update(userId, model.serialize() as IUser);
+    await this.store.update(userId, model.serialize());
     return model;
   }
 
@@ -172,7 +172,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldPhone = await this.getOneById(userId);
     const model: User = new User({ ...oldPhone.serialize() });
     model.updatePhone({ ...data, id: phoneId });
-    await this.store.update(userId, model.serialize() as IUser);
+    await this.store.update(userId, model.serialize());
     return model;
   }
 
@@ -183,7 +183,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldPhone = await this.getOneById(userId);
     const model: User = new User({ ...oldPhone.serialize() });
     model.deletePhone(phoneId);
-    await this.store.update(userId, model.serialize() as IUser);
+    await this.store.update(userId, model.serialize());
     return model;
   }
 
@@ -192,7 +192,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldEmail = await this.getOneById(userId);
     const model: User = new User({ ...oldEmail.serialize() });
     model.createEmail(data);
-    await this.store.update(userId, model.serialize() as IUser);
+    await this.store.update(userId, model.serialize());
     return model;
   }
 
@@ -204,7 +204,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldEmail = await this.getOneById(userId);
     const model: User = new User({ ...oldEmail.serialize() });
     model.updateEmail({ ...data, id: emailId });
-    await this.store.update(userId, model.serialize() as IUser);
+    await this.store.update(userId, model.serialize());
     return model;
   }
 
@@ -215,7 +215,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
     const oldEmail = await this.getOneById(userId);
     const model: User = new User({ ...oldEmail.serialize() });
     model.deleteEmail(emailId);
-    await this.store.update(userId, model.serialize() as IUser);
+    await this.store.update(userId, model.serialize());
     return model;
   }
 }

@@ -9,7 +9,7 @@ import { IServiceResponse } from '@src/modules/port';
 let userProvider: IUserProvider;
 
 export class UserProviderLocal implements IUserProvider {
-  private userService: UserService;
+  private readonly userService: UserService;
 
   constructor(userService: UserService) {
     this.userService = userService;

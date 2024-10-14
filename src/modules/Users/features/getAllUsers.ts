@@ -13,9 +13,9 @@ export const getAllUsers = async (
   const response = await userDataRepository.getAll({ ...filters }, paging);
   const rawDocs: IUser[] = response.result.map(
     (model: User) => model.serialize()
-  ) as IUser[];
+  );
   return {
     ...response,
-    result: rawDocs as IUser[]
+    result: rawDocs
   };
 };

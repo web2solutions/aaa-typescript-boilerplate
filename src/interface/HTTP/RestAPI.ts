@@ -24,49 +24,49 @@ import {
 import users from '@seed/users';
 
 export class RestAPI<T> {
-  private _oas: Map<string, OpenAPIV3.Document> = new Map();
+  private readonly oas: Map<string, OpenAPIV3.Document> = new Map();
 
-  private _started: boolean = false;
+  private started: boolean = false;
 
-  private _server: HTTPBaseServer<T>;
+  public readonly server: HTTPBaseServer<T>;
 
-  private _serverType: EHTTPFrameworks;
+  private readonly serverType: EHTTPFrameworks;
 
-  private _databaseClient: IDatabaseClient;
+  public readonly databaseClient: IDatabaseClient;
 
-  private _mutexClient: IMutexService | undefined;
+  public readonly mutexClient: IMutexService | undefined;
 
-  private _authService: IAuthService | undefined;
+  private readonly authService: IAuthService | undefined;
 
-  private _passwordCryptoService: IPasswordCryptoService | undefined;
+  private readonly passwordCryptoService: IPasswordCryptoService | undefined;
 
-  private _keyValueStorageClient: IKeyValueStorageClient | undefined;
+  private keyValueStorageClient: IKeyValueStorageClient | undefined;
 
   constructor(config: IAPIFactory<T>) {
-    this._serverType = config.serverType ?? EHTTPFrameworks.express;
-    this._server = config.webServer;
+    this.serverType = config.serverType ?? EHTTPFrameworks.express;
+    this.server = config.webServer;
 
-    this._databaseClient = config.databaseClient;
+    this.databaseClient = config.databaseClient;
 
     if (config.keyValueStorageClient) {
-      this._keyValueStorageClient = config.keyValueStorageClient;
+      this.keyValueStorageClient = config.keyValueStorageClient;
     }
 
     if (config.mutexService) {
-      this._mutexClient = config.mutexService;
+      this.mutexClient = config.mutexService;
     }
 
     if (config.authService) {
-      this._authService = config.authService;
-      // this._authService?.start();
+      this.authService = config.authService;
+      // this.authService?.start();
     }
 
     if (config.passwordCryptoService) {
-      this._passwordCryptoService = config.passwordCryptoService;
+      this.passwordCryptoService = config.passwordCryptoService;
     }
 
-    this._buildWithOAS();
-    this._buildInfraEndPoints(config);
+    this.buildWithOAS();
+    this.buildInfraEndPoints(config);
 
     process.on('exit', () => {
       this.stop();
@@ -79,15 +79,7 @@ export class RestAPI<T> {
     });
   }
 
-  public get databaseClient(): IDatabaseClient {
-    return this._databaseClient;
-  }
-
-  public get mutexService(): IMutexService | undefined {
-    return this._mutexClient;
-  }
-
-  _buildInfraEndPoints(config: IAPIFactory<T>): void {
+  private buildInfraEndPoints(config: IAPIFactory<T>): void {
     const noServiceInjection = {
       databaseClient: {} as IDatabaseClient,
       spec: {} as OpenAPIV3.Document,
@@ -95,19 +87,19 @@ export class RestAPI<T> {
     };
 
     const localhostGet = config.infraHandlers.localhostGetHandlerFactory({ ...noServiceInjection });
-    this._server.endPointRegister(localhostGet);
+    this.server.endPointRegister(localhostGet);
 
     // serve API docs as JSON
     const apiVersionsGet = config.infraHandlers.apiVersionsGetHandlerFactory({
       ...noServiceInjection,
-      apiDocs: this._oas,
-      authService: this._authService || ({} as IAuthService)
+      apiDocs: this.oas,
+      authService: this.authService || ({} as IAuthService)
 
     });
-    this._server.endPointRegister(apiVersionsGet);
+    this.server.endPointRegister(apiVersionsGet);
 
-    for (const [version, spec] of this._oas) {
-      this._server.endPointRegister({
+    for (const [version, spec] of this.oas) {
+      this.server.endPointRegister({
         ...config.infraHandlers.apiDocGetHandlerFactory({
           spec,
           version,
@@ -119,20 +111,20 @@ export class RestAPI<T> {
     }
   }
 
-  _buildWithOAS(): void {
+  private buildWithOAS(): void {
     // console.time('Load spec files');
     const specs = fs.readdirSync('./spec');
     for (const version of specs) {
       const file = fs.readFileSync(`./spec/${version}`, 'utf8');
       const jsonOAS: OpenAPIV3.Document = YAML.parse(file);
-      this._oas.set(jsonOAS.info.version, jsonOAS);
+      this.oas.set(jsonOAS.info.version, jsonOAS);
     }
-    this._buildEndPoints();
+    this.buildEndPoints();
     // console.timeEnd('Load spec files');
   }
 
-  _buildEndPoints(): void {
-    for (const [version, spec] of this._oas) {
+  private buildEndPoints(): void {
+    for (const [version, spec] of this.oas) {
       for (const path of Object.keys(spec.paths)) {
         const endPointConfigs: Record<string, any> = spec.paths[path] ?? {};
         const methods: string[] = Object.keys(endPointConfigs);
@@ -149,24 +141,24 @@ export class RestAPI<T> {
           const ControllerModule = require(controllerPath)[controllerName];
 
           const controller = new ControllerModule({
-            authService: this._authService,
+            authService: this.authService,
             openApiSpecification: spec,
-            databaseClient: this._databaseClient,
-            mutexService: this._mutexClient,
-            passwordCryptoService: this._passwordCryptoService
+            databaseClient: this.databaseClient,
+            mutexService: this.mutexClient,
+            passwordCryptoService: this.passwordCryptoService
           });
 
-          const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this._serverType}/handlers/${endPointConfig.operationId}`;
+          const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this.serverType}/handlers/${endPointConfig.operationId}`;
           const handlerFactory = require(handlerPath).default({
-            databaseClient: this._databaseClient,
-            mutexService: this._mutexClient,
+            databaseClient: this.databaseClient,
+            mutexService: this.mutexClient,
             endPointConfig,
             spec,
-            authService: this._authService,
+            authService: this.authService,
             controller
           });
 
-          this._server.endPointRegister({
+          this.server.endPointRegister({
             ...handlerFactory,
             path: `${_API_PREFIX_}/${version}${replaceVars(handlerFactory.path)}`
           });
@@ -175,29 +167,25 @@ export class RestAPI<T> {
     }
   }
 
-  public get server(): HTTPBaseServer<T> {
-    return this._server;
-  }
-
   public async start(): Promise<void> {
-    if (this._started) return;
-    if (this._keyValueStorageClient) {
-      await this._keyValueStorageClient.connect();
+    if (this.started) return;
+    if (this.keyValueStorageClient) {
+      await this.keyValueStorageClient.connect();
     }
 
-    await this._databaseClient.connect();
-    await this._server.start();
-    this._started = true;
+    await this.databaseClient.connect();
+    await this.server.start();
+    this.started = true;
   }
 
   public async stop(): Promise<void> {
-    if (this._keyValueStorageClient) {
-      await this._keyValueStorageClient.disconnect();
-      this._keyValueStorageClient = undefined;
+    if (this.keyValueStorageClient) {
+      await this.keyValueStorageClient.disconnect();
+      // this.keyValueStorageClient = undefined;
     }
     // quit db
     // quit all
-    await this._databaseClient.disconnect();
+    await this.databaseClient.disconnect();
     // process.exit(0);
   }
 
@@ -206,7 +194,7 @@ export class RestAPI<T> {
   }
 
   public async seedUsers(): Promise<IUser[]> {
-    const dataRepository = UserDataRepository.compile({ databaseClient: this._databaseClient });
+    const dataRepository = UserDataRepository.compile({ databaseClient: this.databaseClient });
     const service = UserService.compile({ dataRepository });
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
@@ -228,7 +216,7 @@ export class RestAPI<T> {
   }
 
   public async deleteUsers(): Promise<IUser[]> {
-    const dataRepository = UserDataRepository.compile({ databaseClient: this._databaseClient });
+    const dataRepository = UserDataRepository.compile({ databaseClient: this.databaseClient });
     const service = UserService.compile({ dataRepository });
     const requests: Promise<IUser>[] = [];
     const allUsers = (await service.getAll({}, { page: 1, size: 1000 })).result || [];

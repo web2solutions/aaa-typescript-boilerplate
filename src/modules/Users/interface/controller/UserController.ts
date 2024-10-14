@@ -9,7 +9,7 @@ import { Authorize } from '@src/shared/decorators/guard/Authorize';
 
 import { BaseDomainEvent } from '@src/modules/port/BaseDomainEvent';
 import {
-  IServiceResponse, setFilter, setPaging, IPagingRequest
+  IServiceResponse, setFilter, setPaging
 } from '@src/modules/port';
 import {
   IUser,
@@ -29,7 +29,7 @@ import {
 let userController: any;
 
 export class UserController extends BaseController implements IController {
-  private userService: UserService;
+  private readonly userService: UserService;
 
   constructor(factory: IControllerFactory) {
     super(factory);
@@ -127,7 +127,7 @@ export class UserController extends BaseController implements IController {
     const paging = setPaging(event);
     const result = await this.userService.getAll(
       { ...filters },
-      paging as IPagingRequest
+      paging
     );
     // console.log(result);
     return result;

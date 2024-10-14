@@ -1,7 +1,7 @@
 import { v4 as uuidv4, parse, stringify } from 'uuid';
 
 export class UUID {
-  private uuid: string;
+  private readonly uuid: string;
 
   private constructor(id?: string) {
     try {

@@ -5,5 +5,5 @@ export interface IServiceResponse<T = any> {
   size?: number;
   total?: number;
   error?: Error;
-  message?: string | undefined;
+  message?: string;
 }

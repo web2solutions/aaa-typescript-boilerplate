@@ -16,19 +16,19 @@ const fastifyApp = fastify({
 export type Fastify = typeof fastifyApp;
 
 class FastifyServer extends HTTPBaseServer<Fastify> {
-  private _application: Fastify;
+  public readonly application: Fastify;
 
   constructor() {
     super();
-    this._application = fastifyApp;
-    this._application.register(cors, {});
-    /* this._application.register(helmet, {
+    this.application = fastifyApp;
+    this.application.register(cors, {});
+    /* this.application.register(helmet, {
       contentSecurityPolicy: {
         useDefaults: false
       }
     }); */
-    this._application.register(formBody);
-    (this._application as any).addHook('preHandler', (req: FastifyRequest, res: FastifyReply, next: any) => {
+    this.application.register(formBody);
+    (this.application as any).addHook('preHandler', (req: FastifyRequest, res: FastifyReply, next: any) => {
       const store = new Map();
       Context.run(store, () => {
         store.set('correlationId', v4());
@@ -41,9 +41,9 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
       });
     });
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    /* await this._application.register(require('middie'));
+    /* await this.application.register(require('middie'));
 
-    this._application.use((req: FastifyRequest, res: FastifyReply, next: any) => {
+    this.application.use((req: FastifyRequest, res: FastifyReply, next: any) => {
       const store = new Map();
       Context.run(store, () => {
         store.set('correlationId', v4());
@@ -59,13 +59,9 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
     this.createDocEndPoint();
   }
 
-  get application(): Fastify {
-    return this._application;
-  }
-
   public endPointRegister(handlerFactory: IbaseHandler): void {
     try {
-      (this._application as any)[handlerFactory.method](
+      (this.application as any)[handlerFactory.method](
         handlerFactory.path,
         handlerFactory.handler
       );
@@ -75,7 +71,7 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
   }
 
   private createDocEndPoint() {
-    this._application.register(fastifyStatic, {
+    this.application.register(fastifyStatic, {
       root: path.join(__dirname, '../../../../../../doc'),
       prefix: '/doc/'
     });
@@ -83,7 +79,7 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
 
   public async start(): Promise<void> {
     try {
-      await this._application.listen({ port: _HTTP_PORT_ });
+      await this.application.listen({ port: _HTTP_PORT_ });
       // eslint-disable-next-line no-console
       console.log(`Fastify App Listening on Port ${_HTTP_PORT_}`);
     } catch (error) {
@@ -96,7 +92,7 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
 
   // eslint-disable-next-line class-methods-use-this
   public async stop(/* code: number = 0 */) {
-    this._application.close();
+    this.application.close();
     // process.exit(code);
   }
 }

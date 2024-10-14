@@ -47,9 +47,9 @@ export class User extends BaseModel<IUser> implements IUser {
 
   private _phones: PhoneValueObject[] = [];
 
-  private _roles: string[] = [];
+  private readonly _roles: string[] = [];
 
-  private _readOnly: boolean = false;
+  private readonly _readOnly: boolean = false;
 
   public _excludeOnSerialize: string[] = ['login'];
 

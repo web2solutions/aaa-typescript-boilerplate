@@ -34,9 +34,9 @@ let authService: IAuthService;
 export class AuthService implements IAuthService {
   // eslint-disable-next-line no-useless-constructor
   constructor(
-    private userProvider: IUserProvider,
-    private passwordCryptoService: IPasswordCryptoService,
-    public jwtService: IJwtService
+    private readonly userProvider: IUserProvider,
+    private readonly passwordCryptoService: IPasswordCryptoService,
+    public readonly jwtService: IJwtService
   ) {
     // console.log('start auth service');
   }

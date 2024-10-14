@@ -55,10 +55,10 @@ export abstract class BaseDomainEvent<TPayload = any> {
       this.schemaOAS = schemaOAS;
     }
     const store: Map<any, any> = Context.getStore() as Map<any, any>;
-    const correlationId = metadata?.correlationId || (store ? store.get('correlationId') : '');
-    const timestamp = metadata?.timestamp || Date.now();
-    const userId = metadata?.userId || (store ? store.get('userId') : '');
-    const causationId = metadata?.causationId || (store ? store.get('correlationId') : '');
+    const correlationId = metadata?.correlationId ?? (store ? store.get('correlationId') : '');
+    const timestamp = metadata?.timestamp ?? Date.now();
+    const userId = metadata?.userId ?? (store ? store.get('userId') : '');
+    const causationId = metadata?.causationId ?? (store ? store.get('correlationId') : '');
 
     this.metadata = {
       correlationId,

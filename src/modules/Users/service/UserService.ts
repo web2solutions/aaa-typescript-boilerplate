@@ -50,11 +50,11 @@ let userService: any;
 export class UserService extends BaseService<IUser, RequestCreateUser, RequestUpdateUser> {
   public dataRepository: UserDataRepository;
 
-  private entityName = 'User';
+  private readonly entityName = 'User';
 
-  private mutexService: IMutexService;
+  private readonly mutexService: IMutexService;
 
-  private passwordCryptoService: IPasswordCryptoService;
+  private readonly passwordCryptoService: IPasswordCryptoService;
 
   public constructor(
     config: IUserServiceConfig
