@@ -1,5 +1,5 @@
 // file deepcode ignore NoHardcodedPasswords/test: <mocked password>
-import { EEmailType, EmailValueObject } from '@src/domains/valueObjects';
+import { EEmailType, EmailValueObject } from '@src/modules/ddd/valueObjects';
 
 const user2 = {
   firstName: 'User',

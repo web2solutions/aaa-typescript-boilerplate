@@ -1,13 +1,13 @@
 // file deepcode ignore NoHardcodedPasswords: <mocked passwords>
-import { IUser } from '@src/domains/Users';
-import { UUID } from '@src/domains/utils';
+import { IUser } from '@src/modules/Users';
+import { UUID } from '@src/modules/port';
 import {
   DocumentValueObject,
   EDocumentType,
   EEmailType,
   EmailValueObject,
   PhoneValueObject
-} from '@src/domains/valueObjects';
+} from '@src/modules/ddd/valueObjects';
 
 const users: Array<IUser> = [{
   id: UUID.create().toString(),

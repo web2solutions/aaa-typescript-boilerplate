@@ -1,5 +1,5 @@
-// import { UUID } from '@src/domains/utils';
-import { EEmailType, EmailValueObject } from '@src/domains/valueObjects';
+// import { UUID } from '@src/modules/port';
+import { EEmailType, EmailValueObject } from '@src/modules/ddd/valueObjects';
 
 const emails: Array<EmailValueObject> = [
   {

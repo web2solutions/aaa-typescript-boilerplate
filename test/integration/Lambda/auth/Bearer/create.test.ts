@@ -2,17 +2,16 @@
 // file deepcode ignore NoHardcodedPasswords: <mocked passwords>
 // file deepcode ignore NoHardcodedCredentials/test: <fake credential>
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
-import { AuthService } from '@src/infra/auth/AuthService';
+import { AuthService } from '@src/modules/Users/service/AuthService';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
-import { IUser, UserDataRepository, UserService } from '@src/domains/Users';
-import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
 import { JwtService } from '@src/infra/jwt/JwtService';
-import { IAuthorizationHeader } from '@src/infra/auth/IAuthorizationHeader';
-import { EAuthSchemaType } from '@src/infra/auth/EAuthSchemaType';
 
-import { handler } from '@src/infra/server/HTTP/adapters/aws/lambda/handlers/users/create';
+import {
+  IUser, UserDataRepository, UserService, UserProviderLocal, IAuthorizationHeader, EAuthSchemaType
+} from '@src/modules/Users';
+import { handler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/create';
 
 import {
   BasicAuthorizationHeaderUserGuest,
@@ -143,7 +142,7 @@ describe('aws lambda -> Auth -> Bearer suite', () => {
       }
     }), composeContext(), () => {});
     const { message } = JSON.parse(body);
-    expect(message).toBe('Duplicated record - username already in use');
+    expect(message).toBe('Conflict - username already in use');
     expect(statusCode).toBe(409);
   });
 

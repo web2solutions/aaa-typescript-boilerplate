@@ -5,16 +5,16 @@
 // file deepcode ignore NoHardcodedCredentials/test: <fake credential>
 import users from '@seed/users';
 
-import { UserDataRepository, UserService } from '@src/domains/Users';
-import { AuthService } from '@src/infra/auth/AuthService';
-import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
+import { UserDataRepository, UserService } from '@src/modules/Users';
+import { AuthService } from '@src/modules/Users/service/AuthService';
+import { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
-import { EAuthSchemaType } from '@src/infra/auth/EAuthSchemaType';
-import { IAuthService } from '@src/infra/auth/IAuthService';
+import { EAuthSchemaType } from '@src/modules/Users/service/ports/EAuthSchemaType';
+import { IAuthService } from '@src/modules/Users/service/ports/IAuthService';
 import { JwtService } from '@src/infra/jwt/JwtService';
 
 const databaseClient = InMemoryDbClient;

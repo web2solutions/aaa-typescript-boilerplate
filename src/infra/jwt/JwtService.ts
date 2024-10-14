@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as jwt from 'jsonwebtoken';
 
-import { IJwtService } from './IJwtService';
-import { _JWT_TOKEN_SECRET_KEY_, _JWT_TOKEN_EXPIRES_IN_ } from '../config/jwt';
-import { ITokenObject } from '../auth/ITokenObject';
+import { IJwtService } from '@src/infra/jwt/IJwtService';
+import { _JWT_TOKEN_SECRET_KEY_, _JWT_TOKEN_EXPIRES_IN_ } from '@src/config/jwt';
+import { ITokenObject } from '@src/modules/Users/service/ports/ITokenObject';
+import { NotImplemented } from '@src/infra/exceptions/NotImplemented';
 
 let jwtService: any;
 
@@ -13,6 +14,7 @@ export class JwtService implements IJwtService {
   public expiresIn: number;
 
   constructor(secret = _JWT_TOKEN_SECRET_KEY_) {
+    if (!secret) throw new NotImplemented('JWT secret key is not defined');
     this.secret = secret;
     this.expiresIn = _JWT_TOKEN_EXPIRES_IN_;
   }

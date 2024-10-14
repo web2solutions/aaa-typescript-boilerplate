@@ -1,6 +1,7 @@
-import { IServiceResponse } from '@src/infra/service/port/IServiceResponse';
-import { ServiceResponse } from '@src/infra/service/adapter/ServiceResponse';
-import { BaseKeyValueStorageClient } from './BaseKeyValueStorageClient';
+import { IServiceResponse } from '@src/modules/port/IServiceResponse';
+import { ServiceResponse } from '@src/modules/port/ServiceResponse';
+import { BaseKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/BaseKeyValueStorageClient';
+import { BaseError } from '@src/infra/exceptions';
 
 let inMemoryKeyValueStorageClient: any;
 
@@ -17,7 +18,7 @@ export class InMemoryKeyValueStorageClient extends BaseKeyValueStorageClient {
       const result = await Promise.resolve(this.client.get(`${this.prefix}:${keyName}`));
       return { result };
     } catch (error: unknown) {
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 
@@ -26,7 +27,7 @@ export class InMemoryKeyValueStorageClient extends BaseKeyValueStorageClient {
       const result = await Promise.resolve(this.client.delete(`${this.prefix}:${keyName}`));
       return { result };
     } catch (error: unknown) {
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 
@@ -36,7 +37,7 @@ export class InMemoryKeyValueStorageClient extends BaseKeyValueStorageClient {
       return { result };
     } catch (error: unknown) {
       // console.log(error);
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 

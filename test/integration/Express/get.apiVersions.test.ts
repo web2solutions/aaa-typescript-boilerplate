@@ -3,19 +3,19 @@
 // file deepcode ignore NoHardcodedCredentials/test: <fake credential>
 import request from 'supertest';
 import { Express } from 'express';
-import { ExpressServer } from '@src/infra/server/HTTP/adapters/express/ExpressServer';
-import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
-import { RestAPI } from '@src/infra/RestAPI';
+import { ExpressServer } from '@src/interface/HTTP/adapters/express/ExpressServer';
+import { infraHandlers } from '@src/interface/HTTP/adapters/express/handlers/infraHandlers';
+import { RestAPI } from '@src/interface/HTTP/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
-import { AuthService } from '@src/infra/auth/AuthService';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports';
+import { AuthService } from '@src/modules/Users/service/AuthService';
+import { EHTTPFrameworks } from '@src/interface/HTTP/ports';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 
-import { UserDataRepository, UserService } from '@src/domains/Users';
+import { UserDataRepository, UserService } from '@src/modules/Users';
 import { JwtService } from '@src/infra/jwt/JwtService';
-import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
+import { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 
 const webServer = new ExpressServer();
 const databaseClient = InMemoryDbClient;

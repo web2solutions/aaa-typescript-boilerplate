@@ -1,4 +1,4 @@
-import { IServiceResponse } from '@src/domains/ports/IServiceResponse';
+import { IServiceResponse } from '@src/modules/port';
 
 export interface IKeyValueStorageClient {
   connected: boolean;

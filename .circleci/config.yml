@@ -35,7 +35,7 @@ jobs:
           command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run Tests
-          command: pnpm run test
+          command: pnpm run ci:test
       - codecov/upload
 
 workflows:

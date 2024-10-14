@@ -13,7 +13,7 @@ import {
   throwIfPreUpdateValidationFails,
   canNotBeEmpty,
   mustEndsAtLeastInMinutes
-} from '@src/domains/validators';
+} from '@src/shared/validators';
 
 describe('domain validators', () => {
   it('throwIfNotFound must throw', async () => {

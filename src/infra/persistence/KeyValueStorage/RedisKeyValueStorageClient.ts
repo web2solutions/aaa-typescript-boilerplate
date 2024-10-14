@@ -7,11 +7,12 @@ import {
   createClient
 } from 'redis';
 
-import { _KV_KEY_NAME_PREFIX_ } from '@src/infra/config/constants';
-import { redisConfig } from '@src/infra/config/redis';
-import { IServiceResponse } from '@src/infra/service/port/IServiceResponse';
-import { ServiceResponse } from '@src/infra/service/adapter/ServiceResponse';
-import { BaseKeyValueStorageClient } from './BaseKeyValueStorageClient';
+import { _KV_KEY_NAME_PREFIX_ } from '@src/config/constants';
+import { redisConfig } from '@src/config/redis';
+import { IServiceResponse } from '@src/modules/port/IServiceResponse';
+import { ServiceResponse } from '@src/modules/port/ServiceResponse';
+import { BaseKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/BaseKeyValueStorageClient';
+import { BaseError } from '@src/infra/exceptions';
 
 let redisKeyValueStorageClient: any;
 
@@ -24,6 +25,7 @@ export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
 
   private constructor() {
     super();
+    // console.log(redisConfig);
     this.client = createClient(redisConfig);
     this.client.on('error', (err) => console.log('Redis Client Error', err));
     this.client.on('connect', () => {
@@ -49,7 +51,7 @@ export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
       return { result };
     } catch (error: unknown) {
       // console.log(error);
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 
@@ -60,7 +62,7 @@ export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
       return { result };
     } catch (error: unknown) {
       // console.log(error);
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 
@@ -71,7 +73,7 @@ export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
       return { result };
     } catch (error: unknown) {
       // console.log(error);
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 
@@ -86,7 +88,7 @@ export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
       };
     } catch (error: unknown) {
       // console.log(error);
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 
@@ -103,7 +105,7 @@ export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
       };
     } catch (error: unknown) {
       // console.log(error);
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 
