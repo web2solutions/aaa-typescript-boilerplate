@@ -76,7 +76,7 @@ export class AuthService implements IAuthService {
     if (!decodedToken) {
       throw new UnauthorizedError('invalid token');
     }
-    return decodedToken as ITokenObject;
+    return decodedToken;
   }
 
   public async decodeToken(AuthorizationHeader: string): Promise<ITokenObject | null> {

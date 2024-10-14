@@ -40,7 +40,7 @@ export class RestAPI<T> {
 
   private readonly passwordCryptoService: IPasswordCryptoService | undefined;
 
-  private keyValueStorageClient: IKeyValueStorageClient | undefined;
+  private readonly keyValueStorageClient: IKeyValueStorageClient | undefined;
 
   constructor(config: IAPIFactory<T>) {
     this.serverType = config.serverType ?? EHTTPFrameworks.express;

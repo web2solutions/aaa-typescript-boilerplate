@@ -83,7 +83,6 @@ export const UserStoreAPI = {
   ) : Promise<IPagingResponse<IUser[]>> => {
     const { page, size } = paging;
     const limit = size;
-    // eslint-disable-next-line no-useless-catch
     try {
       if (page < 1) {
         throw new DatabasePagingError('page must be greater than 0');
@@ -103,20 +102,19 @@ export const UserStoreAPI = {
         iterated = iterated + 1;
         if (iterated > startAt) {
           if (result.length < limit) {
-            // console.log('XXXXXXXX', filters);
             if (matchAllFilters(value, filters)) result.push(value as IUser);
           }
         }
       }
 
-      return {
+      return await Promise.resolve({
         result,
         total,
         page,
         size
-      };
-    } catch (error) {
-      throw error;
+      });
+    } catch (error: any) {
+      return Promise.reject(error);
     }
   }
 } as IStore<IUser>;
