@@ -5,13 +5,13 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
 
 let filePath = "src/config/.env.dev";
 if (NODE_ENV === 'ci') {
-  filePath = "src/config/.env.ci";
+  filePath = "./src/config/.env.ci";
 }
 if (NODE_ENV === 'prod') {
-  filePath = "src/config/.env.prod";
+  filePath = "./src/config/.env.prod";
 }
 if (NODE_ENV === 'staging') {
-  filePath = "src/config/.env.staging";
+  filePath = "./src/config/.env.staging";
 }
 const envFile = fs.readFileSync(filePath).toString();
 
