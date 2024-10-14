@@ -138,14 +138,15 @@ export class RestAPI<T> {
         const methods: string[] = Object.keys(endPointConfigs);
         for (const method of methods) {
           const endPointConfig: Record<string, any> = endPointConfigs[method];
-          let module = path.split('/')[1];
-          let fileName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length - 1)}Controller`;
+          const module = path.split('/')[1];
+          let controllerName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length - 1)}Controller`;
+          let moduleName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length)}`;
           if (module === 'auth') {
-            module = 'Users';
-            fileName = 'AuthController';
+            moduleName = 'Users';
+            controllerName = 'AuthController';
           }
-          const controllerPath = `@src/modules/${module}/interface/controller/${fileName}`;
-          const ControllerModule = require(controllerPath)[fileName];
+          const controllerPath = `@src/modules/${moduleName}/interface/controller/${controllerName}`;
+          const ControllerModule = require(controllerPath)[controllerName];
 
           const controller = new ControllerModule({
             authService: this._authService,
@@ -155,7 +156,7 @@ export class RestAPI<T> {
             passwordCryptoService: this._passwordCryptoService
           });
 
-          const handlerPath = `@src/modules/${module}/interface/api/frameworks/${this._serverType}/handlers/${endPointConfig.operationId}`;
+          const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this._serverType}/handlers/${endPointConfig.operationId}`;
           const handlerFactory = require(handlerPath).default({
             databaseClient: this._databaseClient,
             mutexService: this._mutexClient,
