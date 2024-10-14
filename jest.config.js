@@ -6,5 +6,5 @@ module.exports = {
     '@seed/(.*)$': '<rootDir>/seed/$1',
     '@test/(.*)$': '<rootDir>/test/$1',
   },
-  modulePathIgnorePatterns: ['dist', '.build', '.serverless'],
+  modulePathIgnorePatterns: ['dist', '.build', '.serverless', '.resources'],
 };

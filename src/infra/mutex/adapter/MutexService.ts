@@ -1,8 +1,9 @@
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
-import { IServiceResponse } from '@src/infra/service/port/IServiceResponse';
-import { ServiceResponse } from '@src/infra/service/adapter/ServiceResponse';
+import { IServiceResponse } from '@src/modules/port/IServiceResponse';
+import { ServiceResponse } from '@src/modules/port/ServiceResponse';
 import { IKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/IKeyValueStorageClient';
-import { _MUTEX_KEY_NAME_PREFIX_ } from '@src/infra/config/constants';
+import { _MUTEX_KEY_NAME_PREFIX_ } from '@src/config/constants';
+import { BaseError } from '@src/infra/exceptions';
 
 let mutexService: any;
 
@@ -28,7 +29,7 @@ export class MutexService implements IMutexService {
       return new ServiceResponse({ result });
     } catch (error: unknown) {
       // console.log(error);
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 
@@ -39,7 +40,7 @@ export class MutexService implements IMutexService {
       return new ServiceResponse({ result: !!result });
     } catch (error: unknown) {
       // console.log(error);
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 
@@ -50,7 +51,7 @@ export class MutexService implements IMutexService {
       return new ServiceResponse({ result });
     } catch (error: unknown) {
       // console.log(error);
-      return new ServiceResponse({ error: error as Error });
+      return new ServiceResponse({ error: error as BaseError });
     }
   }
 

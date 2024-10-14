@@ -1,13 +1,9 @@
-import { IUser } from '@src/domains/Users/Entity/IUser';
-import { IPagingRequest } from '@src/domains/ports/persistence/IPagingRequest';
-import { IPagingResponse } from '@src/domains/ports/persistence/IPagingResponse';
-import { IStore } from '@src/domains/ports/persistence/IStore';
+import { IUser } from '@src/modules/Users/';
+import { IPagingRequest } from '@src/modules/port/IPagingRequest';
+import { IPagingResponse } from '@src/modules/port/IPagingResponse';
+import { IStore } from '@src/infra/ports/persistence/IStore';
 
-import {
-  _DATABASE_NOT_FOUND_ERROR_NAME_,
-  _DATABASE_DUPLICATED_RECORD_ERROR_NAME_,
-  _DATABASE_PAGING_ERROR_
-} from '@src/infra/config/constants';
+import { ConflictError, DataBaseNotFoundError, DatabasePagingError } from '@src/infra/exceptions';
 
 export const matchAllFilters = (record: any, filters: any): boolean => {
   const filterProperties = Object.keys(filters);
@@ -29,9 +25,7 @@ export const UserStoreAPI = {
       const result = userStore.delete(id);
       return !!result;
     } catch (err) {
-      const error = new Error('Record not found - can not delete');
-      error.name = _DATABASE_NOT_FOUND_ERROR_NAME_;
-      throw error;
+      throw new DataBaseNotFoundError('Record not found - can not delete');
     }
   },
   getOneById: async (id: string) => {
@@ -39,9 +33,7 @@ export const UserStoreAPI = {
       const result = userStore.get(id);
       return Promise.resolve(result);
     } catch (err) {
-      const error = new Error('Record not found');
-      error.name = _DATABASE_NOT_FOUND_ERROR_NAME_;
-      throw error;
+      throw new DataBaseNotFoundError('Record not found');
     }
   },
   // values: userStore.values.bind(userStore),
@@ -50,15 +42,11 @@ export const UserStoreAPI = {
     try {
       const object = value;
       if (userStore.has(key)) {
-        const error = new Error('Duplicated id');
-        error.name = _DATABASE_DUPLICATED_RECORD_ERROR_NAME_;
-        throw error;
+        throw new ConflictError('Duplicated id');
       }
       const username = object.username.toString().toLowerCase();
       if (userStoreUniqueIndexes.username.has(username)) {
-        const error = new Error('username already in use');
-        error.name = _DATABASE_DUPLICATED_RECORD_ERROR_NAME_;
-        throw error;
+        throw new ConflictError('username already in use');
       }
       userStore.set(key, object);
       userStoreUniqueIndexes.username.set(username, object);
@@ -73,9 +61,7 @@ export const UserStoreAPI = {
     try {
       const oldRecord = userStore.get(key);
       if (!oldRecord) {
-        const error = new Error('Record not found');
-        error.name = _DATABASE_NOT_FOUND_ERROR_NAME_;
-        throw error;
+        throw new DataBaseNotFoundError('Record not found');
       }
       const strOldName = (oldRecord as IUser).username.toString().toLowerCase();
       const object = { ...oldRecord, ...value };
@@ -100,14 +86,14 @@ export const UserStoreAPI = {
     // eslint-disable-next-line no-useless-catch
     try {
       if (page < 1) {
-        throw new Error('page must be greater than 0');
+        throw new DatabasePagingError('page must be greater than 0');
       }
       const result: IUser[] = [];
       let pages = 1;
       const total = userStore.size;
       pages = Math.ceil(total / limit);
       if (page > pages && total > 0) {
-        throw new Error('page number must be smaller than the number of total pages');
+        throw new DatabasePagingError('page number must be smaller than the number of total pages');
       }
       const startAt = (page * limit) - limit;
       let iterated = 0;
@@ -130,7 +116,6 @@ export const UserStoreAPI = {
         size
       };
     } catch (error) {
-      (error as Error).name = _DATABASE_PAGING_ERROR_;
       throw error;
     }
   }

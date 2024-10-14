@@ -1,5 +1,5 @@
-// import { UUID } from '@src/domains/utils';
-import { PhoneValueObject } from '@src/domains/valueObjects';
+// import { UUID } from '@src/modules/port';
+import { PhoneValueObject } from '@src/modules/ddd/valueObjects';
 
 const phones: Array<PhoneValueObject> = [
   {

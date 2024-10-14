@@ -1,6 +1,6 @@
-import { _KV_KEY_NAME_PREFIX_ } from '@src/infra/config/constants';
-import { IServiceResponse } from '@src/infra/service/port/IServiceResponse';
-import { ServiceResponse } from '@src/infra/service/adapter/ServiceResponse';
+import { _KV_KEY_NAME_PREFIX_ } from '@src/config/constants';
+import { IServiceResponse } from '@src/modules/port/IServiceResponse';
+import { ServiceResponse } from '@src/modules/port/ServiceResponse';
 import { IKeyValueStorageClient } from './IKeyValueStorageClient';
 
 export abstract class BaseKeyValueStorageClient implements IKeyValueStorageClient {

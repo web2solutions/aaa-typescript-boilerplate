@@ -3,23 +3,22 @@
 // file deepcode ignore NoHardcodedCredentials/test: <fake credential>
 import request from 'supertest';
 import { Express } from 'express';
-import { ExpressServer } from '@src/infra/server/HTTP/adapters/express/ExpressServer';
-import { infraHandlers } from '@src/infra/server/HTTP/adapters/express/handlers/infraHandlers';
-import { RestAPI } from '@src/infra/RestAPI';
+import { ExpressServer } from '@src/interface/HTTP/adapters/express/ExpressServer';
+import { infraHandlers } from '@src/interface/HTTP/adapters/express/handlers/infraHandlers';
+
+import { EHTTPFrameworks } from '@src/interface/HTTP/ports';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
-import { AuthService } from '@src/infra/auth/AuthService';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports';
-import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { JwtService } from '@src/infra/jwt/JwtService';
+import { RestAPI } from '@src/interface/HTTP/RestAPI';
+
+import {
+  UserDataRepository, UserService, UserProviderLocal, AuthService, EAuthSchemaType
+} from '@src/modules/Users';
 
 import createdUsers from '@seed/users';
-
-import { UserDataRepository, UserService } from '@src/domains/Users';
-import { JwtService } from '@src/infra/jwt/JwtService';
-import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
-
-import { EAuthSchemaType } from '@src/infra/auth/EAuthSchemaType';
 
 const [createdUser1] = createdUsers;
 
@@ -160,6 +159,7 @@ describe('express -> logout suite', () => {
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Accept', 'application/json; charset=utf-8')
       .set({ Authorization: token });
+    // console.log(response.body);
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty('error');
     expect(response.body.message).toBe('Bad Request - Invalid request');

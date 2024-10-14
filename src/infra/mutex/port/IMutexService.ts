@@ -1,4 +1,4 @@
-import { IServiceResponse } from '@src/infra/service/port/IServiceResponse';
+import { IServiceResponse } from '@src/modules/port/IServiceResponse';
 
 export interface IMutexService {
     lock(resourceName: string, uuid: string): Promise<IServiceResponse>;

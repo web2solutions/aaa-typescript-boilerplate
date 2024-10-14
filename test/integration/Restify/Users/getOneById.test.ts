@@ -1,19 +1,19 @@
 /* global  describe, it, expect */
 import request from 'supertest';
 import { Server as Restify } from 'restify';
-import { RestifyServer } from '@src/infra/server/HTTP/adapters/restify/RestifyServer';
-import { infraHandlers } from '@src/infra/server/HTTP/adapters/restify/handlers/infraHandlers';
-import { RestAPI } from '@src/infra/RestAPI';
+import { RestifyServer } from '@src/interface/HTTP/adapters/restify/RestifyServer';
+import { infraHandlers } from '@src/interface/HTTP/adapters/restify/handlers/infraHandlers';
+import { RestAPI } from '@src/interface/HTTP/RestAPI';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
-import { AuthService } from '@src/infra/auth/AuthService';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports';
+import { AuthService } from '@src/modules/Users/service/AuthService';
+import { EHTTPFrameworks } from '@src/interface/HTTP/ports';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import {
   IUser,
   UserDataRepository,
   UserService
-} from '@src/domains/Users';
+} from '@src/modules/Users';
 import {
   BasicAuthorizationHeaderUser1,
   BasicAuthorizationHeaderUser2,
@@ -24,7 +24,7 @@ import {
 } from '@test/mock';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { JwtService } from '@src/infra/jwt/JwtService';
-import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
+import { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 
 const webServer = new RestifyServer();
 const databaseClient = InMemoryDbClient;

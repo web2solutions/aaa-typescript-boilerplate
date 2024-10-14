@@ -20,15 +20,15 @@ const serverlessConfiguration: Serverless = {
   package: {
     individually: true,
     patterns: [
-      'src/infra/spec/**'
+      'spec/**'
     ],
     include: [
-      'src/infra/spec/**'
+      'spec/**'
     ]
   },
   functions: {
     localhost_get: {
-      handler: 'src/infra/server/HTTP/adapters/aws/lambda/handlers/localhost.getHandler',
+      handler: 'src/interface/HTTP/adapters/aws/lambda/handlers/localhost.getHandler',
       package: {
         individually: true
       },
@@ -42,11 +42,11 @@ const serverlessConfiguration: Serverless = {
       ]
     },
     user_create: {
-      handler: 'src/infra/server/HTTP/adapters/aws/lambda/handlers/users/create.handler',
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/create.handler',
       package: {
         individually: true,
         patterns: [
-          'src/infra/spec/**'
+          'spec/**'
         ]
       },
       events: [

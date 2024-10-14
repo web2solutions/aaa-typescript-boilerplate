@@ -2,23 +2,20 @@
 // file deepcode ignore NoHardcodedPasswords: <mocked passwords>
 // file deepcode ignore NoHardcodedCredentials/test: <fake credential>
 import request from 'supertest';
-import { FastifyServer, Fastify } from '@src/infra/server/HTTP/adapters/fastify/FastifyServer';
-import { infraHandlers } from '@src/infra/server/HTTP/adapters/fastify/handlers/infraHandlers';
-import { RestAPI } from '@src/infra/RestAPI';
+import { FastifyServer, Fastify } from '@src/interface/HTTP/adapters/fastify/FastifyServer';
+import { infraHandlers } from '@src/interface/HTTP/adapters/fastify/handlers/infraHandlers';
+import { EHTTPFrameworks } from '@src/interface/HTTP/ports';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
-import { AuthService } from '@src/infra/auth/AuthService';
-import { EHTTPFrameworks } from '@src/infra/server/HTTP/ports';
-import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { JwtService } from '@src/infra/jwt/JwtService';
+import { RestAPI } from '@src/interface/HTTP/RestAPI';
+import {
+  UserDataRepository, UserService, UserProviderLocal, AuthService, EAuthSchemaType
+} from '@src/modules/Users';
 
 import createdUsers from '@seed/users';
-
-import { UserDataRepository, UserService } from '@src/domains/Users';
-import { JwtService } from '@src/infra/jwt/JwtService';
-import { UserProviderLocal } from '@src/infra/auth/UserProviderLocal';
-
-import { EAuthSchemaType } from '@src/infra/auth/EAuthSchemaType';
 
 const [createdUser1] = createdUsers;
 

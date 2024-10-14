@@ -1,5 +1,5 @@
-// import { UUID } from '@src/domains/utils';
-import { DocumentValueObject, EDocumentType } from '@src/domains/valueObjects';
+// import { UUID } from '@src/modules/port';
+import { DocumentValueObject, EDocumentType } from '@src/modules/ddd/valueObjects';
 
 const documents: Array<DocumentValueObject> = [
   {
