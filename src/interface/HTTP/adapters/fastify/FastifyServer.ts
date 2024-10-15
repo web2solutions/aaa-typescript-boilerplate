@@ -72,8 +72,8 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
 
   private createDocEndPoint() {
     this.application.register(fastifyStatic, {
-      root: path.join(__dirname, '../../../../../../doc'),
-      prefix: '/doc/'
+      root: path.join(__dirname, '../../../../../../OASdoc'),
+      prefix: '/OASdoc/'
     });
   }
 

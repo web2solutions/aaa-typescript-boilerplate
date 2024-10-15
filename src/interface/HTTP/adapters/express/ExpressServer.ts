@@ -47,7 +47,7 @@ class ExpressServer extends HTTPBaseServer<Express> {
   }
 
   private createDocEndPoint() {
-    this.application.use('/doc', express.static('doc'));
+    this.application.use('/OASdoc', express.static('OASdoc'));
   }
 
   public start(): Promise<void> {
