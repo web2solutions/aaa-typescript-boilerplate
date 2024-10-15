@@ -7,7 +7,7 @@ import path from 'node:path';
 import { _HTTP_PORT_ } from '@src/config/constants';
 import { IbaseHandler, HTTPBaseServer } from '@src/interface/HTTP/ports';
 
-const LiveAssets = new LiveDirectory(path.join(__dirname, '../../../../../../doc'), {
+const LiveAssets = new LiveDirectory(path.join(__dirname, '../../../../../../OASdoc'), {
   static: true,
   cache: {
     max_file_count: 200,
@@ -49,9 +49,9 @@ class HyperExpressServer extends HTTPBaseServer<HyperExpress.Server> {
   }
 
   private createDocEndPoint() {
-    this.application.get('/doc/*', (request: HyperExpress.Request, response: HyperExpress.Response) => {
+    this.application.get('/OASdoc/*', (request: HyperExpress.Request, response: HyperExpress.Response) => {
       try {
-        const filePath = request.path.replace('/doc/', '');
+        const filePath = request.path.replace('/OASdoc/', '');
         const file = LiveAssets.get(filePath);
         if (file === undefined) return response.status(404).json({ message: 'file not found' });
         const fileParts = file.path.split('.');

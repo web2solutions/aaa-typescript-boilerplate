@@ -70,7 +70,7 @@ class RestifyServer extends HTTPBaseServer<Restify> {
   }
 
   private createDocEndPoint() {
-    this.application.get('/doc/*', restify.plugins.serveStatic({
+    this.application.get('/OASdoc/*', restify.plugins.serveStatic({
       directory: path.join(__dirname, '../../../../../..'),
       default: 'index.html'
     }));

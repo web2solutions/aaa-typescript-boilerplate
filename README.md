@@ -44,13 +44,13 @@ It implements an agnostic data repository port that actually writes/reads data f
 
 Diagram illustrating the components:
 
-![Diagram](doc/miro.png "Diagram")
+![Diagram](OASdoc/miro.png "Diagram")
 
 <https://miro.com/app/board/uXjVNq5nWJY=/?share_link_id=603404471489>
 
 ### API documentation
 
-The API doc might be visualized at: <http://localhost:3000/doc/>
+The API OASdoc might be visualized at: <http://localhost:3000/OASdoc/>
 
 ***Note:*** Remember to start the application before trying to reach it through the browser.
 
@@ -218,7 +218,7 @@ Run with Fastify
     pnpm run dev:fastify
 ```
 
-1. Reach the URL <http://localhost:3000/doc/> and click in the `Version 1.0.0`. It will open the API documentation.
+1. Reach the URL <http://localhost:3000/OASdoc/> and click in the `Version 1.0.0`. It will open the API documentation.
 2. Reach <http://localhost:3000/docs/1.0.0> to see the JSON version of the API documentation.
 
 ### Run `aws Lambda dev mode` through the `serverless framework`

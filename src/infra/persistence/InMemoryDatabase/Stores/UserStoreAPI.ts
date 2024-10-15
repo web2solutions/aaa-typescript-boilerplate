@@ -114,7 +114,8 @@ export const UserStoreAPI = {
         size
       });
     } catch (error: any) {
-      return Promise.reject(error);
+      // eslint-disable-next-line prefer-promise-reject-errors
+      return Promise.reject(error as Error);
     }
   }
 } as IStore<IUser>;
