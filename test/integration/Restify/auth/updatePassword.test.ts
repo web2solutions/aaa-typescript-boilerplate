@@ -20,7 +20,7 @@ import createdUsers from '@seed/users';
 
 const [createdUser1] = createdUsers;
 
-const webServer = new RestifyServer();
+const webServer = RestifyServer.compile();
 const databaseClient = InMemoryDbClient;
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();

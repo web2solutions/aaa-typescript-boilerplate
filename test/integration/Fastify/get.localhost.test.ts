@@ -39,7 +39,7 @@ const authService = AuthService.compile(
 );
 // LOCAL IDENTITY PROVIDER
 const serverType = EHTTPFrameworks.fastify;
-const webServer = new FastifyServer();
+const webServer = FastifyServer.compile();
 const API: RestAPI<Fastify> = new RestAPI<Fastify>({
   databaseClient: InMemoryDbClient,
   webServer,

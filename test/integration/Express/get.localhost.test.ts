@@ -40,7 +40,7 @@ const authService = AuthService.compile(
 );
 // LOCAL IDENTITY PROVIDER
 const serverType = EHTTPFrameworks.express;
-const webServer = new ExpressServer();
+const webServer = ExpressServer.compile();
 const API: RestAPI<Express> = new RestAPI<Express>({
   databaseClient: InMemoryDbClient,
   webServer,

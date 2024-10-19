@@ -10,6 +10,7 @@ import { BaseError } from '@src/infra/exceptions';
 
 type Restify = restify.Server;
 
+let restifyServer: any;
 class RestifyServer extends HTTPBaseServer<Restify> {
   public readonly application: Restify;
 
@@ -96,6 +97,13 @@ class RestifyServer extends HTTPBaseServer<Restify> {
   public stop(): Promise<void> {
     this.application.close();
     process.exit(0);
+  }
+
+  public static compile(): HTTPBaseServer<Restify> {
+    if (!restifyServer) {
+      restifyServer = new RestifyServer();
+    }
+    return restifyServer;
   }
 }
 

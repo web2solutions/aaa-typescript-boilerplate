@@ -18,7 +18,7 @@ import { RestAPI } from '@src/interface/HTTP/RestAPI';
 type Restify = restify.Server;
 
 const serverType = EHTTPFrameworks.restify;
-const webServer = new RestifyServer();
+const webServer = RestifyServer.compile();
 
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();

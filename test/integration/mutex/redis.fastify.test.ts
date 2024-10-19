@@ -28,7 +28,7 @@ import { EAuthSchemaType } from '@src/modules/Users/service/ports/EAuthSchemaTyp
 
 const [createdUser1, createdUser2, createdUser3, createdUser4] = createdUsers;
 
-const webServer = new FastifyServer();
+const webServer = FastifyServer.compile();
 const databaseClient = InMemoryDbClient;
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();

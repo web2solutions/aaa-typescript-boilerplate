@@ -9,6 +9,8 @@ import { HTTPBaseServer, IbaseHandler } from '@src/interface/HTTP/ports';
 import { Context } from '@src/infra/context/Context';
 import { InternalServerError } from '@src/infra/exceptions';
 
+let expressServer: any;
+
 class ExpressServer extends HTTPBaseServer<Express> {
   public readonly application: Express;
 
@@ -70,6 +72,13 @@ class ExpressServer extends HTTPBaseServer<Express> {
   public stop(): Promise<void> {
     // this.application.
     process.exit(0);
+  }
+
+  public static compile(): HTTPBaseServer<Express> {
+    if (!expressServer) {
+      expressServer = new ExpressServer();
+    }
+    return expressServer;
   }
 }
 
