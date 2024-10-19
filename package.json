@@ -9,7 +9,7 @@
   "engineStrict": true,
   "scripts": {
     "check-node-version": "node check-node-version.js",
-    "preinstall": "pnpm run check-node-version",
+    "preinstall": "npm run check-node-version",
     "prepare": "husky install",
     "commit": "git add . && git-cz",
     "lint": "eslint . --ext .ts",
@@ -20,7 +20,7 @@
     "ci:test": "NODE_ENV=ci npx jest ./test",
     "test": "NODE_ENV=dev npx jest ./test",
     "test:unit": "NODE_ENV=dev jest ./test/unit",
-    "test:integration": "pnpm run test:integration:express && pnpm run test:integration:fastify && pnpm run test:integration:restify",
+    "test:integration": "npm run test:integration:express && npm run test:integration:fastify && npm run test:integration:restify",
     "test:integration:express": "NODE_ENV=dev jest ./test/integration/Express",
     "test:integration:fastify": "NODE_ENV=dev jest ./test/integration/Fastify",
     "test:integration:restify": "NODE_ENV=dev jest ./test/integration/Restify",
@@ -30,15 +30,15 @@
     "dev:fastify": "nodemon --exec node -r ts-node/register --env-file=./src/config/.env.dev ./src/interface/HTTP/adapters/fastify/fastify.ts",
     "dev:restify": "nodemon --exec node -r ts-node/register --env-file=./src/config/.env.dev ./src/interface/HTTP/adapters/restify/restify.ts",
     "dev:hyper-express": "nodemon --exec node -r ts-node/register --env-file=./src/config/.env.dev ./src/interface/HTTP/adapters/hyper-express/hyper-express.ts",
-    "dev:serverless": "pnpm run lint && NODE_ENV=dev serverless dev",
+    "dev:serverless": "npm run lint && NODE_ENV=dev serverless dev",
     "prod:express": "node --env-file=./.buid/config/.env.prod ./.build/interface/HTTP/adapters/express/express.js",
     "prod:fastify": "node --env-file=./.buid/config/.env.prod ./.buid/interface/HTTP/adapters/fastify/fastify.js",
     "prod:restify": "node --env-file=./.buid/config/.env.prod ./.buid/interface/HTTP/adapters/restify/restify.js",
     "prod:hyper-express": "node --env-file=./.buid/config/.env.prod ./.buid/interface/HTTP/adapters/hyper-express/hyper-express.js",
-    "prod:serverless": "pnpm run lint && NODE_ENV=prod serverless dev",
+    "prod:serverless": "npm run lint && NODE_ENV=prod serverless dev",
     "docker:composeredis": "docker compose -f \"docker-compose-redis.yml\" up -d --build",
     "docker:stop": "docker-compose stop",
-    "docker:restart": "docker compose -f \"docker-compose-redis.yml\" down && pnpm run docker:composeredis",
+    "docker:restart": "docker compose -f \"docker-compose-redis.yml\" down && npm run docker:composeredis",
     "docker:clean": "docker system prune -a"
   },
   "dependencies": {
@@ -115,7 +115,7 @@
     }
   },
   "hooks": {
-    "pre-commit": "pnpm run lint && pnpm run test"
+    "pre-commit": "npm run lint && npm run test"
   },
   "license": "MIT",
   "bugs": {
