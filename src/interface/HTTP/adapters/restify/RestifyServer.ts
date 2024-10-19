@@ -10,6 +10,7 @@ import { BaseError } from '@src/infra/exceptions';
 
 type Restify = restify.Server;
 
+let restifyServer: any;
 class RestifyServer extends HTTPBaseServer<Restify> {
   public readonly application: Restify;
 
@@ -93,9 +94,16 @@ class RestifyServer extends HTTPBaseServer<Restify> {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public stop(): Promise<void> {
-    this.application.close();
-    process.exit(0);
+  public async stop(): Promise<void> {
+    await Promise.resolve(this.application.close());
+    // process.exit(0);
+  }
+
+  public static compile(): HTTPBaseServer<Restify> {
+    if (!restifyServer) {
+      restifyServer = new RestifyServer();
+    }
+    return restifyServer;
   }
 }
 

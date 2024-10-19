@@ -25,7 +25,7 @@ import {
 } from '@src/modules/Users';
 import { EmailValueObject } from '@src/modules/ddd/valueObjects';
 
-const webServer = new RestifyServer();
+const webServer = RestifyServer.compile();
 const databaseClient = InMemoryDbClient;
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();

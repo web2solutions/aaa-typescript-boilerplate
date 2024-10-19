@@ -15,7 +15,7 @@ import { EHTTPFrameworks } from '@src/interface/HTTP/ports';
 import { RestAPI } from '@src/interface/HTTP/RestAPI';
 
 const serverType = EHTTPFrameworks.fastify;
-const webServer = new FastifyServer();
+const webServer = FastifyServer.compile();
 
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();

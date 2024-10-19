@@ -12,4 +12,6 @@ export abstract class HTTPBaseServer<T> implements IHTTPServer<T> {
   public abstract start(): Promise<void>;
 
   public abstract stop(): Promise<void>;
+
+  public static compile() {}
 }

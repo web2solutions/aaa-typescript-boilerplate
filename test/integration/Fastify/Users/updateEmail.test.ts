@@ -25,7 +25,7 @@ import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService
 import { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 import { JwtService } from '@src/infra/jwt/JwtService';
 
-const webServer = new FastifyServer();
+const webServer = FastifyServer.compile();
 const databaseClient = InMemoryDbClient;
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();

@@ -17,7 +17,7 @@ import { EHTTPFrameworks } from '@src/interface/HTTP/ports';
 import { RestAPI } from '@src/interface/HTTP/RestAPI';
 
 const serverType = EHTTPFrameworks.hyper_express;
-const webServer = new HyperExpressServer();
+const webServer = HyperExpressServer.compile();
 
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();

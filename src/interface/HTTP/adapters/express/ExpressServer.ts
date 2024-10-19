@@ -8,9 +8,14 @@ import { _HTTP_PORT_ } from '@src/config/constants';
 import { HTTPBaseServer, IbaseHandler } from '@src/interface/HTTP/ports';
 import { Context } from '@src/infra/context/Context';
 import { InternalServerError } from '@src/infra/exceptions';
+import { Server } from 'http';
+
+let expressServer: any;
 
 class ExpressServer extends HTTPBaseServer<Express> {
   public readonly application: Express;
+
+  private server: Server | undefined;
 
   constructor() {
     super();
@@ -53,7 +58,7 @@ class ExpressServer extends HTTPBaseServer<Express> {
   public start(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        this.application.listen(_HTTP_PORT_, () => {
+        this.server = this.application.listen(_HTTP_PORT_, () => {
           // eslint-disable-next-line no-console
           console.log(`Express App Listening on Port ${_HTTP_PORT_}`);
           resolve();
@@ -67,9 +72,19 @@ class ExpressServer extends HTTPBaseServer<Express> {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public stop(): Promise<void> {
-    // this.application.
-    process.exit(0);
+  public async stop(): Promise<void> {
+    if (!this.server) {
+      return;
+    }
+    await Promise.resolve(this.server.close());
+    // process.exit(0);
+  }
+
+  public static compile(): HTTPBaseServer<Express> {
+    if (!expressServer) {
+      expressServer = new ExpressServer();
+    }
+    return expressServer;
   }
 }
 

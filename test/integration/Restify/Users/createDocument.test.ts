@@ -28,7 +28,7 @@ import { DocumentValueObject } from '@src/modules/ddd/valueObjects';
 import { JwtService } from '@src/infra/jwt/JwtService';
 import { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 
-const webServer = new RestifyServer();
+const webServer = RestifyServer.compile();
 const databaseClient = InMemoryDbClient;
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();

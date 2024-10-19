@@ -40,7 +40,7 @@ const authService = AuthService.compile(
 );
 // LOCAL IDENTITY PROVIDER
 const serverType = EHTTPFrameworks.restify;
-const webServer = new RestifyServer();
+const webServer = RestifyServer.compile();
 const API: RestAPI<Restify> = new RestAPI<Restify>({
   databaseClient: InMemoryDbClient,
   webServer,

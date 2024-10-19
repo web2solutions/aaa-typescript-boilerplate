@@ -22,7 +22,7 @@ import users from '@seed/users';
 
 const [user1] = users;
 
-const webServer = new ExpressServer();
+const webServer = ExpressServer.compile();
 const databaseClient = InMemoryDbClient;
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();

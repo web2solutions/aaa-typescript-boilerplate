@@ -187,6 +187,7 @@ export class RestAPI<T> {
     // quit all
     await this.databaseClient.disconnect();
     // process.exit(0);
+    await this.server.stop();
   }
 
   public async seedData(): Promise<void> {

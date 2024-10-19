@@ -15,6 +15,8 @@ const fastifyApp = fastify({
 });
 export type Fastify = typeof fastifyApp;
 
+let fastifyServer: any;
+
 class FastifyServer extends HTTPBaseServer<Fastify> {
   public readonly application: Fastify;
 
@@ -91,9 +93,16 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public async stop(/* code: number = 0 */) {
-    this.application.close();
-    // process.exit(code);
+  public async stop(): Promise<void> {
+    await Promise.resolve(this.application.close());
+    // process.exit(0);
+  }
+
+  public static compile(): HTTPBaseServer<Fastify> {
+    if (!fastifyServer) {
+      fastifyServer = new FastifyServer();
+    }
+    return fastifyServer;
   }
 }
 
