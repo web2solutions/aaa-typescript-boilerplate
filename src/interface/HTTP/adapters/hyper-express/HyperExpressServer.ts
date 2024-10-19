@@ -6,6 +6,8 @@ import LiveDirectory from 'live-directory';
 import path from 'node:path';
 import { _HTTP_PORT_ } from '@src/config/constants';
 import { IbaseHandler, HTTPBaseServer } from '@src/interface/HTTP/ports';
+import { Context } from '@src/infra/context/Context';
+import { v4 } from 'uuid';
 
 const LiveAssets = new LiveDirectory(path.join(__dirname, '../../../../../OASdoc'), {
   static: true,
@@ -25,6 +27,18 @@ class HyperExpressServer extends HTTPBaseServer<HyperExpress.Server> {
     // this.application.use(cors());
     // this.application.use('/*', helmet());
     // https://github.com/kartikk221/hyper-express-body-parser
+    this.application.use((req, res, next) => {
+      const store = new Map();
+      Context.run(store, () => {
+        store.set('correlationId', v4());
+        store.set('timeStart', +new Date());
+        store.set('request', req);
+        store.set('authorization', req.headers.authorization || '');
+
+        // requestLogger('request started');
+        next();
+      });
+    });
     this.createDocEndPoint();
   }
 
