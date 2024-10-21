@@ -9,11 +9,11 @@ Applications built with this boilerplate aims to run `Anywhere, Anytime, Anyhow`
 |  [![Known Vulnerabilities](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate/badge.svg)](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/dev) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/branch/dev/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) |
 |   |   |   |   |   |
 
- ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) [![Run with Express](https://img.shields.io/badge/Run%20with%20Express-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://expressjs.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Fastify-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://fastify.dev/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Restify-gold?style=flat-square&logo=JavaScript&logoColor=000)](http://restify.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20HyperExpress-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://github.com/kartikk221/hyper-express)  [![Static Badge](https://img.shields.io/badge/Run%20with%20Serveless-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://www.serverless.com/)
+ [![Run with Express](https://img.shields.io/badge/Run%20with%20Express-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://expressjs.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Fastify-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://fastify.dev/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Restify-gold?style=flat-square&logo=JavaScript&logoColor=000)](http://restify.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20HyperExpress-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://github.com/kartikk221/hyper-express) [![Static Badge](https://img.shields.io/badge/Run%20with%20Serveless-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://www.serverless.com/)
  
  
  
-  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=bugs)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/web2solutions/aaa-typescript-boilerplate) ![CircleCI](https://img.shields.io/badge/circle%20ci-%23161616.svg?style=for-the-badge&logo=circleci&logoColor=white)
+  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=bugs)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/web2solutions/aaa-typescript-boilerplate)
   
   
    ![GitHub License](https://img.shields.io/github/license/web2solutions/aaa-typescript-boilerplate) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![GitHub Created At](https://img.shields.io/github/created-at/web2solutions/aaa-typescript-boilerplate) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/web2solutions/aaa-typescript-boilerplate) ![GitHub package.json version](https://img.shields.io/github/package-json/v/web2solutions/aaa-typescript-boilerplate) ![Made in Brazil with Love](https://img.shields.io/badge/made%20in-%F0%9F%87%A7%F0%9F%87%B7%20Brazil%20with%E2%9D%A4%EF%B8%8F-blue)
@@ -150,7 +150,7 @@ It may implement database access through native drivers or ORMs and ODMs.
 
 ## Required stack
 
-- Node.js  (^20 preferred) and pnpm
+- Node.js  (^20 preferred) and npm
 - Typescript
 - Jest
 - Redis - used to implement mutex (included as Docker image)
@@ -162,13 +162,13 @@ It may implement database access through native drivers or ORMs and ODMs.
 1. Install the project
 
 ```bash
-    pnpm install
+    npm install
 ```
 
 2. Run Redis (if you don't have already)
 
 ```bash
-    pnpm run docker:composeredis
+    npm run docker:composeredis
 ```
 
 ### Testing
@@ -176,43 +176,43 @@ It may implement database access through native drivers or ORMs and ODMs.
 `Run the entire test suite`
 
 ```bash
-    pnpm test
+    npm test
 ```
 
 `Run unit tests`
 
 ```bash
-    pnpm run test:unit
+    npm run test:unit
 ```
 
 `Run integration tests`
 
 ```bash
-    pnpm run test:integration
+    npm run test:integration
 ```
 
 `Run integration tests - Express`
 
 ```bash
-    pnpm run test:integration:express
+    npm run test:integration:express
 ```
 
 `Run integration tests - Fastify`
 
 ```bash
-    pnpm run test:integration:fastify
+    npm run test:integration:fastify
 ```
 
 `Run integration tests - Restify`
 
 ```bash
-    pnpm run test:integration:restify
+    npm run test:integration:restify
 ```
 
 `Run integration tests - aws lambda`
 
 ```bash
-    pnpm run test:integration:lambda
+    npm run test:integration:lambda
 ```
 
 ### Run the API - 3000 port
@@ -220,13 +220,13 @@ It may implement database access through native drivers or ORMs and ODMs.
 Run with Express
 
 ```bash
-    pnpm run dev:fastify
+    npm run dev:fastify
 ```
 
 Run with Fastify
 
 ```bash
-    pnpm run dev:fastify
+    npm run dev:fastify
 ```
 
 1. Reach the URL <http://localhost:3000/OASdoc/> and click in the `Version 1.0.0`. It will open the API documentation.
@@ -235,7 +235,7 @@ Run with Fastify
 ### Run `aws Lambda dev mode` through the `serverless framework`
 
 ```bash
-  pnpm run dev:serverless
+  npm run dev:serverless
 ```
 
 ![serverless dev mode](sls.png "serverless dev mode")
@@ -246,7 +246,7 @@ Run with Fastify
 2. `Run the app in TDD mode - live reload of tests`
 
 ```bash
-  pnpm run tdd
+  npm run tdd
 ```
 
 3. Make your changes.
@@ -258,7 +258,7 @@ Run with Fastify
 It will run `lint` and `test` before asking info about the commit
 
 ```bash
-  pnpm run commit
+  npm run commit
 ```
 
 5. Ask for PR
@@ -268,13 +268,13 @@ It will run `lint` and `test` before asking info about the commit
 `lint code`
 
 ```bash
-  pnpm run lint
+  npm run lint
 ```
 
 `lint && fix code`
 
 ```bash
-  pnpm run lint:fix
+  npm run lint:fix
 ```
 
 ## Dependencies

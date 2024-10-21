@@ -12,19 +12,16 @@ jobs:
     steps:
       - checkout
       - run: sudo npm install -g npm@latest
-      #- restore_cache:
-      #    keys:
-      #      - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
-      - run:
-          name: install pnpm
-          command: sudo npm install -g pnpm@latest
+      - restore_cache:
+          keys:
+            - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
       - run:
           name: install packages
-          command: pnpm install --no-frozen-lockfile
-      #- save_cache:
-      #    key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
-      #    paths:
-      #      - ~/.npm
+          command: npm install
+      - save_cache:
+          key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
+          paths:
+            - ~/.npm
       - run:
           name: Install dockerize
           command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
@@ -35,7 +32,7 @@ jobs:
           command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run Tests
-          command: pnpm run ci:test
+          command: npm run ci:test
       - codecov/upload
 
 workflows:
