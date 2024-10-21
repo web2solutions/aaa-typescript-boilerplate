@@ -35,6 +35,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm install
-    - run: apt install redis-tools
-    - run: ./wait-for-redis.sh localhost:6379
+    #- run: apt install redis-tools
+    #- run: ./wait-for-redis.sh localhost:6379
+    - run: wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && rm dockerize-linux-amd64-v0.6.1.tar.gz
+    - run: dockerize -wait tcp://localhost:6379 -timeout 1m
     - run: npm test
