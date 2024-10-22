@@ -126,5 +126,10 @@
     "name": "Eduardo Almeida",
     "url": "https://github.com/web2solutions",
     "email": "web2solucoes@gmail.com"
+  },
+  "husky": {
+    "hooks": {
+      "post-commit": "echo \"[Husky] post-commit\""
+    }
   }
 }
