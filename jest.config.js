@@ -11,5 +11,5 @@ module.exports = {
     '@test/(.*)$': '<rootDir>/test/$1',
   },
   modulePathIgnorePatterns: ['dist', '.build', '.serverless', '.resources'],
-  setupFiles: ["./loadEnvironment.js"],
+  setupFiles: ["./ci-cd/loadEnvironment.js"],
 };
