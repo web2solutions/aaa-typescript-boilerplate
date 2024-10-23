@@ -3,4 +3,4 @@
 
 echo \"[Husky] post-commit\"
 
-ts-node ci-cd/post-commit.ts
+ts-node ci-cd/bumpTag.ts

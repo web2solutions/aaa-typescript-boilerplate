@@ -4,8 +4,7 @@
 import {
   simpleGit, SimpleGit, TagResult
 } from 'simple-git';
-import fs from 'fs';
-import pkg, { version } from '../package.json';
+import { version } from '../package.json';
 
 const _VERSION_PREFIX_ = 'v';
 
@@ -38,28 +37,14 @@ export class GitClient {
         if (error) {
           return reject(error);
         }
-        console.log('new tag created:', data);
+        console.log('>>> new tag created:', data);
         return resolve(data);
       });
     });
   }
 }
-
-function bumpPackageVersion(pk: any, newVersion: string) : Promise<void> {
-  return new Promise((resolve, reject) => {
-    const newPackage = { ...pk };
-    newPackage.version = newVersion;
-    console.log(`>>> new package version: ${newVersion}`, newPackage.version);
-    fs.writeFile('./package.json', JSON.stringify(newPackage, null, 2), (err) => {
-      if (err) reject(err);
-      else {
-        resolve();
-      }
-    });
-  });
-}
-
 (async () => {
+  console.log('>>> adding new tag');
   console.log(`>>> current package version: ${version}`);
   const gitClient = new GitClient();
   const tagList: TagResult = await gitClient.getTags();
@@ -71,7 +56,6 @@ function bumpPackageVersion(pk: any, newVersion: string) : Promise<void> {
     newVersion = '0.0.1';
     newTag = `${_VERSION_PREFIX_}${newVersion}`;
     await gitClient.setTag(newTag);
-    await bumpPackageVersion({ ...pkg }, newVersion);
     return;
   }
 
@@ -89,6 +73,5 @@ function bumpPackageVersion(pk: any, newVersion: string) : Promise<void> {
 
   if (lastestMinor < newMinor) {
     await gitClient.setTag(newTag);
-    await bumpPackageVersion({ ...pkg }, newVersion);
   }
 })();
