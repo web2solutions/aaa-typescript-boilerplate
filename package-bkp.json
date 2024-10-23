@@ -1,6 +1,6 @@
 {
   "name": "aaa-typescript-boilerplate",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "This is a boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.",
   "main": "src/interface/HTTP/adapters/fastify.ts",
   "engines": {
@@ -11,7 +11,7 @@
     "check-node-version": "node ci-cd/check-node-version.js",
     "preinstall": "npm run check-node-version",
     "prepare": "husky install",
-    "commit": "npm run lint && npm run test && ts-node ci-cd/bumpPackage.ts && git add . && git-cz",
+    "commit": "git add . && git-cz",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "build:dev": "NODE_ENV=dev tsc",
@@ -115,6 +115,9 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  "hooks": {
+    "pre-commit": "npm run lint && npm run test"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/web2solutions/aaa-typescript-boilerplate/issues"
@@ -124,5 +127,10 @@
     "name": "Eduardo Almeida",
     "url": "https://github.com/web2solutions",
     "email": "web2solucoes@gmail.com"
+  },
+  "husky": {
+    "hooks": {
+      "post-commit": "echo \"[Husky] post-commit\""
+    }
   }
 }
