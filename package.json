@@ -1,6 +1,6 @@
 {
   "name": "aaa-typescript-boilerplate",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "This is a boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.",
   "main": "src/interface/HTTP/adapters/fastify.ts",
   "engines": {
