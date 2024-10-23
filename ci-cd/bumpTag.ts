@@ -44,8 +44,7 @@ export class GitClient {
   }
 }
 (async () => {
-  console.log('>>> adding new tag');
-  console.log(`>>> current package version: ${version}`);
+  console.log('========== Start Bump Tag');
   const gitClient = new GitClient();
   const tagList: TagResult = await gitClient.getTags();
   const latestTag = tagList.latest;
@@ -74,4 +73,5 @@ export class GitClient {
   if (lastestMinor < newMinor) {
     await gitClient.setTag(newTag);
   }
+  console.log('========== End Bump Tag');
 })();

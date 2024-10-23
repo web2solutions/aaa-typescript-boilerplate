@@ -115,9 +115,6 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "hooks": {
-    "pre-commit": "npm run lint && npm run test"
-  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/web2solutions/aaa-typescript-boilerplate/issues"
@@ -127,10 +124,5 @@
     "name": "Eduardo Almeida",
     "url": "https://github.com/web2solutions",
     "email": "web2solucoes@gmail.com"
-  },
-  "husky": {
-    "hooks": {
-      "post-commit": "echo \"[Husky] post-commit\""
-    }
   }
 }
