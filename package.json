@@ -11,7 +11,7 @@
     "check-node-version": "node ci-cd/check-node-version.js",
     "preinstall": "npm run check-node-version",
     "prepare": "husky install",
-    "commit": "git add . && git-cz",
+    "commit": "npm run lint && npm run test && ts-node ci-cd/bumpPackage.ts && git add . && git-cz",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "build:dev": "NODE_ENV=dev tsc",
