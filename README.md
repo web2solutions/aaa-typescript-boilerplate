@@ -150,7 +150,7 @@ It may implement database access through native drivers or ORMs and ODMs.
 
 ## Required stack
 
-- Node.js  (^20 preferred) and npm
+- Node.js 22.x and npm
 - Typescript
 - Jest
 - Redis - used to implement mutex (included as Docker image)

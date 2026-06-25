@@ -32,11 +32,10 @@ jobs:
           command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run Tests
-          command: npm run ci:test
+          command: npm run ci:gate
       - codecov/upload
 
 workflows:
   test-source:
     jobs:
       - test-source
-

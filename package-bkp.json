@@ -4,7 +4,7 @@
   "description": "This is a boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.",
   "main": "src/interface/HTTP/adapters/fastify.ts",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0 <23.0.0"
   },
   "engineStrict": true,
   "scripts": {
