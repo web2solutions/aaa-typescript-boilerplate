@@ -79,7 +79,7 @@ Promise<APIGatewayProxyResult> => {
         store.set('correlationId', v4());
         store.set('timeStart', +new Date());
         store.set('request', event);
-        store.set('authorization', event.headers.authorization || '');
+        store.set('authorization', authorization);
 
         const { result, error } = await controller.create(new UserCreateRequestEvent({
           authorization,
