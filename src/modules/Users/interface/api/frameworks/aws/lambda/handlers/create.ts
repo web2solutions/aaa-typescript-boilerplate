@@ -9,11 +9,8 @@ import { Handler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda
 import { sendErrorResponse } from '@src/interface/HTTP/adapters/aws/lambda/responses/sendErrorResponse';
 
 import {
-  UserDataRepository,
-  UserService,
+  composeUsersAuthServices,
   UserController,
-  UserProviderLocal,
-  AuthService,
   UserCreateRequestEvent
 } from '@src/modules/Users';
 
@@ -36,25 +33,12 @@ const jwtService = JwtService.compile();
 const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 
-// LOCAL IDENTITY PROVIDER
-const dataRepository = UserDataRepository.compile({
-  databaseClient: InMemoryDbClient
-});
-const userService = UserService.compile({
-  dataRepository,
-  services: {
-    passwordCryptoService,
-    mutexService
-  }
-});
-const userProvider = UserProviderLocal.compile(userService);
-
-const authService = AuthService.compile(
-  userProvider,
+const { authService } = composeUsersAuthServices({
+  databaseClient: InMemoryDbClient,
   passwordCryptoService,
+  mutexService,
   jwtService
-);
-// LOCAL IDENTITY PROVIDER
+});
 
 const controller = new UserController({
   authService,
