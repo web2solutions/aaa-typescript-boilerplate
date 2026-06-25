@@ -9,7 +9,7 @@ Applications built with this boilerplate aims to run `Anywhere, Anytime, Anyhow`
 |  [![Known Vulnerabilities](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate/badge.svg)](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/dev) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/branch/dev/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) |
 |   |   |   |   |   |
 
- [![Run with Express](https://img.shields.io/badge/Run%20with%20Express-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://expressjs.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Fastify-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://fastify.dev/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Restify-gold?style=flat-square&logo=JavaScript&logoColor=000)](http://restify.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20HyperExpress-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://github.com/kartikk221/hyper-express) [![Static Badge](https://img.shields.io/badge/Run%20with%20Serveless-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://www.serverless.com/)
+ [![Run with Express](https://img.shields.io/badge/Run%20with%20Express-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://expressjs.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Fastify-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://fastify.dev/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Restify-gold?style=flat-square&logo=JavaScript&logoColor=000)](http://restify.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20HyperExpress-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://github.com/kartikk221/hyper-express) [![Static Badge](https://img.shields.io/badge/Run%20with%20Serverless-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://www.serverless.com/)
  
  
  
@@ -215,18 +215,36 @@ It may implement database access through native drivers or ORMs and ODMs.
     npm run test:integration:lambda
 ```
 
+`Run integration tests - Hyper-Express`
+
+```bash
+    npm run test:integration:hyper-express
+```
+
 ### Run the API - 3000 port
 
 Run with Express
 
 ```bash
-    npm run dev:fastify
+    npm run dev:express
 ```
 
 Run with Fastify
 
 ```bash
     npm run dev:fastify
+```
+
+Run with Restify
+
+```bash
+    npm run dev:restify
+```
+
+Run with Hyper-Express
+
+```bash
+    npm run dev:hyper-express
 ```
 
 1. Reach the URL <http://localhost:3000/OASdoc/> and click in the `Version 1.0.0`. It will open the API documentation.

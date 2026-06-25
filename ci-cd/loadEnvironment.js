@@ -20,3 +20,7 @@ for (let line of envFileLines) {
     let [key, value] = line.split("=");
     process.env[key] = value
 }
+
+if (NODE_ENV === 'ci' && !process.env.AAA_JWT_TOKEN_SECRET_KEY) {
+  process.env.AAA_JWT_TOKEN_SECRET_KEY = 'ci_jwt_secret_key';
+}

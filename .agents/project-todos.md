@@ -19,16 +19,16 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
 
 ## Open
 
-- [ ] Fix user persistence correctness
+- [x] Fix user persistence correctness
   - `UserStoreAPI.ts` should remove unique indexes on delete.
   - Username updates need duplicate checks.
   - `getAll()` currently paginates before filtering and reports the unfiltered total size.
 
-- [ ] Prevent password/salt leaks
+- [x] Prevent password/salt leaks
   - Some paths sanitize `password` and `salt`, while others can serialize them back out through `getAll`, `updatePassword`, and related flows.
   - Centralize output DTO shaping so secrets never leave the service boundary.
 
-- [ ] Fix mutex response inconsistency
+- [x] Fix mutex response inconsistency
   - `MutexService.lock()` returns different result shapes depending on lock state.
   - Callers currently check both `previouslyLocked` and `wasAlreadyLocked`.
   - Standardize on one response contract everywhere.
@@ -38,14 +38,14 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - Add tests or validation that every spec operation resolves to a handler and controller method.
   - Run this validation before runtime tests.
 
-- [ ] Fix scripts/docs drift
+- [x] Fix scripts/docs drift
   - `prod:*` scripts use `.buid` in several paths instead of `.build`.
   - `README.md` has duplicated or mistyped run commands.
   - `test:integration:hyper-express` path casing may not reliably match the actual folder.
 
-- [ ] Bring Lambda closer to shared composition
+- [x] Bring Lambda closer to shared composition
   - Lambda handlers are hand-wired and can drift from `RestAPI`.
   - Reuse shared composition or create a small Lambda factory around the same controller and service setup.
 
-- [ ] Add a minimal CI gate
+- [x] Add a minimal CI gate
   - Required before features: lint, unit tests, selected integration smoke, OpenAPI route resolution check, and build once dependency mismatch is fixed.
