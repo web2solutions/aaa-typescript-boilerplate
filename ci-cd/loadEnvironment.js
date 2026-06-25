@@ -1,24 +1,37 @@
 const fs = require('fs');
+const path = require('path');
 const NODE_ENV = process.env.NODE_ENV || 'dev';
 
-// only dev has secret vars such as passwords
+const envFilesByEnv = {
+  dev: ['src/config/.env.dev', 'src/config/.env.dev.example', 'src/config/.env.ci'],
+  ci: ['src/config/.env.ci', 'src/config/.env.dev.example'],
+  prod: ['src/config/.env.prod'],
+  staging: ['src/config/.env.staging'],
+};
 
-let filePath = "src/config/.env.dev";
-if (NODE_ENV === 'ci') {
-  filePath = "./src/config/.env.ci";
-}
-if (NODE_ENV === 'prod') {
-  filePath = "./src/config/.env.prod";
-}
-if (NODE_ENV === 'staging') {
-  filePath = "./src/config/.env.staging";
-}
-const envFile = fs.readFileSync(filePath).toString();
+const candidateFiles = envFilesByEnv[NODE_ENV] || envFilesByEnv.dev;
+const selectedFile = candidateFiles.find((file) => fs.existsSync(path.resolve(file)));
 
-const envFileLines = envFile.split("\n")
-for (let line of envFileLines) {
-    let [key, value] = line.split("=");
-    process.env[key] = value
+if (selectedFile) {
+  const envFile = fs.readFileSync(path.resolve(selectedFile)).toString();
+  const envFileLines = envFile.split('\n');
+
+  for (const line of envFileLines) {
+    const trimmedLine = line.trim();
+    if (!trimmedLine || trimmedLine.startsWith('#')) {
+      continue;
+    }
+
+    const [key, ...valueParts] = trimmedLine.split('=');
+    if (!key || valueParts.length === 0) {
+      continue;
+    }
+
+    const value = valueParts.join('=');
+    if (process.env[key] === undefined) {
+      process.env[key] = value;
+    }
+  }
 }
 
 if (NODE_ENV === 'ci' && !process.env.AAA_JWT_TOKEN_SECRET_KEY) {
