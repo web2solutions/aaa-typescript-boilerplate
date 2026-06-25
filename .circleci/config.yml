@@ -8,16 +8,17 @@ jobs:
     docker:
       - image: cimg/node:22.7
       - image: cimg/redis:7.4.1
-        command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+        command: redis-server --save 20 1 --loglevel warning
     steps:
       - checkout
-      - run: sudo npm install -g npm@latest
       - restore_cache:
           keys:
             - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
       - run:
-          name: install packages
+          name: Install packages
           command: npm install
+          environment:
+            HUSKY: "0"
       - save_cache:
           key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
           paths:
@@ -28,7 +29,7 @@ jobs:
           environment:
             DOCKERIZE_VERSION: v0.6.1
       - run:
-          name: Waiting for Redis to be ready
+          name: Wait for Redis
           command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run Tests
@@ -39,4 +40,3 @@ workflows:
   test-source:
     jobs:
       - test-source
-
