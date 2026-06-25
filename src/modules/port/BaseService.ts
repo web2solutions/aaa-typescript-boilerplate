@@ -23,7 +23,7 @@ export abstract class BaseService<ResponseDataEntity, RequestCreateDTO, RequestU
 
   constructor(config: IServiceConfig) {
     this.repos = config.repos ?? {};
-    this.services = config.repos ?? {};
+    this.services = config.services ?? {};
     if (!config.dataRepository) throw Error('You must provide a data repository when creating a service instance.');
     this.dataRepository = config.dataRepository;
   }
