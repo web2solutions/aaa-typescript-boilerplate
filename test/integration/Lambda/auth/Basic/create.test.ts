@@ -67,6 +67,8 @@ describe('aws lambda -> Auth -> Basic suite', () => {
           try {
             // await service.create(user);
             const newUser = await userService.create(user);
+            if (newUser.error) throw newUser.error;
+            if (!newUser.result) throw new Error('User seed failed');
             resolve(newUser.result);
           } catch (error: any) {
             // console.log(error.message);

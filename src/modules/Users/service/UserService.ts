@@ -45,8 +45,6 @@ interface IUserServiceConfig extends IServiceConfig {
 
 }
 
-let userService: any;
-
 export class UserService extends BaseService<IUser, RequestCreateUser, RequestUpdateUser> {
   public dataRepository: UserDataRepository;
 
@@ -370,9 +368,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     return serviceResponse;
   }
 
-  public static compile(config: IUserServiceConfig) {
-    if (userService) return userService;
-    userService = new UserService(config);
-    return userService as BaseService<IUser, RequestCreateUser, RequestUpdateUser>;
+  public static compile(config: IUserServiceConfig): UserService {
+    return new UserService(config);
   }
 }

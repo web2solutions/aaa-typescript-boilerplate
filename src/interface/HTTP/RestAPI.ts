@@ -196,7 +196,13 @@ export class RestAPI<T> {
 
   public async seedUsers(): Promise<IUser[]> {
     const dataRepository = UserDataRepository.compile({ databaseClient: this.databaseClient });
-    const service = UserService.compile({ dataRepository });
+    const service = UserService.compile({
+      dataRepository,
+      services: {
+        passwordCryptoService: this.passwordCryptoService,
+        mutexService: this.mutexClient
+      }
+    });
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
       requests.push(new Promise((resolve, reject) => {
@@ -204,6 +210,8 @@ export class RestAPI<T> {
           try {
             // await service.create(user);
             const newUser = await service.create(user);
+            if (newUser.error) throw newUser.error;
+            if (!newUser.result) throw new Error('User seed failed');
             resolve(newUser.result);
           } catch (error: any) {
             // console.log(error.message);
@@ -218,7 +226,13 @@ export class RestAPI<T> {
 
   public async deleteUsers(): Promise<IUser[]> {
     const dataRepository = UserDataRepository.compile({ databaseClient: this.databaseClient });
-    const service = UserService.compile({ dataRepository });
+    const service = UserService.compile({
+      dataRepository,
+      services: {
+        passwordCryptoService: this.passwordCryptoService,
+        mutexService: this.mutexClient
+      }
+    });
     const requests: Promise<IUser>[] = [];
     const allUsers = (await service.getAll({}, { page: 1, size: 1000 })).result || [];
     for (const user of allUsers) {
@@ -227,6 +241,8 @@ export class RestAPI<T> {
           try {
             // await service.create(user);
             const newUser = await service.create(user);
+            if (newUser.error) throw newUser.error;
+            if (!newUser.result) throw new Error('User delete failed');
             resolve(newUser.result);
           } catch (error: any) {
             // console.log(error.message);
