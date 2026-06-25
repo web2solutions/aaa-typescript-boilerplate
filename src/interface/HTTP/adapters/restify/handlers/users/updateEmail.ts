@@ -7,8 +7,7 @@ import {
   EndPointFactory
 } from '@src/interface/HTTP/ports';
 
-import { UserEmailUpdateRequestEvent } from '@src/modules/Users/events/UserEmailUpdateRequestEvent';
-import { RequestUpdateEmail } from '@src/modules/Users';
+import { RequestUpdateEmail, UserController, UserEmailUpdateRequestEvent } from '@src/modules/Users';
 
 const updateEmail: EndPointFactory = (
   {

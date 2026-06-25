@@ -7,8 +7,7 @@ import {
   EndPointFactory
 } from '@src/interface/HTTP/ports';
 
-import { UserPhoneCreateRequestEvent } from '@src/modules/Users/events/UserPhoneCreateRequestEvent';
-import { RequestCreatePhone } from '@src/modules/Users';
+import { RequestCreatePhone, UserController, UserPhoneCreateRequestEvent } from '@src/modules/Users';
 
 const createPhone: EndPointFactory = (
   {

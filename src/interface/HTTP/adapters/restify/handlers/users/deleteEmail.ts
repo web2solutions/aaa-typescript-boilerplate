@@ -7,7 +7,7 @@ import {
   EndPointFactory
 } from '@src/interface/HTTP/ports';
 
-import { UserEmailDeleteRequestEvent } from '@src/modules/Users/events/UserEmailDeleteRequestEvent';
+import { UserController, UserEmailDeleteRequestEvent } from '@src/modules/Users';
 
 const deleteEmail: EndPointFactory = (
   {

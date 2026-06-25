@@ -7,8 +7,7 @@ import {
   EndPointFactory
 } from '@src/interface/HTTP/ports';
 
-import { UserDocumentCreateRequestEvent } from '@src/modules/Users/events/UserDocumentCreateRequestEvent';
-import { RequestCreateDocument } from '@src/modules/Users';
+import { RequestCreateDocument, UserController, UserDocumentCreateRequestEvent } from '@src/modules/Users';
 
 const createDocument: EndPointFactory = (
   {

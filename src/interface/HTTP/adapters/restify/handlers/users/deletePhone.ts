@@ -7,7 +7,7 @@ import {
   EndPointFactory
 } from '@src/interface/HTTP/ports';
 
-import { UserPhoneDeleteRequestEvent } from '@src/modules/Users/events/UserPhoneDeleteRequestEvent';
+import { UserController, UserPhoneDeleteRequestEvent } from '@src/modules/Users';
 
 const deletePhone: EndPointFactory = (
   {

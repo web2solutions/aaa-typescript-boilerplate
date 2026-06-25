@@ -7,8 +7,7 @@ import {
   EndPointFactory
 } from '@src/interface/HTTP/ports';
 
-import { UserDocumentUpdateRequestEvent } from '@src/modules/Users/events/UserDocumentUpdateRequestEvent';
-import { RequestUpdateDocument } from '@src/modules/Users';
+import { RequestUpdateDocument, UserController, UserDocumentUpdateRequestEvent } from '@src/modules/Users';
 
 const updateDocument: EndPointFactory = (
   {

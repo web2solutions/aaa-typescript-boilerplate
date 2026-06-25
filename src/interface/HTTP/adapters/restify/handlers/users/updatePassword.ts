@@ -7,8 +7,7 @@ import {
   EndPointFactory
 } from '@src/interface/HTTP/ports';
 
-import { RequestUpdatePassword } from '@src/modules/Users';
-import { UserPasswordUpdateRequestEvent } from '@src/modules/Users/events/UserPasswordUpdateRequestEvent';
+import { RequestUpdatePassword, UserController, UserPasswordUpdateRequestEvent } from '@src/modules/Users';
 
 const updatePassword: EndPointFactory = (
   {
