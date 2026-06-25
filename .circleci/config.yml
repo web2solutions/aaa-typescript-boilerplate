@@ -7,7 +7,9 @@ jobs:
   test-source:
     docker:
       - image: cimg/node:22.9
-      - image: cimg/redis:7.4.1
+      - image: redis:latest
+        environment:
+          REDIS_ARGS: "--sysctl vm.overcommit_memory=1"
         command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     steps:
       - checkout
