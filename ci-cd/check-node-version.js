@@ -1,5 +1,5 @@
 const semver = require('semver');
-const engines = require('./package').engines;
+const engines = require('../package').engines;
 
 const version = engines.node;
 if (!semver.satisfies(process.version, version)) {

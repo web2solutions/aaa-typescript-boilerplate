@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo \"[Husky] post-commit\"
+
+ts-node ci-cd/bumpTag.ts
+npm run changelog:update
+
+if [ -z "$SKIP_CHANGELOG_AMEND" ] && ! git diff --quiet -- CHANGELOG.md; then
+  git add CHANGELOG.md
+  SKIP_CHANGELOG_AMEND=1 git commit --amend --no-edit --no-verify
+fi

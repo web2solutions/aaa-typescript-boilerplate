@@ -2,6 +2,7 @@ export { IUser } from '@src/modules/Users/domain/Entity/IUser';
 export { User } from '@src/modules/Users/domain/Model/User';
 export { UserDataRepository } from '@src/modules/Users/infra/repository/UserDataRepository';
 export { UserService } from '@src/modules/Users/service/UserService';
+export { composeUsersAuthServices } from '@src/modules/Users/composition/composeUsersAuthServices';
 
 export { UserController } from '@src/modules/Users/interface/controller/UserController';
 export { AuthController } from '@src/modules/Users/interface/controller/AuthController';

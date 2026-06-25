@@ -9,7 +9,7 @@ import {
 } from '@src/interface/HTTP/adapters/restify/responses/sendErrorResponse';
 
 import { LoginRequestEvent } from '@src/modules/Users/events/LoginRequestEvent';
-import { ILoginRequest } from '@src/infra/auth/dto/ILoginRequest';
+import { ILoginRequest } from '@src/modules/Users';
 
 const login: EndPointFactory = (
   {

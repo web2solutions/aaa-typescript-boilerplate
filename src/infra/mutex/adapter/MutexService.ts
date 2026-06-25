@@ -23,10 +23,17 @@ export class MutexService implements IMutexService {
   public async lock(resourceName: string, uuid: string): Promise<IServiceResponse> {
     try {
       const previouslyLocked = await this.isLocked(resourceName, uuid);
-      if (previouslyLocked.result) return { result: { previouslyLocked: previouslyLocked.result } };
+      if (previouslyLocked.result) {
+        return new ServiceResponse({ result: { previouslyLocked: true, locked: false } });
+      }
       const { result, error } = await this.keyValueStorageClient.set(`${this.prefix}:${resourceName}:${uuid}`, 'locked');
       if (error) throw error;
-      return new ServiceResponse({ result });
+      return new ServiceResponse({
+        result: {
+          previouslyLocked: false,
+          locked: !!result
+        }
+      });
     } catch (error: unknown) {
       // console.log(error);
       return new ServiceResponse({ error: error as BaseError });

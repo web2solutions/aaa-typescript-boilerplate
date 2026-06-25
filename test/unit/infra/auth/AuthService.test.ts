@@ -346,12 +346,29 @@ describe('unit test suite for AuthService', () => {
     // eslint-disable-next-line jest/require-hook, prefer-const
     let [user0, user1, user2, user3, user4] = [...users];
     beforeAll(async () => {
-      await userService.delete(user1.id);
-      await userService.delete(user2.id);
-      await userService.delete(user3.id);
-      user1 = await userService.create(user1);
-      user2 = await userService.create(user2);
-      user3 = await userService.create(user3);
+      const deleteUserPayloads = [user1, user2, user3].map((user, index) => {
+        const username = `delete-user-${index + 1}@xpertminds.dev`;
+        return {
+          ...user,
+          username,
+          password: `delete_user_${index + 1}_password`,
+          emails: [{
+            ...user.emails[0],
+            email: username
+          }]
+        };
+      });
+      const [
+        createUser1,
+        createUser2,
+        createUser3
+      ] = await Promise.all(deleteUserPayloads.map((user) => userService.create(user)));
+      if (createUser1.error) throw createUser1.error;
+      if (createUser2.error) throw createUser2.error;
+      if (createUser3.error) throw createUser3.error;
+      user1 = createUser1.result!;
+      user2 = createUser2.result!;
+      user3 = createUser3.result!;
     });
     it('must delete user1', async () => {
       expect.hasAssertions();

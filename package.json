@@ -1,44 +1,49 @@
 {
   "name": "aaa-typescript-boilerplate",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "This is a boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.",
   "main": "src/interface/HTTP/adapters/fastify.ts",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0 <23.0.0"
   },
   "engineStrict": true,
   "scripts": {
-    "check-node-version": "node check-node-version.js",
-    "preinstall": "pnpm run check-node-version",
+    "check-node-version": "node ci-cd/check-node-version.js",
+    "preinstall": "npm run check-node-version",
     "prepare": "husky install",
-    "commit": "git add . && git-cz",
+    "changelog:update": "node ci-cd/update-changelog.js",
+    "changelog:check": "node ci-cd/update-changelog.js --check",
+    "oas:check-routes": "node ci-cd/check-oas-route-resolution.js",
+    "ci:smoke": "AAA_JWT_TOKEN_SECRET_KEY=${AAA_JWT_TOKEN_SECRET_KEY:-ci_jwt_secret_key} NODE_ENV=ci jest ./test/integration/Express/get.localhost.test.ts --runInBand --coverage=false",
+    "ci:gate": "npm run lint && npm run test:unit && npm run oas:check-routes && npm run build:dev && npm run ci:smoke",
+    "commit": "npm run lint && npm run test && ts-node ci-cd/bumpPackage.ts && git add . && git-cz",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "build:dev": "NODE_ENV=dev tsc",
     "build:prod": "NODE_ENV=prod tsc",
     "tdd": "NODE_ENV=dev npx jest --watchAll",
-    "ci:test": "NODE_ENV=ci npx jest ./test",
+    "npm": "NODE_ENV=ci npx jest ./test",
     "test": "NODE_ENV=dev npx jest ./test",
     "test:unit": "NODE_ENV=dev jest ./test/unit",
-    "test:integration": "pnpm run test:integration:express && pnpm run test:integration:fastify && pnpm run test:integration:restify",
+    "test:integration": "npm run test:integration:express && npm run test:integration:fastify && npm run test:integration:restify",
     "test:integration:express": "NODE_ENV=dev jest ./test/integration/Express",
     "test:integration:fastify": "NODE_ENV=dev jest ./test/integration/Fastify",
     "test:integration:restify": "NODE_ENV=dev jest ./test/integration/Restify",
     "test:integration:lambda": "NODE_ENV=dev jest ./test/integration/Lambda",
-    "test:integration:hyper-express": "NODE_ENV=dev jest ./test/integration/hyper-express",
+    "test:integration:hyper-express": "NODE_ENV=dev jest ./test/integration/Hyper-Express",
     "dev:express": "nodemon --exec node -r ts-node/register --env-file=./src/config/.env.dev ./src/interface/HTTP/adapters/express/express.ts",
     "dev:fastify": "nodemon --exec node -r ts-node/register --env-file=./src/config/.env.dev ./src/interface/HTTP/adapters/fastify/fastify.ts",
     "dev:restify": "nodemon --exec node -r ts-node/register --env-file=./src/config/.env.dev ./src/interface/HTTP/adapters/restify/restify.ts",
     "dev:hyper-express": "nodemon --exec node -r ts-node/register --env-file=./src/config/.env.dev ./src/interface/HTTP/adapters/hyper-express/hyper-express.ts",
-    "dev:serverless": "pnpm run lint && NODE_ENV=dev serverless dev",
-    "prod:express": "node --env-file=./.buid/config/.env.prod ./.build/interface/HTTP/adapters/express/express.js",
-    "prod:fastify": "node --env-file=./.buid/config/.env.prod ./.buid/interface/HTTP/adapters/fastify/fastify.js",
-    "prod:restify": "node --env-file=./.buid/config/.env.prod ./.buid/interface/HTTP/adapters/restify/restify.js",
-    "prod:hyper-express": "node --env-file=./.buid/config/.env.prod ./.buid/interface/HTTP/adapters/hyper-express/hyper-express.js",
-    "prod:serverless": "pnpm run lint && NODE_ENV=prod serverless dev",
+    "dev:serverless": "npm run lint && NODE_ENV=dev serverless dev",
+    "prod:express": "node --env-file=./.build/config/.env.prod ./.build/interface/HTTP/adapters/express/express.js",
+    "prod:fastify": "node --env-file=./.build/config/.env.prod ./.build/interface/HTTP/adapters/fastify/fastify.js",
+    "prod:restify": "node --env-file=./.build/config/.env.prod ./.build/interface/HTTP/adapters/restify/restify.js",
+    "prod:hyper-express": "node --env-file=./.build/config/.env.prod ./.build/interface/HTTP/adapters/hyper-express/hyper-express.js",
+    "prod:serverless": "npm run lint && NODE_ENV=prod serverless dev",
     "docker:composeredis": "docker compose -f \"docker-compose-redis.yml\" up -d --build",
     "docker:stop": "docker-compose stop",
-    "docker:restart": "docker compose -f \"docker-compose-redis.yml\" down && pnpm run docker:composeredis",
+    "docker:restart": "docker compose -f \"docker-compose-redis.yml\" down && npm run docker:composeredis",
     "docker:clean": "docker system prune -a"
   },
   "dependencies": {
@@ -100,11 +105,12 @@
     "husky": "^8.0.3",
     "jest": "^29.7.0",
     "nodemon": "^3.1.7",
+    "simple-git": "^3.27.0",
     "supertest": "^6.3.4",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^4.9.5"
+    "typescript": "5.4.5"
   },
   "resolutions": {
     "serverless": "^4.1.12"
@@ -113,9 +119,6 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "hooks": {
-    "pre-commit": "pnpm run lint && pnpm run test"
   },
   "license": "MIT",
   "bugs": {

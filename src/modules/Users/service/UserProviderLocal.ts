@@ -6,8 +6,6 @@ import {
 } from '@src/modules/Users';
 import { IServiceResponse } from '@src/modules/port';
 
-let userProvider: IUserProvider;
-
 export class UserProviderLocal implements IUserProvider {
   private readonly userService: UserService;
 
@@ -31,8 +29,8 @@ export class UserProviderLocal implements IUserProvider {
   }
 
   public async findUser(username: string): Promise<IUser | null> {
-    const { result } = await this.userService.getAll({ username }, { page: 1, size: 1 });
-    const userFound = result ? result[0] : null;
+    const { result } = await this.userService.getOneByUsernameForAuth(username);
+    const userFound = result || null;
     return userFound;
   }
 
@@ -40,9 +38,7 @@ export class UserProviderLocal implements IUserProvider {
     return this.userService.updatePassword(id, { password: newPassword });
   }
 
-  public static compile(userService: UserService) {
-    if (userProvider) return userProvider;
-    userProvider = new UserProviderLocal(userService);
-    return userProvider;
+  public static compile(userService: UserService): IUserProvider {
+    return new UserProviderLocal(userService);
   }
 }

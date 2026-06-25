@@ -5,7 +5,16 @@ export abstract class HTTPBaseServer<T> implements IHTTPServer<T> {
   // eslint-disable-next-line no-useless-constructor, no-empty-function
   // constructor() { }
 
-  public abstract endPointRegister (handlerFactory: IbaseHandler): void;
+  public endPointRegister(handlerFactory: IbaseHandler): void {
+    try {
+      (this.application as any)[handlerFactory.method](
+        handlerFactory.path,
+        handlerFactory.handler
+      );
+    } catch (error) {
+      // console.log(error);
+    }
+  }
 
   public abstract application: T;
 

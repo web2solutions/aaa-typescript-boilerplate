@@ -26,8 +26,6 @@ import {
   UserService
 } from '@src/modules/Users';
 
-let userController: any;
-
 export class UserController extends BaseController implements IController {
   private readonly userService: UserService;
 
@@ -296,8 +294,6 @@ export class UserController extends BaseController implements IController {
   }
 
   public static compile(factory: IControllerFactory) {
-    if (userController) return userController;
-    userController = new UserController(factory);
-    return userController as UserController;
+    return new UserController(factory);
   }
 }

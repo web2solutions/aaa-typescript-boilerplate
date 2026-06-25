@@ -7,7 +7,7 @@ import {
   EndPointFactory
 } from '@src/interface/HTTP/ports';
 
-import { UserDocumentDeleteRequestEvent } from '@src/modules/Users/events/UserDocumentDeleteRequestEvent';
+import { UserController, UserDocumentDeleteRequestEvent } from '@src/modules/Users';
 
 const deleteDocument: EndPointFactory = (
   {

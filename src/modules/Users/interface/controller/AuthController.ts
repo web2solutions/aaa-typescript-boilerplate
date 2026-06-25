@@ -22,8 +22,6 @@ import {
 
 import { BaseError, ResourceLockedError, ValidationError } from '@src/infra/exceptions';
 
-let authController: any;
-
 export class AuthController extends BaseController implements IController {
   // eslint-disable-next-line no-useless-constructor
   constructor(factory: IControllerFactory) {
@@ -89,7 +87,7 @@ export class AuthController extends BaseController implements IController {
       userId = decodedToken.id;
 
       const lockUserId = await this.mutexService.lock('user', userId);
-      if (lockUserId?.result.wasAlreadyLocked) {
+      if (lockUserId?.result.previouslyLocked) {
         throw new ResourceLockedError('user locked');
       }
 
@@ -146,8 +144,6 @@ export class AuthController extends BaseController implements IController {
   }
 
   public static compile(factory: IControllerFactory) {
-    if (authController) return authController;
-    authController = new AuthController(factory);
-    return authController as AuthController;
+    return new AuthController(factory);
   }
 }

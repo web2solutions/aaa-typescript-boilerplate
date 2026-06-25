@@ -5,12 +5,12 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { v4 } from 'uuid';
 import { _HTTP_PORT_ } from '@src/config/constants';
-import { HTTPBaseServer, IbaseHandler } from '@src/interface/HTTP/ports';
+import { HTTPBaseServer } from '@src/interface/HTTP/ports';
 import { Context } from '@src/infra/context/Context';
 import { InternalServerError } from '@src/infra/exceptions';
 import { Server } from 'http';
 
-let expressServer: any;
+let server: any;
 
 class ExpressServer extends HTTPBaseServer<Express> {
   public readonly application: Express;
@@ -38,17 +38,6 @@ class ExpressServer extends HTTPBaseServer<Express> {
     });
     // this.application.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
     this.createDocEndPoint();
-  }
-
-  public endPointRegister(handlerFactory: IbaseHandler): void {
-    try {
-      (this.application as any)[handlerFactory.method](
-        handlerFactory.path,
-        handlerFactory.handler
-      );
-    } catch (error) {
-      // console.log(error);
-    }
   }
 
   private createDocEndPoint() {
@@ -81,10 +70,10 @@ class ExpressServer extends HTTPBaseServer<Express> {
   }
 
   public static compile(): HTTPBaseServer<Express> {
-    if (!expressServer) {
-      expressServer = new ExpressServer();
+    if (!server) {
+      server = new this();
     }
-    return expressServer;
+    return server;
   }
 }
 

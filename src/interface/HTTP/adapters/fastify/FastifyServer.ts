@@ -7,7 +7,7 @@ import path from 'node:path';
 import { v4 } from 'uuid';
 
 import { _HTTP_PORT_ } from '@src/config/constants';
-import { IbaseHandler, HTTPBaseServer } from '@src/interface/HTTP/ports';
+import { HTTPBaseServer } from '@src/interface/HTTP/ports';
 import { Context } from '@src/infra/context/Context';
 
 const fastifyApp = fastify({
@@ -59,17 +59,6 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
     }); */
 
     this.createDocEndPoint();
-  }
-
-  public endPointRegister(handlerFactory: IbaseHandler): void {
-    try {
-      (this.application as any)[handlerFactory.method](
-        handlerFactory.path,
-        handlerFactory.handler
-      );
-    } catch (error) {
-      // console.log(error);
-    }
   }
 
   private createDocEndPoint() {

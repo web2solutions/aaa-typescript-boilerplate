@@ -29,8 +29,6 @@ const tokenKeys = [
   'roles'
 ];
 
-let authService: IAuthService;
-
 export class AuthService implements IAuthService {
   // eslint-disable-next-line no-useless-constructor
   constructor(
@@ -236,13 +234,11 @@ export class AuthService implements IAuthService {
     userProvider: IUserProvider,
     passwordCryptoService: IPasswordCryptoService,
     jwtService: IJwtService
-  ) {
-    if (authService) return authService;
-    authService = new AuthService(
+  ): IAuthService {
+    return new AuthService(
       userProvider,
       passwordCryptoService,
       jwtService
     );
-    return authService;
   }
 }

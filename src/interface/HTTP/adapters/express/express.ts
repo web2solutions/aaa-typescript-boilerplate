@@ -4,7 +4,7 @@ import { ExpressServer } from '@src/interface/HTTP/adapters/express/ExpressServe
 import { infraHandlers } from '@src/interface/HTTP/adapters/express/handlers/infraHandlers';
 
 import {
-  UserDataRepository, UserService, AuthService, UserProviderLocal
+  composeUsersAuthServices
 } from '@src/modules/Users';
 
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
@@ -23,24 +23,12 @@ const jwtService = JwtService.compile();
 const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 
-// LOCAL IDENTITY PROVIDER
-const dataRepository = UserDataRepository.compile({
-  databaseClient: InMemoryDbClient
-});
-const userService = UserService.compile({
-  dataRepository,
-  services: {
-    passwordCryptoService,
-    mutexService
-  }
-});
-const userProvider = UserProviderLocal.compile(userService);
-const authService = AuthService.compile(
-  userProvider,
+const { authService } = composeUsersAuthServices({
+  databaseClient: InMemoryDbClient,
   passwordCryptoService,
+  mutexService,
   jwtService
-);
-// LOCAL IDENTITY PROVIDER
+});
 
 const API = new RestAPI<Express>({
   databaseClient: InMemoryDbClient,

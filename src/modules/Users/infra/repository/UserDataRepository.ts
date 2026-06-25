@@ -35,8 +35,6 @@ export function exclude<T, Key extends keyof T>(
   return record;
 }
 
-let userDataRepository: any;
-
 export class UserDataRepository extends BaseRepo<User, RequestCreateUser, RequestUpdateUser> {
   public store: IStore<IUser>;
 
@@ -108,9 +106,7 @@ export class UserDataRepository extends BaseRepo<User, RequestCreateUser, Reques
   }
 
   public static compile(config: IRepoConfig): UserDataRepository {
-    if (userDataRepository) return userDataRepository;
-    userDataRepository = new UserDataRepository(config);
-    return userDataRepository;
+    return new UserDataRepository(config);
   }
 
   public async updatePassword(id: string, data: RequestUpdatePassword): Promise<User> {
