@@ -1,0 +1,235 @@
+# Changelog
+
+<!-- This file is generated from Git history. Run `npm run changelog:update` to refresh it. -->
+
+## Unreleased
+
+- 2026-06-25 chore: add project tracking and changelog automation - Eduardo Almeida
+- 2026-06-25 fix: normalize singleton factories - Eduardo Almeida
+- 2026-06-25 fix: wire service dependencies correctly - Eduardo Almeida
+- 2026-06-25 refactor: centralize endpoint registration - Eduardo Almeida
+- 2026-06-25 fix: restore TypeScript build - Eduardo Almeida
+
+## v0.0.3 - 2024-11-04
+
+- 2024-11-04 fix(ci): move check-node-version - Eduardo Almeida
+
+## v0.0.1 - 2024-10-23
+
+- 2024-10-23 ci(versioning): run pre-commit from package - Eduardo Almeida
+- 2024-10-23 ci: run pre-cmmit in package - Eduardo Almeida
+- 2024-10-23 ci(fix husky): fix husky - Eduardo Almeida
+- 2024-10-22 ci(version): bump package pre-commit after testing, bump and add tag post-commit - Eduardo Almeida
+- 2024-10-22 ci(husky): fix hook - Eduardo Almeida
+- 2024-10-22 ci(post-commit hook): bump version and add tag - Eduardo Almeida
+- 2024-10-22 build(husky): test hooks - Eduardo Almeida
+- 2024-10-22 ci(github action): use secrets.AAA_REDIS_PASSWORD instead hard coded pass - Eduardo Almeida
+- 2024-10-21 ci(env vars): fix env vars - Eduardo Almeida
+- 2024-10-21 ci: run ci:test - Eduardo Almeida
+- 2024-10-21 ci: add env for staging - Eduardo Almeida
+- 2024-10-21 ci(redis): try dockerize to wait for Redis - Eduardo Almeida
+- 2024-10-19 ci(github action): run redis - Eduardo Almeida
+- 2024-10-19 ci(git actions): fix redis matrix - Eduardo Almeida
+- 2024-10-19 ci: revert to npm and run git actions - Eduardo Almeida
+- 2024-10-19 fix(http servers): proper close all servers, add request context to HyperExpress - Eduardo Almeida
+- 2024-10-19 feat(hyperexpress): add handlers and tests - Eduardo Almeida
+- 2024-10-14 docs(badges): fix - Eduardo Almeida
+- 2024-10-14 docs(badges): hypeexpress - Eduardo Almeida
+- 2024-10-14 docs(badges): add badges - Eduardo Almeida
+- 2024-10-14 rebase main (#52) - Eduardo A.
+- 2024-10-14 change doc path (#51) - Eduardo A.
+- 2024-10-14 docs(api doc): change path - Eduardo Almeida
+- 2024-10-14 style(userstoreapi): return error - Eduardo Almeida
+- 2024-10-14 refactor: vertical Slice Architecture, Error Handling (#49) - Eduardo A.
+- 2024-10-14 ci(redis): fix pass - Eduardo Almeida
+- 2024-10-14 ci(redis): fix pass - Eduardo Almeida
+- 2024-10-14 ci(fix ci): fix ci - Eduardo Almeida
+- 2024-10-14 ci: fix ci - Eduardo Almeida
+- 2024-10-14 fix: sonar warnings - Eduardo Almeida
+- 2024-10-14 ci(redis): fix pass var - Eduardo Almeida
+- 2024-10-14 ci: add env.ci - Eduardo Almeida
+- 2024-10-14 ci: dev, ci, prod, remove sensitive info from code and env files - Eduardo Almeida
+- 2024-10-14 refactor(sonar lint): fix sonar warnings - Eduardo Almeida
+- 2024-10-14 docs(badges): add ukraine badge (#50) - Eduardo A.
+- 2024-10-14 fix(restapi): path names - Eduardo Almeida
+- 2024-10-14 refactor: vertical Slice Architecture, Error Handling - Eduardo Almeida
+- 2024-10-10 docs(badges): add ukraine badge - Eduardo Almeida
+- 2024-10-09 style(sonar): remove test from cdp (#48) - Eduardo A.
+- 2024-10-09 style(sonar): remove test from cdp - Eduardo Almeida
+- 2024-10-09 refactor(sonar): fix sonar warnings (#47) - Eduardo A.
+- 2024-10-09 refactor(sonar): fix sonar warnings - Eduardo Almeida
+- 2024-10-09 action test app (#45) - Eduardo A.
+- 2024-10-09 docs(badges): add badges - Eduardo Almeida
+- 2024-10-09 ci(gh action): remove test - Eduardo Almeida
+- 2024-10-09 docs(badges): add badges - Eduardo Almeida
+- 2024-10-09 ci(gh actions): fix test runner - Eduardo Almeida
+- 2024-10-09 ci(gh action): fix install - Eduardo Almeida
+- 2024-10-09 docs(badges): add badges - Eduardo Almeida
+- 2024-10-09 ci(gh action): run test - Eduardo Almeida
+- 2024-10-09 ci(github action): test app fix pnpm install - Eduardo Almeida
+- 2024-10-09 chore: sonar config (#46) - Eduardo A.
+- 2024-10-09 perf(sonar): sonar cloud config - Eduardo Almeida
+- 2024-10-09 chore: sonar conf - Eduardo Almeida
+- 2024-10-09 action test app - Eduardo A.
+- 2024-10-09 feat(auth): login, logout, register and updatePassword end points  (#43) - Eduardo A.
+- 2024-10-09 ci(pnpm): fix install pnpm - Eduardo Almeida
+- 2024-10-09 ci(pnpm): fix install - Eduardo Almeida
+- 2024-10-09 ci(redis cimg): fix redis cimg - Eduardo Almeida
+- 2024-10-09 ci(pnpm): fix install - Eduardo Almeida
+- 2024-10-09 ci(pnpm): fix pnpm install - Eduardo Almeida
+- 2024-10-09 feat(auth): login, logout, register and updatePassword end points - Eduardo Almeida
+- 2024-10-05 Dev (#42) - Eduardo A.
+- 2024-10-05 fix: ci - Eduardo Almeida
+- 2024-10-05 fix: ci and ts - Eduardo Almeida
+- 2024-10-05 chore: add pnpm, update packages, update fastify handlers - Eduardo Almeida
+- 2024-10-05 fix(test suite): express memory leak - Eduardo Almeida
+- 2024-10-04 fix(integration test suite): delete users in getAll - Eduardo Almeida
+- 2024-10-04 fix: sonar lint - Eduardo Almeida
+- 2024-09-30 Dev (#41) - Eduardo A.
+- 2024-09-30 chore: fix lock file - Eduardo Almeida
+- 2024-09-30 Merge branch 'main' into dev - Eduardo A.
+- 2024-09-30 feat: restify - Eduardo Almeida
+- 2024-09-29 feat(http server): add support to Restify as HTTP server - Eduardo Almeida
+- 2024-09-27 refactor(serverless): remove dd key - Eduardo Almeida
+- 2024-09-27 chore: code quality - Eduardo Almeida
+- 2024-09-27 build(deps): bump send and express (#40) - Eduardo A.
+- 2024-09-27 build(deps): bump body-parser and express (#39) - Eduardo A.
+- 2024-09-27 build(deps): bump find-my-way from 8.2.0 to 8.2.2 (#37) - Eduardo A.
+- 2024-09-25 build(deps): bump send and express - dependabot[bot]
+- 2024-09-21 build(deps): bump body-parser and express - dependabot[bot]
+- 2024-09-18 build(deps): bump find-my-way from 8.2.0 to 8.2.2 - dependabot[bot]
+- 2024-09-16 docs: fix title - Eduardo Almeida
+- 2024-09-16 docs: fix title - Eduardo Almeida
+- 2024-09-09 docs: deps info - Eduardo Almeida
+- 2024-09-09 feat: aws lambda integration with serverless framework and typescript - Eduardo Almeida
+- 2024-09-09 fix: bearer auth suite - Eduardo Almeida
+- 2024-09-02 docs: add controller to doc - Eduardo Almeida
+- 2024-09-02 docs: badges and info - Eduardo Almeida
+- 2024-09-02 ci: redis latest - Eduardo Almeida
+- 2024-09-02 ci: fix - Eduardo Almeida
+- 2024-09-02 ci(mutex x redis): install redis in ci - Eduardo Almeida
+- 2024-09-02 feat(express): add Express integration - Eduardo Almeida
+- 2024-08-26 delete old files (#35) - Eduardo A.
+- 2024-08-26 chore: delete old files - Eduardo Almeida
+- 2024-08-26 docs: docs - Eduardo Almeida
+- 2024-08-26 Docs (#34) - Eduardo A.
+- 2024-08-26 docs: badges - Eduardo Almeida
+- 2024-08-26 docs: badges - Eduardo Almeida
+- 2024-08-26 docs: badges - Eduardo Almeida
+- 2024-08-26 Feat: AuthService, JWTService, UserProvider, CI improvements (#33) - Eduardo A.
+- 2024-08-26 docs: badges - Eduardo Almeida
+- 2024-08-26 ci(fix ci): fix ci - Eduardo Almeida
+- 2024-08-26 ci: fix ci - Eduardo Almeida
+- 2024-08-26 ci: fix ci - Eduardo Almeida
+- 2024-08-26 ci: add coverage - Eduardo Almeida
+- 2024-08-25 docs: test branch status badge - Eduardo Almeida
+- 2024-08-25 feat: feat: Auth service, User Provider, JWT Service, Bearer HTTP Auth - Eduardo Almeida
+- 2024-08-25 fix:  clear key value storage memory, import IPasswordCryptoService - Eduardo Almeida
+- 2024-08-25 build(package.json): run lint-fix in pretest. Add jsonwebtoken - Eduardo Almeida
+- 2024-06-25 chore: call fastfy close() when stoping the server - Eduardo A.
+- 2024-06-25 feat(infra): implement a IKVStore Port and a KVStoreClient Redis adapter - Eduardo A
+- 2024-06-24 chore: add key prefix constants - Eduardo A.
+- 2024-06-10 style: improve tooling: snyk integration, gitPod (#32) - Eduardo A
+- 2024-06-10 style: improve tooling: snyk integration, gitPod - José Eduardo Almeida
+- 2024-06-10 run on gitpod (#31) - Eduardo A
+- 2024-06-10 fix: git pod url - José Eduardo Almeida
+- 2024-06-10 chore: fix git pod - José Eduardo Almeida
+- 2024-06-10 test: add gitpod conf - José Eduardo Almeida
+- 2024-06-10 fix: doc starter, fastify starter, bcrypt sec (#30) - Eduardo A
+- 2024-06-10 fix: fastify starter, doc starter - José Eduardo Almeida
+- 2024-06-10 chore: fix npm run commit command - double test - José Eduardo Almeida
+- 2024-06-10 chore: remove bcrypt from package, set MIT lincense - José Eduardo Almeida
+- 2024-06-09 encrypt user passwords (#29) - Eduardo A
+- 2024-06-09 fix: security - replace bcrypt with bcryptjs - José Eduardo Almeida
+- 2024-06-09 fix: update password, add pre commit hook - José Eduardo Almeida
+- 2024-06-09 chore: husky hook pre-commit to run lint and test before commit - José Eduardo Almeida
+- 2024-06-09 fix: inject passwordCryptoService in test scripts - José Eduardo Almeida
+- 2024-06-09 fix: password validation - José Eduardo Almeida
+- 2024-06-09 fix: user password validation - José Eduardo Almeida
+- 2024-06-08 chore(UserService): factor based on new BaseService - José Eduardo Almeida
+- 2024-06-08 chore: password, salt and bcrypt - José Eduardo Almeida
+- 2024-06-08 chore: improvements for update data logic - José Eduardo Almeida
+- 2024-06-08 chore(Constants): add _BCRYPT_SALT_ROUNDS_ - José Eduardo Almeida
+- 2024-06-08 feat(RestAPI, UserController): add PasswordCryptoService to the application stack - José Eduardo Almeida
+- 2024-06-08 feat: implement a service for password crypto - José Eduardo Almeida
+- 2024-06-08 chore(BaseService):  type improvements - José Eduardo Almeida
+- 2024-06-06 docs: info - José Eduardo Almeida
+- 2024-06-06 Dev (#26) - Eduardo A
+- 2024-06-06 docs: fix - José Eduardo Almeida
+- 2024-06-06 docs: badges - José Eduardo Almeida
+- 2024-06-06 Dev (#25) - Eduardo A
+- 2024-06-06 docs: badges - José Eduardo Almeida
+- 2024-06-06 docs: snyk badge - José Eduardo Almeida
+- 2024-06-06 chore: snyk badge - José Eduardo Almeida
+- 2024-06-06 Merge branch 'dev' of https://github.com/web2solutions/aaa-typescript-boilerplate into dev - José Eduardo Almeida
+- 2024-06-06 docs: ci status - José Eduardo Almeida
+- 2024-06-06 Merge branch 'main' of https://github.com/web2solutions/aaa-typescript-boilerplate - José Eduardo Almeida
+- 2024-06-06 chore: remove snyk - José Eduardo Almeida
+- 2024-06-06 Update snyk-security.yml - Eduardo A
+- 2024-06-06 snyk and workflow name (#24) - Eduardo A
+- 2024-06-06 fix: tsconfig - José Eduardo Almeida
+- 2024-06-06 Update snyk-security.yml - Eduardo A
+- 2024-06-06 Create snyk-security.yml - Eduardo A
+- 2024-06-06 chore: set workflow name - José Eduardo Almeida
+- 2024-06-06 docs: ci status (#23) - Eduardo A
+- 2024-06-06 docs: ci status - José Eduardo Almeida
+- 2024-06-06 improve CI status (#22) - Eduardo A
+- 2024-06-06 docs: remove unclear status info - José Eduardo Almeida
+- 2024-06-06 docs: prioritize summary - José Eduardo Almeida
+- 2024-06-06 docs: ci status - José Eduardo Almeida
+- 2024-06-06 chore: ci set workflow name - José Eduardo Almeida
+- 2024-06-06 fix: fix lint issues - José Eduardo Almeida
+- 2024-06-06 chore: run lint on ci and add ci status to doc - José Eduardo Almeida
+- 2024-06-06 Merge pull request #21 from web2solutions/circleci-project-setup - Eduardo A
+- 2024-06-06 Add .circleci/config.yml - Eduardo A
+- 2024-06-06 fix: localhost test - José Eduardo Almeida
+- 2024-06-06 feat: paging getAll data - José Eduardo Almeida
+- 2024-06-03 feat: refactor Fastify handlers to use the injected controller - José Eduardo Almeida
+- 2024-06-03 docs: backlog and management - José Eduardo Almeida
+- 2024-06-03 docs: backlog - José Eduardo Almeida
+- 2024-06-03 docs: backlog - José Eduardo Almeida
+- 2024-06-03 docs: backlog - José Eduardo Almeida
+- 2024-06-03 docs: backlog - José Eduardo Almeida
+- 2024-06-03 feat(UserController): add, remove and delete -> document, phone and email - José Eduardo Almeida
+- 2024-06-03 chore: remove old code - José Eduardo Almeida
+- 2024-06-03 docs: status - José Eduardo Almeida
+- 2024-06-03 docs: diagram - José Eduardo Almeida
+- 2024-06-03 docs: miro link - José Eduardo Almeida
+- 2024-06-03 docs: test miro - José Eduardo Almeida
+- 2024-06-03 chore: add authService to fastify application - José Eduardo Almeida
+- 2024-06-03 chore: decorator support - José Eduardo Almeida
+- 2024-06-03 feat(Handlers - Fastify): new handlers - José Eduardo Almeida
+- 2024-06-03 chore: domain improvements - User - José Eduardo Almeida
+- 2024-06-03 fix: spec fix - José Eduardo Almeida
+- 2024-06-03 chore: integration testing - Fastify x User test suite improvements - José Eduardo Almeida
+- 2024-06-03 feat: new ports for HTTP - José Eduardo Almeida
+- 2024-06-03 chore: hper express handlers improvements - José Eduardo Almeida
+- 2024-06-03 chore: fastify error handler improvements - José Eduardo Almeida
+- 2024-06-03 chore: remove login from user store - José Eduardo Almeida
+- 2024-06-03 chore: create _EVENT_INVALID_MESSAGE_ and _INFRA_NOT_IMPLEMENTED_ - José Eduardo Almeida
+- 2024-06-03 chore: remove login from users data - José Eduardo Almeida
+- 2024-06-03 feat: domain validator throwIfIsNotObject - José Eduardo Almeida
+- 2024-06-03 feat: decorator @Authorize guard - José Eduardo Almeida
+- 2024-06-03 chore: remove old basicAuth logic - José Eduardo Almeida
+- 2024-06-03 feat: validator HTTP throwIfOASInputValidationFails - José Eduardo Almeida
+- 2024-06-03 test: suite improvements - José Eduardo Almeida
+- 2024-06-03 chore: remove basiAuth middleware - José Eduardo Almeida
+- 2024-06-03 feat(RestAPI): inject controller on route handlers - José Eduardo Almeida
+- 2024-06-03 feat(AuthService): auth service implementation - José Eduardo Almeida
+- 2024-06-03 feat: user domain events - José Eduardo Almeida
+- 2024-05-31 feat: pass - José Eduardo Almeida
+- 2024-05-31 feat: user createEmail, updateEmail and deleteEmail - José Eduardo Almeida
+- 2024-05-31 feat(User domain): createPhone and updatePhone - José Eduardo Almeida
+- 2024-05-31 chore(deleteDocument): remove validateRequestBody - José Eduardo Almeida
+- 2024-05-31 chore: mock documents - José Eduardo Almeida
+- 2024-05-31 chore: fastify handlers refactor - José Eduardo Almeida
+- 2024-05-31 chore: user domain refactor - José Eduardo Almeida
+- 2024-05-31 chore: mock documents - José Eduardo Almeida
+- 2024-05-31 chore: api fix paths - José Eduardo Almeida
+- 2024-05-31 feat: user Update login - José Eduardo Almeida
+- 2024-05-31 feat: user create document - José Eduardo Almeida
+- 2024-05-30 chore: di - José Eduardo Almeida
+- 2024-05-30 chore: clear domains - José Eduardo Almeida
+- 2024-05-29 chore: cases refactor - José Eduardo Almeida
+- 2024-05-29 chore: BaseRepo and BaseService improvements - José Eduardo Almeida
+- 2024-05-29 Initial commit - José Eduardo Almeida
