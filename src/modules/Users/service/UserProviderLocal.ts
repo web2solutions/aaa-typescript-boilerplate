@@ -29,8 +29,8 @@ export class UserProviderLocal implements IUserProvider {
   }
 
   public async findUser(username: string): Promise<IUser | null> {
-    const { result } = await this.userService.getAll({ username }, { page: 1, size: 1 });
-    const userFound = result ? result[0] : null;
+    const { result } = await this.userService.getOneByUsernameForAuth(username);
+    const userFound = result || null;
     return userFound;
   }
 

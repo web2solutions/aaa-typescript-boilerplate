@@ -224,7 +224,7 @@ export class RestAPI<T> {
     // console.log('>>>> done');
   }
 
-  public async deleteUsers(): Promise<IUser[]> {
+  public async deleteUsers(): Promise<boolean[]> {
     const dataRepository = UserDataRepository.compile({ databaseClient: this.databaseClient });
     const service = UserService.compile({
       dataRepository,
@@ -233,17 +233,16 @@ export class RestAPI<T> {
         mutexService: this.mutexClient
       }
     });
-    const requests: Promise<IUser>[] = [];
+    const requests: Promise<boolean>[] = [];
     const allUsers = (await service.getAll({}, { page: 1, size: 1000 })).result || [];
     for (const user of allUsers) {
       requests.push(new Promise((resolve, reject) => {
         (async () => {
           try {
-            // await service.create(user);
-            const newUser = await service.create(user);
-            if (newUser.error) throw newUser.error;
-            if (!newUser.result) throw new Error('User delete failed');
-            resolve(newUser.result);
+            const deletedUser = await service.delete(user.id);
+            if (deletedUser.error) throw deletedUser.error;
+            if (deletedUser.result === undefined) throw new Error('User delete failed');
+            resolve(deletedUser.result);
           } catch (error: any) {
             // console.log(error.message);
             reject(new Error(error.message));

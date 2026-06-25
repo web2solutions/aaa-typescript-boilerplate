@@ -65,6 +65,34 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     this.mutexService = services!.mutexService;
   }
 
+  private static sanitizeUser(user?: IUser): IUser | undefined {
+    if (!user) return undefined;
+    const safeUser = { ...(user as IUser & { salt?: string }) };
+    delete (safeUser as any).password;
+    delete (safeUser as any).salt;
+    return safeUser as IUser;
+  }
+
+  private static sanitizeUsers(users?: IUser[]): IUser[] {
+    return (users || []).map((user) => UserService.sanitizeUser(user) as IUser);
+  }
+
+  public async getOneByUsernameForAuth(username: string): Promise<IServiceResponse<IUser>> {
+    const serviceResponse: IServiceResponse<IUser> = {};
+    try {
+      const result: IPagingResponse<IUser[]> = await getAllUsers(
+        { username },
+        { page: 1, size: 1 },
+        this.dataRepository
+      );
+      const [userFound] = result.result;
+      serviceResponse.result = userFound;
+    } catch (error) {
+      serviceResponse.error = error as BaseError;
+    }
+    return serviceResponse;
+  }
+
   public async create(data: RequestCreateUser): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
@@ -76,7 +104,8 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       newData.password = hash;
       newData.salt = salt;
 
-      serviceResponse.result = await createUser((newData ?? {}), this.dataRepository);
+      const createdUser = await createUser((newData ?? {}), this.dataRepository);
+      serviceResponse.result = UserService.sanitizeUser(createdUser);
     } catch (error) {
       serviceResponse.error = error as BaseError;
     }
@@ -92,7 +121,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       // console.log('data', data);
       const user = await updateUser(id, data, this.dataRepository);
       // console.log('user', user)
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -124,7 +153,8 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   public async getOneById(id: string): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
-      serviceResponse.result = await getUserById(id, this.dataRepository);
+      const user = await getUserById(id, this.dataRepository);
+      serviceResponse.result = UserService.sanitizeUser(user);
     } catch (error) {
       serviceResponse.error = error as BaseError;
     }
@@ -142,7 +172,10 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
         paging,
         this.dataRepository
       );
-      serviceResponse = { ...result };
+      serviceResponse = {
+        ...result,
+        result: UserService.sanitizeUsers(result.result)
+      };
     } catch (error) {
       serviceResponse.error = error as BaseError;
     }
@@ -166,7 +199,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       newData.password = hash;
       newData.salt = salt;
       const user = await updatePassword(id, newData, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -187,7 +220,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
 
       const user = await createDocument(id, data, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -208,7 +241,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
 
       const user = await updateDocument(id, documentId, data, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -229,7 +262,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
 
       const user = await deleteDocument(id, documentId, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -250,7 +283,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
 
       const user = await createPhone(id, data, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -272,7 +305,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
 
       const user = await updatePhone(id, phoneId, data, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -293,7 +326,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
 
       const user = await deletePhone(id, phoneId, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -314,7 +347,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
 
       const user = await createEmail(id, data, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -336,7 +369,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
 
       const user = await updateEmail(id, emailId, data, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -357,7 +390,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
 
       const user = await deleteEmail(id, emailId, this.dataRepository);
-      serviceResponse.result = user;
+      serviceResponse.result = UserService.sanitizeUser(user);
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {

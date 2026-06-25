@@ -22,6 +22,10 @@ const userStoreUniqueIndexes = {
 export const UserStoreAPI = {
   delete: async (id: string) => {
     try {
+      const rawRecord = userStore.get(id) as IUser | undefined;
+      if (!rawRecord) return false;
+      const username = rawRecord.username.toString().toLowerCase();
+      userStoreUniqueIndexes.username.delete(username);
       const result = userStore.delete(id);
       return !!result;
     } catch (err) {
@@ -66,6 +70,10 @@ export const UserStoreAPI = {
       const strOldName = (oldRecord as IUser).username.toString().toLowerCase();
       const object = { ...oldRecord, ...value };
       const username = object.username.toString().toLowerCase();
+      const usernameInUse = userStoreUniqueIndexes.username.get(username);
+      if (usernameInUse && strOldName !== username) {
+        throw new ConflictError('username already in use');
+      }
 
       userStore.set(key, { ...object, _updatedAt: new Date() });
       userStoreUniqueIndexes.username.delete(strOldName);
@@ -87,25 +95,16 @@ export const UserStoreAPI = {
       if (page < 1) {
         throw new DatabasePagingError('page must be greater than 0');
       }
-      const result: IUser[] = [];
+      const filteredRecords = [...userStore.values()]
+        .filter((value) => matchAllFilters(value, filters)) as IUser[];
+      const total = filteredRecords.length;
       let pages = 1;
-      const total = userStore.size;
       pages = Math.ceil(total / limit);
       if (page > pages && total > 0) {
         throw new DatabasePagingError('page number must be smaller than the number of total pages');
       }
       const startAt = (page * limit) - limit;
-      let iterated = 0;
-      // eslint-disable-next-line no-restricted-syntax
-      for (const value of userStore.values()) {
-        // eslint-disable-next-line operator-assignment
-        iterated = iterated + 1;
-        if (iterated > startAt) {
-          if (result.length < limit) {
-            if (matchAllFilters(value, filters)) result.push(value as IUser);
-          }
-        }
-      }
+      const result = filteredRecords.slice(startAt, startAt + limit);
 
       return await Promise.resolve({
         result,
