@@ -14,7 +14,7 @@
     "changelog:update": "node ci-cd/update-changelog.js",
     "changelog:check": "node ci-cd/update-changelog.js --check",
     "oas:check-routes": "node ci-cd/check-oas-route-resolution.js",
-    "ci:smoke": "AAA_JWT_TOKEN_SECRET_KEY=${AAA_JWT_TOKEN_SECRET_KEY:-ci_jwt_secret_key} NODE_ENV=ci jest ./test/integration/Express/get.localhost.test.ts --runInBand",
+    "ci:smoke": "AAA_JWT_TOKEN_SECRET_KEY=${AAA_JWT_TOKEN_SECRET_KEY:-ci_jwt_secret_key} NODE_ENV=ci jest ./test/integration/Express/get.localhost.test.ts --runInBand --coverage=false",
     "ci:gate": "npm run lint && npm run test:unit && npm run oas:check-routes && npm run build:dev && npm run ci:smoke",
     "commit": "npm run lint && npm run test && ts-node ci-cd/bumpPackage.ts && git add . && git-cz",
     "lint": "eslint . --ext .ts",
