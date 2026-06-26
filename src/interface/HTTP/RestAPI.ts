@@ -133,67 +133,87 @@ export class RestAPI<T> {
 
   private buildEndPoints(): void {
     for (const [version, spec] of this.oas) {
-      for (const path of Object.keys(spec.paths)) {
-        const endPointConfigs: Record<string, any> = spec.paths[path] ?? {};
-        const methods: string[] = Object.keys(endPointConfigs);
-        for (const method of methods) {
-          const endPointConfig: Record<string, any> = endPointConfigs[method];
-          const module = path.split('/')[1];
-          let controllerName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length - 1)}Controller`;
-          let moduleName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length)}`;
-          if (module === 'auth') {
-            moduleName = 'Users';
-            controllerName = 'AuthController';
-          }
-          const controllerPaths = [
-            `@src/modules/${moduleName}/adapters/in/http/controllers/${controllerName}`,
-            `@src/modules/${moduleName}/interface/controller/${controllerName}`
-          ];
-          let ControllerModule;
-          for (const controllerPath of controllerPaths) {
-            try {
-              ControllerModule = require(controllerPath)[controllerName];
-              if (ControllerModule) break;
-            } catch (error) {
-              //
-            }
-          }
-          if (!ControllerModule) {
-            throw new Error(`Controller ${controllerName} not found for module ${moduleName}.`);
-          }
+      this.registerSpecVersionEndpoints(version, spec);
+    }
+  }
 
-          const usersModuleComposition = moduleName === 'Users'
-            ? this.composeUsersModule()
-            : undefined;
+  private registerSpecVersionEndpoints(version: string, spec: OpenAPIV3.Document): void {
+    for (const path of Object.keys(spec.paths)) {
+      const endPointConfigs: Record<string, any> = spec.paths[path] ?? {};
+      for (const method of Object.keys(endPointConfigs)) {
+        this.registerOperationEndpoint(version, spec, path, endPointConfigs[method]);
+      }
+    }
+  }
 
-          const controller = new ControllerModule({
-            authService: usersModuleComposition?.authService ?? this.authService,
-            openApiSpecification: spec,
-            databaseClient: this.databaseClient,
-            userService: usersModuleComposition?.userService,
-            userUseCases: usersModuleComposition?.userUseCases,
-            authUseCases: usersModuleComposition?.authUseCases,
-            mutexService: this.mutexClient,
-            passwordCryptoService: this.passwordCryptoService
-          });
+  private registerOperationEndpoint(
+    version: string,
+    spec: OpenAPIV3.Document,
+    path: string,
+    endPointConfig: Record<string, any>
+  ): void {
+    const module = path.split('/')[1];
+    const { moduleName, controllerName } = RestAPI.resolveControllerMetadata(module);
+    const ControllerModule = RestAPI.getControllerModule(moduleName, controllerName);
+    const usersModuleComposition = moduleName === 'Users' ? this.composeUsersModule() : undefined;
 
-          const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this.serverType}/handlers/${endPointConfig.operationId}`;
-          const handlerFactory = require(handlerPath).default({
-            databaseClient: this.databaseClient,
-            mutexService: this.mutexClient,
-            endPointConfig,
-            spec,
-            authService: this.authService,
-            controller
-          });
+    const controller = new ControllerModule({
+      authService: usersModuleComposition?.authService ?? this.authService,
+      openApiSpecification: spec,
+      databaseClient: this.databaseClient,
+      userService: usersModuleComposition?.userService,
+      userUseCases: usersModuleComposition?.userUseCases,
+      authUseCases: usersModuleComposition?.authUseCases,
+      mutexService: this.mutexClient,
+      passwordCryptoService: this.passwordCryptoService
+    });
 
-          this.server.endPointRegister({
-            ...handlerFactory,
-            path: `${_API_PREFIX_}/${version}${replaceVars(handlerFactory.path)}`
-          });
+    const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this.serverType}/handlers/${endPointConfig.operationId}`;
+    const handlerFactory = require(handlerPath).default({
+      databaseClient: this.databaseClient,
+      mutexService: this.mutexClient,
+      endPointConfig,
+      spec,
+      authService: this.authService,
+      controller
+    });
+
+    this.server.endPointRegister({
+      ...handlerFactory,
+      path: `${_API_PREFIX_}/${version}${replaceVars(handlerFactory.path)}`
+    });
+  }
+
+  private static resolveControllerMetadata(
+    module: string
+  ): { moduleName: string; controllerName: string } {
+    if (module === 'auth') {
+      return { moduleName: 'Users', controllerName: 'AuthController' };
+    }
+    const moduleName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length)}`;
+    const controllerName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length - 1)}Controller`;
+    return { moduleName, controllerName };
+  }
+
+  private static getControllerModule(moduleName: string, controllerName: string): any {
+    const controllerPaths = [
+      `@src/modules/${moduleName}/adapters/in/http/controllers/${controllerName}`,
+      `@src/modules/${moduleName}/interface/controller/${controllerName}`
+    ];
+    for (const controllerPath of controllerPaths) {
+      try {
+        const controllerModule = require(controllerPath)[controllerName];
+        if (controllerModule) {
+          return controllerModule;
+        }
+      } catch (error: any) {
+        if (error?.code !== 'MODULE_NOT_FOUND') {
+          throw error;
         }
       }
     }
+
+    throw new Error(`Controller ${controllerName} not found for module ${moduleName}.`);
   }
 
   public async start(): Promise<void> {
