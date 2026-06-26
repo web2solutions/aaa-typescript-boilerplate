@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-06-26 refactor(hexagonal): switch users wiring to canonical adapter namespaces - Eduardo Almeida
 - 2026-06-26 refactor(structure): scaffold feature-driven hexagonal namespaces - Eduardo Almeida
 - 2026-06-26 build(ci): enforce hexagonal controller boundaries - Eduardo Almeida
 - 2026-06-26 refactor(events): standardize user integration events and listener wiring - Eduardo Almeida
