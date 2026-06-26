@@ -4,6 +4,7 @@ export interface IStore<T> {
   delete(id: string): Promise<boolean>;
   getOneById(id: string): Promise<T>;
   getByName?(name: string): Promise<T>;
+  getByRelation?(field: keyof T, referenceId: string): Promise<T[]>;
   create(key: string, value: T): Promise<T>;
   update(key: string, value: T): Promise<T>;
   getAll(

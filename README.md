@@ -85,6 +85,7 @@ Production equivalents are also available (`prod:*` scripts).
   - Controllers/Handlers
 - Contract-driven integration over direct cross-domain dependency.
 - Stable patterns for adding features with minimum blast radius.
+- Multi-tenancy ready by default with role-aware organization boundaries.
 
 ## Architecture at a Glance
 
@@ -150,6 +151,21 @@ if (response.error) {
   throw response.error;
 }
 ```
+
+## Tenancy and RBAC
+
+Tenancy modes supported:
+- Single-tenancy: users without organization linkage (commonly `superadmin` operations).
+- Multi-tenancy: organization-scoped users (`admin`, `user`) with organization-level access boundaries.
+
+Default RBAC roles:
+- `superadmin`
+- `admin`
+- `user`
+
+Tenancy rule:
+- `admin` and `user` must belong to an `Organization`.
+- `superadmin` can operate across organizations.
 
 ## Code Example: Framework Runtime Bootstrap
 
@@ -219,6 +235,7 @@ This project is designed to block risky changes before merge:
 - [Users Domain Model](documentation/md/domains/users/USER-MODEL.md)
 - [Users Entity Contract](documentation/md/domains/users/USER-ENTITY-CONTRACT.md)
 - [Users Value Objects](documentation/md/domains/users/USER-VALUE-OBJECTS.md)
+- [Users Organization Model](documentation/md/domains/users/ORGANIZATION-MODEL.md)
 - [CI Troubleshooting](documentation/md/CI-TROUBLESHOOTING.md)
 
 ---

@@ -33,11 +33,11 @@ export class JwtService implements IJwtService {
 
   public generateToken(data: Record<any, any>): string {
     const {
-      id, username, firstName, avatar, roles
+      id, username, firstName, avatar, organization, roles
     } = data;
     const token = jwt.sign(
       {
-        id, username, firstName, avatar, roles
+        id, username, firstName, avatar, organization, roles
       },
       this.secret,
       { expiresIn: this.expiresIn }

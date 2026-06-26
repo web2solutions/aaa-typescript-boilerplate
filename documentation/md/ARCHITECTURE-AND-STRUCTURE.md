@@ -35,6 +35,8 @@ Current highlights already implemented:
 - Users integration events are standardized and wired via composition.
 - CI blocks controller boundary violations and cyclic dependency regressions.
 - CI blocks new legacy imports for Users controller/repository namespaces.
+- In-memory persistence now uses relational-style generic store semantics (unique indexes, relation indexes) to mirror SQL/NoSQL adapter behavior.
+- Users domain includes tenant aggregate (`Organization`) and RBAC role policy (`superadmin`, `admin`, `user`).
 
 ## Layer Responsibilities
 
@@ -60,6 +62,21 @@ Current highlights already implemented:
    abstractions for persistence operations.
 6. Adapters:
    concrete implementations for runtime, persistence, security, mutex, events.
+
+## Tenancy and authorization boundaries
+
+- `superadmin` can operate without organization binding.
+- `admin` and `user` are tenant-scoped and must reference organization.
+- RBAC enforcement is implemented in Users domain/service/auth flow, not in HTTP adapter glue code.
+
+## Persistence adapter strategy
+
+- Official adapter: in-memory store.
+- Design target: contract-compatible behavior for relational and NoSQL persistence adapters.
+- Current in-memory implementation includes:
+  - unique index enforcement (case-sensitive and case-insensitive)
+  - relation lookup support (`getByRelation`)
+  - predictable pagination/filter behavior
 
 ## Classes Diagram
 

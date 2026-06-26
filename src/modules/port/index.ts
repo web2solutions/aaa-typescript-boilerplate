@@ -19,6 +19,14 @@ export { BaseRepo } from '@src/modules/port/BaseRepo';
 export { IRepoConfig } from '@src/modules/port/IRepoConfig';
 export { BaseModel } from '@src/modules/port/BaseModel';
 export { UUID } from '@src/modules/port/UUID';
+export {
+  BelongsTo,
+  HasMany,
+  belongsTo,
+  hasMany,
+  getModelRelations,
+  IModelRelationMetadata
+} from '@src/modules/port/relations';
 
 export { IPagingRequest } from '@src/modules/port/IPagingRequest';
 export { IPagingResponse } from '@src/modules/port/IPagingResponse';

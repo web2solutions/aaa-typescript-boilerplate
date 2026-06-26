@@ -11,6 +11,7 @@ export interface RequestUpdateUser {
   username: string;
   // password: string;
   avatar: string;
+  organization?: string;
   emails: EmailValueObject[];
   documents?: DocumentValueObject[]
   phones?: PhoneValueObject[];

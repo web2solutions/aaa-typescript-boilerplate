@@ -1,12 +1,11 @@
 import { IStore } from '@src/infra/ports/persistence/IStore';
-// import { IAccount } from '@src/domains/Accounts';
-// import { ITransaction } from '@src/domains/Transactions';
-import { IUser } from '@src/modules/Users';
-
-type StoreDomains = IUser;
+import { IUser } from '@src/modules/Users/domain/Entity/IUser';
+import { IOrganization } from '@src/modules/Users/domain/Entity/IOrganization';
 
 export interface IDbStores {
-    [key: string]: IStore<StoreDomains>;
+    User: IStore<IUser>;
+    Organization: IStore<IOrganization>;
+    [key: string]: IStore<any>;
 }
 
 export interface IDatabaseClient {

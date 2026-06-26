@@ -1,6 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 // import * as bcrypt from 'bcrypt';
-import { BaseModel } from '@src/modules/port/BaseModel';
+import {
+  BaseModel
+} from '@src/modules/port';
 import {
   canNotBeEmpty,
   throwIfReadOnly
@@ -21,6 +23,11 @@ import { RequestCreateDocument } from '@src/modules/Users/interface/dto/RequestC
 import { RequestUpdateDocument } from '@src/modules/Users/interface/dto/RequestUpdateDocument';
 import { RequestCreateEmail } from '@src/modules/Users/interface/dto/RequestCreateEmail';
 import { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpdateEmail';
+import { DomainValidationError } from '@src/infra/exceptions';
+import {
+  normalizeRoles,
+  shouldRequireOrganization
+} from '@src/modules/Users/domain/security/Rbac';
 
 interface UserFactory extends RequestCreateUser {
   id?: string;
@@ -61,6 +68,13 @@ export class User extends BaseModel<IUser> implements IUser {
         type: 'string',
         required: true,
         validations: ['minLength:1']
+      },
+      {
+        name: 'organization',
+        type: 'string',
+        format: 'uuid',
+        required: false,
+        validations: []
       },
       {
         name: 'password',
@@ -112,6 +126,8 @@ export class User extends BaseModel<IUser> implements IUser {
 
   private _salt: string = '';
 
+  private _organization: string = '';
+
   private _avatar: string = 'avatar.png';
 
   private _emails: EmailValueObject[] = [];
@@ -138,6 +154,7 @@ export class User extends BaseModel<IUser> implements IUser {
       lastName,
       avatar,
       username,
+      organization,
       password,
       salt,
       emails,
@@ -151,13 +168,14 @@ export class User extends BaseModel<IUser> implements IUser {
     this.lastName = lastName ?? '';
     this.avatar = avatar ?? 'avatar.png';
     this.username = username;
+    this.organization = organization ?? '';
     this.password = password || '';
     this.salt = salt ?? '';
 
     emails.forEach((e) => this.createEmail(e));
     documents?.forEach((d) => this.createDocument(d));
     phones?.forEach((p) => this.createPhone(p));
-    this._roles = [...(roles || [])];
+    this._roles = normalizeRoles(roles || []);
 
     this._readOnly = readOnly ?? false;
 
@@ -179,20 +197,23 @@ export class User extends BaseModel<IUser> implements IUser {
 
   private validateDomainState(): void {
     if (this._skipDomainValidation) return;
+    this.ensureTenancyRules();
+    const payload: Record<string, any> = {
+      id: this.id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      avatar: this.avatar,
+      username: this.username,
+      password: this.password,
+      salt: this.salt,
+      roles: this.roles,
+      emails: this.emails.map((entry) => ({ ...entry })),
+      documents: this.documents.map((entry) => ({ ...entry })),
+      phones: this.phones.map((entry) => ({ ...entry }))
+    };
+    if (this.organization) payload.organization = this.organization;
     BaseModel.throwIfModelPayloadIsNotOpenApi31Compliant(
-      {
-        id: this.id,
-        firstName: this.firstName,
-        lastName: this.lastName,
-        avatar: this.avatar,
-        username: this.username,
-        password: this.password,
-        salt: this.salt,
-        roles: this.roles,
-        emails: this.emails.map((entry) => ({ ...entry })),
-        documents: this.documents.map((entry) => ({ ...entry })),
-        phones: this.phones.map((entry) => ({ ...entry }))
-      },
+      payload,
       User.dataEntitySchema as any
     );
   }
@@ -357,6 +378,16 @@ export class User extends BaseModel<IUser> implements IUser {
     this.validateDomainState();
   }
 
+  public get organization(): string {
+    return this._organization;
+  }
+
+  public set organization(organization: string) {
+    throwIfReadOnly('organization', this._readOnly);
+    this._organization = organization || '';
+    this.validateDomainState();
+  }
+
   public get roles(): string[] {
     return [...this._roles];
   }
@@ -371,5 +402,11 @@ export class User extends BaseModel<IUser> implements IUser {
 
   public get phones(): PhoneValueObject[] {
     return [...this._phones];
+  }
+
+  private ensureTenancyRules(): void {
+    if (shouldRequireOrganization(this.roles) && !this.organization) {
+      throw new DomainValidationError('organization is required for admin and user roles');
+    }
   }
 }

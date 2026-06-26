@@ -1,7 +1,7 @@
 # Users Domain Model (`User`)
 
 ## Purpose
-`User` is the aggregate root of the Users domain. It encapsulates identity, profile data, credentials, roles, and child value objects (`emails`, `documents`, `phones`), and is responsible for enforcing mutation rules.
+`User` is the aggregate root of the Users domain. It encapsulates identity, profile data, credentials, roles, tenant organization binding, and child value objects (`emails`, `documents`, `phones`), and is responsible for enforcing mutation rules.
 
 ## Source of truth
 - `src/modules/Users/domain/Model/User.ts`
@@ -18,6 +18,7 @@ Constructor accepts `UserFactory` (internal type extending `RequestCreateUser`) 
 | `lastName` | `string` | `''` | Optional. |
 | `avatar` | `string` | `'avatar.png'` | Must not be empty when set. |
 | `username` | `string` | none | Required, `canNotBeEmpty`. |
+| `organization` | `string` (UUID) | `''` | Optional for `superadmin`, required for `admin` and `user`. |
 | `password` | `string` | `''` | Stored as hash by service layer. |
 | `salt` | `string` | `''` | Internal cryptographic salt. |
 | `emails` | `EmailValueObject[]` | `[]` | Added via `createEmail`. |
@@ -53,5 +54,5 @@ This prevents direct external array mutation.
 - Read-only mode prevents any mutation (`throwIfReadOnly`).
 - Required user identity fields (`firstName`, `username`) cannot be empty.
 - Nested entities must pass their own value-object validations at creation/update time.
+- RBAC tenancy invariant: `admin` and `user` roles require `organization` to be present.
 - Domain model does not expose service concerns (HTTP, persistence, infrastructure adapters).
-

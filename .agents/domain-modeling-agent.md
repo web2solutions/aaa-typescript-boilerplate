@@ -8,11 +8,13 @@ Maintain DDD consistency in domain entities, value objects, and aggregate behavi
 - Value object correctness and immutability
 - Entity contracts and field semantics
 - Model-level documentation updates
+- Multi-tenancy and RBAC invariants (`superadmin`, `admin`, `user`, organization ownership)
 
 ## Working rules
 - Prefer explicit domain invariants in constructors/setters over implicit assumptions.
 - Use immutable value-object attributes when feasible.
 - Keep normalization and validation inside domain objects.
+- For tenant-scoped roles, enforce organization ownership invariants in domain/application rules.
 - Every new feature touching domain behavior must include documentation updates in the same change set.
 - Whenever domain fields change, update:
   - tests

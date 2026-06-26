@@ -7,6 +7,7 @@ const basePayload = () => ({
   firstName: 'John',
   lastName: 'Doe',
   username: 'john',
+  organization: '00000000-0000-4000-8000-000000000099',
   password: '12345678',
   salt: 'salt',
   avatar: 'avatar.png',
@@ -76,5 +77,14 @@ describe('user domain model', () => {
     const user = new User({ ...basePayload(), readOnly: true });
     expect(() => { user.firstName = 'Mary'; }).toThrow('read only');
     expect(() => { user.createEmail({ email: 'new@example.com', type: EEmailType.work }); }).toThrow('read only');
+  });
+
+  it('requires organization for normalized tenant roles', () => {
+    expect.hasAssertions();
+    expect(() => new User({
+      ...basePayload(),
+      organization: '',
+      roles: ['admin']
+    })).toThrow('organization is required');
   });
 });

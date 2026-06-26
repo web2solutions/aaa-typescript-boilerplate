@@ -8,6 +8,7 @@ const createPayload = () => ({
   firstName: 'John',
   lastName: 'Doe',
   username: 'john',
+  organization: '00000000-0000-4000-8000-000000000077',
   password: '12345678',
   salt: 'salt',
   avatar: 'avatar.png',

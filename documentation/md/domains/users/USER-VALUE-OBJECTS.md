@@ -5,13 +5,16 @@ Value objects used by the Users domain:
 - `EmailValueObject`
 - `DocumentValueObject`
 - `PhoneValueObject`
+- `AddressValueObject` (used by `Organization`)
 
 ## Source of truth
 - `src/modules/ddd/valueObjects/EmailValueObject.ts`
 - `src/modules/ddd/valueObjects/DocumentValueObject.ts`
 - `src/modules/ddd/valueObjects/PhoneValueObject.ts`
+- `src/modules/ddd/valueObjects/AddressValueObject.ts`
 - `src/modules/ddd/valueObjects/EEmailType.ts`
 - `src/modules/ddd/valueObjects/EDocumentType.ts`
+- `src/modules/ddd/valueObjects/EAddressType.ts`
 
 ---
 
@@ -60,6 +63,18 @@ This project keeps a technical `id` for document list update/delete operations. 
 | `number` | `string` | Yes | none | `canNotBeEmpty('number')` |
 | `isPrimary` | `boolean` | No | coercion with `!!isPrimary` | defaults to `false` |
 
+---
+
+## `AddressValueObject`
+
+| Field | Type | Required | Normalization | Validation |
+|---|---|---|---|---|
+| `id` | `string` | No | UUID parse/generate | UUID parse/generation |
+| `email` | `string` | Yes | none | `canNotBeEmpty('email')` |
+| `type` | `EAddressType` | Yes | none | must be one of `work`, `home`, `vacation` |
+| `isPrimary` | `boolean` | No | coercion with `!!isPrimary` | defaults to `false` |
+
 ## OpenAPI alignment notes
 - OpenAPI still models phone codes as `integer`, while domain uses `string`.
 - OpenAPI document type enums may lag domain enum (`passport` support in domain).
+- `AddressValueObject.email` field name is preserved by project requirement and currently carries address payload string semantics.

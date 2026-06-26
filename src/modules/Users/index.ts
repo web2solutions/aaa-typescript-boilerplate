@@ -1,9 +1,14 @@
 export { IUser } from '@src/modules/Users/domain/Entity/IUser';
+export { IOrganization } from '@src/modules/Users/domain/Entity/IOrganization';
 export { User } from '@src/modules/Users/domain/Model/User';
+export { Organization } from '@src/modules/Users/domain/Model/Organization';
 export { UserDataRepository } from '@src/modules/Users/adapters/out/persistence/UserDataRepository';
+export { OrganizationDataRepository } from '@src/modules/Users/adapters/out/persistence/OrganizationDataRepository';
 export { UserService } from '@src/modules/Users/service/UserService';
+export { OrganizationService } from '@src/modules/Users/service/OrganizationService';
 export { composeUsersAuthServices } from '@src/modules/Users/composition/composeUsersAuthServices';
 export { UserUseCases } from '@src/modules/Users/application/use-cases/UserUseCases';
+export { OrganizationUseCases } from '@src/modules/Users/application/use-cases/OrganizationUseCases';
 export { AuthUseCases } from '@src/modules/Users/application/use-cases/AuthUseCases';
 
 export { UserController } from '@src/modules/Users/adapters/in/http/controllers/UserController';
@@ -18,11 +23,13 @@ export { RequestCreateDocument } from '@src/modules/Users/interface/dto/RequestC
 export { RequestCreateEmail } from '@src/modules/Users/interface/dto/RequestCreateEmail';
 export { RequestCreatePhone } from '@src/modules/Users/interface/dto/RequestCreatePhone';
 export { RequestCreateUser } from '@src/modules/Users/interface/dto/RequestCreateUser';
+export { RequestCreateOrganization } from '@src/modules/Users/interface/dto/RequestCreateOrganization';
 export { RequestUpdateDocument } from '@src/modules/Users/interface/dto/RequestUpdateDocument';
 export { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpdateEmail';
 export { RequestUpdatePassword } from '@src/modules/Users/interface/dto/RequestUpdatePassword';
 export { RequestUpdatePhone } from '@src/modules/Users/interface/dto/RequestUpdatePhone';
 export { RequestUpdateUser } from '@src/modules/Users/interface/dto/RequestUpdateUser';
+export { RequestUpdateOrganization } from '@src/modules/Users/interface/dto/RequestUpdateOrganization';
 
 export { ILoginRequest } from '@src/modules/Users/interface/dto/ILoginRequest';
 export { ILogoutRequest } from '@src/modules/Users/interface/dto/ILogoutRequest';
@@ -50,12 +57,16 @@ export { IAuthSchema } from '@src/modules/Users/service/ports/IAuthSchema';
 export { EAuthSchemaType } from '@src/modules/Users/service/ports/EAuthSchemaType';
 export { IUserProvider } from '@src/modules/Users/service/ports/IUserProvider';
 export { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
+export { IOrganizationRepository } from '@src/modules/Users/service/ports/IOrganizationRepository';
 export { IAuthorizationHeader } from '@src/modules/Users/service/ports/IAuthorizationHeader';
 export { ITokenObject } from '@src/modules/Users/service/ports/ITokenObject';
 export { IUserUseCases } from '@src/modules/Users/application/ports/IUserUseCases';
+export { IOrganizationUseCases } from '@src/modules/Users/application/ports/IOrganizationUseCases';
 export { IAuthUseCases } from '@src/modules/Users/application/ports/IAuthUseCases';
 export { UserUseCases as UserApplicationUseCases } from '@src/modules/Users/application/use-cases/UserUseCases';
+export { OrganizationUseCases as OrganizationApplicationUseCases } from '@src/modules/Users/application/use-cases/OrganizationUseCases';
 export { AuthUseCases as AuthApplicationUseCases } from '@src/modules/Users/application/use-cases/AuthUseCases';
+export { EUserRole, ROLE_SCOPE_MATRIX } from '@src/modules/Users/domain/security/Rbac';
 
 // events
 export { UserCreateRequestEvent } from '@src/modules/Users/events/UserCreateRequestEvent';

@@ -10,6 +10,7 @@ Standardize and maintain domain data entity documentation with field-level preci
 - Validation contracts
 - Documentation updates for every new feature affecting domain/entity behavior
 - OpenAPI 3.1 compliance of field type, format, and validation keywords
+- Relationship metadata (`belongsTo`, `hasMany`) and tenancy ownership fields (e.g., organization bindings)
 
 ## Mandatory output for each domain
 1. Entity/value object catalog.

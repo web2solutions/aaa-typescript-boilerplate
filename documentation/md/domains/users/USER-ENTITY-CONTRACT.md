@@ -16,6 +16,7 @@
 | `avatar` | `string` | Yes | Avatar filename/path | Domain model (`canNotBeEmpty` when set) |
 | `username` | `string` | Yes | Login identifier | Domain model (`canNotBeEmpty`), auth/service constraints |
 | `password` | `string` | Yes | Hash at rest | Service/security layers |
+| `organization` | `string` | No (conditional) | Organization UUID | Domain RBAC rule (`admin`/`user` require organization) |
 | `emails` | `EmailValueObject[]` | Yes | Collection of user emails | `EmailValueObject` |
 | `documents` | `DocumentValueObject[]` | No | Collection of user documents | `DocumentValueObject` |
 | `phones` | `PhoneValueObject[]` | No | Collection of user phones | `PhoneValueObject` |
@@ -23,6 +24,6 @@
 
 ## Notes
 - `salt` is part of `User` model internals but intentionally not part of `IUser` contract.
+- `organization` enables tenant-scoped authorization and data ownership flows.
 - `documents` and `phones` are optional in contract for backward compatibility with historical payloads.
 - API serialization is managed by service layer sanitization to prevent secret leakage (`password`, `salt`).
-

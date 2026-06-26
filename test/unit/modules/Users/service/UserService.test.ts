@@ -53,7 +53,7 @@ const mockedUpdateEmail = updateEmail as jest.MockedFunction<typeof updateEmail>
 const mockedDeleteEmail = deleteEmail as jest.MockedFunction<typeof deleteEmail>;
 
 const baseUser = {
-  id: 'u1',
+  id: '00000000-0000-4000-8000-000000000001',
   firstName: 'John',
   username: 'john',
   password: 'hashed',
@@ -81,14 +81,37 @@ const setup = () => {
     compare: jest.fn()
   };
   const eventBus = { publish: jest.fn().mockResolvedValue(true) };
+  const organizationDataRepository = {
+    getOneById: jest.fn().mockResolvedValue({
+      id: 'org-1',
+      name: 'Org',
+      address: [],
+      phone: [],
+      email: [],
+      users: []
+    }),
+    update: jest.fn().mockResolvedValue(true)
+  };
+  const dataRepository = {
+    getOneById: jest.fn().mockResolvedValue({
+      ...baseUser,
+      organization: 'org-1'
+    })
+  };
 
   const service = new UserService({
-    dataRepository: {} as any,
+    dataRepository: dataRepository as any,
+    organizationDataRepository: organizationDataRepository as any,
     services: { mutexService, passwordCryptoService, eventBus }
   } as any);
 
   return {
-    service, mutexService, passwordCryptoService, eventBus
+    service,
+    mutexService,
+    passwordCryptoService,
+    eventBus,
+    organizationDataRepository,
+    dataRepository
   };
 };
 
@@ -130,7 +153,7 @@ describe('user service', () => {
       name: UserIntegrationEventName.Created
     }));
 
-    const one = await service.getOneById('u1');
+    const one = await service.getOneById(baseUser.id);
     expect((one.result as any)?.password).toBeUndefined();
 
     const all = await service.getAll({ username: 'john' }, { page: 1, size: 10 });
@@ -141,15 +164,15 @@ describe('user service', () => {
     expect.hasAssertions();
     const { service, mutexService } = setup();
 
-    const updated = await service.update('u1', { firstName: 'Mary' } as any);
-    expect(updated.result?.id).toBe('u1');
-    expect(mutexService.unlock).toHaveBeenCalledWith('User', 'u1');
+    const updated = await service.update(baseUser.id, { firstName: 'Mary' } as any);
+    expect(updated.result?.id).toBe(baseUser.id);
+    expect(mutexService.unlock).toHaveBeenCalledWith('User', baseUser.id);
 
-    const deleted = await service.delete('u1');
+    const deleted = await service.delete(baseUser.id);
     expect(deleted.result).toBe(true);
 
     mutexService.lock.mockResolvedValueOnce({ result: { previouslyLocked: true } });
-    const locked = await service.update('u1', { firstName: 'Mary' } as any);
+    const locked = await service.update(baseUser.id, { firstName: 'Mary' } as any);
     expect(locked.error).toBeDefined();
   });
 
@@ -157,21 +180,21 @@ describe('user service', () => {
     expect.hasAssertions();
     const { service, eventBus } = setup();
 
-    const password = await service.updatePassword('u1', { password: '12345678' } as any);
+    const password = await service.updatePassword(baseUser.id, { password: '12345678' } as any);
     expect((password.result as any)?.password).toBeUndefined();
     expect(eventBus.publish).toHaveBeenCalledWith(expect.objectContaining({
       name: UserIntegrationEventName.CredentialChanged
     }));
 
-    expect((await service.createDocument('u1', { type: EDocumentType.RG, countryIssue: 'BR', data: '1' } as any)).result?.id).toBe('u1');
-    expect((await service.updateDocument('u1', 'd1', { type: EDocumentType.SSN, countryIssue: 'US', data: '2' } as any)).result?.id).toBe('u1');
-    expect((await service.deleteDocument('u1', 'd1')).result?.id).toBe('u1');
-    expect((await service.createPhone('u1', { countryCode: '55', localCode: '11', number: '9' } as any)).result?.id).toBe('u1');
-    expect((await service.updatePhone('u1', 'p1', { countryCode: '55', localCode: '11', number: '8' } as any)).result?.id).toBe('u1');
-    expect((await service.deletePhone('u1', 'p1')).result?.id).toBe('u1');
-    expect((await service.createEmail('u1', { email: 'john@example.com', type: EEmailType.personal } as any)).result?.id).toBe('u1');
-    expect((await service.updateEmail('u1', 'e1', { email: 'john+2@example.com', type: EEmailType.work } as any)).result?.id).toBe('u1');
-    expect((await service.deleteEmail('u1', 'e1')).result?.id).toBe('u1');
+    expect((await service.createDocument(baseUser.id, { type: EDocumentType.RG, countryIssue: 'BR', data: '1' } as any)).result?.id).toBe(baseUser.id);
+    expect((await service.updateDocument(baseUser.id, 'd1', { type: EDocumentType.SSN, countryIssue: 'US', data: '2' } as any)).result?.id).toBe(baseUser.id);
+    expect((await service.deleteDocument(baseUser.id, 'd1')).result?.id).toBe(baseUser.id);
+    expect((await service.createPhone(baseUser.id, { countryCode: '55', localCode: '11', number: '9' } as any)).result?.id).toBe(baseUser.id);
+    expect((await service.updatePhone(baseUser.id, 'p1', { countryCode: '55', localCode: '11', number: '8' } as any)).result?.id).toBe(baseUser.id);
+    expect((await service.deletePhone(baseUser.id, 'p1')).result?.id).toBe(baseUser.id);
+    expect((await service.createEmail(baseUser.id, { email: 'john@example.com', type: EEmailType.personal } as any)).result?.id).toBe(baseUser.id);
+    expect((await service.updateEmail(baseUser.id, 'e1', { email: 'john+2@example.com', type: EEmailType.work } as any)).result?.id).toBe(baseUser.id);
+    expect((await service.deleteEmail(baseUser.id, 'e1')).result?.id).toBe(baseUser.id);
   });
 
   it('handles failures through service response errors', async () => {
@@ -190,6 +213,38 @@ describe('user service', () => {
     expect(invalidCreate.error).toBeDefined();
   });
 
+  it('enforces organization binding for admin/user roles', async () => {
+    expect.hasAssertions();
+    const { service, organizationDataRepository } = setup();
+    mockedCreateUser.mockResolvedValueOnce({
+      ...baseUser,
+      organization: 'org-1'
+    } as any);
+    const noOrg = await service.create({
+      firstName: 'John',
+      username: 'john',
+      password: '12345678',
+      emails: [{ email: 'john@example.com', type: EEmailType.personal }],
+      roles: ['admin']
+    } as any);
+    expect(noOrg.error).toBeDefined();
+
+    const withOrg = await service.create({
+      firstName: 'John',
+      username: 'john',
+      password: '12345678',
+      organization: 'org-1',
+      emails: [{ email: 'john@example.com', type: EEmailType.personal }],
+      roles: ['admin']
+    } as any);
+    expect(withOrg.result?.id).toBe(baseUser.id);
+    expect(organizationDataRepository.getOneById).toHaveBeenCalledWith('org-1');
+    expect(organizationDataRepository.update).toHaveBeenCalledWith(
+      'org-1',
+      expect.objectContaining({ id: 'org-1' })
+    );
+  });
+
   it('keeps main flow when integration publish fails and handles lookup failure', async () => {
     expect.hasAssertions();
     const { service, eventBus } = setup();
@@ -201,7 +256,7 @@ describe('user service', () => {
       password: '12345678',
       emails: [{ email: 'john@example.com', type: EEmailType.personal }]
     } as any);
-    expect(created.result?.id).toBe('u1');
+    expect(created.result?.id).toBe(baseUser.id);
 
     mockedGetAllUsers.mockRejectedValueOnce(new Error('boom'));
     const response = await service.getOneByUsernameForAuth('john');
@@ -214,18 +269,18 @@ describe('user service', () => {
     mutexService.lock.mockResolvedValue({ result: { previouslyLocked: true } });
 
     const calls = await Promise.all([
-      service.update('u1', { firstName: 'Mary' } as any),
-      service.delete('u1'),
-      service.updatePassword('u1', { password: '12345678' } as any),
-      service.createDocument('u1', { type: EDocumentType.RG, countryIssue: 'BR', data: '1' } as any),
-      service.updateDocument('u1', 'd1', { type: EDocumentType.SSN, countryIssue: 'US', data: '2' } as any),
-      service.deleteDocument('u1', 'd1'),
-      service.createPhone('u1', { countryCode: '55', localCode: '11', number: '9' } as any),
-      service.updatePhone('u1', 'p1', { countryCode: '55', localCode: '11', number: '8' } as any),
-      service.deletePhone('u1', 'p1'),
-      service.createEmail('u1', { email: 'john@example.com', type: EEmailType.personal } as any),
-      service.updateEmail('u1', 'e1', { email: 'john+2@example.com', type: EEmailType.work } as any),
-      service.deleteEmail('u1', 'e1')
+      service.update(baseUser.id, { firstName: 'Mary' } as any),
+      service.delete(baseUser.id),
+      service.updatePassword(baseUser.id, { password: '12345678' } as any),
+      service.createDocument(baseUser.id, { type: EDocumentType.RG, countryIssue: 'BR', data: '1' } as any),
+      service.updateDocument(baseUser.id, 'd1', { type: EDocumentType.SSN, countryIssue: 'US', data: '2' } as any),
+      service.deleteDocument(baseUser.id, 'd1'),
+      service.createPhone(baseUser.id, { countryCode: '55', localCode: '11', number: '9' } as any),
+      service.updatePhone(baseUser.id, 'p1', { countryCode: '55', localCode: '11', number: '8' } as any),
+      service.deletePhone(baseUser.id, 'p1'),
+      service.createEmail(baseUser.id, { email: 'john@example.com', type: EEmailType.personal } as any),
+      service.updateEmail(baseUser.id, 'e1', { email: 'john+2@example.com', type: EEmailType.work } as any),
+      service.deleteEmail(baseUser.id, 'e1')
     ]);
 
     for (const response of calls) {

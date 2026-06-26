@@ -4,6 +4,27 @@
 
 ## Unreleased
 
+- 2026-06-26 feat(validation): enforce OpenAPI 3.1 request/domain validation and refresh docs - web2solutions
+- 2026-06-26 feat(http): add native adapters and integration contract maps - web2solutions
+- 2026-06-26 chore(git): ignore vscode settings and untrack file - web2solutions
+- 2026-06-26 feat(cli): enforce OpenAPI 3.1 entity field contracts - web2solutions
+- 2026-06-26 feat(cli): enrich entity field manager and docs - web2solutions
+- 2026-06-26 test(cli): raise coverage for CLI wrapper and subapps - web2solutions
+- 2026-06-26 feat(cli): add developer automation wrapper for domains and entities - Eduardo Almeida
+- 2026-06-26 feat(ddd): harden document value object and expand domain docs/agents - Eduardo Almeida
+- 2026-06-26 feat(messaging): add contract-based mediator adapters and broker wiring - Eduardo Almeida
+- 2026-06-26 docs(structure): split documentation by domain and audience - Eduardo Almeida
+- 2026-06-26 docs(readme): rebuild README for product and engineering audiences - Eduardo Almeida
+- 2026-06-26 docs(pr): add comprehensive and specialized PR templates - Eduardo Almeida
+- 2026-06-26 fix(security): resolve Sonar vulnerabilities on main - Eduardo Almeida
+- 2026-06-26 docs(ci): add troubleshooting guide and link from README - Eduardo Almeida
+- 2026-06-26 fix(sonar): remove password-like event identifier from new code - Eduardo Almeida
+- 2026-06-26 fix(sonar): resolve security and complexity quality gate failures - Eduardo Almeida
+- 2026-06-26 ci(github): default secrets for PR test workflow stability - Eduardo Almeida
+- 2026-06-26 docs(agents): add coverage-threshold approval requirement - Eduardo Almeida
+- 2026-06-26 ci(husky): enforce coverage gate on commit and push - Eduardo Almeida
+- 2026-06-26 chore(git): stop tracking macOS .DS_Store - Eduardo Almeida
+- 2026-06-26 ci(sonar): configure SonarQube Cloud JS/TS LCOV coverage import - Eduardo Almeida
 - 2026-06-26 docs(architecture): add data entity documentation standards and agents - Eduardo Almeida
 - 2026-06-26 test(ci): raise unit coverage gate and stabilize ci gate - Eduardo Almeida
 - 2026-06-26 build(coverage): enforce 95% baseline in jest and codecov - Eduardo Almeida

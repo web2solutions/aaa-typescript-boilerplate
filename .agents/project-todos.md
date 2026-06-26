@@ -105,3 +105,21 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
 - [x] Create domain data entity documentation agent and catalog
   - Added `.agents/data-entity-documentation-agent.md`.
   - Added detailed catalog `documentation/md/DOMAIN-DATA-ENTITIES.md` with field/type/format/validation mappings.
+
+- [x] Add multi-tenancy and RBAC foundation
+  - Added baseline roles (`superadmin`, `admin`, `user`) with centralized role policy.
+  - Enforced organization membership for tenant-scoped roles (`admin`, `user`).
+  - Added Users domain organization field propagation to token/auth/service paths.
+
+- [x] Introduce Users `Organization` entity and supporting artifacts
+  - Added domain entity/model, DTOs, repository port/adapter, service and use-cases.
+  - Added in-memory store support and composition wiring.
+  - Added tests and documentation updates.
+
+- [x] Add generic `AddressValueObject` and domain relationship metadata helpers
+  - Added `AddressValueObject` and `EAddressType`.
+  - Added `belongsTo` / `hasMany` relationship metadata utilities for adapter portability.
+
+- [x] Rework in-memory persistence to better reflect relational/NoSQL adapter behavior
+  - Added generic `InMemoryRelationalStore` with unique indexes, relation lookup, and stable pagination/filter semantics.
+  - Updated user and organization stores to use shared behavior.

@@ -813,6 +813,11 @@ components:
           format: email
           minLength: 8
           description: Username to access the system
+        organization:
+          type: string
+          format: uuid
+          nullable: true
+          description: Organization id for tenant users (admin/user)
         password: 
           type: string
           minLength: 8
@@ -910,6 +915,11 @@ components:
           format: email
           minLength: 8
           description: Username to access the system
+        organization:
+          type: string
+          format: uuid
+          nullable: true
+          description: Organization id for tenant users (admin/user)
         emails: 
           type: array
           items:
@@ -1128,6 +1138,27 @@ components:
           example: true
           description: Is this the primary User's e-mail address?
           default: false
+    Address:
+      description: Generic address value object
+      type: object
+      required:
+        - email
+        - type
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        type:
+          type: string
+          enum:
+            - work
+            - home
+            - vacation
+        isPrimary:
+          type: boolean
+          default: false
     Phone:
       description: Phone numbers
       type: object
@@ -1177,6 +1208,11 @@ components:
           format: email
           minLength: 8
           description: Username to access the system
+        organization:
+          type: string
+          format: uuid
+          nullable: true
+          description: Organization id for tenant users (admin/user)
         password: 
           type: string
           minLength: 8
@@ -1209,6 +1245,32 @@ components:
         _updatedAt:
           type: string
           format: date-time
+    Organization:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        address:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        phone:
+          type: array
+          items:
+            $ref: '#/components/schemas/Phone'
+        email:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+        users:
+          type: array
+          items:
+            type: string
   securitySchemes:
     basicAuth:
       type: http

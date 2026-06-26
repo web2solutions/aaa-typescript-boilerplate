@@ -11,6 +11,7 @@ export interface IUser {
   avatar: string;
   username: string;
   password: string;
+  organization?: string;
   emails: EmailValueObject[];
   documents?: DocumentValueObject[];
   phones?: PhoneValueObject[];

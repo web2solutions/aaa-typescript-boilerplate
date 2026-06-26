@@ -5,4 +5,6 @@ export interface ITokenObject extends JwtPayload {
   username: string;
   firstName: string;
   avatar: string;
+  organization?: string;
+  roles?: string[];
 }
