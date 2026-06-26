@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- 2026-06-26 docs(architecture): add data entity documentation standards and agents - Eduardo Almeida
+- 2026-06-26 test(ci): raise unit coverage gate and stabilize ci gate - Eduardo Almeida
 - 2026-06-26 build(coverage): enforce 95% baseline in jest and codecov - Eduardo Almeida
 - 2026-06-26 build(architecture): block legacy users namespace imports - Eduardo Almeida
 - 2026-06-26 refactor(persistence): move users repository into out adapter namespace - Eduardo Almeida

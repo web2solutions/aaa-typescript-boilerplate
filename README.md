@@ -274,6 +274,13 @@ Included checks:
 - integration smoke
 - minimum coverage threshold (95% global via Jest + Codecov status)
 
+SonarQube Cloud coverage import:
+
+- Workflow: `.github/workflows/sonarqube-cloud.yml`
+- Coverage source: `./coverage/lcov.info` (Jest LCOV)
+- Scanner setting: `sonar.javascript.lcov.reportPaths=./coverage/lcov.info`
+- Required repository secret: `SONAR_TOKEN`
+
 ## Run the API (port 3000)
 
 Express:
