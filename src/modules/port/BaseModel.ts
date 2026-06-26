@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { UUID } from '@src/modules/port';
+import { UUID } from './UUID';
 
 export abstract class BaseModel<T> {
   private readonly _createdAt: Date;

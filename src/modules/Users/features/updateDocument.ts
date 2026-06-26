@@ -1,8 +1,8 @@
 import {
-  IUser,
-  IUserRepository,
-  RequestUpdateDocument
-} from '@src/modules/Users';
+  IUser
+} from '@src/modules/Users/domain/Entity/IUser';
+import { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
+import { RequestUpdateDocument } from '@src/modules/Users/interface/dto/RequestUpdateDocument';
 
 export const updateDocument = async (
   userId: string,

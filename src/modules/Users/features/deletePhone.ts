@@ -1,7 +1,7 @@
 import {
-  IUser,
-  IUserRepository
-} from '@src/modules/Users';
+  IUser
+} from '@src/modules/Users/domain/Entity/IUser';
+import { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
 
 export const deletePhone = async (
   userId: string,

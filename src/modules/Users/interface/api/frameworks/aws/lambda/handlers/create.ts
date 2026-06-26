@@ -9,10 +9,10 @@ import { Handler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda
 import { sendErrorResponse } from '@src/interface/HTTP/adapters/aws/lambda/responses/sendErrorResponse';
 
 import {
-  composeUsersAuthServices,
-  UserController,
-  UserCreateRequestEvent
-} from '@src/modules/Users';
+  composeUsersAuthServices
+} from '@src/modules/Users/composition/composeUsersAuthServices';
+import { UserController } from '@src/modules/Users/interface/controller/UserController';
+import { UserCreateRequestEvent } from '@src/modules/Users/events/UserCreateRequestEvent';
 
 import { BaseError } from '@src/infra/exceptions';
 import { Context } from '@src/infra/context/Context';

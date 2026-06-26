@@ -12,13 +12,13 @@ import { IServiceResponse } from '@src/modules/port';
 import { Authorize } from '@src/shared/decorators/guard/Authorize';
 
 import {
-  EAuthSchemaType,
-  IAuthorizationHeader,
-  ILogoutRequest,
-  ILoginRequest,
-  IUpdatePasswordRequest,
-  IRegisterRequest
-} from '@src/modules/Users';
+  EAuthSchemaType
+} from '@src/modules/Users/service/ports/EAuthSchemaType';
+import { IAuthorizationHeader } from '@src/modules/Users/service/ports/IAuthorizationHeader';
+import { ILogoutRequest } from '@src/modules/Users/interface/dto/ILogoutRequest';
+import { ILoginRequest } from '@src/modules/Users/interface/dto/ILoginRequest';
+import { IUpdatePasswordRequest } from '@src/modules/Users/interface/dto/IUpdatePasswordRequest';
+import { IRegisterRequest } from '@src/modules/Users/interface/dto/IRegisterRequest';
 
 import { BaseError, ResourceLockedError, ValidationError } from '@src/infra/exceptions';
 

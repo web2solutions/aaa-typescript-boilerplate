@@ -1,8 +1,8 @@
 import {
-  IUser,
-  IUserRepository,
-  RequestCreateEmail
-} from '@src/modules/Users';
+  IUser
+} from '@src/modules/Users/domain/Entity/IUser';
+import { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
+import { RequestCreateEmail } from '@src/modules/Users/interface/dto/RequestCreateEmail';
 
 export const createEmail = async (
   userId: string,

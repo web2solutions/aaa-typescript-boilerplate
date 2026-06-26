@@ -4,14 +4,12 @@ import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IJwtService } from '@src/infra/jwt/IJwtService';
 import { IEventBus } from '@src/modules/port';
 
-import {
-  UserDataRepository,
-  UserService,
-  UserProviderLocal,
-  AuthService,
-  IUserProvider,
-  IAuthService
-} from '@src/modules/Users';
+import { UserDataRepository } from '@src/modules/Users/infra/repository/UserDataRepository';
+import { UserService } from '@src/modules/Users/service/UserService';
+import { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
+import { AuthService } from '@src/modules/Users/service/AuthService';
+import { IUserProvider } from '@src/modules/Users/service/ports/IUserProvider';
+import { IAuthService } from '@src/modules/Users/service/ports/IAuthService';
 
 interface IUsersAuthCompositionConfig {
   databaseClient: IDatabaseClient;

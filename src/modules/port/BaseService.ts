@@ -1,6 +1,10 @@
-import {
-  IPagingRequest, IServiceResponse, IServiceConfig, TRepos, TServices, BaseRepo, BaseModel
-} from '@src/modules/port';
+import { IPagingRequest } from './IPagingRequest';
+import { IServiceResponse } from './IServiceResponse';
+import { IServiceConfig } from './IServiceConfig';
+import { TRepos } from './TRepos';
+import { TServices } from './TServices';
+import { BaseRepo } from './BaseRepo';
+import { BaseModel } from './BaseModel';
 
 export abstract class BaseService<ResponseDataEntity, RequestCreateDTO, RequestUpdateDTO> {
   /**

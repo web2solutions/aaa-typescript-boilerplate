@@ -1,8 +1,8 @@
 import {
-  IUser,
-  IUserRepository,
-  RequestUpdateEmail
-} from '@src/modules/Users';
+  IUser
+} from '@src/modules/Users/domain/Entity/IUser';
+import { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
+import { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpdateEmail';
 
 export const updateEmail = async (
   userId: string,

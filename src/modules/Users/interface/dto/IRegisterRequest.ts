@@ -1,4 +1,4 @@
-import { RequestCreateUser } from '@src/modules/Users';
+import { RequestCreateUser } from '@src/modules/Users/interface/dto/RequestCreateUser';
 import { EmailValueObject } from '@src/modules/ddd/valueObjects';
 
 export interface IRegisterRequest extends RequestCreateUser {

@@ -1,4 +1,4 @@
-import { IServiceResponse } from '@src/modules/port';
+import { IServiceResponse } from './IServiceResponse';
 
 export class ServiceResponse {
   public result: any = undefined;

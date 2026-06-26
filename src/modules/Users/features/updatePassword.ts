@@ -1,8 +1,8 @@
 import {
-  IUser,
-  IUserRepository,
-  RequestUpdatePassword
-} from '@src/modules/Users';
+  IUser
+} from '@src/modules/Users/domain/Entity/IUser';
+import { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
+import { RequestUpdatePassword } from '@src/modules/Users/interface/dto/RequestUpdatePassword';
 
 export const updatePassword = async (
   id: string,

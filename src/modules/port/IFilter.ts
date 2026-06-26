@@ -1,4 +1,4 @@
-import { operators } from '@src/modules/port';
+import { operators } from './operators';
 
 export interface IFilter {
   atrributeName: string;

@@ -1,6 +1,6 @@
-import { IPagingRequest } from '@src/modules/port';
 import { BaseDomainEvent } from '@src/modules/port/BaseDomainEvent';
 import { _DEFAULT_PAGE_SIZE_ } from '@src/config/constants';
+import { IPagingRequest } from './IPagingRequest';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setFilterAndPaging = (

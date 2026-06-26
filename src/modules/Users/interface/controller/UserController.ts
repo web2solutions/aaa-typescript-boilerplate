@@ -13,18 +13,18 @@ import {
   IServiceResponse, setFilter, setPaging
 } from '@src/modules/port';
 import {
-  IUser,
-  RequestCreateDocument,
-  RequestCreateEmail,
-  RequestCreatePhone,
-  RequestCreateUser,
-  RequestUpdateDocument,
-  RequestUpdateEmail,
-  RequestUpdatePassword,
-  RequestUpdatePhone,
-  RequestUpdateUser,
-  UserService
-} from '@src/modules/Users';
+  IUser
+} from '@src/modules/Users/domain/Entity/IUser';
+import { RequestCreateDocument } from '@src/modules/Users/interface/dto/RequestCreateDocument';
+import { RequestCreateEmail } from '@src/modules/Users/interface/dto/RequestCreateEmail';
+import { RequestCreatePhone } from '@src/modules/Users/interface/dto/RequestCreatePhone';
+import { RequestCreateUser } from '@src/modules/Users/interface/dto/RequestCreateUser';
+import { RequestUpdateDocument } from '@src/modules/Users/interface/dto/RequestUpdateDocument';
+import { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpdateEmail';
+import { RequestUpdatePassword } from '@src/modules/Users/interface/dto/RequestUpdatePassword';
+import { RequestUpdatePhone } from '@src/modules/Users/interface/dto/RequestUpdatePhone';
+import { RequestUpdateUser } from '@src/modules/Users/interface/dto/RequestUpdateUser';
+import { UserService } from '@src/modules/Users/service/UserService';
 
 export class UserController extends BaseController implements IController {
   private readonly userService: UserService;
