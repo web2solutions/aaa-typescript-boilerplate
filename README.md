@@ -1,137 +1,175 @@
 # AnyWhere, AnyHow, AnyTime - TypeScript Boilerplate
 
-`The ultimate boilerplate to build REST APIs, monolithic modular and microservice applications with TypeScript.`
+Build production-grade backend products faster, with clear architecture, strict quality gates, and runtime freedom.
 
-Applications built with this boilerplate aim to run `Anywhere, Anytime, Anyhow`: on `dedicated servers`, `virtual machines`, `containers`, `EC2`, `ECS`, and `lambdas`, using `Express`, `Fastify`, `Restify`, `Hyper-Express`, `serverless`, plus compatibility adapters for `Cloudflare Workers`, `Vercel Functions`, `LoopBack`, `Sails.js`, `Feathers`, `Derby.js`, `Adonis.js`, and `Total.js`.
+This project is a feature-driven backend boilerplate for teams that want speed without losing long-term maintainability. It supports monolithic modular systems, microservice-ready composition, and lambda/serverless execution using the same core business logic.
 
-| Security scan status | Tests in Main | Tests in Dev | Coverage in Main | Coverage in Dev |
-|----------------------|:-------------:|:------------:|:----------------:|----------------:|
-| [![Known Vulnerabilities](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate/badge.svg)](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/dev) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/branch/dev/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) |
+## Why Teams Choose This Boilerplate
 
-[![Run with Express](https://img.shields.io/badge/Run%20with%20Express-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://expressjs.com/)
-[![Run with Fastify](https://img.shields.io/badge/Run%20with%20Fastify-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://fastify.dev/)
-[![Run with Restify](https://img.shields.io/badge/Run%20with%20Restify-gold?style=flat-square&logo=JavaScript&logoColor=000)](http://restify.com/)
-[![Run with HyperExpress](https://img.shields.io/badge/Run%20with%20HyperExpress-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://github.com/kartikk221/hyper-express)
-[![Run with Serverless](https://img.shields.io/badge/Run%20with%20Serverless-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://www.serverless.com/)
+### 1) Faster Time to Market
+- Core architecture is already structured (DDD + Hexagonal + Event-Driven).
+- You start from real domain boundaries, not from generic folders.
+- CI quality gates are pre-wired.
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=bugs)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/web2solutions/aaa-typescript-boilerplate)
-![GitHub License](https://img.shields.io/github/license/web2solutions/aaa-typescript-boilerplate)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
-![GitHub Created At](https://img.shields.io/github/created-at/web2solutions/aaa-typescript-boilerplate)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/web2solutions/aaa-typescript-boilerplate)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/web2solutions/aaa-typescript-boilerplate)
-![Made in Brazil with Love](https://img.shields.io/badge/made%20in-%F0%9F%87%A7%F0%9F%87%B7%20Brazil%20with%E2%9D%A4%EF%B8%8F-blue)
-[![#StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+### 2) Lower Refactor Cost Over Time
+- Business rules are isolated from HTTP frameworks.
+- You can switch transport/runtime adapters without rewriting domain/application layers.
+- Contract-based message mediator reduces coupling between domains.
 
-## Overall Code Coverage
+### 3) Better Delivery Predictability
+- Built-in guardrails for lint, tests, route resolution, architecture boundaries, and coverage threshold.
+- Coverage policy is enforced as a release discipline.
+- Runtime and docs are aligned by project requirements and agents.
 
-[![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/graphs/tree.svg?token=eEF1QUBbj9)](https://codecov.io/web2solutions/aaa-typescript-boilerplate)
+## What You Can Build
 
-## See It Running (Fastify)
+- REST APIs with multiple Node.js HTTP frameworks
+- Modular monoliths ready to split into microservices
+- AWS Lambda handlers from the same domain/application composition
+- Contract-based domain communication (in-memory, RabbitMQ, BullMQ)
+- Developer automation workflows through the CLI sub-apps
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/web2solutions/aaa-typescript-boilerplate)
+## Available Node.js Web/HTTP Integrations
 
-## Why This Project Exists
+The project already includes adapters and entrypoints for:
 
-Teams need to ship backend products fast without accepting long-term framework lock-in, architecture drift, or fragile delivery pipelines.
+1. Express
+2. Fastify
+3. Restify
+4. Hyper-Express
+5. AWS Lambda (Serverless Framework)
+6. Cloudflare Workers style adapter (serverless `fetch`)
+7. Vercel Functions style adapter (`req`/`res`)
+8. LoopBack runtime adapter
+9. Sails.js runtime adapter
+10. Feathers runtime adapter
+11. Derby.js runtime adapter
+12. Adonis.js runtime bridge
+13. Total.js runtime bridge
 
-This boilerplate gives you:
+## Integration Commands
 
-- framework-level runtime flexibility with stable domain/application boundaries
-- strong delivery guardrails (CI gates, coverage policy, architecture checks)
-- a path from MVP to microservices/lambda without rewriting business rules
+Run any adapter in development:
 
-## Who Benefits Most
+```bash
+npm run dev:express
+npm run dev:fastify
+npm run dev:restify
+npm run dev:hyper-express
+npm run dev:cloudflare-workers
+npm run dev:vercel-functions
+npm run dev:loopback
+npm run dev:sails-js
+npm run dev:feathers
+npm run dev:derby-js
+npm run dev:adonis-js
+npm run dev:total-js
+npm run dev:serverless
+```
+
+Production equivalents are also available (`prod:*` scripts).
+
+## Product and Engineering Benefits
 
 ### For Product Owners
-
-- Faster delivery with lower rework risk.
-- Better roadmap predictability due to architecture and CI guardrails.
-- Clear support for modular monolith, microservice, and lambda operating models.
-- Easier team scaling through conventions and standard workflows.
+- Faster feature delivery with reduced architectural risk.
+- Better roadmap confidence from enforced quality checks.
+- Easier scaling from MVP to multi-runtime deployment strategies.
 
 ### For Software Engineers
+- Clear layer ownership:
+  - Domain
+  - Use Cases
+  - Ports
+  - Adapters
+  - Controllers/Handlers
+- Contract-driven integration over direct cross-domain dependency.
+- Stable patterns for adding features with minimum blast radius.
 
-- Hexagonal + DDD + Event-driven baseline already structured.
-- Strong separation of concerns: handlers, controllers, use cases, domain, ports, adapters.
-- Multi-runtime HTTP support without domain rewrites.
-- Enforced quality gates (lint, unit, architecture checks, route resolution, smoke, coverage).
-
-## Message Mediator and Domain Workers
-
-- Domains integrate through contract-based messaging, not direct cross-domain service coupling.
-- The mediator adapter is runtime-selectable:
-  - `inmemory` (default)
-  - `rabbitmq`
-  - `bullmq`
-- This keeps domain communication stable when moving from modular monolith to distributed workers/microservices.
-- Configuration details are documented in [Setup, Runtime, and API](docs/SETUP-RUNTIME-AND-API.md#message-mediator-adapter).
-
-## Strategic Advantages Against Highly Opinionated Backends
-
-Without naming competitors, this project is designed for teams that want less framework ceremony and more architectural control.
-
-| Decision Dimension | This Boilerplate | Highly Opinionated, Container-First Backends |
-|---|---|---|
-| Runtime portability | Native support for multiple HTTP adapters + lambda style composition | Usually optimized around one primary runtime style |
-| Core architecture ownership | Domain/application boundaries are explicit and framework-agnostic | Framework patterns can dominate core module design |
-| Migration path | Modular monolith -> microservices/lambda with lower refactor pressure | Often requires framework-aligned refactors at scale transitions |
-| Dependency model | Prefer ports/events and explicit composition roots | Heavy DI/container usage as default architectural center |
-| Change blast radius | Feature-driven boundaries + architecture checks reduce coupling drift | Coupling risk rises when framework modules become integration hubs |
-| Delivery quality | CI gate with architecture + OAS + coverage standards built-in | Quality standards vary and are often team-defined from scratch |
-
-## Product Value at a Glance
+## Architecture at a Glance
 
 ```mermaid
 flowchart LR
-  A[Business Requirement] --> B[Use Case + Domain Rules]
-  B --> C[Controller/Handler Adapter]
-  C --> D[Runtime Choice]
-  D --> D1[Express]
-  D --> D2[Fastify]
-  D --> D3[Restify]
-  D --> D4[Hyper-Express]
-  D --> D5[Lambda]
-  B --> E[CI Gate]
-  E --> E1[Lint + Unit]
-  E --> E2[Architecture Checks]
-  E --> E3[OpenAPI Route Validation]
-  E --> E4[Coverage >= 95%]
+  A["HTTP Adapter"] --> B["Controller"]
+  B --> C["Use Case"]
+  C --> D["Domain Service / Entity / Value Objects"]
+  C --> E["Ports"]
+  E --> F["Infra Adapters (DB, Mutex, JWT, Messaging)"]
+  D --> G["Domain Events"]
+  G --> H["Message Mediator / Event Bus"]
 ```
 
-## Delivery Model and Risk Control
+## Message Mediator (Contract-Based)
 
-```mermaid
-flowchart TD
-  P[Plan Feature] --> M[Model Domain / Contracts]
-  M --> I[Implement Use Cases + Adapters]
-  I --> Q[Run ci:gate]
-  Q -->|pass| R[Release]
-  Q -->|fail| F[Fix Fast with Targeted Checks]
-  F --> Q
+Domains communicate through contracts, not direct service coupling.
+
+Supported adapters:
+- `inmemory` (default)
+- `rabbitmq`
+- `bullmq`
+
+Select adapter by environment:
+
+```bash
+AAA_MESSAGE_MEDIATOR_ADAPTER=inmemory
+# or
+AAA_MESSAGE_MEDIATOR_ADAPTER=rabbitmq
+# or
+AAA_MESSAGE_MEDIATOR_ADAPTER=bullmq
 ```
 
-## Documentation Glossary Index
+## Code Example: Register a Contract Handler
 
-Project documentation is separated by nature so Product and Engineering audiences can navigate quickly:
+```ts
+messageMediator.registerHandler(
+  "users.auth.ensure-access",
+  async (message) => {
+    const user = await authService.authorize(message.payload.authorization);
+    authService.throwIfUserHasNoAccessToResource(user, message.payload.schemaOAS);
+    return {
+      contract: message.contract,
+      version: message.version,
+      result: user
+    };
+  }
+);
+```
 
-| Nature | Document | Description |
-|--------|----------|-------------|
-| Product Context | [Project Overview](docs/PROJECT-OVERVIEW.md) | Purpose, advantages, use cases, acceleration strategy, and AI + Moon Modeler integration. |
-| Architecture | [Architecture and Structure](docs/ARCHITECTURE-AND-STRUCTURE.md) | Folder structure, target architecture direction, boundaries, and layer responsibilities. |
-| Runtime and Operations | [Setup, Runtime, and API](docs/SETUP-RUNTIME-AND-API.md) | Stack requirements, local setup, API docs endpoints, runtime commands, and production commands. |
-| Integration Contracts | [Events and Messages Map](docs/EVENTS-AND-MESSAGES-MAP.md) | Full map of published events, request/response message contracts, producers, consumers, and mediator adapters. |
-| Error Contracts | [Error Contracts and Responses](docs/ERROR-CONTRACTS-AND-RESPONSES.md) | Canonical error codes, class mapping, HTTP response contract, and mediator error envelope. |
-| Developer Tooling | [Developer Automation CLI](docs/DEVELOPER-AUTOMATION-CLI.md) | Interactive CLI wrapper to manage domains, entities/models, and field contracts. |
-| Messaging and Worker Pattern | [Setup, Runtime, and API](docs/SETUP-RUNTIME-AND-API.md#message-mediator-adapter) | `MessageMediator` adapter selection (`inmemory` / `rabbitmq` / `bullmq`) and broker runtime configuration. |
-| Quality and Delivery | [Testing, CI, and Quality](docs/TESTING-CI-AND-QUALITY.md) | Testing commands, CI gate, coverage policy, Sonar/Codecov, Node 22 enforcement, and CI troubleshooting links. |
-| Engineering Workflow | [Contributing and Tooling](docs/CONTRIBUTING-AND-TOOLING.md) | Contribution workflow and all key local engineering commands. |
-| Dependencies | [Dependencies](docs/DEPENDENCIES.md) | Dependency breakdown by application and infrastructure runtime. |
-| Project Management | [Project Management](docs/PROJECT-MANAGEMENT.md) | Backlog/project board reference. |
+## Code Example: Request/Response Without Tight Coupling
+
+```ts
+const response = await messageMediator.request({
+  contract: "users.auth.ensure-access",
+  payload: {
+    authorization: event.authorization,
+    schemaOAS: event.schemaOAS
+  }
+});
+
+if (response.error) {
+  throw response.error;
+}
+```
+
+## Code Example: Framework Runtime Bootstrap
+
+```ts
+const serverType = EHTTPFrameworks.fastify;
+const webServer = FastifyServer.compile();
+const messageMediator = compileMessageMediator();
+
+const API = new RestAPI({
+  databaseClient: InMemoryDbClient,
+  webServer,
+  serverType,
+  infraHandlers,
+  eventBus: messageMediator,
+  messageMediator
+});
+
+await API.start();
+await API.seedData();
+```
 
 ## Quick Start
 
@@ -143,35 +181,46 @@ npm run ci:gate
 npm run dev:fastify
 ```
 
-## Developer Automation CLI
+API docs after startup:
+- UI: `http://localhost:3000/OASdoc/`
+- JSON: `http://localhost:3000/docs/1.0.0`
 
-Run the wrapper CLI:
+## Quality Gate and CI Discipline
 
-```bash
-npm run cli
-npm run dev:cli
-npm run start:cli
-```
+This project is designed to block risky changes before merge:
+- lint
+- unit tests
+- architecture checks
+- OpenAPI route resolution checks
+- build check
+- smoke integration
+- coverage threshold policy
 
-Initial sub applications:
+## Documentation Index
 
-1. Domains CRUD manager (list/search/create/update/delete domains)
-2. Data Entities and Models CRUD manager (list/search/create/update/delete and advanced field management with details + behavior editing)
-
-CLI catalog is persisted at:
-
-- `.aaa-cli/workspace-catalog.json`
+| Nature | Document | Description |
+|--------|----------|-------------|
+| Product Context | [Project Overview](documentation/md/PROJECT-OVERVIEW.md) | Purpose, use cases, acceleration strategy, and product value. |
+| Architecture | [Architecture and Structure](documentation/md/ARCHITECTURE-AND-STRUCTURE.md) | Folder structure, boundaries, and layer responsibilities. |
+| Runtime and Ops | [Setup, Runtime, and API](documentation/md/SETUP-RUNTIME-AND-API.md) | Setup, commands, runtime adapters, and API docs endpoints. |
+| Integration Contracts | [Events and Messages Map](documentation/md/EVENTS-AND-MESSAGES-MAP.md) | Event and mediator contract map. |
+| Error Contracts | [Error Contracts and Responses](documentation/md/ERROR-CONTRACTS-AND-RESPONSES.md) | Error codes, mapping, and HTTP response contracts. |
+| Quality | [Testing, CI, and Quality](documentation/md/TESTING-CI-AND-QUALITY.md) | Test strategy, CI gate, coverage policy, Sonar/Codecov. |
+| Tooling | [Contributing and Tooling](documentation/md/CONTRIBUTING-AND-TOOLING.md) | Development workflow and commands. |
+| Dependencies | [Dependencies](documentation/md/DEPENDENCIES.md) | Runtime and infrastructure dependencies. |
+| Domain Entities | [Domain Data Entities](documentation/md/DOMAIN-DATA-ENTITIES.md) | Data entity catalog and field contracts. |
+| Developer CLI | [Developer Automation CLI](documentation/md/DEVELOPER-AUTOMATION-CLI.md) | CLI wrapper and sub-app workflows. |
+| Agents Registry | [.agents/README.md](.agents/README.md) | Technical requirements and specialized agents. |
 
 ## Additional Detailed Documents
 
-- [Engineering Bootstrap Guide](docs/ENGINEERING-BOOTSTRAP-GUIDE.md)
-- [Hexagonal Feature-driven Migration Plan](docs/HEXAGONAL-FEATURE-DRIVEN-MIGRATION.md)
-- [Domain Data Entities](docs/DOMAIN-DATA-ENTITIES.md)
-- [Users Domain Model](docs/domains/users/USER-MODEL.md)
-- [Users Entity Contract](docs/domains/users/USER-ENTITY-CONTRACT.md)
-- [Users Value Objects](docs/domains/users/USER-VALUE-OBJECTS.md)
-- [CI / SonarQube / Codecov Troubleshooting](docs/CI-TROUBLESHOOTING.md)
-- [Developer Automation CLI](docs/DEVELOPER-AUTOMATION-CLI.md)
-- [Events and Messages Map](docs/EVENTS-AND-MESSAGES-MAP.md)
-- [Error Contracts and Responses](docs/ERROR-CONTRACTS-AND-RESPONSES.md)
-- [Agents Requirements Registry](.agents/README.md)
+- [Engineering Bootstrap Guide](documentation/md/ENGINEERING-BOOTSTRAP-GUIDE.md)
+- [Hexagonal Feature-driven Migration Plan](documentation/md/HEXAGONAL-FEATURE-DRIVEN-MIGRATION.md)
+- [Users Domain Model](documentation/md/domains/users/USER-MODEL.md)
+- [Users Entity Contract](documentation/md/domains/users/USER-ENTITY-CONTRACT.md)
+- [Users Value Objects](documentation/md/domains/users/USER-VALUE-OBJECTS.md)
+- [CI Troubleshooting](documentation/md/CI-TROUBLESHOOTING.md)
+
+---
+
+If you need high delivery speed, multi-runtime flexibility, and architecture control without framework lock-in, this boilerplate is built for your team.

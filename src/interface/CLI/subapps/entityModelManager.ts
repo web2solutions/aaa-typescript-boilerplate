@@ -13,6 +13,8 @@ import {
   OPEN_API_31_ALLOWED_TYPES,
   OPEN_API_31_FORMATS_BY_TYPE,
   OPEN_API_31_VALIDATIONS_BY_TYPE,
+  mapDataEntityToOpenApiSchema,
+  validateValueAgainstOpenApiSchema,
   throwIfDataEntityIsNotOpenApi31Compliant
 } from '@src/shared/openapi/OpenApi31DataEntity';
 
@@ -40,6 +42,17 @@ const printFieldDetails = (context: ISubApplicationContext, field: IFieldDefinit
   context.log(`  defaultValue: ${field.defaultValue || 'n/a'}`);
   context.log(`  validations: ${field.validations.join(', ') || 'none'}`);
   context.log(`  behavior: ${field.behavior || 'n/a'}`);
+};
+
+const printGeneratedOpenApiSchema = (
+  context: ISubApplicationContext,
+  entity: IEntityDefinition
+): void => {
+  const schema = mapDataEntityToOpenApiSchema({
+    name: entity.name,
+    fields: entity.fields
+  } as any);
+  context.log(JSON.stringify(schema, null, 2));
 };
 
 const selectEntityIndex = async (
@@ -310,6 +323,8 @@ const manageFields = async (context: ISubApplicationContext): Promise<void> => {
       'Update field',
       'Edit field behavior',
       'Delete field',
+      'Preview OpenAPI schema',
+      'Validate sample payload',
       'Back'
     ]);
 
@@ -397,6 +412,25 @@ const manageFields = async (context: ISubApplicationContext): Promise<void> => {
       target.updatedAt = new Date().toISOString();
       await context.saveCatalog(catalog);
       context.log(`Field "${removed.name}" deleted.`);
+    } else if (option === 6) {
+      printGeneratedOpenApiSchema(context, target);
+    } else if (option === 7) {
+      const sample = await context.ask('Sample payload JSON: ');
+      if (!sample.trim()) {
+        context.log('Sample payload is required.');
+        continue;
+      }
+      try {
+        const parsed = JSON.parse(sample);
+        const schema = mapDataEntityToOpenApiSchema({
+          name: target.name,
+          fields: target.fields
+        } as any);
+        validateValueAgainstOpenApiSchema(parsed, schema, { components: { schemas: {} } });
+        context.log('Payload is valid against generated OpenAPI schema.');
+      } catch (error) {
+        context.log(`Validation failed: ${(error as Error).message}`);
+      }
     } else {
       return;
     }

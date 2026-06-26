@@ -97,49 +97,49 @@ Hyper-Express:
 npm run dev:hyper-express
 ```
 
-Cloudflare Workers compatible adapter:
+Cloudflare Workers adapter (serverless style, no Express runtime):
 
 ```bash
 npm run dev:cloudflare-workers
 ```
 
-Vercel Functions compatible adapter:
+Vercel Functions adapter (serverless request/response wrapper):
 
 ```bash
 npm run dev:vercel-functions
 ```
 
-LoopBack compatible adapter:
+LoopBack adapter (LoopBack runtime):
 
 ```bash
 npm run dev:loopback
 ```
 
-Sails.js compatible adapter:
+Sails.js adapter (Sails runtime):
 
 ```bash
 npm run dev:sails-js
 ```
 
-Feathers compatible adapter:
+Feathers adapter (Feathers + Koa runtime):
 
 ```bash
 npm run dev:feathers
 ```
 
-Derby.js compatible adapter:
+Derby.js adapter (Derby runtime):
 
 ```bash
 npm run dev:derby-js
 ```
 
-Adonis.js compatible adapter:
+Adonis.js adapter (Adonis-style runtime bridge):
 
 ```bash
 npm run dev:adonis-js
 ```
 
-Total.js compatible adapter:
+Total.js adapter (Total-style runtime bridge):
 
 ```bash
 npm run dev:total-js
@@ -157,7 +157,7 @@ Developer automation CLI:
 npm run dev:cli
 ```
 
-![serverless dev mode](../sls.png "serverless dev mode")
+![serverless dev mode](../images/sls.png "serverless dev mode")
 
 ## Production Commands
 
@@ -201,3 +201,10 @@ The AWS Lambda users/auth adapter now provides handlers for all Users/Auth OpenA
 - `createPhone`
 - `updatePhone`
 - `deletePhone`
+
+## Adapter Implementation Notes
+
+- `Cloudflare Workers` uses a serverless fetch dispatcher and reuses lambda operation contracts.
+- `Vercel Functions` uses request/response function wrapping (without Express server bootstrap).
+- `LoopBack`, `Sails`, `Feathers`, `Derby`, `Adonis`, and `Total` adapters run with framework-native server bootstraps/adapters.
+- HTTP handler resolution in `RestAPI` still falls back to `express` operation handlers when a framework-specific handler is intentionally not present, preserving endpoint contract parity.

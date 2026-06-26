@@ -10,7 +10,7 @@ Each domain must have dedicated Markdown documentation for:
 Single-file generic documentation scales poorly and hides domain-specific rules.
 
 ## Guardrails
-- Keep one domain-focused doc set per domain folder under `docs/domains/<domain>/`.
+- Keep one domain-focused doc set per domain folder under `documentation/md/domains/<domain>/`.
 - Document field type, requiredness, format, default, normalization, and validations.
 - Link domain docs from `README.md` glossary index.
 - Update docs in the same PR when domain model/contract fields change.

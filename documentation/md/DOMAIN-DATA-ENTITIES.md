@@ -10,9 +10,9 @@ This document defines data entities by domain with field-level details:
 
 Detailed per-domain files:
 
-- `docs/domains/users/USER-MODEL.md`
-- `docs/domains/users/USER-ENTITY-CONTRACT.md`
-- `docs/domains/users/USER-VALUE-OBJECTS.md`
+- `documentation/md/domains/users/USER-MODEL.md`
+- `documentation/md/domains/users/USER-ENTITY-CONTRACT.md`
+- `documentation/md/domains/users/USER-VALUE-OBJECTS.md`
 
 ## Domain: Users
 

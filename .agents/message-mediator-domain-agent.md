@@ -15,6 +15,7 @@ Preserve independent domain-worker behavior through contract-based messaging.
 - Keep message metadata (correlation/request IDs) consistent across adapters.
 - Validate handler registration and contract resolution in unit tests.
 - Every new mediator-related feature must update docs and README index links when new docs are added.
+- Keep `documentation/md/EVENTS-AND-MESSAGES-MAP.md` synchronized with new/changed contracts.
 
 ## Definition of done
 - Domain integrates through mediator contracts only.

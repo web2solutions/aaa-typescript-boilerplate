@@ -68,6 +68,16 @@ describe('port core helpers', () => {
     expect((serialized as any).label).toBeUndefined();
   });
 
+  it('exposes createdAt/updatedAt and allows updating updatedAt', () => {
+    expect.hasAssertions();
+    const model = new TestModel();
+    const nextDate = new Date('2026-01-01T00:00:00.000Z');
+    expect(model.createdAt).toBeInstanceOf(Date);
+    expect(model.updatedAt).toBeInstanceOf(Date);
+    model.updatedAt = nextDate;
+    expect(model.updatedAt.toISOString()).toBe('2026-01-01T00:00:00.000Z');
+  });
+
   it('builds event metadata and parses string input', () => {
     expect.hasAssertions();
     const event = new TestEvent({
@@ -165,5 +175,57 @@ describe('port core helpers', () => {
         validations: []
       }]
     })).not.toThrow();
+
+    expect(() => BaseModel.throwIfModelPayloadIsNotOpenApi31Compliant(
+      {
+        id: '00000000-0000-4000-8000-000000000001',
+        email: 'john@example.com'
+      },
+      {
+        name: 'User',
+        fields: [
+          {
+            name: 'id',
+            type: 'string',
+            format: 'uuid',
+            required: true,
+            validations: []
+          },
+          {
+            name: 'email',
+            type: 'string',
+            format: 'email',
+            required: true,
+            validations: []
+          }
+        ]
+      }
+    )).not.toThrow();
+
+    expect(() => BaseModel.throwIfModelPayloadIsNotOpenApi31Compliant(
+      {
+        id: 'invalid-uuid',
+        email: 'john@example.com'
+      },
+      {
+        name: 'User',
+        fields: [
+          {
+            name: 'id',
+            type: 'string',
+            format: 'uuid',
+            required: true,
+            validations: []
+          },
+          {
+            name: 'email',
+            type: 'string',
+            format: 'email',
+            required: true,
+            validations: []
+          }
+        ]
+      }
+    )).toThrow('validation failed');
   });
 });

@@ -31,6 +31,15 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - Added domain-specific docs for Users model, entity contract, and value objects.
   - Linked domain docs from README glossary index.
 
+- [x] Enforce native runtime ownership for new HTTP adapters
+  - Cloudflare Workers and Vercel Functions now run in serverless-style adapters.
+  - Additional framework adapters were aligned to framework-native runtime bootstraps.
+
+- [x] Add integration contracts and error contracts maps
+  - Added `documentation/md/EVENTS-AND-MESSAGES-MAP.md`.
+  - Added `documentation/md/ERROR-CONTRACTS-AND-RESPONSES.md`.
+  - Linked both documents in README glossary index.
+
 ## Open
 
 - [x] Fix user persistence correctness
@@ -95,4 +104,4 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
 
 - [x] Create domain data entity documentation agent and catalog
   - Added `.agents/data-entity-documentation-agent.md`.
-  - Added detailed catalog `docs/DOMAIN-DATA-ENTITIES.md` with field/type/format/validation mappings.
+  - Added detailed catalog `documentation/md/DOMAIN-DATA-ENTITIES.md` with field/type/format/validation mappings.

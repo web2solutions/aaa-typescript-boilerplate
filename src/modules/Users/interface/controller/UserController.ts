@@ -3,8 +3,7 @@ import { BaseController } from '@src/interface/HTTP/ports/BaseController';
 import { Security } from '@src/infra/security';
 import { _INFRA_NOT_IMPLEMENTED_ } from '@src/config/constants';
 import {
-  throwIfOASInputValidationFails,
-  validateRequestParams
+  validateRequestAgainstOAS
 } from '@src/interface/HTTP/validators';
 import { Authorize } from '@src/shared/decorators/guard/Authorize';
 
@@ -43,12 +42,12 @@ export class UserController extends BaseController implements IController {
   public async create(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    const requestCreateUser = event.input as RequestCreateUser;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      requestCreateUser
+      event
     );
+    const requestCreateUser = event.input as RequestCreateUser;
     const { result, error } = await this.userUseCases.create(requestCreateUser);
     return { result, error };
   }
@@ -57,13 +56,12 @@ export class UserController extends BaseController implements IController {
   public async update(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
-    const requestUpdateUser = event.input as RequestUpdateUser;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      requestUpdateUser
+      event
     );
+    const requestUpdateUser = event.input as RequestUpdateUser;
     const userId = Security.xss(event.params.id);
     const { result, error } = await this.userUseCases.update(
       userId,
@@ -76,13 +74,12 @@ export class UserController extends BaseController implements IController {
   public async updatePassword(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
-    const requestUpdatePassword = event.input as RequestUpdatePassword;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      requestUpdatePassword
+      event
     );
+    const requestUpdatePassword = event.input as RequestUpdatePassword;
     const userId = Security.xss(event.params.id);
     const { result, error } = await this.userUseCases.updatePassword(
       userId,
@@ -95,7 +92,11 @@ export class UserController extends BaseController implements IController {
   public async delete(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<boolean>> {
-    validateRequestParams(event.schemaOAS, event.params);
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
     const userId = Security.xss(event.params.id);
     const { result, error } = await this.userUseCases.delete(userId);
     return { result, error };
@@ -105,7 +106,11 @@ export class UserController extends BaseController implements IController {
   public async getOneById(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
     const userId = Security.xss(event.params.id);
     const { result, error } = await this.userUseCases.getOneById(userId);
     return { result, error };
@@ -115,8 +120,11 @@ export class UserController extends BaseController implements IController {
   public async getAll(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser[]>> {
-    // validateRequestParams(event.schemaOAS, event.params);
-    // const page = parseInt(Security.xss(event.params.page || 0), 2);
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
     const filters = setFilter(event);
     const paging = setPaging(event);
     const result = await this.userUseCases.getAll(
@@ -131,13 +139,12 @@ export class UserController extends BaseController implements IController {
   public async createDocument(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
-    const requestCreateDocument = event.input as RequestCreateDocument;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      requestCreateDocument
+      event
     );
+    const requestCreateDocument = event.input as RequestCreateDocument;
     const userId = Security.xss(event.params.id);
     const { result, error } = await this.userUseCases.createDocument(
       userId,
@@ -150,13 +157,12 @@ export class UserController extends BaseController implements IController {
   public async updateDocument(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
-    const requestUpdateDocument = event.input as RequestUpdateDocument;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      requestUpdateDocument
+      event
     );
+    const requestUpdateDocument = event.input as RequestUpdateDocument;
     const userId = Security.xss(event.params.id);
     const documentId = Security.xss(event.params.documentId);
     const { result, error } = await this.userUseCases.updateDocument(
@@ -171,7 +177,11 @@ export class UserController extends BaseController implements IController {
   public async deleteDocument(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
     const userId = Security.xss(event.params.id);
     const documentId = Security.xss(event.params.documentId);
     const { result, error } = await this.userUseCases.deleteDocument(
@@ -185,13 +195,12 @@ export class UserController extends BaseController implements IController {
   public async createPhone(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
-    const requestCreatePhone = event.input as RequestCreatePhone;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      requestCreatePhone
+      event
     );
+    const requestCreatePhone = event.input as RequestCreatePhone;
     const userId = Security.xss(event.params.id);
     const { result, error } = await this.userUseCases.createPhone(
       userId,
@@ -204,13 +213,12 @@ export class UserController extends BaseController implements IController {
   public async updatePhone(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
-    const requestUpdatePhone = event.input as RequestUpdatePhone;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      requestUpdatePhone
+      event
     );
+    const requestUpdatePhone = event.input as RequestUpdatePhone;
     const userId = Security.xss(event.params.id);
     const phoneId = Security.xss(event.params.phoneId);
     const { result, error } = await this.userUseCases.updatePhone(
@@ -225,7 +233,11 @@ export class UserController extends BaseController implements IController {
   public async deletePhone(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
     const userId = Security.xss(event.params.id);
     const phoneId = Security.xss(event.params.phoneId);
     const { result, error } = await this.userUseCases.deletePhone(
@@ -239,13 +251,12 @@ export class UserController extends BaseController implements IController {
   public async createEmail(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
-    const requestCreateEmail = event.input as RequestCreateEmail;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      requestCreateEmail
+      event
     );
+    const requestCreateEmail = event.input as RequestCreateEmail;
     const userId = Security.xss(event.params.id);
     const { result, error } = await this.userUseCases.createEmail(
       userId,
@@ -258,13 +269,12 @@ export class UserController extends BaseController implements IController {
   public async updateEmail(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
-    const requestUpdateEmail = event.input as RequestUpdateEmail;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      requestUpdateEmail
+      event
     );
+    const requestUpdateEmail = event.input as RequestUpdateEmail;
     const userId = Security.xss(event.params.id);
     const emailId = Security.xss(event.params.emailId);
     const { result, error } = await this.userUseCases.updateEmail(
@@ -279,7 +289,11 @@ export class UserController extends BaseController implements IController {
   public async deleteEmail(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IUser>> {
-    validateRequestParams(event.schemaOAS, event.params);
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
     const userId = Security.xss(event.params.id);
     const emailId = Security.xss(event.params.emailId);
     const { result, error } = await this.userUseCases.deleteEmail(

@@ -80,7 +80,7 @@ describe('cli entity/model manager', () => {
         0, // format: none
         1, // validations: finish
         0, // list fields
-        6, // back field manager
+        8, // back field manager
         6 // back main manager
       ],
       [
@@ -146,7 +146,7 @@ describe('cli entity/model manager', () => {
         0, // validations: add
         0, // validation keyword: minLength
         1, // validations: finish
-        6, // back field manager
+        8, // back field manager
         6 // back manager
       ],
       [
@@ -298,7 +298,7 @@ describe('cli entity/model manager', () => {
         1, // validations: finish
         5, // delete field
         0, // choose field index
-        6, // back field manager
+        8, // back field manager
         6 // back manager
       ],
       [

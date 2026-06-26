@@ -234,4 +234,17 @@ describe('domain validators', () => {
       }
     ).toThrow(`Event must ends in at least ${minutesIntheFuture} minutes in the future`);
   });
+
+  it('mustEndsAtLeastInMinutes validates same-hour minute threshold', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-06-26T10:00:00.000Z'));
+    try {
+      expect(
+        () => {
+          mustEndsAtLeastInMinutes(new Date('2026-06-26T10:03:00.000Z'), 5);
+        }
+      ).toThrow('Event must ends in at least 5 minutes in the future');
+    } finally {
+      jest.useRealTimers();
+    }
+  });
 });

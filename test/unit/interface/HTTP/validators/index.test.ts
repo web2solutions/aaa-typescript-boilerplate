@@ -3,6 +3,7 @@ import checkRequiredProperties from '@src/interface/HTTP/validators/checkRequire
 import getSchema from '@src/interface/HTTP/validators/getSchema';
 import isPropertiesMatching from '@src/interface/HTTP/validators/isPropertiesMatching';
 import throwIfOASInputValidationFails from '@src/interface/HTTP/validators/throwIfOASInputValidationFails';
+import validateRequestAgainstOAS from '@src/interface/HTTP/validators/validateRequestAgainstOAS';
 import validateRequestParams from '@src/interface/HTTP/validators/validateRequestParams';
 
 describe('http validators', () => {
@@ -43,6 +44,16 @@ describe('http validators', () => {
 
     expect(getSchema(spec, content)?.required).toStrictEqual(['firstName']);
     expect(getSchema({} as any, content)).toBeUndefined();
+
+    expect(getSchema(spec, {
+      'application/json': {
+        schema: {
+          type: 'object',
+          required: ['name'],
+          properties: { name: { type: 'string' } }
+        }
+      }
+    })?.required).toStrictEqual(['name']);
   });
 
   it('validates payload against endpoint request body schema', () => {
@@ -73,6 +84,51 @@ describe('http validators', () => {
     expect(() => throwIfOASInputValidationFails(spec, endPointConfig, {})).toThrow(ValidationError);
   });
 
+  it('validates payload format/type rules from schema', () => {
+    expect.hasAssertions();
+    const spec = {
+      components: {
+        schemas: {
+          RequestCreateUser: {
+            type: 'object',
+            required: ['username', 'age'],
+            properties: {
+              username: { type: 'string', format: 'email' },
+              age: { type: 'integer', minimum: 18 }
+            }
+          }
+        }
+      }
+    } as any;
+    const endPointConfig = {
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/RequestCreateUser'
+            }
+          }
+        }
+      }
+    };
+
+    expect(() => throwIfOASInputValidationFails(spec, endPointConfig, {
+      username: 'john@example.com',
+      age: 18
+    })).not.toThrow();
+
+    expect(() => throwIfOASInputValidationFails(spec, endPointConfig, {
+      username: 'not-an-email',
+      age: 18
+    })).toThrow(ValidationError);
+
+    expect(() => throwIfOASInputValidationFails(spec, endPointConfig, {
+      username: 'john@example.com',
+      age: 10
+    })).toThrow(ValidationError);
+  });
+
   it('validates request path params', () => {
     expect.hasAssertions();
     const endPointConfig = {
@@ -83,5 +139,65 @@ describe('http validators', () => {
     expect(() => validateRequestParams(endPointConfig, {} as any)).toThrow(ValidationError);
     expect(() => validateRequestParams(endPointConfig, { id: '' })).toThrow(ValidationError);
     expect(() => validateRequestParams(endPointConfig, { id: 'null' })).toThrow(ValidationError);
+  });
+
+  it('validates request query params against schema', () => {
+    expect.hasAssertions();
+    const endPointConfig = {
+      parameters: [{
+        name: 'page',
+        in: 'query',
+        required: false,
+        schema: { type: 'integer', minimum: 1 }
+      }]
+    };
+
+    expect(validateRequestParams(endPointConfig, {}, { page: 1 })).toBe(true);
+    expect(() => validateRequestParams(endPointConfig, {}, { page: 0 })).toThrow(ValidationError);
+    expect(() => validateRequestParams(endPointConfig, {}, { page: 'x' })).toThrow(ValidationError);
+  });
+
+  it('validates full request against OAS (params + body)', () => {
+    expect.hasAssertions();
+    const spec = {
+      components: {
+        schemas: {
+          RequestCreateUser: {
+            type: 'object',
+            required: ['firstName'],
+            properties: { firstName: { type: 'string', minLength: 2 } }
+          }
+        }
+      }
+    } as any;
+    const endPointConfig = {
+      parameters: [{
+        name: 'id',
+        in: 'path',
+        required: true,
+        schema: { type: 'string', minLength: 1 }
+      }],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/RequestCreateUser'
+            }
+          }
+        }
+      }
+    };
+
+    expect(validateRequestAgainstOAS(spec, endPointConfig, {
+      params: { id: '1' },
+      input: { firstName: 'John' },
+      authorization: 'Bearer token'
+    })).toBe(true);
+
+    expect(() => validateRequestAgainstOAS(spec, endPointConfig, {
+      params: { id: '' },
+      input: { firstName: 'John' }
+    })).toThrow(ValidationError);
   });
 });

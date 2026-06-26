@@ -16,8 +16,8 @@ Maintain DDD consistency in domain entities, value objects, and aggregate behavi
 - Every new feature touching domain behavior must include documentation updates in the same change set.
 - Whenever domain fields change, update:
   - tests
-  - `docs/DOMAIN-DATA-ENTITIES.md`
-  - domain-specific docs under `docs/domains/`
+  - `documentation/md/DOMAIN-DATA-ENTITIES.md`
+  - domain-specific docs under `documentation/md/domains/`
 
 ## Definition of done
 - Domain change has matching tests and docs.

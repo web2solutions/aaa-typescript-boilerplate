@@ -31,8 +31,8 @@ Standardize and maintain domain data entity documentation with field-level preci
    - each field is aligned with OpenAPI 3.1 type/format/validation constraints used in project helpers
 
 ## Canonical artifacts
-- `docs/DOMAIN-DATA-ENTITIES.md`
-- `docs/domains/<domain>/*.md`
+- `documentation/md/DOMAIN-DATA-ENTITIES.md`
+- `documentation/md/domains/<domain>/*.md`
 
 ## Definition of done
 - Documentation updated for all changed domain fields in the same change set.
