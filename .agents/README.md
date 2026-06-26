@@ -29,5 +29,6 @@ Use these files as living constraints for future maintenance and feature develop
 - [017-event-first-integration-and-circular-safety](requirements/017-event-first-integration-and-circular-safety.md)
 - [018-project-documentation-and-structure-sync](requirements/018-project-documentation-and-structure-sync.md)
 - [019-domain-data-entity-documentation-standard](requirements/019-domain-data-entity-documentation-standard.md)
+- [020-coverage-threshold-approval-gate](requirements/020-coverage-threshold-approval-gate.md)
 - [Data Entity Documentation Agent](data-entity-documentation-agent.md)
 - [Architecture Alignment Plan](architecture-alignment-plan.md)
