@@ -17,6 +17,20 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - `compile()` cached singleton instances in services, repos, auth, providers, and controllers.
   - Removed stale singleton state so factory calls return fresh instances with current dependencies.
 
+- [x] Establish contract-based message mediator adapters
+  - Added mediator ports/contracts and in-memory adapter behavior for request/response + pub/sub.
+  - Added RabbitMQ and BullMQ adapter implementations with runtime selection via environment.
+  - Ensured domain-owned handler registration so each domain behaves as an independent worker capability.
+
+- [x] Align `DocumentValueObject` with DDD value-object behavior
+  - Added explicit constructor invariants and type validation.
+  - Added normalization (`type`, `countryIssue`, `data`) and immutable fields.
+  - Kept structural compatibility with existing DTO and integration test flows.
+
+- [x] Expand domain entity/model documentation granularity
+  - Added domain-specific docs for Users model, entity contract, and value objects.
+  - Linked domain docs from README glossary index.
+
 ## Open
 
 - [x] Fix user persistence correctness

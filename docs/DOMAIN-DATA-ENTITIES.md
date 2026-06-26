@@ -8,6 +8,12 @@ This document defines data entities by domain with field-level details:
 - validation expectations
 - source of truth (domain model vs OpenAPI contract)
 
+Detailed per-domain files:
+
+- `docs/domains/users/USER-MODEL.md`
+- `docs/domains/users/USER-ENTITY-CONTRACT.md`
+- `docs/domains/users/USER-VALUE-OBJECTS.md`
+
 ## Domain: Users
 
 ### Entity: `User`
@@ -61,9 +67,9 @@ Code references:
 | Field | Type (TS) | Format / Allowed values | Required | Validation expected |
 |---|---|---|---|---|
 | `id` | `string` | UUID string | Read/Update | Auto-generated if not provided. |
-| `type` | `EDocumentType` | `CPF` \| `RG` \| `SSN` \| `passport` (domain enum) | Create | Domain: `canNotBeEmpty('type')`. OAS currently enumerates `CPF`, `RG`, `SSN`. |
-| `countryIssue` | `string` | country code-ish value (`BR`, `US`, etc.) | Create | Domain: `canNotBeEmpty('countryIssue')`. OAS enum exists for request/response variants. |
-| `data` | `string` | document payload string | Create | Domain: `canNotBeEmpty('data')`. |
+| `type` | `EDocumentType` | `CPF` \| `RG` \| `SSN` \| `passport` (domain enum) | Create | Domain: required + normalized + strict enum validation (`PASSPORT` alias maps to `passport`). |
+| `countryIssue` | `string` | country code-ish value (`BR`, `US`, etc.) | Create | Domain: required + trimmed + uppercased. |
+| `data` | `string` | document payload string | Create | Domain: required + trimmed. |
 
 ### Value Object: `PhoneValueObject`
 

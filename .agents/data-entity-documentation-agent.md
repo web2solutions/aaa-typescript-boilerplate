@@ -26,8 +26,9 @@ Standardize and maintain domain data entity documentation with field-level preci
    - DTO/schema files
    - OpenAPI components
 
-## Canonical artifact
+## Canonical artifacts
 - `docs/DOMAIN-DATA-ENTITIES.md`
+- `docs/domains/<domain>/*.md`
 
 ## Definition of done
 - Documentation updated for all changed domain fields in the same change set.

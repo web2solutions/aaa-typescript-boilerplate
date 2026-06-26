@@ -61,6 +61,16 @@ This boilerplate gives you:
 - Multi-runtime HTTP support without domain rewrites.
 - Enforced quality gates (lint, unit, architecture checks, route resolution, smoke, coverage).
 
+## Message Mediator and Domain Workers
+
+- Domains integrate through contract-based messaging, not direct cross-domain service coupling.
+- The mediator adapter is runtime-selectable:
+  - `inmemory` (default)
+  - `rabbitmq`
+  - `bullmq`
+- This keeps domain communication stable when moving from modular monolith to distributed workers/microservices.
+- Configuration details are documented in [Setup, Runtime, and API](docs/SETUP-RUNTIME-AND-API.md#message-mediator-adapter).
+
 ## Strategic Advantages Against Highly Opinionated Backends
 
 Without naming competitors, this project is designed for teams that want less framework ceremony and more architectural control.
@@ -114,6 +124,7 @@ Project documentation is separated by nature so Product and Engineering audience
 | Product Context | [Project Overview](docs/PROJECT-OVERVIEW.md) | Purpose, advantages, use cases, acceleration strategy, and AI + Moon Modeler integration. |
 | Architecture | [Architecture and Structure](docs/ARCHITECTURE-AND-STRUCTURE.md) | Folder structure, target architecture direction, boundaries, and layer responsibilities. |
 | Runtime and Operations | [Setup, Runtime, and API](docs/SETUP-RUNTIME-AND-API.md) | Stack requirements, local setup, API docs endpoints, runtime commands, and production commands. |
+| Messaging and Worker Pattern | [Setup, Runtime, and API](docs/SETUP-RUNTIME-AND-API.md#message-mediator-adapter) | `MessageMediator` adapter selection (`inmemory` / `rabbitmq` / `bullmq`) and broker runtime configuration. |
 | Quality and Delivery | [Testing, CI, and Quality](docs/TESTING-CI-AND-QUALITY.md) | Testing commands, CI gate, coverage policy, Sonar/Codecov, Node 22 enforcement, and CI troubleshooting links. |
 | Engineering Workflow | [Contributing and Tooling](docs/CONTRIBUTING-AND-TOOLING.md) | Contribution workflow and all key local engineering commands. |
 | Dependencies | [Dependencies](docs/DEPENDENCIES.md) | Dependency breakdown by application and infrastructure runtime. |
@@ -134,5 +145,8 @@ npm run dev:fastify
 - [Engineering Bootstrap Guide](docs/ENGINEERING-BOOTSTRAP-GUIDE.md)
 - [Hexagonal Feature-driven Migration Plan](docs/HEXAGONAL-FEATURE-DRIVEN-MIGRATION.md)
 - [Domain Data Entities](docs/DOMAIN-DATA-ENTITIES.md)
+- [Users Domain Model](docs/domains/users/USER-MODEL.md)
+- [Users Entity Contract](docs/domains/users/USER-ENTITY-CONTRACT.md)
+- [Users Value Objects](docs/domains/users/USER-VALUE-OBJECTS.md)
 - [CI / SonarQube / Codecov Troubleshooting](docs/CI-TROUBLESHOOTING.md)
 - [Agents Requirements Registry](.agents/README.md)
