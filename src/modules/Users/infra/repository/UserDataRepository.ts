@@ -6,18 +6,18 @@ import {
   canNotBeEmpty
 } from '@src/shared/validators';
 import {
-  IUser,
-  User,
-  RequestCreateUser,
-  RequestUpdateUser,
-  RequestUpdatePassword,
-  RequestCreateDocument,
-  RequestUpdateDocument,
-  RequestUpdatePhone,
-  RequestCreatePhone,
-  RequestUpdateEmail,
-  RequestCreateEmail
-} from '@src/modules/Users';
+  IUser
+} from '@src/modules/Users/domain/Entity/IUser';
+import { User } from '@src/modules/Users/domain/Model/User';
+import { RequestCreateUser } from '@src/modules/Users/interface/dto/RequestCreateUser';
+import { RequestUpdateUser } from '@src/modules/Users/interface/dto/RequestUpdateUser';
+import { RequestUpdatePassword } from '@src/modules/Users/interface/dto/RequestUpdatePassword';
+import { RequestCreateDocument } from '@src/modules/Users/interface/dto/RequestCreateDocument';
+import { RequestUpdateDocument } from '@src/modules/Users/interface/dto/RequestUpdateDocument';
+import { RequestUpdatePhone } from '@src/modules/Users/interface/dto/RequestUpdatePhone';
+import { RequestCreatePhone } from '@src/modules/Users/interface/dto/RequestCreatePhone';
+import { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpdateEmail';
+import { RequestCreateEmail } from '@src/modules/Users/interface/dto/RequestCreateEmail';
 import { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
 import {
   IPagingRequest, IPagingResponse, IRepoConfig, BaseRepo

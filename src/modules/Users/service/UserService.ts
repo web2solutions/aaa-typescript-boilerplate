@@ -2,37 +2,41 @@
 // file deepcode ignore MissingArgument: <same name but different functions>
 
 import {
-  IPagingRequest, IPagingResponse, ServiceResponse, IServiceResponse, IServiceConfig, BaseService
+  IPagingRequest,
+  IPagingResponse,
+  ServiceResponse,
+  IServiceResponse,
+  IServiceConfig,
+  BaseService,
+  IEventBus
 } from '@src/modules/port';
 
-import {
-  UserDataRepository,
-  createUser,
-  updateUser,
-  deleteUserById,
-  getUserById,
-  getAllUsers,
-  updatePassword,
-  createDocument,
-  updateDocument,
-  deleteDocument,
-  createPhone,
-  updatePhone,
-  deletePhone,
-  createEmail,
-  updateEmail,
-  deleteEmail,
-  RequestCreateUser,
-  RequestUpdateUser,
-  IUser,
-  RequestUpdatePassword,
-  RequestCreateDocument,
-  RequestUpdateDocument,
-  RequestCreatePhone,
-  RequestUpdatePhone,
-  RequestCreateEmail,
-  RequestUpdateEmail
-} from '@src/modules/Users';
+import { IUser } from '@src/modules/Users/domain/Entity/IUser';
+import { UserDataRepository } from '@src/modules/Users/infra/repository/UserDataRepository';
+import { createUser } from '@src/modules/Users/features/createUser';
+import { updateUser } from '@src/modules/Users/features/updateUser';
+import { deleteUserById } from '@src/modules/Users/features/deleteUserById';
+import { getUserById } from '@src/modules/Users/features/getUserById';
+import { getAllUsers } from '@src/modules/Users/features/getAllUsers';
+import { updatePassword } from '@src/modules/Users/features/updatePassword';
+import { createDocument } from '@src/modules/Users/features/createDocument';
+import { updateDocument } from '@src/modules/Users/features/updateDocument';
+import { deleteDocument } from '@src/modules/Users/features/deleteDocument';
+import { createPhone } from '@src/modules/Users/features/createPhone';
+import { updatePhone } from '@src/modules/Users/features/updatePhone';
+import { deletePhone } from '@src/modules/Users/features/deletePhone';
+import { createEmail } from '@src/modules/Users/features/createEmail';
+import { updateEmail } from '@src/modules/Users/features/updateEmail';
+import { deleteEmail } from '@src/modules/Users/features/deleteEmail';
+import { RequestCreateUser } from '@src/modules/Users/interface/dto/RequestCreateUser';
+import { RequestUpdateUser } from '@src/modules/Users/interface/dto/RequestUpdateUser';
+import { RequestUpdatePassword } from '@src/modules/Users/interface/dto/RequestUpdatePassword';
+import { RequestCreateDocument } from '@src/modules/Users/interface/dto/RequestCreateDocument';
+import { RequestUpdateDocument } from '@src/modules/Users/interface/dto/RequestUpdateDocument';
+import { RequestCreatePhone } from '@src/modules/Users/interface/dto/RequestCreatePhone';
+import { RequestUpdatePhone } from '@src/modules/Users/interface/dto/RequestUpdatePhone';
+import { RequestCreateEmail } from '@src/modules/Users/interface/dto/RequestCreateEmail';
+import { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpdateEmail';
 
 import { canNotBeEmpty, mustBePassword } from '@src/shared/validators';
 
@@ -54,6 +58,8 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
 
   private readonly passwordCryptoService: IPasswordCryptoService;
 
+  private readonly eventBus?: IEventBus;
+
   public constructor(
     config: IUserServiceConfig
   ) {
@@ -63,6 +69,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     this.passwordCryptoService = services!.passwordCryptoService;
     // this.services.mutexService = services!.mutexService;
     this.mutexService = services!.mutexService;
+    this.eventBus = services?.eventBus as IEventBus | undefined;
   }
 
   private static sanitizeUser(user?: IUser): IUser | undefined {
@@ -75,6 +82,19 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
 
   private static sanitizeUsers(users?: IUser[]): IUser[] {
     return (users || []).map((user) => UserService.sanitizeUser(user) as IUser);
+  }
+
+  private async publishEvent(name: string, payload: Record<string, any>): Promise<void> {
+    if (!this.eventBus?.publish) return;
+    try {
+      await this.eventBus.publish({
+        name,
+        payload,
+        occurredAt: new Date().toISOString()
+      });
+    } catch (error) {
+      // Do not break primary flow because of async integration side-effects.
+    }
   }
 
   public async getOneByUsernameForAuth(username: string): Promise<IServiceResponse<IUser>> {
@@ -106,6 +126,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
 
       const createdUser = await createUser((newData ?? {}), this.dataRepository);
       serviceResponse.result = UserService.sanitizeUser(createdUser);
+      await this.publishEvent('users.user.created', { id: serviceResponse.result?.id });
     } catch (error) {
       serviceResponse.error = error as BaseError;
     }
@@ -122,6 +143,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       const user = await updateUser(id, data, this.dataRepository);
       // console.log('user', user)
       serviceResponse.result = UserService.sanitizeUser(user);
+      await this.publishEvent('users.user.updated', { id });
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -140,6 +162,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
 
       const deleted = await deleteUserById(id, this.dataRepository);
       serviceResponse.result = deleted;
+      await this.publishEvent('users.user.deleted', { id });
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -200,6 +223,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       newData.salt = salt;
       const user = await updatePassword(id, newData, this.dataRepository);
       serviceResponse.result = UserService.sanitizeUser(user);
+      await this.publishEvent('users.user.passwordUpdated', { id });
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {

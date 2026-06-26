@@ -13,6 +13,7 @@ import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 import { IKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/IKeyValueStorageClient';
+import { IEventBus } from '@src/modules/port';
 
 import {
   IUser,
@@ -42,6 +43,8 @@ export class RestAPI<T> {
 
   private readonly keyValueStorageClient: IKeyValueStorageClient | undefined;
 
+  private readonly eventBus: IEventBus | undefined;
+
   constructor(config: IAPIFactory<T>) {
     this.serverType = config.serverType ?? EHTTPFrameworks.express;
     this.server = config.webServer;
@@ -63,6 +66,10 @@ export class RestAPI<T> {
 
     if (config.passwordCryptoService) {
       this.passwordCryptoService = config.passwordCryptoService;
+    }
+
+    if (config.eventBus) {
+      this.eventBus = config.eventBus;
     }
 
     this.buildWithOAS();
@@ -151,7 +158,8 @@ export class RestAPI<T> {
                 }),
                 services: {
                   passwordCryptoService: this.passwordCryptoService,
-                  mutexService: this.mutexClient
+                  mutexService: this.mutexClient,
+                  eventBus: this.eventBus
                 }
               })
               : undefined,
@@ -211,7 +219,8 @@ export class RestAPI<T> {
       dataRepository,
       services: {
         passwordCryptoService: this.passwordCryptoService,
-        mutexService: this.mutexClient
+        mutexService: this.mutexClient,
+        eventBus: this.eventBus
       }
     });
     const requests: Promise<IUser>[] = [];
@@ -241,7 +250,8 @@ export class RestAPI<T> {
       dataRepository,
       services: {
         passwordCryptoService: this.passwordCryptoService,
-        mutexService: this.mutexClient
+        mutexService: this.mutexClient,
+        eventBus: this.eventBus
       }
     });
     const requests: Promise<boolean>[] = [];

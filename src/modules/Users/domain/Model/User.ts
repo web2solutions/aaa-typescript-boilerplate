@@ -12,15 +12,15 @@ import {
   PhoneValueObject
 } from '@src/modules/ddd/valueObjects';
 import {
-  IUser,
-  RequestCreateUser,
-  RequestCreatePhone,
-  RequestUpdatePhone,
-  RequestCreateDocument,
-  RequestUpdateDocument,
-  RequestCreateEmail,
-  RequestUpdateEmail
-} from '@src/modules/Users';
+  IUser
+} from '@src/modules/Users/domain/Entity/IUser';
+import { RequestCreateUser } from '@src/modules/Users/interface/dto/RequestCreateUser';
+import { RequestCreatePhone } from '@src/modules/Users/interface/dto/RequestCreatePhone';
+import { RequestUpdatePhone } from '@src/modules/Users/interface/dto/RequestUpdatePhone';
+import { RequestCreateDocument } from '@src/modules/Users/interface/dto/RequestCreateDocument';
+import { RequestUpdateDocument } from '@src/modules/Users/interface/dto/RequestUpdateDocument';
+import { RequestCreateEmail } from '@src/modules/Users/interface/dto/RequestCreateEmail';
+import { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpdateEmail';
 
 interface UserFactory extends RequestCreateUser {
   id?: string;

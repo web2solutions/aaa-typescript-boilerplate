@@ -1,4 +1,4 @@
-import { IUser } from '@src/modules/Users';
+import { IUser } from '@src/modules/Users/domain/Entity/IUser';
 import { IServiceResponse } from '@src/modules/port';
 
 export interface IUserProvider {

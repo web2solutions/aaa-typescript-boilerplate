@@ -1,6 +1,8 @@
 export { BaseService } from '@src/modules/port/BaseService';
 export { IServiceConfig } from '@src/modules/port/IServiceConfig';
 export { IServiceResponse } from '@src/modules/port/IServiceResponse';
+export { IEventBus } from '@src/modules/port/IEventBus';
+export { IIntegrationEvent } from '@src/modules/port/IIntegrationEvent';
 
 export { ServiceResponse } from '@src/modules/port/ServiceResponse';
 export { TRepos } from '@src/modules/port/TRepos';

@@ -57,7 +57,9 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
 - [ ] Normalize layer call order
   - Ensure driving adapters/controllers call application use-cases as the entry point.
   - Avoid controller-level service/repository instantiation.
+  - Progress: `UserController` now receives `userService` from composition/wiring instead of creating repository/service directly.
 
 - [ ] Prefer event-first integration and prevent circular references
   - Introduce/standardize event publishing/listening for cross-module integration.
   - Remove cycle-prone imports and add CI checks for dependency cycles.
+  - Progress: introduced `IEventBus` port and `InMemoryEventBus` adapter, with user lifecycle event publishing in `UserService`.

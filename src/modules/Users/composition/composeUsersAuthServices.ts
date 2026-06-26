@@ -2,6 +2,7 @@ import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IJwtService } from '@src/infra/jwt/IJwtService';
+import { IEventBus } from '@src/modules/port';
 
 import {
   UserDataRepository,
@@ -17,6 +18,7 @@ interface IUsersAuthCompositionConfig {
   passwordCryptoService: IPasswordCryptoService;
   mutexService: IMutexService;
   jwtService: IJwtService;
+  eventBus?: IEventBus;
 }
 
 interface IUsersAuthComposition {
@@ -33,7 +35,8 @@ export const composeUsersAuthServices = (
     databaseClient,
     passwordCryptoService,
     mutexService,
-    jwtService
+    jwtService,
+    eventBus
   } = config;
 
   const dataRepository = UserDataRepository.compile({
@@ -43,7 +46,8 @@ export const composeUsersAuthServices = (
     dataRepository,
     services: {
       passwordCryptoService,
-      mutexService
+      mutexService,
+      eventBus
     }
   });
   const userProvider = UserProviderLocal.compile(userService);
