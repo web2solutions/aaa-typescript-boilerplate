@@ -274,6 +274,11 @@ Included checks:
 - integration smoke
 - minimum coverage threshold (95% global via Jest + Codecov status)
 
+Local enforcement:
+
+- `.husky/pre-commit` runs `npm run lint && npm run test:unit`
+- `.husky/pre-push` runs `npm run ci:gate`
+
 SonarQube Cloud coverage import:
 
 - Workflow: `.github/workflows/sonarqube-cloud.yml`
