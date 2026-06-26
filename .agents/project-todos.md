@@ -33,7 +33,7 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - Callers currently check both `previouslyLocked` and `wasAlreadyLocked`.
   - Standardize on one response contract everywhere.
 
-- [ ] Clean route/spec fragility
+- [x] Clean route/spec fragility
   - OpenAPI `operationId` and paths dynamically load files and controller methods.
   - Add tests or validation that every spec operation resolves to a handler and controller method.
   - Run this validation before runtime tests.
@@ -53,6 +53,7 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
 - [ ] Enforce architecture NFR consistency across layers
   - Align implementation to DDD + EDA + Hexagonal Architecture + SOLID.
   - Keep explicit ownership for domains, entities, ports, adapters, repositories, services, use cases, controllers, and handlers.
+  - Progress: CI now enforces `arch:check-boundaries` for controller-layer anti-patterns.
 
 - [x] Normalize layer call order
   - Ensure driving adapters/controllers call application use-cases as the entry point.

@@ -21,4 +21,9 @@ The software must follow these non-functional architecture requirements:
 These principles are core to project identity, maintainability, and long-term scalability.
 
 ## Status
-Active
+In progress
+
+## Notes
+- Controllers call application use cases (Users module).
+- CI includes `arch:check-boundaries` to prevent controller-level service/repository instantiation.
+- Event contracts and listeners are standardized for Users integration events.
