@@ -50,10 +50,16 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
 - [x] Add a minimal CI gate
   - Required before features: lint, unit tests, selected integration smoke, OpenAPI route resolution check, and build once dependency mismatch is fixed.
 
+- [ ] Reach and sustain minimum 95% coverage
+  - Enforce 95% as standard in Jest global `coverageThreshold`.
+  - Enforce 95% targets in Codecov project/patch status.
+  - Raise current tests to reach and keep the threshold.
+
 - [ ] Enforce architecture NFR consistency across layers
   - Align implementation to DDD + EDA + Hexagonal Architecture + SOLID.
   - Keep explicit ownership for domains, entities, ports, adapters, repositories, services, use cases, controllers, and handlers.
   - Progress: CI now enforces `arch:check-boundaries` for controller-layer anti-patterns.
+  - Progress: README and migration docs now reflect canonical feature-driven hexagonal structure and active guardrails.
 
 - [x] Normalize layer call order
   - Ensure driving adapters/controllers call application use-cases as the entry point.
@@ -67,3 +73,12 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - Introduced `IEventBus` port and `InMemoryEventBus` adapter, with user lifecycle event publishing in `UserService`.
   - Standardized Users integration event names (`UserIntegrationEventName`).
   - Added composition-level listener registration (`registerUserEventListeners`) and unit tests.
+
+- [x] Keep documentation and architecture structure synchronized
+  - README rebuilt with updated architecture, CI gate, and structure sections.
+  - Added requirement `018-project-documentation-and-structure-sync`.
+  - Added requirement `019-domain-data-entity-documentation-standard`.
+
+- [x] Create domain data entity documentation agent and catalog
+  - Added `.agents/data-entity-documentation-agent.md`.
+  - Added detailed catalog `docs/DOMAIN-DATA-ENTITIES.md` with field/type/format/validation mappings.
