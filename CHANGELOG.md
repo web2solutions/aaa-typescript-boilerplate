@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-06-26 build(ci): enforce hexagonal controller boundaries - Eduardo Almeida
 - 2026-06-26 refactor(events): standardize user integration events and listener wiring - Eduardo Almeida
 - 2026-06-26 refactor(hexagonal): route controllers through application use cases - Eduardo Almeida
 - 2026-06-26 refactor(architecture): remove core barrel imports and add cycle guard - Eduardo Almeida

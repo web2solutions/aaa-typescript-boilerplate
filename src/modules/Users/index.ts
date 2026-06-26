@@ -8,6 +8,8 @@ export { AuthUseCases } from '@src/modules/Users/application/AuthUseCases';
 
 export { UserController } from '@src/modules/Users/interface/controller/UserController';
 export { AuthController } from '@src/modules/Users/interface/controller/AuthController';
+export { UserController as UserHttpController } from '@src/modules/Users/adapters/in/http/controllers/UserController';
+export { AuthController as AuthHttpController } from '@src/modules/Users/adapters/in/http/controllers/AuthController';
 export { AuthService } from '@src/modules/Users/service/AuthService';
 export { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 
@@ -52,6 +54,8 @@ export { IAuthorizationHeader } from '@src/modules/Users/service/ports/IAuthoriz
 export { ITokenObject } from '@src/modules/Users/service/ports/ITokenObject';
 export { IUserUseCases } from '@src/modules/Users/application/ports/IUserUseCases';
 export { IAuthUseCases } from '@src/modules/Users/application/ports/IAuthUseCases';
+export { UserUseCases as UserApplicationUseCases } from '@src/modules/Users/application/use-cases/UserUseCases';
+export { AuthUseCases as AuthApplicationUseCases } from '@src/modules/Users/application/use-cases/AuthUseCases';
 
 // events
 export { UserCreateRequestEvent } from '@src/modules/Users/events/UserCreateRequestEvent';
