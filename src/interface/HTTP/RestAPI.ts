@@ -13,7 +13,7 @@ import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 import { IKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/IKeyValueStorageClient';
-import { IEventBus } from '@src/modules/port';
+import { IEventBus, IMessageMediator } from '@src/modules/port';
 
 import {
   IUser,
@@ -44,6 +44,8 @@ export class RestAPI<T> {
 
   private readonly eventBus: IEventBus | undefined;
 
+  private readonly messageMediator: IMessageMediator | undefined;
+
   private usersComposition: ReturnType<typeof composeUsersAuthServices> | undefined;
 
   constructor(config: IAPIFactory<T>) {
@@ -71,6 +73,11 @@ export class RestAPI<T> {
 
     if (config.eventBus) {
       this.eventBus = config.eventBus;
+    }
+
+    if (config.messageMediator) {
+      this.messageMediator = config.messageMediator;
+      this.eventBus = config.messageMediator;
     }
 
     this.buildWithOAS();
@@ -165,7 +172,8 @@ export class RestAPI<T> {
       userUseCases: usersModuleComposition?.userUseCases,
       authUseCases: usersModuleComposition?.authUseCases,
       mutexService: this.mutexClient,
-      passwordCryptoService: this.passwordCryptoService
+      passwordCryptoService: this.passwordCryptoService,
+      messageMediator: this.messageMediator
     });
 
     const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this.serverType}/handlers/${endPointConfig.operationId}`;
@@ -306,7 +314,8 @@ export class RestAPI<T> {
       passwordCryptoService: this.passwordCryptoService,
       mutexService: this.mutexClient,
       jwtService: this.authService.jwtService,
-      eventBus: this.eventBus
+      eventBus: this.eventBus,
+      messageMediator: this.messageMediator
     });
     return this.usersComposition;
   }

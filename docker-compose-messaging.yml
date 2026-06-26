@@ -1,0 +1,15 @@
+services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: aaa-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: aaa-rabbitmq
+    restart: unless-stopped
+    ports:
+      - '5672:5672'
+      - '15672:15672'

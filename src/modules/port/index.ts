@@ -3,6 +3,13 @@ export { IServiceConfig } from '@src/modules/port/IServiceConfig';
 export { IServiceResponse } from '@src/modules/port/IServiceResponse';
 export { IEventBus } from '@src/modules/port/IEventBus';
 export { IIntegrationEvent } from '@src/modules/port/IIntegrationEvent';
+export { IMessage, IMessageMetadata, IMessageResponse } from '@src/modules/port/IMessage';
+export {
+  IMessageMediator,
+  IMessageRequestOptions,
+  IMessageHandlerRegistrationOptions,
+  MessageHandler
+} from '@src/modules/port/IMessageMediator';
 
 export { ServiceResponse } from '@src/modules/port/ServiceResponse';
 export { TRepos } from '@src/modules/port/TRepos';

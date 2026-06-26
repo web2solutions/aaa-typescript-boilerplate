@@ -1,6 +1,7 @@
 /* eslint-disable jest/max-expects, jest/prefer-called-with */
 import { composeUsersAuthServices } from '@src/modules/Users/composition/composeUsersAuthServices';
 import { registerUserEventListeners } from '@src/modules/Users/events/listeners/registerUserEventListeners';
+import { registerUserMessageHandlers } from '@src/modules/Users/events/listeners/registerUserMessageHandlers';
 import { UserDataRepository } from '@src/modules/Users/adapters/out/persistence/UserDataRepository';
 import { UserService } from '@src/modules/Users/service/UserService';
 import { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
@@ -10,6 +11,9 @@ import { AuthUseCases } from '@src/modules/Users/application/use-cases/AuthUseCa
 
 jest.mock<typeof import('@src/modules/Users/events/listeners/registerUserEventListeners')>('@src/modules/Users/events/listeners/registerUserEventListeners', () => ({
   registerUserEventListeners: jest.fn()
+}));
+jest.mock<typeof import('@src/modules/Users/events/listeners/registerUserMessageHandlers')>('@src/modules/Users/events/listeners/registerUserMessageHandlers', () => ({
+  registerUserMessageHandlers: jest.fn()
 }));
 
 describe('compose users auth services', () => {
@@ -50,6 +54,7 @@ describe('compose users auth services', () => {
     expect(userUseCasesSpy).toHaveBeenCalled();
     expect(authUseCasesSpy).toHaveBeenCalled();
     expect(registerUserEventListeners).toHaveBeenCalledWith(eventBus, undefined);
+    expect(registerUserMessageHandlers).not.toHaveBeenCalled();
     expect(result).toStrictEqual({
       dataRepository,
       userService,
@@ -77,5 +82,35 @@ describe('compose users auth services', () => {
     });
 
     expect(registerUserEventListeners).not.toHaveBeenCalled();
+    expect(registerUserMessageHandlers).not.toHaveBeenCalled();
+  });
+
+  it('registers request/response handlers when message mediator exists', () => {
+    expect.hasAssertions();
+    jest.spyOn(UserDataRepository, 'compile').mockReturnValue({} as any);
+    jest.spyOn(UserService, 'compile').mockReturnValue({} as any);
+    jest.spyOn(UserProviderLocal, 'compile').mockReturnValue({} as any);
+    const authService = {} as any;
+    jest.spyOn(AuthService, 'compile').mockReturnValue(authService);
+    jest.spyOn(UserUseCases, 'compile').mockReturnValue({} as any);
+    jest.spyOn(AuthUseCases, 'compile').mockReturnValue({} as any);
+
+    const messageMediator = {
+      request: jest.fn(),
+      registerHandler: jest.fn(),
+      publish: jest.fn(),
+      subscribe: jest.fn()
+    };
+
+    composeUsersAuthServices({
+      databaseClient: { stores: {} } as any,
+      passwordCryptoService: { hash: jest.fn(), compare: jest.fn() } as any,
+      mutexService: { lock: jest.fn(), unlock: jest.fn() } as any,
+      jwtService: { sign: jest.fn(), verify: jest.fn() } as any,
+      messageMediator: messageMediator as any
+    });
+
+    expect(registerUserEventListeners).toHaveBeenCalledWith(messageMediator, undefined);
+    expect(registerUserMessageHandlers).toHaveBeenCalledWith(messageMediator, authService);
   });
 });

@@ -45,8 +45,11 @@
     "prod:hyper-express": "node --env-file=./.build/config/.env.prod ./.build/interface/HTTP/adapters/hyper-express/hyper-express.js",
     "prod:serverless": "npm run lint && NODE_ENV=prod serverless dev",
     "docker:composeredis": "docker compose -f \"docker-compose-redis.yml\" up -d --build",
+    "docker:composemessaging": "docker compose -f \"docker-compose-messaging.yml\" up -d --build",
+    "docker:composerabbit": "docker compose -f \"docker-compose-messaging.yml\" up -d rabbitmq",
     "docker:stop": "docker-compose stop",
     "docker:restart": "docker compose -f \"docker-compose-redis.yml\" down && npm run docker:composeredis",
+    "docker:restart:messaging": "docker compose -f \"docker-compose-messaging.yml\" down && npm run docker:composemessaging",
     "docker:clean": "docker system prune -a"
   },
   "dependencies": {
@@ -54,9 +57,11 @@
     "@fastify/formbody": "^8.0.1",
     "@fastify/helmet": "^12.0.1",
     "@fastify/static": "^8.0.1",
+    "amqplib": "^2.0.1",
     "aws-lambda": "^1.0.7",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
+    "bullmq": "^4.18.3",
     "bunyan": "^1.8.15",
     "cors": "^2.8.5",
     "express": "^4.21.0",

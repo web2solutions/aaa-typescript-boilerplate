@@ -79,5 +79,7 @@ export { LogoutRequestEvent } from '@src/modules/Users/events/LogoutRequestEvent
 export { RegisterRequestEvent } from '@src/modules/Users/events/RegisterRequestEvent';
 export { UpdatePasswordRequestEvent } from '@src/modules/Users/events/UpdatePasswordRequestEvent';
 export { UserIntegrationEventName } from '@src/modules/Users/events/contracts/UserIntegrationEventName';
+export { UserMessageContracts } from '@src/modules/Users/events/contracts/UserMessageContracts';
 export { IUserEventListeners } from '@src/modules/Users/events/contracts/IUserEventListeners';
 export { registerUserEventListeners } from '@src/modules/Users/events/listeners/registerUserEventListeners';
+export { registerUserMessageHandlers } from '@src/modules/Users/events/listeners/registerUserMessageHandlers';

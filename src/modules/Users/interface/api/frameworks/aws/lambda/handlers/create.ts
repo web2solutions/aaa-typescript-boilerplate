@@ -21,7 +21,7 @@ import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
-import { InMemoryEventBus } from '@src/infra/events/InMemoryEventBus';
+import { compileMessageMediator } from '@src/infra/messages/compileMessageMediator';
 
 const OasFilePath = path.resolve('./spec/1.0.0.yml');
 
@@ -33,14 +33,14 @@ const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();
 const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
-const eventBus = InMemoryEventBus.compile();
+const messageMediator = compileMessageMediator();
 
 const { authService, userUseCases, authUseCases } = composeUsersAuthServices({
   databaseClient: InMemoryDbClient,
   passwordCryptoService,
   mutexService,
   jwtService,
-  eventBus
+  messageMediator
 });
 
 const controller = new UserController({
@@ -50,7 +50,8 @@ const controller = new UserController({
   userUseCases,
   authUseCases,
   mutexService,
-  passwordCryptoService
+  passwordCryptoService,
+  messageMediator
 });
 
 export const handler: Handler = async (event: APIGatewayProxyEvent):

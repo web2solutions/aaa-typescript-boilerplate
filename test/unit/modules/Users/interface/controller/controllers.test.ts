@@ -122,4 +122,23 @@ describe('users controllers', () => {
     expect(() => new AuthController({ ...factory, authUseCases: undefined } as any)).toThrow();
     expect(() => new UserController({ ...factory, userUseCases: undefined } as any)).toThrow();
   });
+
+  it('uses message mediator in authorization decorator when available', async () => {
+    expect.hasAssertions();
+    const messageMediator = {
+      request: jest.fn().mockResolvedValue({ result: { id: 'u1' } }),
+      registerHandler: jest.fn(),
+      publish: jest.fn(),
+      subscribe: jest.fn()
+    };
+    const factory = makeFactory({ messageMediator });
+    const controller = new UserController(factory as any);
+
+    await controller.delete(makeEvent());
+
+    expect(messageMediator.request).toHaveBeenCalledWith(expect.objectContaining({
+      contract: 'users.auth.ensure-access'
+    }));
+    expect(factory.authService.authorize).not.toHaveBeenCalled();
+  });
 });

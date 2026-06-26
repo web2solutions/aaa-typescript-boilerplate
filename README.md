@@ -124,6 +124,7 @@ Project documentation is separated by nature so Product and Engineering audience
 ```bash
 npm install
 npm run docker:composeredis
+npm run docker:composerabbit
 npm run ci:gate
 npm run dev:fastify
 ```

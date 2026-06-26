@@ -6,6 +6,7 @@
 - TypeScript
 - Jest
 - Redis (mutex support, optional local via Docker)
+- RabbitMQ or BullMQ/Redis (optional, for `MessageMediator` adapter)
 - OpenAPI typings
 - YAML parser
 
@@ -21,6 +22,46 @@ Run Redis (if needed):
 
 ```bash
 npm run docker:composeredis
+```
+
+Run messaging services (RabbitMQ + Redis) with Docker:
+
+```bash
+npm run docker:composemessaging
+```
+
+Run only RabbitMQ (useful when Redis is already running):
+
+```bash
+npm run docker:composerabbit
+```
+
+## Message Mediator Adapter
+
+The mediator can be selected via environment variable:
+
+```bash
+AAA_MESSAGE_MEDIATOR_ADAPTER=inmemory # default
+AAA_MESSAGE_MEDIATOR_ADAPTER=rabbitmq
+AAA_MESSAGE_MEDIATOR_ADAPTER=bullmq
+```
+
+RabbitMQ required variables:
+
+```bash
+AAA_RABBITMQ_URL=amqp://guest:guest@127.0.0.1:5672
+AAA_RABBITMQ_EXCHANGE=app.events
+AAA_RABBITMQ_REQUEST_QUEUE=app.requests
+AAA_RABBITMQ_PREFETCH=10
+```
+
+BullMQ required variables:
+
+```bash
+AAA_BULLMQ_REDIS_HOST=127.0.0.1
+AAA_BULLMQ_REDIS_PORT=6379
+AAA_BULLMQ_REDIS_DB=1
+AAA_BULLMQ_REQUEST_QUEUE=app.requests
 ```
 
 ## API Documentation

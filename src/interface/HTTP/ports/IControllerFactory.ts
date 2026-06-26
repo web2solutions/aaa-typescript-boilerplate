@@ -5,6 +5,7 @@ import { IAuthUseCases } from '@src/modules/Users/application/ports/IAuthUseCase
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
+import { IMessageMediator } from '@src/modules/port';
 // import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 
 export interface IControllerFactory {
@@ -16,4 +17,5 @@ export interface IControllerFactory {
   authUseCases?: IAuthUseCases;
   passwordCryptoService?: IPasswordCryptoService,
   mutexService?: IMutexService;
+  messageMediator?: IMessageMediator;
 }
