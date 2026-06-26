@@ -13,6 +13,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      AAA_JWT_TOKEN_SECRET_KEY: ${{ secrets.AAA_JWT_TOKEN_SECRET_KEY || 'ci_jwt_secret_key' }}
+      AAA_REDIS_PASSWORD: ${{ secrets.AAA_REDIS_PASSWORD || 'ci_redis_password' }}
 
     strategy:
       matrix:
@@ -27,7 +30,7 @@ jobs:
       with:
         auto-start: true
         redis-version: "7.x"
-        redis-conf: "requirepass ${{ secrets.AAA_REDIS_PASSWORD }}"
+        redis-conf: "requirepass ${{ env.AAA_REDIS_PASSWORD }}"
     - run: redis-cli ping
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
@@ -40,6 +43,3 @@ jobs:
     - run: wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && rm dockerize-linux-amd64-v0.6.1.tar.gz
     - run: dockerize -wait tcp://localhost:6379 -timeout 1m
     - run: npm run ci:gate
-      env:
-        AAA_JWT_TOKEN_SECRET_KEY: ${{ secrets.AAA_JWT_TOKEN_SECRET_KEY }}
-        AAA_REDIS_PASSWORD: ${{ secrets.AAA_REDIS_PASSWORD }}
