@@ -1,4 +1,10 @@
 /* eslint-disable no-underscore-dangle */
+import {
+  IOpenApiDataEntityLike,
+  IOpenApiFieldDefinitionLike,
+  throwIfDataEntityIsNotOpenApi31Compliant,
+  throwIfFieldDefinitionIsNotOpenApi31Compliant
+} from '@src/shared/openapi/OpenApi31DataEntity';
 import { UUID } from './UUID';
 
 export abstract class BaseModel<T> {
@@ -31,6 +37,18 @@ export abstract class BaseModel<T> {
 
   public set updatedAt(_updatedAt: Date) {
     this._updatedAt = _updatedAt;
+  }
+
+  public static throwIfFieldSchemaIsNotOpenApi31Compliant(
+    field: IOpenApiFieldDefinitionLike
+  ): void {
+    throwIfFieldDefinitionIsNotOpenApi31Compliant(field);
+  }
+
+  public static throwIfDataEntitySchemaIsNotOpenApi31Compliant(
+    entity: IOpenApiDataEntityLike
+  ): void {
+    throwIfDataEntityIsNotOpenApi31Compliant(entity);
   }
 
   public serialize(): T {

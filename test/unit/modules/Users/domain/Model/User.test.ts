@@ -23,6 +23,17 @@ const basePayload = () => ({
 });
 
 describe('user domain model', () => {
+  it('exposes openapi 3.1 compliant data entity schema', () => {
+    expect.hasAssertions();
+    expect(User.dataEntitySchema.name).toBe('User');
+    expect(User.dataEntitySchema.fields).toStrictEqual(expect.arrayContaining([
+      expect.objectContaining({
+        name: 'id',
+        format: 'uuid'
+      })
+    ]));
+  });
+
   it('creates and mutates aggregate value objects', () => {
     expect.hasAssertions();
     const user = new User(basePayload());

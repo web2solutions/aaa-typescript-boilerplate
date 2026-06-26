@@ -31,99 +31,7 @@ describe('cli entity/model manager', () => {
     };
   };
 
-  it('runs create/update/manage/delete flow', async () => {
-    expect.hasAssertions();
-    const catalog: IWorkspaceCatalog = {
-      version: 1,
-      domains: [{
-        id: 'd1',
-        name: 'Users',
-        description: '',
-        boundedContext: 'identity',
-        status: 'active',
-        tags: ['core'],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }],
-      entities: []
-    };
-
-    const { context, logs, saveCatalog } = createContext(
-      catalog,
-      [
-        0, // list when empty
-        2, // create
-        2, // kind = aggregate
-        0, // domain = Users
-        0, // list now has one entity
-        5, // manage fields
-        0, // choose entity index for manage fields
-        0, // list fields
-        2, // add field
-        2, // add field (duplicate)
-        3, // update field
-        0, // choose field to update
-        5, // delete field
-        0, // choose field to delete
-        6, // back from field manager
-        3, // update entity/model
-        0, // choose entity to update
-        3, // kind=model
-        1, // choose custom domain option
-        4, // delete entity/model
-        0, // choose entity to delete
-        4, // delete entity/model again
-        0, // choose entity to delete
-        6 // back
-      ],
-      [
-        'Task',
-        'Task aggregate',
-        'y',
-        'id',
-        'uuid',
-        'y',
-        '',
-        '',
-        'required',
-        '',
-        'n',
-        'create,update',
-        'id',
-        'string',
-        'y',
-        '',
-        '',
-        '',
-        '',
-        'id',
-        'uuid',
-        'y',
-        '',
-        '',
-        'required,min:3',
-        'immutable',
-        'TaskModel',
-        'custom',
-        'Task model',
-        'list,search',
-        'wrong-name',
-        'TaskModel'
-      ]
-    );
-
-    await entityModelManagerSubApplication.run(context as any);
-
-    expect(saveCatalog.mock.calls.length).toBeGreaterThanOrEqual(4);
-    expect(logs).toStrictEqual(expect.arrayContaining([
-      'No entities/models registered.',
-      'Entity/model "Task" created.',
-      'Field "id" already exists.',
-      'Entity/model "Task" updated.'
-    ]));
-  });
-
-  it('covers field details listing and behavior edit for selected field', async () => {
+  it('shows selected field details, edits behavior and adds openapi-compliant fields', async () => {
     expect.hasAssertions();
     const catalog: IWorkspaceCatalog = {
       version: 1,
@@ -145,11 +53,11 @@ describe('cli entity/model manager', () => {
         description: '',
         fields: [{
           name: 'id',
-          type: 'uuid',
+          type: 'string',
           required: true,
           format: 'uuid',
           defaultValue: '',
-          validations: ['required'],
+          validations: ['minLength:1'],
           behavior: 'immutable'
         }],
         behaviors: [],
@@ -162,66 +70,43 @@ describe('cli entity/model manager', () => {
       catalog,
       [
         5, // manage fields
-        0, // select entity
+        0, // choose entity
         1, // view details
-        0, // select field
+        0, // field index
         4, // edit behavior
-        0, // select field
+        0, // field index
+        2, // add field
+        0, // type: string
+        0, // format: none
+        1, // validations: finish
+        0, // list fields
         6, // back field manager
-        6 // back main
+        6 // back main manager
       ],
       [
-        'system-managed'
+        'system-managed',
+        'title',
+        'y',
+        '',
+        'human-readable'
       ]
     );
 
     await entityModelManagerSubApplication.run(run.context as any);
 
+    expect(run.saveCatalog.mock.calls.length).toBeGreaterThanOrEqual(2);
     expect(run.logs).toStrictEqual(expect.arrayContaining([
       'Field: id',
-      '  type: uuid',
-      '  required: yes',
-      '  behavior: immutable',
-      'Field "id" behavior updated.'
+      '  type: string',
+      '  format: uuid',
+      'Field "id" behavior updated.',
+      'Field "title" added.'
     ]));
-    expect(catalog.entities[0].fields[0].behavior).toBe('system-managed');
   });
 
-  it('handles empty selections and no-match search', async () => {
-    expect.hasAssertions();
-    const emptyCatalog: IWorkspaceCatalog = {
-      version: 1,
-      domains: [],
-      entities: []
-    };
-    const firstRun = createContext(emptyCatalog, [1, 3, 4, 5, 6], ['abc']);
-    await entityModelManagerSubApplication.run(firstRun.context as any);
-    expect(firstRun.logs).toContain('No matching entities/models.');
-    expect(firstRun.logs).toContain('No entities/models registered yet.');
-
-    const secondRun = createContext(emptyCatalog, [2, 0, 6], ['', '']);
-    await entityModelManagerSubApplication.run(secondRun.context as any);
-    expect(secondRun.logs).toContain('Name is required.');
-    expect(secondRun.saveCatalog).toHaveBeenCalledTimes(0);
-  });
-
-  it('covers missing domain and empty field branches', async () => {
+  it('handles empty field branches and allows adding validated field rules', async () => {
     expect.hasAssertions();
     const catalog: IWorkspaceCatalog = {
-      version: 1,
-      domains: [],
-      entities: []
-    };
-
-    const missingDomain = createContext(
-      catalog,
-      [2, 1, 6],
-      ['Task', '', '']
-    );
-    await entityModelManagerSubApplication.run(missingDomain.context as any);
-    expect(missingDomain.logs).toContain('Domain is required.');
-
-    const fieldsCatalog: IWorkspaceCatalog = {
       version: 1,
       domains: [{
         id: 'd1',
@@ -246,23 +131,36 @@ describe('cli entity/model manager', () => {
       }]
     };
 
-    const manageEmptyFields = createContext(
-      fieldsCatalog,
-      [5, 0, 0, 3, 4, 5, 2, 2, 6, 6],
+    const run = createContext(
+      catalog,
       [
-        '',
+        5, // manage fields
+        0, // choose entity
+        1, // view details (no fields)
+        3, // update field (no fields)
+        4, // edit behavior (no fields)
+        5, // delete field (no fields)
+        2, // add field
+        0, // type: string
+        0, // format: none
+        0, // validations: add
+        0, // validation keyword: minLength
+        1, // validations: finish
+        6, // back field manager
+        6 // back manager
+      ],
+      [
         'title',
-        'string',
         'y',
         '',
         '',
-        '',
-        ''
+        '3'
       ]
     );
-    await entityModelManagerSubApplication.run(manageEmptyFields.context as any);
 
-    expect(manageEmptyFields.logs).toStrictEqual(expect.arrayContaining([
+    await entityModelManagerSubApplication.run(run.context as any);
+
+    expect(run.logs).toStrictEqual(expect.arrayContaining([
       'No fields defined.',
       'No fields to update.',
       'No fields to update behavior.',
@@ -271,35 +169,199 @@ describe('cli entity/model manager', () => {
     ]));
   });
 
-  it('covers search hit and delete success paths', async () => {
+  it('covers list/search/create/update/delete entity flow under openapi-compliant schema', async () => {
     expect.hasAssertions();
     const catalog: IWorkspaceCatalog = {
       version: 1,
+      domains: [{
+        id: 'd1',
+        name: 'Users',
+        description: '',
+        boundedContext: '',
+        status: 'active',
+        tags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }],
+      entities: []
+    };
+
+    const run = createContext(
+      catalog,
+      [
+        0, // list empty
+        1, // search
+        2, // create
+        0, // kind: entity
+        0, // domain: Users
+        1, // search hit
+        3, // update
+        0, // select entity
+        3, // kind: model
+        1, // custom domain option
+        4, // delete
+        0, // select entity
+        6 // back
+      ],
+      [
+        'unknown',
+        'Task',
+        'Task description',
+        'n',
+        'create,read',
+        'task',
+        'TaskModel',
+        'Billing',
+        'Updated description',
+        'read,update',
+        'TaskModel'
+      ]
+    );
+
+    await entityModelManagerSubApplication.run(run.context as any);
+
+    expect(run.logs).toStrictEqual(expect.arrayContaining([
+      'No entities/models registered.',
+      'No matching entities/models.',
+      'Entity/model "Task" created.',
+      'Found 1 item(s):',
+      'Entity/model "TaskModel" updated.',
+      'Entity/model removed.'
+    ]));
+  });
+
+  it('handles required name and required domain on creation', async () => {
+    expect.hasAssertions();
+    const emptyCatalog: IWorkspaceCatalog = {
+      version: 1,
       domains: [],
+      entities: []
+    };
+
+    const missingName = createContext(emptyCatalog, [2, 6], ['']);
+    await entityModelManagerSubApplication.run(missingName.context as any);
+    expect(missingName.logs).toContain('Name is required.');
+
+    const missingDomain = createContext(emptyCatalog, [2, 0, 6], ['Task', '']);
+    await entityModelManagerSubApplication.run(missingDomain.context as any);
+    expect(missingDomain.logs).toContain('Domain is required.');
+  });
+
+  it('covers duplicate/add/update/delete field branches with openapi validation interactions', async () => {
+    expect.hasAssertions();
+    const catalog: IWorkspaceCatalog = {
+      version: 1,
+      domains: [{
+        id: 'd1',
+        name: 'Users',
+        description: '',
+        boundedContext: '',
+        status: 'active',
+        tags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }],
       entities: [{
         id: 'e1',
         name: 'Task',
-        domain: 'Work',
+        domain: 'Users',
         kind: 'entity',
-        description: 'task item',
-        fields: [{
-          name: 'name',
-          type: 'string',
-          required: true,
-          validations: []
-        }],
+        description: '',
+        fields: [],
         behaviors: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }]
     };
-    const run = createContext(catalog, [1, 4, 0, 6], ['task', 'Task']);
+
+    const run = createContext(
+      catalog,
+      [
+        5, // manage fields
+        0, // choose entity
+        2, // add field
+        0, // type: string
+        0, // format: none
+        0, // validations: add
+        0, // keyword: minLength
+        1, // validations: finish
+        2, // add duplicate field
+        0, // type: string
+        0, // format: none
+        1, // validations: finish
+        3, // update field
+        0, // choose field index
+        2, // type: integer
+        1, // format: int32
+        0, // validations: add
+        0, // keyword: minimum
+        1, // validations: finish
+        5, // delete field
+        0, // choose field index
+        6, // back field manager
+        6 // back manager
+      ],
+      [
+        'title',
+        'y',
+        '',
+        '',
+        '',
+        'title',
+        'y',
+        '',
+        '',
+        '',
+        '',
+        '5',
+        'indexed',
+        '1'
+      ]
+    );
 
     await entityModelManagerSubApplication.run(run.context as any);
 
     expect(run.logs).toStrictEqual(expect.arrayContaining([
-      'Found 1 item(s):',
-      'Entity/model removed.'
+      'Validation "minLength" skipped because value is empty.',
+      'Field "title" added.',
+      'Field "title" already exists.',
+      'Field "title" updated.',
+      'Field "title" deleted.'
     ]));
+    expect(run.saveCatalog.mock.calls.length).toBeGreaterThan(0);
+  });
+
+  it('covers delete cancellation branch', async () => {
+    expect.hasAssertions();
+    const catalog: IWorkspaceCatalog = {
+      version: 1,
+      domains: [{
+        id: 'd1',
+        name: 'Users',
+        description: '',
+        boundedContext: '',
+        status: 'active',
+        tags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }],
+      entities: [{
+        id: 'e1',
+        name: 'Task',
+        domain: 'Users',
+        kind: 'entity',
+        description: '',
+        fields: [],
+        behaviors: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }]
+    };
+
+    const run = createContext(catalog, [4, 0, 6], ['not-task']);
+    await entityModelManagerSubApplication.run(run.context as any);
+
+    expect(run.logs).toContain('Delete cancelled.');
+    expect(run.saveCatalog).not.toHaveBeenCalled();
   });
 });

@@ -139,4 +139,31 @@ describe('port core helpers', () => {
     expect(response.result).toBe(true);
     expect(response.message).toBe('ok');
   });
+
+  it('validates openapi 3.1 field/data-entity schema contracts', () => {
+    expect.hasAssertions();
+    expect(() => BaseModel.throwIfFieldSchemaIsNotOpenApi31Compliant({
+      name: 'email',
+      type: 'string',
+      format: 'email',
+      validations: ['minLength:3']
+    })).not.toThrow();
+
+    expect(() => BaseModel.throwIfFieldSchemaIsNotOpenApi31Compliant({
+      name: 'createdAt',
+      type: 'datetime',
+      format: 'date-time',
+      validations: []
+    } as any)).toThrow('invalid field type');
+
+    expect(() => BaseModel.throwIfDataEntitySchemaIsNotOpenApi31Compliant({
+      name: 'User',
+      fields: [{
+        name: 'id',
+        type: 'string',
+        format: 'uuid',
+        validations: []
+      }]
+    })).not.toThrow();
+  });
 });

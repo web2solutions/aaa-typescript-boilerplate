@@ -70,6 +70,20 @@ Field manager capabilities:
 - Edit only field behavior/notes for a selected field
 - Delete fields
 
+OpenAPI 3.1 compliance behavior:
+
+- Field `type` selection is restricted to OpenAPI 3.1 primitive/data schema types supported by the project:
+  - `string`
+  - `number`
+  - `integer`
+  - `boolean`
+  - `array`
+  - `object`
+- Field `format` options are presented according to the selected type.
+- Validation keywords are presented according to the selected type.
+- New and updated entity field sets are validated before persistence.
+- Invalid schema combinations are rejected by the CLI flow.
+
 Entity/model definition includes:
 
 - `id`
@@ -91,6 +105,23 @@ Field definition includes:
 - `defaultValue`
 - `validations`
 - `behavior`
+
+## OpenAPI 3.1 Schema Rules in Code
+
+Central validation helpers and registries:
+
+- `src/shared/openapi/OpenApi31DataEntity.ts`
+
+Domain model enforcement:
+
+- `src/modules/port/BaseModel.ts`
+  - `throwIfFieldSchemaIsNotOpenApi31Compliant(...)`
+  - `throwIfDataEntitySchemaIsNotOpenApi31Compliant(...)`
+
+Implemented domain schema example:
+
+- `src/modules/Users/domain/Model/User.ts`
+  - static `dataEntitySchema`
 
 ## Persistence
 

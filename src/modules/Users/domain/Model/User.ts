@@ -29,6 +29,70 @@ interface UserFactory extends RequestCreateUser {
 }
 
 export class User extends BaseModel<IUser> implements IUser {
+  public static readonly dataEntitySchema = {
+    name: 'User',
+    fields: [
+      {
+        name: 'id',
+        type: 'string',
+        format: 'uuid',
+        validations: ['pattern:^[0-9a-fA-F-]{36}$']
+      },
+      {
+        name: 'firstName',
+        type: 'string',
+        validations: ['minLength:1']
+      },
+      {
+        name: 'lastName',
+        type: 'string',
+        validations: []
+      },
+      {
+        name: 'avatar',
+        type: 'string',
+        format: 'uri',
+        validations: []
+      },
+      {
+        name: 'username',
+        type: 'string',
+        validations: ['minLength:1']
+      },
+      {
+        name: 'password',
+        type: 'string',
+        format: 'password',
+        validations: []
+      },
+      {
+        name: 'salt',
+        type: 'string',
+        validations: []
+      },
+      {
+        name: 'roles',
+        type: 'array',
+        validations: []
+      },
+      {
+        name: 'emails',
+        type: 'array',
+        validations: []
+      },
+      {
+        name: 'documents',
+        type: 'array',
+        validations: []
+      },
+      {
+        name: 'phones',
+        type: 'array',
+        validations: []
+      }
+    ]
+  } as const;
+
   private _firstName: string = '';
 
   private _lastName: string = '';
@@ -57,6 +121,7 @@ export class User extends BaseModel<IUser> implements IUser {
 
   constructor(payload: UserFactory) {
     super(payload.id);
+    BaseModel.throwIfDataEntitySchemaIsNotOpenApi31Compliant(User.dataEntitySchema as any);
     const {
       firstName,
       lastName,

@@ -1,8 +1,10 @@
+import { OpenApiDataType } from '@src/shared/openapi/OpenApi31DataEntity';
+
 export type Dictionary = Record<string, any>;
 
 export interface IFieldDefinition {
   name: string;
-  type: string;
+  type: OpenApiDataType;
   required: boolean;
   format?: string;
   defaultValue?: string;

@@ -9,6 +9,12 @@ import {
   ISubApplicationContext,
   IWorkspaceCatalog
 } from '@src/interface/CLI/types';
+import {
+  OPEN_API_31_ALLOWED_TYPES,
+  OPEN_API_31_FORMATS_BY_TYPE,
+  OPEN_API_31_VALIDATIONS_BY_TYPE,
+  throwIfDataEntityIsNotOpenApi31Compliant
+} from '@src/shared/openapi/OpenApi31DataEntity';
 
 const printEntity = (context: ISubApplicationContext, item: IEntityDefinition): void => {
   context.log(
@@ -62,30 +68,66 @@ const askFieldDefinition = async (
     return null;
   }
 
-  const type = await context.ask(`Field type (${initial?.type || 'string'}): `);
+  const typeOptions = OPEN_API_31_ALLOWED_TYPES;
+  const initialType = (initial?.type && typeOptions.includes(initial.type)) ? initial.type : 'string';
+  const typeIndex = await context.choose(
+    `Field type (${initialType})`,
+    typeOptions.map((entry) => `${entry}${entry === initialType ? ' (current)' : ''}`)
+  );
+  const type = typeOptions[typeIndex];
+
   let requiredLabel = 'y';
   if (typeof initial?.required === 'boolean') {
     requiredLabel = initial.required ? 'y' : 'n';
   }
   const requiredRaw = await context.ask(`Required? y|n (${requiredLabel}): `);
-  const format = await context.ask(`Format (${initial?.format || ''}): `);
-  const defaultValue = await context.ask(`Default value (${initial?.defaultValue || ''}): `);
-  const validationsRaw = await context.ask(
-    `Validations comma-separated (${(initial?.validations || []).join(',')}): `
+
+  const allowedFormats = OPEN_API_31_FORMATS_BY_TYPE[type];
+  const initialFormat = initial?.format && allowedFormats.includes(initial.format) ? initial.format : 'none';
+  const formatIndex = await context.choose(
+    `Format (${initialFormat})`,
+    allowedFormats.map((entry) => `${entry}${entry === initialFormat ? ' (current)' : ''}`)
   );
+  const selectedFormat = allowedFormats[formatIndex];
+
+  const defaultValue = await context.ask(`Default value (${initial?.defaultValue || ''}): `);
   const behavior = await context.ask(`Behavior notes (${initial?.behavior || ''}): `);
 
   const isRequired = (requiredRaw || (initial?.required ? 'y' : 'n')).toLowerCase() !== 'n';
-  const validations = (validationsRaw || (initial?.validations || []).join(','))
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const selectedValidations: string[] = [];
+  const validationOptions = OPEN_API_31_VALIDATIONS_BY_TYPE[type];
+
+  while (true) {
+    const option = await context.choose('Validation rules', [
+      'Add validation',
+      'Finish'
+    ]);
+    if (option === 1) {
+      break;
+    }
+
+    const keywordIndex = await context.choose(
+      'Choose validation keyword',
+      validationOptions
+    );
+    const keyword = validationOptions[keywordIndex];
+    const value = await context.ask(`Value for ${keyword}: `);
+    if (!value) {
+      context.log(`Validation "${keyword}" skipped because value is empty.`);
+      continue;
+    }
+    selectedValidations.push(`${keyword}:${value}`);
+  }
+
+  const validations = selectedValidations.length > 0
+    ? selectedValidations
+    : [...(initial?.validations || [])];
 
   return {
     name: name || initial?.name || '',
-    type: type || initial?.type || 'string',
+    type,
     required: isRequired,
-    format: format || initial?.format || '',
+    format: selectedFormat === 'none' ? '' : selectedFormat,
     defaultValue: defaultValue || initial?.defaultValue || '',
     validations,
     behavior: behavior || initial?.behavior || ''
@@ -187,6 +229,11 @@ const createEntity = async (context: ISubApplicationContext): Promise<void> => {
   const behaviorsRaw = await context.ask('Behaviors comma-separated (optional): ');
   item.behaviors = behaviorsRaw.split(',').map((entry) => entry.trim()).filter(Boolean);
 
+  throwIfDataEntityIsNotOpenApi31Compliant({
+    name: item.name,
+    fields: item.fields
+  });
+
   catalog.entities.push(item);
   await context.saveCatalog(catalog);
   context.log(`Entity/model "${name}" created.`);
@@ -219,6 +266,11 @@ const updateEntity = async (context: ISubApplicationContext): Promise<void> => {
       .filter(Boolean),
     updatedAt: new Date().toISOString()
   };
+
+  throwIfDataEntityIsNotOpenApi31Compliant({
+    name: catalog.entities[index].name,
+    fields: catalog.entities[index].fields
+  });
 
   await context.saveCatalog(catalog);
   context.log(`Entity/model "${catalog.entities[index].name}" updated.`);
@@ -284,6 +336,10 @@ const manageFields = async (context: ISubApplicationContext): Promise<void> => {
           context.log(`Field "${field.name}" already exists.`);
         } else {
           target.fields.push(field);
+          throwIfDataEntityIsNotOpenApi31Compliant({
+            name: target.name,
+            fields: target.fields
+          });
           target.updatedAt = new Date().toISOString();
           await context.saveCatalog(catalog);
           context.log(`Field "${field.name}" added.`);
@@ -301,6 +357,10 @@ const manageFields = async (context: ISubApplicationContext): Promise<void> => {
       const field = await askFieldDefinition(context, target.fields[fieldIndex]);
       if (field) {
         target.fields[fieldIndex] = field;
+        throwIfDataEntityIsNotOpenApi31Compliant({
+          name: target.name,
+          fields: target.fields
+        });
         target.updatedAt = new Date().toISOString();
         await context.saveCatalog(catalog);
         context.log(`Field "${field.name}" updated.`);

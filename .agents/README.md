@@ -39,6 +39,7 @@ Use these files as living constraints for future maintenance and feature develop
 - [023-domain-model-entity-documentation-per-domain](requirements/023-domain-model-entity-documentation-per-domain.md)
 - [024-readme-architecture-and-runtime-sync](requirements/024-readme-architecture-and-runtime-sync.md)
 - [025-feature-documentation-mandatory](requirements/025-feature-documentation-mandatory.md)
+- [026-openapi31-data-entity-model-compliance](requirements/026-openapi31-data-entity-model-compliance.md)
 - [Data Entity Documentation Agent](data-entity-documentation-agent.md)
 - [Domain Modeling Agent](domain-modeling-agent.md)
 - [Message Mediator Domain Agent](message-mediator-domain-agent.md)

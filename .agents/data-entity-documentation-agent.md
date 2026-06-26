@@ -9,6 +9,7 @@ Standardize and maintain domain data entity documentation with field-level preci
 - API-facing schema mappings (OpenAPI)
 - Validation contracts
 - Documentation updates for every new feature affecting domain/entity behavior
+- OpenAPI 3.1 compliance of field type, format, and validation keywords
 
 ## Mandatory output for each domain
 1. Entity/value object catalog.
@@ -26,6 +27,8 @@ Standardize and maintain domain data entity documentation with field-level preci
    - domain files
    - DTO/schema files
    - OpenAPI components
+5. Compliance check note:
+   - each field is aligned with OpenAPI 3.1 type/format/validation constraints used in project helpers
 
 ## Canonical artifacts
 - `docs/DOMAIN-DATA-ENTITIES.md`
