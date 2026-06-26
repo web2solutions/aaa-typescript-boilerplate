@@ -13,4 +13,9 @@ Event-first integration reduces coupling, improves extensibility, and lowers ris
 - Add static cycle checks in CI.
 
 ## Status
-Active
+Implemented for Users module (active for remaining modules)
+
+## Notes
+- Standardized event naming with `UserIntegrationEventName`.
+- Added composition-time listener wiring via `registerUserEventListeners`.
+- Kept cycle prevention guard in CI (`deps:check-cycles` in `ci:gate`).

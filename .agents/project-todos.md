@@ -60,7 +60,9 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - `UserController` and `AuthController` now call `UserUseCases` and `AuthUseCases` from composition.
   - `RestAPI` and Lambda wiring now resolve Users through shared composition/use-case instances.
 
-- [ ] Prefer event-first integration and prevent circular references
+- [x] Prefer event-first integration and prevent circular references
   - Introduce/standardize event publishing/listening for cross-module integration.
   - Remove cycle-prone imports and add CI checks for dependency cycles.
-  - Progress: introduced `IEventBus` port and `InMemoryEventBus` adapter, with user lifecycle event publishing in `UserService`.
+  - Introduced `IEventBus` port and `InMemoryEventBus` adapter, with user lifecycle event publishing in `UserService`.
+  - Standardized Users integration event names (`UserIntegrationEventName`).
+  - Added composition-level listener registration (`registerUserEventListeners`) and unit tests.

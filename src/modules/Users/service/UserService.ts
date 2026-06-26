@@ -37,6 +37,7 @@ import { RequestCreatePhone } from '@src/modules/Users/interface/dto/RequestCrea
 import { RequestUpdatePhone } from '@src/modules/Users/interface/dto/RequestUpdatePhone';
 import { RequestCreateEmail } from '@src/modules/Users/interface/dto/RequestCreateEmail';
 import { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpdateEmail';
+import { UserIntegrationEventName } from '@src/modules/Users/events/contracts/UserIntegrationEventName';
 
 import { canNotBeEmpty, mustBePassword } from '@src/shared/validators';
 
@@ -126,7 +127,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
 
       const createdUser = await createUser((newData ?? {}), this.dataRepository);
       serviceResponse.result = UserService.sanitizeUser(createdUser);
-      await this.publishEvent('users.user.created', { id: serviceResponse.result?.id });
+      await this.publishEvent(UserIntegrationEventName.Created, { id: serviceResponse.result?.id });
     } catch (error) {
       serviceResponse.error = error as BaseError;
     }
@@ -143,7 +144,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       const user = await updateUser(id, data, this.dataRepository);
       // console.log('user', user)
       serviceResponse.result = UserService.sanitizeUser(user);
-      await this.publishEvent('users.user.updated', { id });
+      await this.publishEvent(UserIntegrationEventName.Updated, { id });
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -162,7 +163,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
 
       const deleted = await deleteUserById(id, this.dataRepository);
       serviceResponse.result = deleted;
-      await this.publishEvent('users.user.deleted', { id });
+      await this.publishEvent(UserIntegrationEventName.Deleted, { id });
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {
@@ -223,7 +224,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       newData.salt = salt;
       const user = await updatePassword(id, newData, this.dataRepository);
       serviceResponse.result = UserService.sanitizeUser(user);
-      await this.publishEvent('users.user.passwordUpdated', { id });
+      await this.publishEvent(UserIntegrationEventName.PasswordUpdated, { id });
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {

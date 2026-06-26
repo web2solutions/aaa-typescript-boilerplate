@@ -12,6 +12,8 @@ import { UserUseCases } from '@src/modules/Users/application/UserUseCases';
 import { AuthUseCases } from '@src/modules/Users/application/AuthUseCases';
 import { IUserUseCases } from '@src/modules/Users/application/ports/IUserUseCases';
 import { IAuthUseCases } from '@src/modules/Users/application/ports/IAuthUseCases';
+import { IUserEventListeners } from '@src/modules/Users/events/contracts/IUserEventListeners';
+import { registerUserEventListeners } from '@src/modules/Users/events/listeners/registerUserEventListeners';
 import { IUserProvider } from '@src/modules/Users/service/ports/IUserProvider';
 import { IAuthService } from '@src/modules/Users/service/ports/IAuthService';
 
@@ -21,6 +23,7 @@ interface IUsersAuthCompositionConfig {
   mutexService: IMutexService;
   jwtService: IJwtService;
   eventBus?: IEventBus;
+  userEventListeners?: IUserEventListeners;
 }
 
 interface IUsersAuthComposition {
@@ -40,7 +43,8 @@ export const composeUsersAuthServices = (
     passwordCryptoService,
     mutexService,
     jwtService,
-    eventBus
+    eventBus,
+    userEventListeners
   } = config;
 
   const dataRepository = UserDataRepository.compile({
@@ -62,6 +66,10 @@ export const composeUsersAuthServices = (
   );
   const userUseCases = UserUseCases.compile(userService);
   const authUseCases = AuthUseCases.compile(authService, mutexService);
+
+  if (eventBus) {
+    registerUserEventListeners(eventBus, userEventListeners);
+  }
 
   return {
     dataRepository,
