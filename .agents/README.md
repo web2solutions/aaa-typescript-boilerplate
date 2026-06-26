@@ -27,4 +27,7 @@ Use these files as living constraints for future maintenance and feature develop
 - [015-architecture-nfr-ddd-eda-hexagonal](requirements/015-architecture-nfr-ddd-eda-hexagonal.md)
 - [016-layer-call-order-and-boundaries](requirements/016-layer-call-order-and-boundaries.md)
 - [017-event-first-integration-and-circular-safety](requirements/017-event-first-integration-and-circular-safety.md)
+- [018-project-documentation-and-structure-sync](requirements/018-project-documentation-and-structure-sync.md)
+- [019-domain-data-entity-documentation-standard](requirements/019-domain-data-entity-documentation-standard.md)
+- [Data Entity Documentation Agent](data-entity-documentation-agent.md)
 - [Architecture Alignment Plan](architecture-alignment-plan.md)
