@@ -1,12 +1,12 @@
 import {
   IUser,
-  UserDataRepository
+  IUserRepository
 } from '@src/modules/Users';
 
 export const deletePhone = async (
   userId: string,
   phoneId: string,
-  userDataRepository: UserDataRepository
+  userDataRepository: IUserRepository
 ): Promise<IUser> => {
   const model = await userDataRepository.deletePhone(userId, phoneId);
   return model.serialize();

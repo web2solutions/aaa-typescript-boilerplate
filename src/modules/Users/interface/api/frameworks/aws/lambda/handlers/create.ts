@@ -33,7 +33,7 @@ const jwtService = JwtService.compile();
 const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 
-const { authService } = composeUsersAuthServices({
+const { authService, userService } = composeUsersAuthServices({
   databaseClient: InMemoryDbClient,
   passwordCryptoService,
   mutexService,
@@ -44,6 +44,7 @@ const controller = new UserController({
   authService,
   openApiSpecification,
   databaseClient,
+  userService,
   mutexService,
   passwordCryptoService
 });

@@ -34,14 +34,6 @@ const authService = {
   authenticate: jest.fn()
 };
 
-const controllerFactory = {
-  authService,
-  databaseClient,
-  openApiSpecification: {},
-  passwordCryptoService,
-  mutexService
-};
-
 describe('user factories', () => {
   it('return fresh instances from compile calls', () => {
     expect.hasAssertions();
@@ -81,6 +73,15 @@ describe('user factories', () => {
       passwordCryptoService as never,
       jwtService as never
     );
+
+    const controllerFactory = {
+      authService,
+      databaseClient,
+      openApiSpecification: {},
+      userService,
+      passwordCryptoService,
+      mutexService
+    };
 
     const userController = UserController.compile(controllerFactory as never);
     const otherUserController = UserController.compile(controllerFactory as never);

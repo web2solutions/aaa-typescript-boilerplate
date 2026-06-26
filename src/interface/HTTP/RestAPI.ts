@@ -144,6 +144,17 @@ export class RestAPI<T> {
             authService: this.authService,
             openApiSpecification: spec,
             databaseClient: this.databaseClient,
+            userService: moduleName === 'Users' && controllerName === 'UserController'
+              ? UserService.compile({
+                dataRepository: UserDataRepository.compile({
+                  databaseClient: this.databaseClient
+                }),
+                services: {
+                  passwordCryptoService: this.passwordCryptoService,
+                  mutexService: this.mutexClient
+                }
+              })
+              : undefined,
             mutexService: this.mutexClient,
             passwordCryptoService: this.passwordCryptoService
           });

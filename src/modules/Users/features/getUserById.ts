@@ -1,11 +1,11 @@
 import {
   IUser,
-  UserDataRepository
+  IUserRepository
 } from '@src/modules/Users';
 
 export const getUserById = async (
   id: string,
-  userDataRepository: UserDataRepository
+  userDataRepository: IUserRepository
 ): Promise<IUser> => {
   const model = await userDataRepository.getOneById(id);
   return model.serialize();

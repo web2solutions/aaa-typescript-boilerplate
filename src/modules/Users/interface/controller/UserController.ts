@@ -1,6 +1,7 @@
 import { IController, IControllerFactory } from '@src/interface/HTTP/ports';
 import { BaseController } from '@src/interface/HTTP/ports/BaseController';
 import { Security } from '@src/infra/security';
+import { _INFRA_NOT_IMPLEMENTED_ } from '@src/config/constants';
 import {
   throwIfOASInputValidationFails,
   validateRequestParams
@@ -22,7 +23,6 @@ import {
   RequestUpdatePassword,
   RequestUpdatePhone,
   RequestUpdateUser,
-  UserDataRepository,
   UserService
 } from '@src/modules/Users';
 
@@ -31,16 +31,12 @@ export class UserController extends BaseController implements IController {
 
   constructor(factory: IControllerFactory) {
     super(factory);
-    const dataRepository = UserDataRepository.compile({
-      databaseClient: this.databaseClient
-    });
-    this.userService = UserService.compile({
-      dataRepository,
-      services: {
-        passwordCryptoService: this.passwordCryptoService,
-        mutexService: this.mutexService
-      }
-    });
+    if (!factory.userService) {
+      const error = new Error('UserService is not implemented');
+      error.name = _INFRA_NOT_IMPLEMENTED_;
+      throw error;
+    }
+    this.userService = factory.userService;
   }
 
   @Authorize()

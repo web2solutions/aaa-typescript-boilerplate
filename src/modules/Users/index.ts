@@ -45,6 +45,7 @@ export { IAuthService } from '@src/modules/Users/service/ports/IAuthService';
 export { IAuthSchema } from '@src/modules/Users/service/ports/IAuthSchema';
 export { EAuthSchemaType } from '@src/modules/Users/service/ports/EAuthSchemaType';
 export { IUserProvider } from '@src/modules/Users/service/ports/IUserProvider';
+export { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
 export { IAuthorizationHeader } from '@src/modules/Users/service/ports/IAuthorizationHeader';
 export { ITokenObject } from '@src/modules/Users/service/ports/ITokenObject';
 

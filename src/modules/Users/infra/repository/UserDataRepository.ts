@@ -18,6 +18,7 @@ import {
   RequestUpdateEmail,
   RequestCreateEmail
 } from '@src/modules/Users';
+import { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
 import {
   IPagingRequest, IPagingResponse, IRepoConfig, BaseRepo
 } from '@src/modules/port';
@@ -35,7 +36,9 @@ export function exclude<T, Key extends keyof T>(
   return record;
 }
 
-export class UserDataRepository extends BaseRepo<User, RequestCreateUser, RequestUpdateUser> {
+export class UserDataRepository
+  extends BaseRepo<User, RequestCreateUser, RequestUpdateUser>
+  implements IUserRepository {
   public store: IStore<IUser>;
 
   public limit: number;

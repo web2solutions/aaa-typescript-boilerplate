@@ -1,12 +1,12 @@
 import {
   IUser,
   RequestCreateUser,
-  UserDataRepository
+  IUserRepository
 } from '@src/modules/Users';
 
 export const createUser = async (
   payload: RequestCreateUser,
-  userDataRepository: UserDataRepository
+  userDataRepository: IUserRepository
 ): Promise<IUser> => {
   const model = await userDataRepository.create(payload);
   const rawDoc = { ...model.serialize() };

@@ -1,13 +1,13 @@
 import {
   IUser,
-  UserDataRepository,
+  IUserRepository,
   RequestUpdatePassword
 } from '@src/modules/Users';
 
 export const updatePassword = async (
   id: string,
   payload: RequestUpdatePassword,
-  userDataRepository: UserDataRepository
+  userDataRepository: IUserRepository
 ): Promise<IUser> => {
   const model = await userDataRepository.updatePassword(id, payload);
   return model.serialize();
