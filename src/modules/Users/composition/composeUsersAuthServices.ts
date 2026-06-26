@@ -4,12 +4,12 @@ import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IJwtService } from '@src/infra/jwt/IJwtService';
 import { IEventBus } from '@src/modules/port';
 
-import { UserDataRepository } from '@src/modules/Users/infra/repository/UserDataRepository';
+import { UserDataRepository } from '@src/modules/Users/adapters/out/persistence/UserDataRepository';
 import { UserService } from '@src/modules/Users/service/UserService';
 import { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 import { AuthService } from '@src/modules/Users/service/AuthService';
-import { UserUseCases } from '@src/modules/Users/application/UserUseCases';
-import { AuthUseCases } from '@src/modules/Users/application/AuthUseCases';
+import { UserUseCases } from '@src/modules/Users/application/use-cases/UserUseCases';
+import { AuthUseCases } from '@src/modules/Users/application/use-cases/AuthUseCases';
 import { IUserUseCases } from '@src/modules/Users/application/ports/IUserUseCases';
 import { IAuthUseCases } from '@src/modules/Users/application/ports/IAuthUseCases';
 import { IUserEventListeners } from '@src/modules/Users/events/contracts/IUserEventListeners';

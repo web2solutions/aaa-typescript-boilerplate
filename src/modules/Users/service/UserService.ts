@@ -12,7 +12,7 @@ import {
 } from '@src/modules/port';
 
 import { IUser } from '@src/modules/Users/domain/Entity/IUser';
-import { UserDataRepository } from '@src/modules/Users/infra/repository/UserDataRepository';
+import { UserDataRepository } from '@src/modules/Users/adapters/out/persistence/UserDataRepository';
 import { createUser } from '@src/modules/Users/features/createUser';
 import { updateUser } from '@src/modules/Users/features/updateUser';
 import { deleteUserById } from '@src/modules/Users/features/deleteUserById';

@@ -11,7 +11,7 @@ import { sendErrorResponse } from '@src/interface/HTTP/adapters/aws/lambda/respo
 import {
   composeUsersAuthServices
 } from '@src/modules/Users/composition/composeUsersAuthServices';
-import { UserController } from '@src/modules/Users/interface/controller/UserController';
+import { UserController } from '@src/modules/Users/adapters/in/http/controllers/UserController';
 import { UserCreateRequestEvent } from '@src/modules/Users/events/UserCreateRequestEvent';
 
 import { BaseError } from '@src/infra/exceptions';

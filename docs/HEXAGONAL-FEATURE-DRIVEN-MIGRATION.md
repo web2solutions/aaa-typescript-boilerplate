@@ -102,3 +102,15 @@ Done criteria:
 2. Move `interface/controller` implementation to `adapters/in/http/controllers` keeping backward-compatible re-exports.
 3. Move `infra/repository` to `adapters/out/persistence` keeping backward-compatible re-exports.
 4. Update imports incrementally and keep `ci:gate` green after each step.
+
+## Progress Snapshot
+
+- Completed:
+  - Canonical namespaces created for Users (`adapters/in`, `adapters/out`, `application/use-cases`).
+  - Runtime wiring now prefers canonical controller namespace in `RestAPI` with compatibility fallback.
+  - Users composition and module exports now use canonical application/repository namespaces.
+  - Lambda Users create handler now imports controller from canonical adapter path.
+- Remaining:
+  - Move controller implementation files physically from `interface/controller` to `adapters/in/http/controllers`.
+  - Move repository implementation physically from `infra/repository` to `adapters/out/persistence`.
+  - Remove fallback paths once all modules are migrated.

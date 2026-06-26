@@ -145,8 +145,22 @@ export class RestAPI<T> {
             moduleName = 'Users';
             controllerName = 'AuthController';
           }
-          const controllerPath = `@src/modules/${moduleName}/interface/controller/${controllerName}`;
-          const ControllerModule = require(controllerPath)[controllerName];
+          const controllerPaths = [
+            `@src/modules/${moduleName}/adapters/in/http/controllers/${controllerName}`,
+            `@src/modules/${moduleName}/interface/controller/${controllerName}`
+          ];
+          let ControllerModule;
+          for (const controllerPath of controllerPaths) {
+            try {
+              ControllerModule = require(controllerPath)[controllerName];
+              if (ControllerModule) break;
+            } catch (error) {
+              //
+            }
+          }
+          if (!ControllerModule) {
+            throw new Error(`Controller ${controllerName} not found for module ${moduleName}.`);
+          }
 
           const usersModuleComposition = moduleName === 'Users'
             ? this.composeUsersModule()
