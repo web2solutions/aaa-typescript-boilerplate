@@ -1,25 +1,12 @@
-import readline from 'node:readline/promises';
 import { Prompt } from '@src/interface/CLI/core/prompt';
 
-jest.mock<typeof import('node:readline/promises')>('node:readline/promises', () => ({
-  ...jest.requireActual('node:readline/promises'),
-  createInterface: jest.fn()
-}));
-
 describe('cli prompt', () => {
-  const createInterfaceMock = readline.createInterface as unknown as jest.Mock;
-
-  beforeEach(() => {
-    createInterfaceMock.mockReset();
-  });
-
   it('asks and trims values', async () => {
     expect.hasAssertions();
     const question = jest.fn().mockResolvedValue('  hello  ');
     const close = jest.fn();
-    createInterfaceMock.mockReturnValue({ question, close });
 
-    const prompt = new Prompt();
+    const prompt = new Prompt(() => ({ question, close } as any));
     const value = await prompt.ask('Type: ');
 
     expect(question).toHaveBeenCalledWith('Type: ');
@@ -34,15 +21,17 @@ describe('cli prompt', () => {
       .mockResolvedValueOnce('0')
       .mockResolvedValueOnce('abc')
       .mockResolvedValueOnce('2');
-    createInterfaceMock.mockReturnValue({ question, close: jest.fn() });
+    const close = jest.fn();
     const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
-    const prompt = new Prompt();
+    const prompt = new Prompt(() => ({ question, close } as any));
     const selected = await prompt.choose('Menu', ['One', 'Two', 'Three']);
 
     expect(selected).toBe(1);
     expect(question).toHaveBeenCalledTimes(3);
     expect(logSpy).toHaveBeenCalledWith('Invalid option. Please choose a valid number.');
+    prompt.close();
+    expect(close).toHaveBeenCalledTimes(1);
 
     logSpy.mockRestore();
   });

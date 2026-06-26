@@ -2,7 +2,7 @@
 
 `The ultimate boilerplate to build REST APIs, monolithic modular and microservice applications with TypeScript.`
 
-Applications built with this boilerplate aim to run `Anywhere, Anytime, Anyhow`: on `dedicated servers`, `virtual machines`, `containers`, `EC2`, `ECS`, and `lambdas`, using `Express`, `Fastify`, `Restify`, `Hyper-Express`, and `serverless`.
+Applications built with this boilerplate aim to run `Anywhere, Anytime, Anyhow`: on `dedicated servers`, `virtual machines`, `containers`, `EC2`, `ECS`, and `lambdas`, using `Express`, `Fastify`, `Restify`, `Hyper-Express`, `serverless`, plus compatibility adapters for `Cloudflare Workers`, `Vercel Functions`, `LoopBack`, `Sails.js`, `Feathers`, `Derby.js`, `Adonis.js`, and `Total.js`.
 
 | Security scan status | Tests in Main | Tests in Dev | Coverage in Main | Coverage in Dev |
 |----------------------|:-------------:|:------------:|:----------------:|----------------:|
@@ -124,6 +124,8 @@ Project documentation is separated by nature so Product and Engineering audience
 | Product Context | [Project Overview](docs/PROJECT-OVERVIEW.md) | Purpose, advantages, use cases, acceleration strategy, and AI + Moon Modeler integration. |
 | Architecture | [Architecture and Structure](docs/ARCHITECTURE-AND-STRUCTURE.md) | Folder structure, target architecture direction, boundaries, and layer responsibilities. |
 | Runtime and Operations | [Setup, Runtime, and API](docs/SETUP-RUNTIME-AND-API.md) | Stack requirements, local setup, API docs endpoints, runtime commands, and production commands. |
+| Integration Contracts | [Events and Messages Map](docs/EVENTS-AND-MESSAGES-MAP.md) | Full map of published events, request/response message contracts, producers, consumers, and mediator adapters. |
+| Error Contracts | [Error Contracts and Responses](docs/ERROR-CONTRACTS-AND-RESPONSES.md) | Canonical error codes, class mapping, HTTP response contract, and mediator error envelope. |
 | Developer Tooling | [Developer Automation CLI](docs/DEVELOPER-AUTOMATION-CLI.md) | Interactive CLI wrapper to manage domains, entities/models, and field contracts. |
 | Messaging and Worker Pattern | [Setup, Runtime, and API](docs/SETUP-RUNTIME-AND-API.md#message-mediator-adapter) | `MessageMediator` adapter selection (`inmemory` / `rabbitmq` / `bullmq`) and broker runtime configuration. |
 | Quality and Delivery | [Testing, CI, and Quality](docs/TESTING-CI-AND-QUALITY.md) | Testing commands, CI gate, coverage policy, Sonar/Codecov, Node 22 enforcement, and CI troubleshooting links. |
@@ -170,4 +172,6 @@ CLI catalog is persisted at:
 - [Users Value Objects](docs/domains/users/USER-VALUE-OBJECTS.md)
 - [CI / SonarQube / Codecov Troubleshooting](docs/CI-TROUBLESHOOTING.md)
 - [Developer Automation CLI](docs/DEVELOPER-AUTOMATION-CLI.md)
+- [Events and Messages Map](docs/EVENTS-AND-MESSAGES-MAP.md)
+- [Error Contracts and Responses](docs/ERROR-CONTRACTS-AND-RESPONSES.md)
 - [Agents Requirements Registry](.agents/README.md)

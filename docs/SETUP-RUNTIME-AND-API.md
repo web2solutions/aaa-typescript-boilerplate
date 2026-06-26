@@ -97,6 +97,54 @@ Hyper-Express:
 npm run dev:hyper-express
 ```
 
+Cloudflare Workers compatible adapter:
+
+```bash
+npm run dev:cloudflare-workers
+```
+
+Vercel Functions compatible adapter:
+
+```bash
+npm run dev:vercel-functions
+```
+
+LoopBack compatible adapter:
+
+```bash
+npm run dev:loopback
+```
+
+Sails.js compatible adapter:
+
+```bash
+npm run dev:sails-js
+```
+
+Feathers compatible adapter:
+
+```bash
+npm run dev:feathers
+```
+
+Derby.js compatible adapter:
+
+```bash
+npm run dev:derby-js
+```
+
+Adonis.js compatible adapter:
+
+```bash
+npm run dev:adonis-js
+```
+
+Total.js compatible adapter:
+
+```bash
+npm run dev:total-js
+```
+
 Serverless dev mode:
 
 ```bash
@@ -119,5 +167,37 @@ npm run prod:express
 npm run prod:fastify
 npm run prod:restify
 npm run prod:hyper-express
+npm run prod:cloudflare-workers
+npm run prod:vercel-functions
+npm run prod:loopback
+npm run prod:sails-js
+npm run prod:feathers
+npm run prod:derby-js
+npm run prod:adonis-js
+npm run prod:total-js
 npm run prod:serverless
 ```
+
+## Lambda Handlers Coverage
+
+The AWS Lambda users/auth adapter now provides handlers for all Users/Auth OpenAPI operations:
+
+- `login`
+- `logout`
+- `register`
+- `updateUserPassword`
+- `create`
+- `getAll`
+- `deleteOne`
+- `update`
+- `getOneById`
+- `updatePassword`
+- `createEmail`
+- `updateEmail`
+- `deleteEmail`
+- `createDocument`
+- `updateDocument`
+- `deleteDocument`
+- `createPhone`
+- `updatePhone`
+- `deletePhone`

@@ -35,6 +35,17 @@
 - hyper-express
 - live-directory
 
+## Infra - Compatibility adapters (Express-backed)
+
+- cloudflare-workers
+- vercel-functions
+- loopback
+- sails-js
+- feathers
+- derby-js
+- adonis-js
+- total-js
+
 ## Infra - AWS Lambda / serverless
 
 - aws-lambda

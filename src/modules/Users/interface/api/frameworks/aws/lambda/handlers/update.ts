@@ -1,3 +1,3 @@
 import { createLambdaOperationHandler } from './createLambdaOperationHandler';
 
-export const handler = createLambdaOperationHandler('create');
+export const handler = createLambdaOperationHandler('update');

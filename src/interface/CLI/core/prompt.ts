@@ -4,7 +4,13 @@ import readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 
 export class Prompt {
-  private readonly rl = readline.createInterface({ input, output });
+  private readonly rl: readline.Interface;
+
+  constructor(
+    createInterface: () => readline.Interface = () => readline.createInterface({ input, output })
+  ) {
+    this.rl = createInterface();
+  }
 
   public async ask(question: string): Promise<string> {
     const value = await this.rl.question(question);

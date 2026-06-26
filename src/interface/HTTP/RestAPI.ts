@@ -176,8 +176,9 @@ export class RestAPI<T> {
       messageMediator: this.messageMediator
     });
 
-    const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this.serverType}/handlers/${endPointConfig.operationId}`;
-    const handlerFactory = require(handlerPath).default({
+    const handlerFactory = this.getHandlerFactory({
+      moduleName,
+      operationId: endPointConfig.operationId,
       databaseClient: this.databaseClient,
       mutexService: this.mutexClient,
       endPointConfig,
@@ -190,6 +191,34 @@ export class RestAPI<T> {
       ...handlerFactory,
       path: `${_API_PREFIX_}/${version}${replaceVars(handlerFactory.path)}`
     });
+  }
+
+  private getHandlerFactory({
+    moduleName,
+    operationId,
+    ...factoryDeps
+  }: {
+    moduleName: string;
+    operationId: string;
+    [key: string]: any;
+  }): any {
+    const frameworkCandidates = [this.serverType, EHTTPFrameworks.express];
+    for (const framework of frameworkCandidates) {
+      const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${framework}/handlers/${operationId}`;
+      try {
+        const handlerModule = require(handlerPath);
+        if (handlerModule?.default) {
+          return handlerModule.default(factoryDeps);
+        }
+      } catch (error: any) {
+        if (error?.code !== 'MODULE_NOT_FOUND') {
+          throw error;
+        }
+      }
+    }
+    throw new Error(
+      `Handler not found for module ${moduleName}, operation ${operationId}, framework ${this.serverType}.`
+    );
   }
 
   private static resolveControllerMetadata(
