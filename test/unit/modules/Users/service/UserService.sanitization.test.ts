@@ -1,5 +1,6 @@
 import { UserService } from '@src/modules/Users/service/UserService';
 import { IUser } from '@src/modules/Users';
+import { UserIntegrationEventName } from '@src/modules/Users/events/contracts/UserIntegrationEventName';
 
 const userWithSecrets = (id: string): IUser & { salt: string } => ({
   id,
@@ -21,6 +22,7 @@ const modelFrom = (user: IUser & { salt?: string }) => ({
 
 describe('user service secret sanitization', () => {
   const mockDataRepository: any = {
+    create: jest.fn(async (payload: any) => modelFrom(userWithSecrets(payload.id || 'created'))),
     getOneById: jest.fn(async (id: string) => modelFrom(userWithSecrets(id))),
     getAll: jest.fn(async () => ({
       page: 1,
@@ -40,11 +42,16 @@ describe('user service secret sanitization', () => {
     unlock: jest.fn(async () => ({ result: true }))
   };
 
+  const eventBus: any = {
+    publish: jest.fn(async () => undefined)
+  };
+
   const service = new UserService({
     dataRepository: mockDataRepository,
     services: {
       passwordCryptoService,
-      mutexService
+      mutexService,
+      eventBus
     }
   } as any);
 
@@ -67,5 +74,13 @@ describe('user service secret sanitization', () => {
     const { result } = await service.updatePassword('update-password', { password: '12345678' });
     expect(result?.password).toBeUndefined();
     expect((result as any)?.salt).toBeUndefined();
+  });
+
+  it('should publish integration event on create', async () => {
+    expect.hasAssertions();
+    await service.create({ password: '12345678' } as any);
+    expect(eventBus.publish).toHaveBeenCalledWith(expect.objectContaining({
+      name: UserIntegrationEventName.Created
+    }));
   });
 });

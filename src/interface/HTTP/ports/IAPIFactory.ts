@@ -5,6 +5,7 @@ import { IAuthService } from '@src/modules/Users/service/ports/IAuthService';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 import { IKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/IKeyValueStorageClient';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
+import { IEventBus } from '@src/modules/port';
 
 export interface IAPIFactory<ServerType> {
   databaseClient: IDatabaseClient,
@@ -15,4 +16,5 @@ export interface IAPIFactory<ServerType> {
   authService?: IAuthService;
   passwordCryptoService?: IPasswordCryptoService;
   keyValueStorageClient?: IKeyValueStorageClient;
+  eventBus?: IEventBus;
 }

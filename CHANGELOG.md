@@ -4,6 +4,28 @@
 
 ## Unreleased
 
+- 2026-06-26 docs(architecture): add data entity documentation standards and agents - Eduardo Almeida
+- 2026-06-26 test(ci): raise unit coverage gate and stabilize ci gate - Eduardo Almeida
+- 2026-06-26 build(coverage): enforce 95% baseline in jest and codecov - Eduardo Almeida
+- 2026-06-26 build(architecture): block legacy users namespace imports - Eduardo Almeida
+- 2026-06-26 refactor(persistence): move users repository into out adapter namespace - Eduardo Almeida
+- 2026-06-26 refactor(hexagonal): switch users wiring to canonical adapter namespaces - Eduardo Almeida
+- 2026-06-26 refactor(structure): scaffold feature-driven hexagonal namespaces - Eduardo Almeida
+- 2026-06-26 build(ci): enforce hexagonal controller boundaries - Eduardo Almeida
+- 2026-06-26 refactor(events): standardize user integration events and listener wiring - Eduardo Almeida
+- 2026-06-26 refactor(hexagonal): route controllers through application use cases - Eduardo Almeida
+- 2026-06-26 refactor(architecture): remove core barrel imports and add cycle guard - Eduardo Almeida
+- 2026-06-25 refactor(architecture): add event bus port and reduce core coupling - Eduardo Almeida
+- 2026-06-25 refactor(hexagonal): inject user service from composition and add user repository port - Eduardo Almeida
+- 2026-06-25 docs(architecture): expand README and add agents requirements registry - Eduardo Almeida
+- 2026-06-25 fix(ci): prevent smoke test from overwriting codecov coverage - Eduardo Almeida
+- 2026-06-25 fix(ci): install redis latest - Eduardo Almeida
+- 2026-06-25 fix(ci): make env loader resilient when .env.dev is missing - Eduardo Almeida
+- 2026-06-25 fix(ci): align circleci node 22 image and remove npm latest upgrade - Eduardo Almeida
+- 2026-06-25 chore(node): enforce node 22 across local and CI - Eduardo Almeida
+- 2026-06-25 chore: add ci gate and align scripts/docs - Eduardo Almeida
+- 2026-06-25 refactor: centralize users/auth service composition - Eduardo Almeida
+- 2026-06-25 fix: harden user persistence, sanitization, and mutex contract - Eduardo Almeida
 - 2026-06-25 chore: add project tracking and changelog automation - Eduardo Almeida
 - 2026-06-25 fix: normalize singleton factories - Eduardo Almeida
 - 2026-06-25 fix: wire service dependencies correctly - Eduardo Almeida

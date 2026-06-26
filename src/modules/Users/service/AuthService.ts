@@ -1,15 +1,13 @@
 /* eslint-disable no-console */
 /* eslint-disable no-shadow */
 /* eslint-disable class-methods-use-this */
-import {
-  IUser,
-  EAuthSchemaType,
-  IAuthorizationHeader,
-  IAuthService,
-  IAuthSchema,
-  IUserProvider,
-  ITokenObject
-} from '@src/modules/Users';
+import { IUser } from '@src/modules/Users/domain/Entity/IUser';
+import { EAuthSchemaType } from '@src/modules/Users/service/ports/EAuthSchemaType';
+import { IAuthorizationHeader } from '@src/modules/Users/service/ports/IAuthorizationHeader';
+import { IAuthService } from '@src/modules/Users/service/ports/IAuthService';
+import { IAuthSchema } from '@src/modules/Users/service/ports/IAuthSchema';
+import { IUserProvider } from '@src/modules/Users/service/ports/IUserProvider';
+import { ITokenObject } from '@src/modules/Users/service/ports/ITokenObject';
 
 import { IJwtService } from '@src/infra/jwt/IJwtService';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';

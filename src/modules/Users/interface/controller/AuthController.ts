@@ -12,21 +12,25 @@ import { IServiceResponse } from '@src/modules/port';
 import { Authorize } from '@src/shared/decorators/guard/Authorize';
 
 import {
-  EAuthSchemaType,
-  IAuthorizationHeader,
-  ILogoutRequest,
-  ILoginRequest,
-  IUpdatePasswordRequest,
-  IRegisterRequest
-} from '@src/modules/Users';
-
-import { BaseError, ResourceLockedError, ValidationError } from '@src/infra/exceptions';
+  EAuthSchemaType
+} from '@src/modules/Users/service/ports/EAuthSchemaType';
+import { IAuthorizationHeader } from '@src/modules/Users/service/ports/IAuthorizationHeader';
+import { ILogoutRequest } from '@src/modules/Users/interface/dto/ILogoutRequest';
+import { ILoginRequest } from '@src/modules/Users/interface/dto/ILoginRequest';
+import { IUpdatePasswordRequest } from '@src/modules/Users/interface/dto/IUpdatePasswordRequest';
+import { IRegisterRequest } from '@src/modules/Users/interface/dto/IRegisterRequest';
+import { IAuthUseCases } from '@src/modules/Users/application/ports/IAuthUseCases';
 
 export class AuthController extends BaseController implements IController {
+  private readonly authUseCases: IAuthUseCases;
+
   // eslint-disable-next-line no-useless-constructor
   constructor(factory: IControllerFactory) {
     super(factory);
-    //
+    if (!factory.authUseCases) {
+      throw new Error('AuthUseCases is not implemented');
+    }
+    this.authUseCases = factory.authUseCases;
   }
 
   public async login(
@@ -39,10 +43,10 @@ export class AuthController extends BaseController implements IController {
       event.schemaOAS,
       loginRequest
     );
-    const { username, password, schemaType } = loginRequest;
-
-    const { result, error } = await this.authService
-      .authenticate(username, password, schemaType ?? EAuthSchemaType.Bearer);
+    const { result, error } = await this.authUseCases.login({
+      ...loginRequest,
+      schemaType: loginRequest.schemaType ?? EAuthSchemaType.Bearer
+    });
 
     return { result, error };
   }
@@ -57,8 +61,7 @@ export class AuthController extends BaseController implements IController {
       registerRequest
     );
 
-    const { result, error } = await this.authService
-      .register(registerRequest);
+    const { result, error } = await this.authUseCases.register(registerRequest);
 
     return { result, error };
   }
@@ -67,80 +70,26 @@ export class AuthController extends BaseController implements IController {
   public async updatePassword(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<boolean>> {
-    const serviceResponse: IServiceResponse<boolean> = { result: false };
-    let userId;
-    try {
-      const updatePasswordRequest = event.input as IUpdatePasswordRequest;
-      throwIfOASInputValidationFails(
-        this.openApiSpecification,
-        event.schemaOAS,
-        updatePasswordRequest
-      );
-      // const userId = Security.xss(event.params.id);
-
-      const decodedToken = await this.authService.decodeToken(event.authorization);
-      if (!decodedToken) {
-        // 401
-        throw new ValidationError('Invalid request');
-      }
-
-      userId = decodedToken.id;
-
-      const lockUserId = await this.mutexService.lock('user', userId);
-      if (lockUserId?.result.previouslyLocked) {
-        throw new ResourceLockedError('user locked');
-      }
-
-      const response = await this.authService.updatePassword(
-        userId,
-        updatePasswordRequest.password
-      );
-      await this.mutexService.unlock('user', userId);
-
-      if (response.error) {
-        throw response.error;
-      }
-      serviceResponse.result = response.result;
-    } catch (error) {
-      if (userId) {
-        await this.mutexService.unlock('user', userId);
-      }
-      serviceResponse.error = error as BaseError;
-    }
-    return serviceResponse;
+    const updatePasswordRequest = event.input as IUpdatePasswordRequest;
+    throwIfOASInputValidationFails(
+      this.openApiSpecification,
+      event.schemaOAS,
+      updatePasswordRequest
+    );
+    return this.authUseCases.updatePassword(event.authorization, updatePasswordRequest);
   }
 
   @Authorize()
   public async logout(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<boolean>> {
-    const serviceResponse: IServiceResponse<boolean> = { result: false };
-    try {
-      const logoutRequest = event.input as ILogoutRequest;
-      throwIfOASInputValidationFails(
-        this.openApiSpecification,
-        event.schemaOAS,
-        logoutRequest
-      );
-      // const userId = Security.xss(event.params.id);
-
-      const decodedToken = await this.authService.decodeToken(event.authorization);
-
-      if (decodedToken!.username !== logoutRequest.username) {
-        // 401
-        throw new ValidationError('Invalid request');
-      }
-
-      const logoutResponse = await this.authService
-        .logout();
-      if (logoutResponse.error) {
-        throw logoutResponse.error;
-      }
-      serviceResponse.result = logoutResponse.result;
-    } catch (error) {
-      serviceResponse.error = error as BaseError;
-    }
-    return serviceResponse;
+    const logoutRequest = event.input as ILogoutRequest;
+    throwIfOASInputValidationFails(
+      this.openApiSpecification,
+      event.schemaOAS,
+      logoutRequest
+    );
+    return this.authUseCases.logout(event.authorization, logoutRequest);
   }
 
   public static compile(factory: IControllerFactory) {

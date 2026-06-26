@@ -1,11 +1,9 @@
 import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { _DEFAULT_PAGE_SIZE_ } from '@src/config/constants';
 
-import {
-  IPagingRequest,
-  IPagingResponse,
-  IRepoConfig
-} from '@src/modules/port';
+import { IPagingRequest } from './IPagingRequest';
+import { IPagingResponse } from './IPagingResponse';
+import { IRepoConfig } from './IRepoConfig';
 
 export abstract class BaseRepo<Model, RequestCreateDTO, RequestUpdateDTO> {
   public databaseClient: IDatabaseClient;

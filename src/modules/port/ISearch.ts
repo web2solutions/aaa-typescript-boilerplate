@@ -1,4 +1,4 @@
-import { IFilter } from '@src/modules/port';
+import { IFilter } from './IFilter';
 
 export interface ISearch {
   operator?: string;

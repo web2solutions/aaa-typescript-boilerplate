@@ -1,11 +1,15 @@
 export { IUser } from '@src/modules/Users/domain/Entity/IUser';
 export { User } from '@src/modules/Users/domain/Model/User';
-export { UserDataRepository } from '@src/modules/Users/infra/repository/UserDataRepository';
+export { UserDataRepository } from '@src/modules/Users/adapters/out/persistence/UserDataRepository';
 export { UserService } from '@src/modules/Users/service/UserService';
 export { composeUsersAuthServices } from '@src/modules/Users/composition/composeUsersAuthServices';
+export { UserUseCases } from '@src/modules/Users/application/use-cases/UserUseCases';
+export { AuthUseCases } from '@src/modules/Users/application/use-cases/AuthUseCases';
 
-export { UserController } from '@src/modules/Users/interface/controller/UserController';
-export { AuthController } from '@src/modules/Users/interface/controller/AuthController';
+export { UserController } from '@src/modules/Users/adapters/in/http/controllers/UserController';
+export { AuthController } from '@src/modules/Users/adapters/in/http/controllers/AuthController';
+export { UserController as UserHttpController } from '@src/modules/Users/adapters/in/http/controllers/UserController';
+export { AuthController as AuthHttpController } from '@src/modules/Users/adapters/in/http/controllers/AuthController';
 export { AuthService } from '@src/modules/Users/service/AuthService';
 export { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 
@@ -45,8 +49,13 @@ export { IAuthService } from '@src/modules/Users/service/ports/IAuthService';
 export { IAuthSchema } from '@src/modules/Users/service/ports/IAuthSchema';
 export { EAuthSchemaType } from '@src/modules/Users/service/ports/EAuthSchemaType';
 export { IUserProvider } from '@src/modules/Users/service/ports/IUserProvider';
+export { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
 export { IAuthorizationHeader } from '@src/modules/Users/service/ports/IAuthorizationHeader';
 export { ITokenObject } from '@src/modules/Users/service/ports/ITokenObject';
+export { IUserUseCases } from '@src/modules/Users/application/ports/IUserUseCases';
+export { IAuthUseCases } from '@src/modules/Users/application/ports/IAuthUseCases';
+export { UserUseCases as UserApplicationUseCases } from '@src/modules/Users/application/use-cases/UserUseCases';
+export { AuthUseCases as AuthApplicationUseCases } from '@src/modules/Users/application/use-cases/AuthUseCases';
 
 // events
 export { UserCreateRequestEvent } from '@src/modules/Users/events/UserCreateRequestEvent';
@@ -69,3 +78,6 @@ export { LoginRequestEvent } from '@src/modules/Users/events/LoginRequestEvent';
 export { LogoutRequestEvent } from '@src/modules/Users/events/LogoutRequestEvent';
 export { RegisterRequestEvent } from '@src/modules/Users/events/RegisterRequestEvent';
 export { UpdatePasswordRequestEvent } from '@src/modules/Users/events/UpdatePasswordRequestEvent';
+export { UserIntegrationEventName } from '@src/modules/Users/events/contracts/UserIntegrationEventName';
+export { IUserEventListeners } from '@src/modules/Users/events/contracts/IUserEventListeners';
+export { registerUserEventListeners } from '@src/modules/Users/events/listeners/registerUserEventListeners';

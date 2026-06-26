@@ -27,5 +27,13 @@ module.exports = {
     ...redisIntegrationIgnorePatterns
   ],
   modulePathIgnorePatterns: ['dist', '.build', '.serverless', '.resources'],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 95,
+      statements: 95
+    }
+  },
   setupFiles: ["./ci-cd/loadEnvironment.js"],
 };

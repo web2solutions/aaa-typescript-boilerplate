@@ -1,12 +1,12 @@
 import {
-  IUser,
-  RequestCreateUser,
-  UserDataRepository
-} from '@src/modules/Users';
+  IUser
+} from '@src/modules/Users/domain/Entity/IUser';
+import { RequestCreateUser } from '@src/modules/Users/interface/dto/RequestCreateUser';
+import { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
 
 export const createUser = async (
   payload: RequestCreateUser,
-  userDataRepository: UserDataRepository
+  userDataRepository: IUserRepository
 ): Promise<IUser> => {
   const model = await userDataRepository.create(payload);
   const rawDoc = { ...model.serialize() };

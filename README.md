@@ -1,368 +1,426 @@
-# AnyWhere, AnyHow, AnyTime - Typescript Boilerplate
+# AnyWhere, AnyHow, AnyTime - TypeScript Boilerplate
 
-`The ultimate boilerplate to build REST APIs, Monolithic Modular and Microservice applications with Typescript.`
+`The ultimate boilerplate to build REST APIs, monolithic modular and microservice applications with TypeScript.`
 
-Applications built with this boilerplate aims to run `Anywhere, Anytime, Anyhow`. `Dedicated servers`, `virtual machines`, `containers`, `EC2`, `ECS` or `lambdas`, with `Express`, `Fastify`, `Hyper-Express` and `serverless`.
+Applications built with this boilerplate aim to run `Anywhere, Anytime, Anyhow`: on `dedicated servers`, `virtual machines`, `containers`, `EC2`, `ECS`, and `lambdas`, using `Express`, `Fastify`, `Restify`, `Hyper-Express`, and `serverless`.
 
 | Security scan status | Tests in Main | Tests in Dev | Coverage in Main | Coverage in Dev |
 |----------------------|:-------------:|:------------:|:----------------:|----------------:|
-|  [![Known Vulnerabilities](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate/badge.svg)](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/dev) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/branch/dev/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) |
-|   |   |   |   |   |
+| [![Known Vulnerabilities](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate/badge.svg)](https://snyk.io/test/github/web2solutions/aaa-typescript-boilerplate) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/main) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/web2solutions/aaa-typescript-boilerplate/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/web2solutions/aaa-typescript-boilerplate/tree/dev) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) | [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/branch/dev/graph/badge.svg?token=eEF1QUBbj9)](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate) |
 
- [![Run with Express](https://img.shields.io/badge/Run%20with%20Express-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://expressjs.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Fastify-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://fastify.dev/) [![Static Badge](https://img.shields.io/badge/Run%20with%20Restify-gold?style=flat-square&logo=JavaScript&logoColor=000)](http://restify.com/) [![Static Badge](https://img.shields.io/badge/Run%20with%20HyperExpress-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://github.com/kartikk221/hyper-express) [![Static Badge](https://img.shields.io/badge/Run%20with%20Serverless-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://www.serverless.com/)
- 
- 
- 
-  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=bugs)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate) ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/web2solutions/aaa-typescript-boilerplate)
-  
-  
-   ![GitHub License](https://img.shields.io/github/license/web2solutions/aaa-typescript-boilerplate) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![GitHub Created At](https://img.shields.io/github/created-at/web2solutions/aaa-typescript-boilerplate) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/web2solutions/aaa-typescript-boilerplate) ![GitHub package.json version](https://img.shields.io/github/package-json/v/web2solutions/aaa-typescript-boilerplate) ![Made in Brazil with Love](https://img.shields.io/badge/made%20in-%F0%9F%87%A7%F0%9F%87%B7%20Brazil%20with%E2%9D%A4%EF%B8%8F-blue)
+[![Run with Express](https://img.shields.io/badge/Run%20with%20Express-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://expressjs.com/)
+[![Run with Fastify](https://img.shields.io/badge/Run%20with%20Fastify-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://fastify.dev/)
+[![Run with Restify](https://img.shields.io/badge/Run%20with%20Restify-gold?style=flat-square&logo=JavaScript&logoColor=000)](http://restify.com/)
+[![Run with HyperExpress](https://img.shields.io/badge/Run%20with%20HyperExpress-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://github.com/kartikk221/hyper-express)
+[![Run with Serverless](https://img.shields.io/badge/Run%20with%20Serverless-gold?style=flat-square&logo=JavaScript&logoColor=000)](https://www.serverless.com/)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=bugs)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=web2solutions_aaa-typescript-boilerplate&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=web2solutions_aaa-typescript-boilerplate)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/web2solutions/aaa-typescript-boilerplate)
+![GitHub License](https://img.shields.io/github/license/web2solutions/aaa-typescript-boilerplate)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+![GitHub Created At](https://img.shields.io/github/created-at/web2solutions/aaa-typescript-boilerplate)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/web2solutions/aaa-typescript-boilerplate)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/web2solutions/aaa-typescript-boilerplate)
+![Made in Brazil with Love](https://img.shields.io/badge/made%20in-%F0%9F%87%A7%F0%9F%87%B7%20Brazil%20with%E2%9D%A4%EF%B8%8F-blue)
 [![#StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://vshymanskyy.github.io/StandWithUkraine)
 
-
-
-
-
-
-
-
-
-`Overall Code Coverage`
+## Overall Code Coverage
 
 [![codecov](https://codecov.io/gh/web2solutions/aaa-typescript-boilerplate/graphs/tree.svg?token=eEF1QUBbj9)](https://codecov.io/web2solutions/aaa-typescript-boilerplate)
 
-`See it running as a Fastify application at:`
+## See It Running (Fastify)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/web2solutions/aaa-typescript-boilerplate)
 
-It is built over a simplistic interpretation of Hexagonal Architecture, the Domain Driven Design and Event Driven Architecture philosophies.
+## Purpose of This Project
 
-It aims to be as much agnostic as possible, avoiding to add any frameworks or libraries to the stack.
+This boilerplate provides a production-oriented starting point for backend teams that need to ship quickly without sacrificing architecture quality.
 
-It can be used as boilerplate to create `modular monolith`or `microservice` applications.
+It is built on a pragmatic interpretation of:
 
-### Project features high level overview
+- Hexagonal Architecture
+- Domain Driven Design (DDD)
+- Event Driven Architecture (EDA)
 
-It implements incoming data validation, in the infrastructure level, through custom logic and based in the Open API specification.
+It aims to stay framework-agnostic at the core and can be used for:
 
-It implements Basic and Bearer HTTP auth mechanism with a custom role system. Replaceable with other auth mechanisms. Tied to the API OAS spec.
+- modular monoliths
+- microservices
+- lambda-first services
 
-It implements a HTTP web server port actually implementing adapters for `aws Lambda`, `Express.js`, `Fastify`, `Restify` and `Hyper-Express`.
+## Advantages and Example Applications
 
-It implements an agnostic data repository port that actually writes/reads data from a In Memory database adapter. It is easily replaceable with Mongoose, Sequelize, etc.
+### Why this boilerplate is useful
 
-### Classes' diagram
+1. Architectural consistency:
+   teams start with clear boundaries (handlers, controllers, application use cases, services, repositories, adapters) instead of inventing structure per project.
+2. Runtime flexibility:
+   the same domain can run with Express/Fastify/Restify/Hyper-Express or Lambda.
+3. Easier evolution:
+   projects can start as modular monolith and split later with lower refactor cost.
+4. Quality baseline:
+   lint, tests, OpenAPI checks, route resolution checks, and CI gate are built-in.
+5. Better onboarding:
+   engineers follow existing conventions and guardrails from day one.
 
-Diagram illustrating the components:
+### Example applications
+
+- User and identity services (registration, login, authorization, profile lifecycle).
+- Billing/subscriptions APIs with domain policies and events.
+- Internal backoffice APIs with strict OpenAPI contract validation.
+- Event-driven services exposing operational HTTP endpoints.
+- Hybrid API/Lambda workloads sharing the same domain logic.
+
+## How This Project Accelerates New Application Development
+
+- Architecture is already defined and evolving with explicit guardrails.
+- Adapter strategy is ready, so runtime switching is incremental.
+- Auth/validation/OpenAPI workflows are standardized.
+- Repository abstractions allow in-memory start and later DB migration.
+- CI checks block common regressions before merge.
+
+Suggested flow:
+
+1. Clone/fork the project.
+2. Define your domain + OpenAPI contract.
+3. Implement/extend use cases and repositories.
+4. Expose endpoints through controllers/handlers.
+5. Run `ci:gate` locally before PR.
+6. Deploy as server, lambda, or both.
+
+## Integrating AI and Data Modeling Tools (Moon Modeler)
+
+This project can be combined with AI-assisted development and tools such as [Moon Modeler](https://www.datensen.com/products/moon-modeler/).
+
+### AI-assisted possibilities
+
+- Generate initial OpenAPI drafts from product requirements.
+- Propose DTOs, validation rules, and test templates.
+- Assist migration from in-memory adapters to SQL/NoSQL adapters.
+- Generate regression scenarios from incidents.
+- Suggest architecture-safe refactors.
+
+### Moon Modeler integration possibilities
+
+1. Model entities and relationships in Moon Modeler.
+2. Export schema artifacts.
+3. Map models to domain entities and repository ports.
+4. Implement database adapters.
+5. Keep OpenAPI schemas aligned with domain contracts.
+6. Validate with CI checks and tests.
+
+### Combined AI + Moon Modeler + Boilerplate workflow
+
+1. Product requirements and constraints.
+2. Domain/data modeling.
+3. AI-assisted first-pass contracts and skeletons.
+4. Engineering implementation with architecture constraints.
+5. CI validation and release.
+
+## Project Structure (Current)
+
+```txt
+src/
+  config/
+  infra/                           # cross-cutting infrastructure adapters
+  interface/                       # HTTP runtime adapters and transport plumbing
+  modules/
+    Users/
+      adapters/                    # canonical adapter namespace (in/out)
+        in/http/controllers/
+        out/persistence/
+      application/                 # application layer + use-case contracts
+        use-cases/
+      composition/                 # module wiring/composition root
+      domain/                      # core entities/models
+      events/                      # integration/domain events contracts/listeners
+      features/                    # use-case style operations used by services
+      infra/                       # legacy compatibility namespace (bridges)
+      interface/                   # legacy compatibility namespace (bridges)
+  shared/
+```
+
+## Target Architecture Direction
+
+The migration toward stricter feature-driven hexagonal boundaries is documented in:
+
+- [Hexagonal Feature-driven Migration Plan](docs/HEXAGONAL-FEATURE-DRIVEN-MIGRATION.md)
+
+Current highlights already implemented:
+
+- Controllers in Users call application use cases, not direct infra creation.
+- Users integration events are standardized and wired via composition.
+- CI blocks controller boundary violations and cyclic dependency regressions.
+- CI blocks new legacy imports for Users controller/repository namespaces.
+
+## Layer Responsibilities
+
+### Request flow
+
+`Handler -> Controller -> Application Use Case -> Domain/Policies -> Repository Port -> Adapter`
+
+### Response flow
+
+`Handler <- Controller <- Application Use Case <- Domain/Policies <- Repository Adapter`
+
+### Component responsibilities
+
+1. HTTP Request Handlers:
+   infrastructure entry point for HTTP/Lambda runtime.
+2. Controllers:
+   validate request and delegate to application use cases.
+3. Application Use Cases / Services:
+   orchestrate domain behavior and outbound ports.
+4. Domain:
+   entities, value objects, invariants, and business policies.
+5. Repository Ports:
+   abstractions for persistence operations.
+6. Adapters:
+   concrete implementations for runtime, persistence, security, mutex, events.
+
+## Classes Diagram
 
 ![Diagram](OASdoc/miro.png "Diagram")
 
 <https://miro.com/app/board/uXjVNq5nWJY=/?share_link_id=603404471489>
 
-### API documentation
+## API Documentation
 
-The API OASdoc might be visualized at: <http://localhost:3000/OASdoc/>
+- UI: <http://localhost:3000/OASdoc/>
+- JSON: <http://localhost:3000/docs/1.0.0>
 
-***Note:*** Remember to start the application before trying to reach it through the browser.
+Start the app before opening those URLs.
 
-### Request data workflow through the architecture's components
+## Additional Documentation
 
-Request Handler - Controller - Domain Service - Domain Use Case - Data Repository - Data Adapter
+- [Engineering Bootstrap Guide](docs/ENGINEERING-BOOTSTRAP-GUIDE.md)
+- [Hexagonal Feature-driven Migration Plan](docs/HEXAGONAL-FEATURE-DRIVEN-MIGRATION.md)
+- [Domain Data Entities](docs/DOMAIN-DATA-ENTITIES.md)
+- [Agents Requirements Registry](.agents/README.md)
 
-### Response data workflow through the architecture's components
+## Runtime and Required Stack
 
-Request Handler <- Controller <- Domain Service <- Domain Use Case <- Data Repository <- Data Adapter
-
-### Main components and their responsibility scope
-
-#### 1.`HTTP Request Handlers`
-
-It is the entry point in a `HTTP` request made to the service.
-
-`It is a infrastructure's component.`
-
-It composes a `Domain Event` using it income parameters such as `body` and `headers`. The domain event is passed to the `Controller` by calling an associated method.
-
-It may offers adapters for different outside service interfaces:
-
-- HTTP - Lambdas (AWS, Azure, Google)
-- HTTP - Express
-- HTTP - Fastify
-- HTTP - Hyper-Express
-- HTTP - etc
-- Events/SQS
-- Events/SNS
-- Events/etc
-
-#### 2.`Controllers`
-
-Controllers are responsible to forward the `incoming Domain Events` to their specific corelated method in the `Domain Service`.
-
-`It is a infrastructure's component.`
-
-It performs input data validation and access permission validation against the incoming `Domain Events` using an associated OAS specification
-
-#### 3.`Domain Service`
-
-It is the entry point for the application core (domains).
-
-`It is a domain's component.`
-
-May works as aggregation root / bounded contexts talking directly to injected domain services (aka domains and subdomains).
-
-It should be the unique option working as communication interface between `infrastructure` and `domain components`.
-
-It has a databaseClient adapter and a mutexService adapter injected on it instance.
-
-It may lock resources to avoid race conditions by using the injected mutexService.
-
-It knows it internal domain use cases.
-
-It doesn't knows external domain use cases.
-
-#### 4.`Use Case`
-
-The `Use Cases`, as the meaning of the words, are the use cases implemented in the Product.
-
-They represents the features delivered to the customers.
-
-`It is a domain's component.` They known and are consumed by the `Domain Service` component only.
-
-They are the point entry for all `Data Repository` calls. They handle `Data Models` rather than raw objects.
-
-They have an associated `Data Repository` that is injected into it scope when calling `Use Case` clojure.
-
-#### 5.`Data Repository`
-
-The `Data Repository` layer implements, in a agnostic manner, all actions related to the data persistency.
-
-It does not talk directly to a database. I has a port to adapt different Database Clients.
-
-`It is a domain's component.` They are consumed by `Use Case` component only.
-
-#### 6.`Data Adapter`
-
-The `Data adapter` is a kind of database client implementation that respect the `Data Repository` port.
-
-It may implement database access through native drivers or ORMs and ODMs.
-
-`It is a domain's component.`
-
-## Required stack
-
-- Node.js 22.x and npm
-- Typescript
+- Node.js `22.x` and npm
+- TypeScript
 - Jest
-- Redis - used to implement mutex (included as Docker image)
-- OpenAPI official typings
-- yaml - yaml parser
+- Redis (mutex support, optional local via Docker)
+- OpenAPI typings
+- YAML parser
 
-## Evaluating the application
+## Setup
 
-1. Install the project
+Install dependencies:
 
 ```bash
-    npm install
+npm install
 ```
 
-2. Run Redis (if you don't have already)
+Run Redis (if needed):
 
 ```bash
-    npm run docker:composeredis
+npm run docker:composeredis
 ```
 
-### Testing
+## Testing
 
-`Run the entire test suite`
+Run full test suite:
 
 ```bash
-    npm test
+npm test
 ```
 
-`Run unit tests`
+Run unit tests:
 
 ```bash
-    npm run test:unit
+npm run test:unit
 ```
 
-`Run integration tests`
+Run integration tests:
 
 ```bash
-    npm run test:integration
+npm run test:integration
 ```
 
-`Run integration tests - Express`
+Per runtime:
 
 ```bash
-    npm run test:integration:express
+npm run test:integration:express
+npm run test:integration:fastify
+npm run test:integration:restify
+npm run test:integration:lambda
+npm run test:integration:hyper-express
 ```
 
-`Run integration tests - Fastify`
+## CI and Quality Gates
+
+Main gate:
 
 ```bash
-    npm run test:integration:fastify
+npm run ci:gate
 ```
 
-`Run integration tests - Restify`
+Included checks:
+
+- `lint`
+- core import cycle check
+- hexagonal boundary check
+- users legacy import check
+- unit tests
+- OpenAPI route resolution check
+- build
+- integration smoke
+- minimum coverage threshold (95% global via Jest + Codecov status)
+
+Local enforcement:
+
+- `.husky/pre-commit` runs `npm run lint && npm run test:unit`
+- `.husky/pre-push` runs `npm run ci:gate`
+
+SonarQube Cloud coverage import:
+
+- Workflow: `.github/workflows/sonarqube-cloud.yml`
+- Coverage source: `./coverage/lcov.info` (Jest LCOV)
+- Scanner setting: `sonar.javascript.lcov.reportPaths=./coverage/lcov.info`
+- Required repository secret: `SONAR_TOKEN`
+
+## Run the API (port 3000)
+
+Express:
 
 ```bash
-    npm run test:integration:restify
+npm run dev:express
 ```
 
-`Run integration tests - aws lambda`
+Fastify:
 
 ```bash
-    npm run test:integration:lambda
+npm run dev:fastify
 ```
 
-`Run integration tests - Hyper-Express`
+Restify:
 
 ```bash
-    npm run test:integration:hyper-express
+npm run dev:restify
 ```
 
-### Run the API - 3000 port
-
-Run with Express
+Hyper-Express:
 
 ```bash
-    npm run dev:express
+npm run dev:hyper-express
 ```
 
-Run with Fastify
+Serverless dev mode:
 
 ```bash
-    npm run dev:fastify
-```
-
-Run with Restify
-
-```bash
-    npm run dev:restify
-```
-
-Run with Hyper-Express
-
-```bash
-    npm run dev:hyper-express
-```
-
-1. Reach the URL <http://localhost:3000/OASdoc/> and click in the `Version 1.0.0`. It will open the API documentation.
-2. Reach <http://localhost:3000/docs/1.0.0> to see the JSON version of the API documentation.
-
-### Run `aws Lambda dev mode` through the `serverless framework`
-
-```bash
-  npm run dev:serverless
+npm run dev:serverless
 ```
 
 ![serverless dev mode](sls.png "serverless dev mode")
 
-## Contributing to the project
-
-1. Create a new branch.
-2. `Run the app in TDD mode - live reload of tests`
+## Production Commands
 
 ```bash
-  npm run tdd
+npm run build:prod
+npm run prod:express
+npm run prod:fastify
+npm run prod:restify
+npm run prod:hyper-express
+npm run prod:serverless
+```
+
+## Contributing
+
+1. Create a branch.
+2. Run TDD mode:
+
+```bash
+npm run tdd
 ```
 
 3. Make your changes.
-
-4. Commit it
-
-`commit`
-
-It will run `lint` and `test` before asking info about the commit
+4. Commit using:
 
 ```bash
-  npm run commit
+npm run commit
 ```
 
-5. Ask for PR
+This command runs lint/tests and then opens commitizen flow.
 
-### Tooling
+## Tooling
 
-`lint code`
+Lint:
 
 ```bash
-  npm run lint
+npm run lint
 ```
 
-`lint && fix code`
+Lint + fix:
 
 ```bash
-  npm run lint:fix
+npm run lint:fix
+```
+
+Update changelog from git history:
+
+```bash
+npm run changelog:update
+```
+
+Validate changelog is synced:
+
+```bash
+npm run changelog:check
 ```
 
 ## Dependencies
 
 ### Application
 
-> bcryptjs - ^2.4.3
->
-> jsonwebtoken - ^9.0.2
->
-> openapi-types - ^12.1.3
->
-> reflect-metadata - ^0.2.2
->
-> uuid - ^9.0.1
->
-> xss - ^1.0.15
->
-> yaml - ^2.3.4
->
+- bcryptjs
+- jsonwebtoken
+- openapi-types
+- reflect-metadata
+- uuid
+- xss
+- yaml
 
 ### Infra - Express server
 
-> express - ^4.18.2
->
-> body-parser - ^1.20.2
->
-> cors - ^2.8.5
->
-> helmet - ^7.1.0
->
+- express
+- body-parser
+- cors
+- helmet
 
 ### Infra - Fastify server
 
-> fastify - ^4.26.2
->
-> @fastify/cors - ^9.0.1
->
-> @fastify/formbody - ^7.4.0
->
-> @fastify/helmet - ^11.1.1
->
-> @fastify/static - ^7.0.1
->
+- fastify
+- @fastify/cors
+- @fastify/formbody
+- @fastify/helmet
+- @fastify/static
 
 ### Infra - Restify
 
-> restify - ^11.1.0
-> bunyan - ^1.8.15
->
+- restify
+- bunyan
 
 ### Infra - Hyper-Express server
 
-> hyper-express - ^6.14.12
->
-> live-directory - ^3.0.3
->
+- hyper-express
+- live-directory
 
-### Infra - aws Lambda - serverless
+### Infra - AWS Lambda / serverless
 
-> aws-lambda - ^1.0.7
->
-> serverless - ^4.2.4
->
+- aws-lambda
+- serverless
 
-### Infra - Distributed KeyValue Storage
+### Infra - Distributed key-value storage
 
-> redis - ^4.6.13
->
+- redis
 
-## Backlog and project management
+## Backlog and Project Management
 
 <https://github.com/users/web2solutions/projects/1>

@@ -1,10 +1,8 @@
-import {
-  UserDataRepository
-} from '@src/modules/Users';
+import { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
 
 export const deleteUserById = async (
   id: string,
-  userDataRepository: UserDataRepository
+  userDataRepository: IUserRepository
 ): Promise<boolean> => {
   await userDataRepository.delete(id);
   return true;

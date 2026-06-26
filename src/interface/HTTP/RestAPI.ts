@@ -13,12 +13,12 @@ import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 import { IKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/IKeyValueStorageClient';
+import { IEventBus } from '@src/modules/port';
 
 import {
   IUser,
-  UserDataRepository,
-  UserService,
-  IAuthService
+  IAuthService,
+  composeUsersAuthServices
 } from '@src/modules/Users';
 
 import users from '@seed/users';
@@ -42,6 +42,10 @@ export class RestAPI<T> {
 
   private readonly keyValueStorageClient: IKeyValueStorageClient | undefined;
 
+  private readonly eventBus: IEventBus | undefined;
+
+  private usersComposition: ReturnType<typeof composeUsersAuthServices> | undefined;
+
   constructor(config: IAPIFactory<T>) {
     this.serverType = config.serverType ?? EHTTPFrameworks.express;
     this.server = config.webServer;
@@ -63,6 +67,10 @@ export class RestAPI<T> {
 
     if (config.passwordCryptoService) {
       this.passwordCryptoService = config.passwordCryptoService;
+    }
+
+    if (config.eventBus) {
+      this.eventBus = config.eventBus;
     }
 
     this.buildWithOAS();
@@ -125,46 +133,87 @@ export class RestAPI<T> {
 
   private buildEndPoints(): void {
     for (const [version, spec] of this.oas) {
-      for (const path of Object.keys(spec.paths)) {
-        const endPointConfigs: Record<string, any> = spec.paths[path] ?? {};
-        const methods: string[] = Object.keys(endPointConfigs);
-        for (const method of methods) {
-          const endPointConfig: Record<string, any> = endPointConfigs[method];
-          const module = path.split('/')[1];
-          let controllerName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length - 1)}Controller`;
-          let moduleName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length)}`;
-          if (module === 'auth') {
-            moduleName = 'Users';
-            controllerName = 'AuthController';
-          }
-          const controllerPath = `@src/modules/${moduleName}/interface/controller/${controllerName}`;
-          const ControllerModule = require(controllerPath)[controllerName];
+      this.registerSpecVersionEndpoints(version, spec);
+    }
+  }
 
-          const controller = new ControllerModule({
-            authService: this.authService,
-            openApiSpecification: spec,
-            databaseClient: this.databaseClient,
-            mutexService: this.mutexClient,
-            passwordCryptoService: this.passwordCryptoService
-          });
+  private registerSpecVersionEndpoints(version: string, spec: OpenAPIV3.Document): void {
+    for (const path of Object.keys(spec.paths)) {
+      const endPointConfigs: Record<string, any> = spec.paths[path] ?? {};
+      for (const method of Object.keys(endPointConfigs)) {
+        this.registerOperationEndpoint(version, spec, path, endPointConfigs[method]);
+      }
+    }
+  }
 
-          const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this.serverType}/handlers/${endPointConfig.operationId}`;
-          const handlerFactory = require(handlerPath).default({
-            databaseClient: this.databaseClient,
-            mutexService: this.mutexClient,
-            endPointConfig,
-            spec,
-            authService: this.authService,
-            controller
-          });
+  private registerOperationEndpoint(
+    version: string,
+    spec: OpenAPIV3.Document,
+    path: string,
+    endPointConfig: Record<string, any>
+  ): void {
+    const module = path.split('/')[1];
+    const { moduleName, controllerName } = RestAPI.resolveControllerMetadata(module);
+    const ControllerModule = RestAPI.getControllerModule(moduleName, controllerName);
+    const usersModuleComposition = moduleName === 'Users' ? this.composeUsersModule() : undefined;
 
-          this.server.endPointRegister({
-            ...handlerFactory,
-            path: `${_API_PREFIX_}/${version}${replaceVars(handlerFactory.path)}`
-          });
+    const controller = new ControllerModule({
+      authService: usersModuleComposition?.authService ?? this.authService,
+      openApiSpecification: spec,
+      databaseClient: this.databaseClient,
+      userService: usersModuleComposition?.userService,
+      userUseCases: usersModuleComposition?.userUseCases,
+      authUseCases: usersModuleComposition?.authUseCases,
+      mutexService: this.mutexClient,
+      passwordCryptoService: this.passwordCryptoService
+    });
+
+    const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this.serverType}/handlers/${endPointConfig.operationId}`;
+    const handlerFactory = require(handlerPath).default({
+      databaseClient: this.databaseClient,
+      mutexService: this.mutexClient,
+      endPointConfig,
+      spec,
+      authService: this.authService,
+      controller
+    });
+
+    this.server.endPointRegister({
+      ...handlerFactory,
+      path: `${_API_PREFIX_}/${version}${replaceVars(handlerFactory.path)}`
+    });
+  }
+
+  private static resolveControllerMetadata(
+    module: string
+  ): { moduleName: string; controllerName: string } {
+    if (module === 'auth') {
+      return { moduleName: 'Users', controllerName: 'AuthController' };
+    }
+    const moduleName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length)}`;
+    const controllerName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length - 1)}Controller`;
+    return { moduleName, controllerName };
+  }
+
+  private static getControllerModule(moduleName: string, controllerName: string): any {
+    const controllerPaths = [
+      `@src/modules/${moduleName}/adapters/in/http/controllers/${controllerName}`,
+      `@src/modules/${moduleName}/interface/controller/${controllerName}`
+    ];
+    for (const controllerPath of controllerPaths) {
+      try {
+        const controllerModule = require(controllerPath)[controllerName];
+        if (controllerModule) {
+          return controllerModule;
+        }
+      } catch (error: any) {
+        if (error?.code !== 'MODULE_NOT_FOUND') {
+          throw error;
         }
       }
     }
+
+    throw new Error(`Controller ${controllerName} not found for module ${moduleName}.`);
   }
 
   public async start(): Promise<void> {
@@ -195,21 +244,13 @@ export class RestAPI<T> {
   }
 
   public async seedUsers(): Promise<IUser[]> {
-    const dataRepository = UserDataRepository.compile({ databaseClient: this.databaseClient });
-    const service = UserService.compile({
-      dataRepository,
-      services: {
-        passwordCryptoService: this.passwordCryptoService,
-        mutexService: this.mutexClient
-      }
-    });
+    const { userUseCases } = this.composeUsersModule();
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
       requests.push(new Promise((resolve, reject) => {
         (async () => {
           try {
-            // await service.create(user);
-            const newUser = await service.create(user);
+            const newUser = await userUseCases.create(user);
             if (newUser.error) throw newUser.error;
             if (!newUser.result) throw new Error('User seed failed');
             resolve(newUser.result);
@@ -225,21 +266,14 @@ export class RestAPI<T> {
   }
 
   public async deleteUsers(): Promise<boolean[]> {
-    const dataRepository = UserDataRepository.compile({ databaseClient: this.databaseClient });
-    const service = UserService.compile({
-      dataRepository,
-      services: {
-        passwordCryptoService: this.passwordCryptoService,
-        mutexService: this.mutexClient
-      }
-    });
+    const { userUseCases } = this.composeUsersModule();
     const requests: Promise<boolean>[] = [];
-    const allUsers = (await service.getAll({}, { page: 1, size: 1000 })).result || [];
+    const allUsers = (await userUseCases.getAll({}, { page: 1, size: 1000 })).result || [];
     for (const user of allUsers) {
       requests.push(new Promise((resolve, reject) => {
         (async () => {
           try {
-            const deletedUser = await service.delete(user.id);
+            const deletedUser = await userUseCases.delete(user.id);
             if (deletedUser.error) throw deletedUser.error;
             if (deletedUser.result === undefined) throw new Error('User delete failed');
             resolve(deletedUser.result);
@@ -252,6 +286,29 @@ export class RestAPI<T> {
     }
     return Promise.all(requests);
     // console.log('>>>> done');
+  }
+
+  private composeUsersModule(): ReturnType<typeof composeUsersAuthServices> {
+    if (this.usersComposition) return this.usersComposition;
+
+    if (!this.passwordCryptoService) {
+      throw new Error('PasswordCryptoService is required to compose Users module.');
+    }
+    if (!this.mutexClient) {
+      throw new Error('MutexService is required to compose Users module.');
+    }
+    if (!this.authService?.jwtService) {
+      throw new Error('AuthService with JwtService is required to compose Users module.');
+    }
+
+    this.usersComposition = composeUsersAuthServices({
+      databaseClient: this.databaseClient,
+      passwordCryptoService: this.passwordCryptoService,
+      mutexService: this.mutexClient,
+      jwtService: this.authService.jwtService,
+      eventBus: this.eventBus
+    });
+    return this.usersComposition;
   }
 }
 

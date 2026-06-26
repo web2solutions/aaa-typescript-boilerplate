@@ -9,10 +9,10 @@ import { Handler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda
 import { sendErrorResponse } from '@src/interface/HTTP/adapters/aws/lambda/responses/sendErrorResponse';
 
 import {
-  composeUsersAuthServices,
-  UserController,
-  UserCreateRequestEvent
-} from '@src/modules/Users';
+  composeUsersAuthServices
+} from '@src/modules/Users/composition/composeUsersAuthServices';
+import { UserController } from '@src/modules/Users/adapters/in/http/controllers/UserController';
+import { UserCreateRequestEvent } from '@src/modules/Users/events/UserCreateRequestEvent';
 
 import { BaseError } from '@src/infra/exceptions';
 import { Context } from '@src/infra/context/Context';
@@ -21,6 +21,7 @@ import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { InMemoryEventBus } from '@src/infra/events/InMemoryEventBus';
 
 const OasFilePath = path.resolve('./spec/1.0.0.yml');
 
@@ -32,18 +33,22 @@ const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();
 const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
+const eventBus = InMemoryEventBus.compile();
 
-const { authService } = composeUsersAuthServices({
+const { authService, userUseCases, authUseCases } = composeUsersAuthServices({
   databaseClient: InMemoryDbClient,
   passwordCryptoService,
   mutexService,
-  jwtService
+  jwtService,
+  eventBus
 });
 
 const controller = new UserController({
   authService,
   openApiSpecification,
   databaseClient,
+  userUseCases,
+  authUseCases,
   mutexService,
   passwordCryptoService
 });
