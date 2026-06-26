@@ -49,3 +49,15 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
 
 - [x] Add a minimal CI gate
   - Required before features: lint, unit tests, selected integration smoke, OpenAPI route resolution check, and build once dependency mismatch is fixed.
+
+- [ ] Enforce architecture NFR consistency across layers
+  - Align implementation to DDD + EDA + Hexagonal Architecture + SOLID.
+  - Keep explicit ownership for domains, entities, ports, adapters, repositories, services, use cases, controllers, and handlers.
+
+- [ ] Normalize layer call order
+  - Ensure driving adapters/controllers call application use-cases as the entry point.
+  - Avoid controller-level service/repository instantiation.
+
+- [ ] Prefer event-first integration and prevent circular references
+  - Introduce/standardize event publishing/listening for cross-module integration.
+  - Remove cycle-prone imports and add CI checks for dependency cycles.

@@ -41,6 +41,113 @@ It aims to be as much agnostic as possible, avoiding to add any frameworks or li
 
 It can be used as boilerplate to create `modular monolith`or `microservice` applications.
 
+## Purpose of this project
+
+This boilerplate provides a production-oriented starting point for teams that need to build backend applications quickly without sacrificing architecture quality.
+
+Its main purpose is to provide:
+
+- A stable and reusable application structure based on Hexagonal Architecture, DDD, and Event-Driven principles.
+- Multiple runtime adapters (Express, Fastify, Restify, Hyper-Express, and AWS Lambda).
+- Shared cross-cutting capabilities (validation, auth, OpenAPI, repository abstraction, mutex, testing, and CI).
+- A predictable way to evolve from a single service into multiple services over time.
+
+In practical terms, this repository is meant to reduce early project uncertainty and help teams move faster from idea to deployable service.
+
+## Advantages and example applications
+
+### Why this boilerplate is useful
+
+1. Architectural consistency
+- Teams can start with clear boundaries (handlers, controllers, services, use cases, repositories, adapters) instead of deciding structure from scratch.
+
+2. Runtime flexibility
+- The same core domain can run through different HTTP/server adapters and lambda handlers.
+
+3. Easier evolution
+- You can begin as a modular monolith and split into microservices later with lower refactor cost.
+
+4. Better quality baseline
+- Includes lint, unit/integration tests, OpenAPI checks, and CI gate concepts ready to use.
+
+5. Lower onboarding friction
+- New engineers can follow the existing conventions instead of learning a custom architecture each project.
+
+### Example applications
+
+- User and Identity Service (registration, login, authorization, profile updates).
+- Billing/Subscriptions API with domain-level rules and audit events.
+- Internal Backoffice API with strict contract validation via OpenAPI.
+- Event-driven services consuming queue messages and exposing admin endpoints.
+- Lambda-first APIs where the same domain logic must also run in local HTTP environments.
+
+## How this project accelerates new application development
+
+This boilerplate accelerates delivery by front-loading decisions that are usually expensive when repeated in every new project.
+
+### Typical acceleration points
+
+- Architecture already defined:
+  no need to design folders, layers, and boundaries from zero.
+- Adapter pattern ready:
+  switch HTTP runtime/lambda strategy without rewriting core use cases.
+- Validation and auth patterns reusable:
+  add new routes by following existing controller + OAS workflow.
+- Repository abstraction ready:
+  start in-memory for fast iteration and migrate to real databases progressively.
+- CI and quality checks ready:
+  teams can protect baseline quality from day one.
+
+### Suggested team workflow
+
+1. Fork or clone this boilerplate.
+2. Define your domain model and OpenAPI contract.
+3. Implement use cases and repositories for your first bounded context.
+4. Expose routes through controllers and selected HTTP adapter.
+5. Validate with unit tests + integration smoke + CI gate.
+6. Deploy as API server, Lambda, or both, depending on product needs.
+
+## Integrating AI and data modeling tools (Moon Modeler)
+
+This boilerplate can be combined with AI-assisted development and data modeling tools such as [Moon Modeler](https://www.datensen.com/products/moon-modeler/) to reduce modeling and implementation lead time.
+
+### AI-assisted usage possibilities
+
+- Generate initial OpenAPI drafts from product requirements.
+- Propose DTOs, validation rules, and test case templates.
+- Assist migration from in-memory repositories to SQL/NoSQL adapters.
+- Create regression test scenarios from bug reports and production incidents.
+- Suggest refactors while preserving existing architecture boundaries.
+
+### Moon Modeler integration possibilities
+
+Moon Modeler can be used as the source for entity and relation design before coding repositories.
+
+Suggested flow:
+
+1. Model entities and relationships in Moon Modeler.
+2. Export schemas/DDL/JSON model artifacts.
+3. Map entities to domain models and repository contracts in this boilerplate.
+4. Implement adapters for the target database (e.g., Postgres/MongoDB).
+5. Keep OpenAPI schemas aligned with the modeled domain objects.
+6. Use CI checks and tests to validate behavioral consistency.
+
+### AI + Moon Modeler + this boilerplate (combined workflow)
+
+1. Product manager defines capabilities and constraints.
+2. Data modeler structures entities in Moon Modeler.
+3. AI assists in generating first-pass contracts and implementation skeletons.
+4. Engineers implement use cases and repositories following this architecture.
+5. CI gate validates quality, contracts, and runtime behavior before release.
+
+This combination is especially helpful for teams building multiple services with shared standards and tight delivery timelines.
+
+## Additional engineering guide
+
+For a practical implementation playbook to create a new microservice, REST API, or Lambda using this boilerplate, see:
+
+- [Engineering Bootstrap Guide](docs/ENGINEERING-BOOTSTRAP-GUIDE.md)
+
 ### Project features high level overview
 
 It implements incoming data validation, in the infrastructure level, through custom logic and based in the Open API specification.
