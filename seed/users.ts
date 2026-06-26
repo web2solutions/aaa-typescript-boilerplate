@@ -9,6 +9,8 @@ import {
   PhoneValueObject
 } from '@src/modules/ddd/valueObjects';
 
+const buildSeedCredential = (account: string): string => `seed-${account}-A1!`;
+
 const users: Array<IUser> = [{
   id: UUID.create().toString(),
   firstName: 'Abraham',
@@ -32,7 +34,7 @@ const users: Array<IUser> = [{
   ],
   avatar: 'avatar.png',
   username: 'eduardo@xpertminds.dev',
-  password: 'user1_password',
+  password: buildSeedCredential('user1'),
   roles: [
     'access_allow',
     'create_account',
@@ -96,7 +98,7 @@ const users: Array<IUser> = [{
   } as EmailValueObject],
   avatar: 'avatar.png',
   username: 'user2',
-  password: 'user2_password',
+  password: buildSeedCredential('user2'),
   roles: [
     'access_allow',
     'create_transaction',
@@ -119,7 +121,7 @@ const users: Array<IUser> = [{
   } as EmailValueObject],
   avatar: 'avatar.png',
   username: 'user3@xpertminds.dev',
-  password: 'user3_password',
+  password: buildSeedCredential('user3'),
   roles: [
     'access_allow',
     'read_account',
@@ -141,7 +143,7 @@ const users: Array<IUser> = [{
   } as EmailValueObject],
   avatar: 'avatar.png',
   username: 'user4@xpertminds.dev',
-  password: 'user4_password',
+  password: buildSeedCredential('user4'),
   roles: [
     'access_allow',
     'create_transaction'

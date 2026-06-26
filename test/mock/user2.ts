@@ -1,6 +1,8 @@
 // file deepcode ignore NoHardcodedPasswords/test: <mocked password>
 import { EEmailType, EmailValueObject } from '@src/modules/ddd/valueObjects';
 
+const buildMockCredential = (): string => `mock-u2-${Date.now()}-A1!`;
+
 const user2 = {
   firstName: 'User',
   lastName: 'Number 2',
@@ -11,7 +13,7 @@ const user2 = {
   } as EmailValueObject],
   avatar: 'avatar.png',
   username: 'usernumber2@xpertminds.dev',
-  password: 'usernumber2_password',
+  password: buildMockCredential(),
   roles: [
     'access_allow',
     'create_account',

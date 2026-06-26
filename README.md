@@ -199,6 +199,7 @@ Start the app before opening those URLs.
 - [Engineering Bootstrap Guide](docs/ENGINEERING-BOOTSTRAP-GUIDE.md)
 - [Hexagonal Feature-driven Migration Plan](docs/HEXAGONAL-FEATURE-DRIVEN-MIGRATION.md)
 - [Domain Data Entities](docs/DOMAIN-DATA-ENTITIES.md)
+- [CI / SonarQube / Codecov Troubleshooting](docs/CI-TROUBLESHOOTING.md)
 - [Agents Requirements Registry](.agents/README.md)
 
 ## Runtime and Required Stack
@@ -278,6 +279,8 @@ Local enforcement:
 
 - `.husky/pre-commit` runs `npm run lint && npm run test:unit`
 - `.husky/pre-push` runs `npm run ci:gate`
+- `.husky/commit-msg` runs commitlint (`@commitlint/config-conventional`)
+- `.husky/post-commit` updates `CHANGELOG.md` from Git history and auto-amends the commit when needed
 
 SonarQube Cloud coverage import:
 
@@ -285,6 +288,123 @@ SonarQube Cloud coverage import:
 - Coverage source: `./coverage/lcov.info` (Jest LCOV)
 - Scanner setting: `sonar.javascript.lcov.reportPaths=./coverage/lcov.info`
 - Required repository secret: `SONAR_TOKEN`
+
+### Integrated Tooling Overview
+
+| Integration | Purpose | Where it is configured | What to run / requirements |
+|------------|---------|-------------------------|-----------------------------|
+| CircleCI | Main pipeline for lint + tests + architecture checks + smoke + upload coverage | `.circleci/config.yml` | Runs automatically; local equivalent is `npm run ci:gate` |
+| GitHub Actions (tests) | Secondary CI validation on push/PR | `.github/workflows/test.yml` | Uses Node `22.x`, starts Redis, runs `npm run ci:gate` |
+| GitHub Actions (SonarQube Cloud) | Static analysis + quality gate + coverage import | `.github/workflows/sonarqube-cloud.yml`, `sonar-project.properties` | Requires `SONAR_TOKEN`; runs `npm run test:unit` first |
+| Codecov | Coverage status checks for project and patch | `codecov.yml` | Target is `95%` for project and patch |
+| Jest coverage gate | Local hard gate to prevent low-coverage merges | `jest.config.js` | Global thresholds: `lines/statements >= 95%`, `branches/functions >= 80%` |
+| Husky | Local Git hooks for quality checks | `.husky/*` | Installed by `npm run prepare` |
+| Commitlint + Commitizen | Conventional commits and guided commit flow | `commitlint.config.js`, `package.json` | `npm run commit` |
+| Changelog sync automation | Keeps `CHANGELOG.md` aligned with Git history | `ci-cd/update-changelog.js`, `.husky/post-commit` | `npm run changelog:update`, `npm run changelog:check` |
+| OpenAPI route resolution check | Ensures each operationId maps to handlers and controller methods | `ci-cd/check-oas-route-resolution.js` | `npm run oas:check-routes` |
+| Hexagonal boundary check | Blocks controller-layer violations | `ci-cd/check-hexagonal-boundaries.js` | `npm run arch:check-boundaries` |
+| Core import cycle check | Prevents cyclic dependencies in core namespaces | `ci-cd/check-core-import-cycles.js` | `npm run deps:check-cycles` |
+| Legacy namespace check | Blocks new imports from old Users namespaces | `ci-cd/check-users-legacy-imports.js` | `npm run arch:check-users-legacy-imports` |
+
+### CI Platforms and Responsibilities
+
+#### CircleCI
+
+- Pipeline file: `.circleci/config.yml`
+- Uses `cimg/node:22.9` plus `redis:latest`
+- Installs dependencies, waits for Redis, executes `npm run ci:gate`, uploads coverage with Codecov orb
+- This is the primary all-in-one gate
+
+#### GitHub Actions - Test Workflow
+
+- Workflow file: `.github/workflows/test.yml`
+- Triggers on:
+  - `push` to `main` and `dev`
+  - `pull_request` to `main`
+- Sets up Redis (with password), installs dependencies, runs `npm run ci:gate`
+- Mirrors the same quality gate used locally and in CircleCI
+
+#### GitHub Actions - SonarQube Cloud Workflow
+
+- Workflow file: `.github/workflows/sonarqube-cloud.yml`
+- Triggers on:
+  - `push` to `main` and `dev`
+  - `pull_request` to `main`
+- Installs dependencies, runs unit tests with coverage, then executes SonarQube scan action
+- Scanner reads `./coverage/lcov.info` as configured in `sonar-project.properties`
+
+### Coverage Policy (95% Standard)
+
+- Codecov enforces:
+  - project coverage target: `95%`
+  - patch coverage target: `95%`
+- Jest enforces local gate before merge:
+  - `lines >= 95%`
+  - `statements >= 95%`
+  - `branches >= 80%`
+  - `functions >= 80%`
+- Commits and PRs are expected to respect these thresholds before approval.
+
+### Node 22 Runtime Enforcement
+
+The project is locked to Node 22:
+
+- `package.json` -> `"engines": { "node": ">=22.0.0 <23.0.0" }`
+- `.npmrc` -> `engine-strict=true`
+- `preinstall` script -> `npm run check-node-version`
+- `ci-cd/check-node-version.js` validates `process.version` against `engines.node`
+- `.nvmrc` and `.node-version` are both pinned to `22.0.0`
+
+Recommended local setup:
+
+```bash
+nvm use
+node -v
+npm -v
+```
+
+### Environment and Secrets in CI
+
+Common variables used by tests and workflows:
+
+- `AAA_JWT_TOKEN_SECRET_KEY`
+- `AAA_REDIS_PASSWORD`
+- `SONAR_TOKEN` (required only for SonarQube scan step)
+
+Environment bootstrap during tests:
+
+- `jest.config.js` uses `setupFiles: ["./ci-cd/loadEnvironment.js"]`
+- `ci-cd/loadEnvironment.js` loads the first existing file from:
+  - `dev`: `.env.dev`, `.env.dev.example`, `.env.ci`
+  - `ci`: `.env.ci`, `.env.dev.example`
+  - `prod`: `.env.prod`
+  - `staging`: `.env.staging`
+- For CI safety, it sets `AAA_JWT_TOKEN_SECRET_KEY=ci_jwt_secret_key` if missing.
+
+### Quality Gate Commands (Local Equivalent of CI)
+
+Run full gate:
+
+```bash
+npm run ci:gate
+```
+
+Run targeted checks:
+
+```bash
+npm run deps:check-cycles
+npm run arch:check-boundaries
+npm run arch:check-users-legacy-imports
+npm run oas:check-routes
+npm run test:unit
+npm run ci:smoke
+```
+
+### Troubleshooting (CI / SonarQube / Codecov)
+
+For CI incidents and failing checks, see:
+
+- [CI / SonarQube / Codecov Troubleshooting](docs/CI-TROUBLESHOOTING.md)
 
 ## Run the API (port 3000)
 
@@ -373,6 +493,28 @@ Validate changelog is synced:
 
 ```bash
 npm run changelog:check
+```
+
+Architecture and contracts:
+
+```bash
+npm run deps:check-cycles
+npm run arch:check-boundaries
+npm run arch:check-users-legacy-imports
+npm run oas:check-routes
+```
+
+Node runtime check:
+
+```bash
+npm run check-node-version
+```
+
+Smoke and CI gate:
+
+```bash
+npm run ci:smoke
+npm run ci:gate
 ```
 
 ## Dependencies
