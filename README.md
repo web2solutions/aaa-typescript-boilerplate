@@ -140,6 +140,23 @@ npm run ci:gate
 npm run dev:fastify
 ```
 
+## Developer Automation CLI
+
+Run the wrapper CLI:
+
+```bash
+npm run dev:cli
+```
+
+Initial sub applications:
+
+1. Domains CRUD manager (list/search/create/update/delete domains)
+2. Data Entities and Models CRUD manager (list/search/create/update/delete and field management)
+
+CLI catalog is persisted at:
+
+- `.aaa-cli/workspace-catalog.json`
+
 ## Additional Detailed Documents
 
 - [Engineering Bootstrap Guide](docs/ENGINEERING-BOOTSTRAP-GUIDE.md)

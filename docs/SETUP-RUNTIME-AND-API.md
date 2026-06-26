@@ -103,6 +103,12 @@ Serverless dev mode:
 npm run dev:serverless
 ```
 
+Developer automation CLI:
+
+```bash
+npm run dev:cli
+```
+
 ![serverless dev mode](../sls.png "serverless dev mode")
 
 ## Production Commands

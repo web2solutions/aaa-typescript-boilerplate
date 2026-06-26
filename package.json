@@ -39,6 +39,7 @@
     "dev:restify": "nodemon --exec node -r ts-node/register --env-file=./src/config/.env.dev ./src/interface/HTTP/adapters/restify/restify.ts",
     "dev:hyper-express": "nodemon --exec node -r ts-node/register --env-file=./src/config/.env.dev ./src/interface/HTTP/adapters/hyper-express/hyper-express.ts",
     "dev:serverless": "npm run lint && NODE_ENV=dev serverless dev",
+    "dev:cli": "node -r ts-node/register -r tsconfig-paths/register ./src/interface/CLI/index.ts",
     "prod:express": "node --env-file=./.build/config/.env.prod ./.build/interface/HTTP/adapters/express/express.js",
     "prod:fastify": "node --env-file=./.build/config/.env.prod ./.build/interface/HTTP/adapters/fastify/fastify.js",
     "prod:restify": "node --env-file=./.build/config/.env.prod ./.build/interface/HTTP/adapters/restify/restify.js",
