@@ -35,7 +35,7 @@ const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 const eventBus = InMemoryEventBus.compile();
 
-const { authService, userService } = composeUsersAuthServices({
+const { authService, userUseCases, authUseCases } = composeUsersAuthServices({
   databaseClient: InMemoryDbClient,
   passwordCryptoService,
   mutexService,
@@ -47,7 +47,8 @@ const controller = new UserController({
   authService,
   openApiSpecification,
   databaseClient,
-  userService,
+  userUseCases,
+  authUseCases,
   mutexService,
   passwordCryptoService
 });

@@ -54,10 +54,11 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - Align implementation to DDD + EDA + Hexagonal Architecture + SOLID.
   - Keep explicit ownership for domains, entities, ports, adapters, repositories, services, use cases, controllers, and handlers.
 
-- [ ] Normalize layer call order
+- [x] Normalize layer call order
   - Ensure driving adapters/controllers call application use-cases as the entry point.
   - Avoid controller-level service/repository instantiation.
-  - Progress: `UserController` now receives `userService` from composition/wiring instead of creating repository/service directly.
+  - `UserController` and `AuthController` now call `UserUseCases` and `AuthUseCases` from composition.
+  - `RestAPI` and Lambda wiring now resolve Users through shared composition/use-case instances.
 
 - [ ] Prefer event-first integration and prevent circular references
   - Introduce/standardize event publishing/listening for cross-module integration.

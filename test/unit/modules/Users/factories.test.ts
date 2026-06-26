@@ -1,10 +1,12 @@
 import {
+  AuthUseCases,
   AuthController,
   AuthService,
   UserController,
   UserDataRepository,
   UserProviderLocal,
-  UserService
+  UserService,
+  UserUseCases
 } from '@src/modules/Users';
 
 const store = {};
@@ -62,6 +64,8 @@ describe('user factories', () => {
 
     const userProvider = UserProviderLocal.compile(userService);
     const otherUserProvider = UserProviderLocal.compile(userService);
+    const userUseCases = UserUseCases.compile(userService);
+    const otherUserUseCases = UserUseCases.compile(userService);
 
     const compiledAuthService = AuthService.compile(
       userProvider,
@@ -73,12 +77,16 @@ describe('user factories', () => {
       passwordCryptoService as never,
       jwtService as never
     );
+    const authUseCases = AuthUseCases.compile(compiledAuthService, mutexService as never);
+    const otherAuthUseCases = AuthUseCases.compile(compiledAuthService, mutexService as never);
 
     const controllerFactory = {
       authService,
       databaseClient,
       openApiSpecification: {},
       userService,
+      userUseCases,
+      authUseCases,
       passwordCryptoService,
       mutexService
     };
@@ -92,10 +100,14 @@ describe('user factories', () => {
       dataRepository === otherDataRepository,
       userService === otherUserService,
       userProvider === otherUserProvider,
+      userUseCases === otherUserUseCases,
       compiledAuthService === otherAuthService,
+      authUseCases === otherAuthUseCases,
       userController === otherUserController,
       authController === otherAuthController
     ]).toStrictEqual([
+      false,
+      false,
       false,
       false,
       false,

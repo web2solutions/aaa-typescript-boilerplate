@@ -17,9 +17,8 @@ import { IEventBus } from '@src/modules/port';
 
 import {
   IUser,
-  UserDataRepository,
-  UserService,
-  IAuthService
+  IAuthService,
+  composeUsersAuthServices
 } from '@src/modules/Users';
 
 import users from '@seed/users';
@@ -44,6 +43,8 @@ export class RestAPI<T> {
   private readonly keyValueStorageClient: IKeyValueStorageClient | undefined;
 
   private readonly eventBus: IEventBus | undefined;
+
+  private usersComposition: ReturnType<typeof composeUsersAuthServices> | undefined;
 
   constructor(config: IAPIFactory<T>) {
     this.serverType = config.serverType ?? EHTTPFrameworks.express;
@@ -147,22 +148,17 @@ export class RestAPI<T> {
           const controllerPath = `@src/modules/${moduleName}/interface/controller/${controllerName}`;
           const ControllerModule = require(controllerPath)[controllerName];
 
+          const usersModuleComposition = moduleName === 'Users'
+            ? this.composeUsersModule()
+            : undefined;
+
           const controller = new ControllerModule({
-            authService: this.authService,
+            authService: usersModuleComposition?.authService ?? this.authService,
             openApiSpecification: spec,
             databaseClient: this.databaseClient,
-            userService: moduleName === 'Users' && controllerName === 'UserController'
-              ? UserService.compile({
-                dataRepository: UserDataRepository.compile({
-                  databaseClient: this.databaseClient
-                }),
-                services: {
-                  passwordCryptoService: this.passwordCryptoService,
-                  mutexService: this.mutexClient,
-                  eventBus: this.eventBus
-                }
-              })
-              : undefined,
+            userService: usersModuleComposition?.userService,
+            userUseCases: usersModuleComposition?.userUseCases,
+            authUseCases: usersModuleComposition?.authUseCases,
             mutexService: this.mutexClient,
             passwordCryptoService: this.passwordCryptoService
           });
@@ -214,22 +210,13 @@ export class RestAPI<T> {
   }
 
   public async seedUsers(): Promise<IUser[]> {
-    const dataRepository = UserDataRepository.compile({ databaseClient: this.databaseClient });
-    const service = UserService.compile({
-      dataRepository,
-      services: {
-        passwordCryptoService: this.passwordCryptoService,
-        mutexService: this.mutexClient,
-        eventBus: this.eventBus
-      }
-    });
+    const { userUseCases } = this.composeUsersModule();
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
       requests.push(new Promise((resolve, reject) => {
         (async () => {
           try {
-            // await service.create(user);
-            const newUser = await service.create(user);
+            const newUser = await userUseCases.create(user);
             if (newUser.error) throw newUser.error;
             if (!newUser.result) throw new Error('User seed failed');
             resolve(newUser.result);
@@ -245,22 +232,14 @@ export class RestAPI<T> {
   }
 
   public async deleteUsers(): Promise<boolean[]> {
-    const dataRepository = UserDataRepository.compile({ databaseClient: this.databaseClient });
-    const service = UserService.compile({
-      dataRepository,
-      services: {
-        passwordCryptoService: this.passwordCryptoService,
-        mutexService: this.mutexClient,
-        eventBus: this.eventBus
-      }
-    });
+    const { userUseCases } = this.composeUsersModule();
     const requests: Promise<boolean>[] = [];
-    const allUsers = (await service.getAll({}, { page: 1, size: 1000 })).result || [];
+    const allUsers = (await userUseCases.getAll({}, { page: 1, size: 1000 })).result || [];
     for (const user of allUsers) {
       requests.push(new Promise((resolve, reject) => {
         (async () => {
           try {
-            const deletedUser = await service.delete(user.id);
+            const deletedUser = await userUseCases.delete(user.id);
             if (deletedUser.error) throw deletedUser.error;
             if (deletedUser.result === undefined) throw new Error('User delete failed');
             resolve(deletedUser.result);
@@ -273,6 +252,29 @@ export class RestAPI<T> {
     }
     return Promise.all(requests);
     // console.log('>>>> done');
+  }
+
+  private composeUsersModule(): ReturnType<typeof composeUsersAuthServices> {
+    if (this.usersComposition) return this.usersComposition;
+
+    if (!this.passwordCryptoService) {
+      throw new Error('PasswordCryptoService is required to compose Users module.');
+    }
+    if (!this.mutexClient) {
+      throw new Error('MutexService is required to compose Users module.');
+    }
+    if (!this.authService?.jwtService) {
+      throw new Error('AuthService with JwtService is required to compose Users module.');
+    }
+
+    this.usersComposition = composeUsersAuthServices({
+      databaseClient: this.databaseClient,
+      passwordCryptoService: this.passwordCryptoService,
+      mutexService: this.mutexClient,
+      jwtService: this.authService.jwtService,
+      eventBus: this.eventBus
+    });
+    return this.usersComposition;
   }
 }
 

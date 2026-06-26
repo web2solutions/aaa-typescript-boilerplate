@@ -3,6 +3,8 @@ export { User } from '@src/modules/Users/domain/Model/User';
 export { UserDataRepository } from '@src/modules/Users/infra/repository/UserDataRepository';
 export { UserService } from '@src/modules/Users/service/UserService';
 export { composeUsersAuthServices } from '@src/modules/Users/composition/composeUsersAuthServices';
+export { UserUseCases } from '@src/modules/Users/application/UserUseCases';
+export { AuthUseCases } from '@src/modules/Users/application/AuthUseCases';
 
 export { UserController } from '@src/modules/Users/interface/controller/UserController';
 export { AuthController } from '@src/modules/Users/interface/controller/AuthController';
@@ -48,6 +50,8 @@ export { IUserProvider } from '@src/modules/Users/service/ports/IUserProvider';
 export { IUserRepository } from '@src/modules/Users/service/ports/IUserRepository';
 export { IAuthorizationHeader } from '@src/modules/Users/service/ports/IAuthorizationHeader';
 export { ITokenObject } from '@src/modules/Users/service/ports/ITokenObject';
+export { IUserUseCases } from '@src/modules/Users/application/ports/IUserUseCases';
+export { IAuthUseCases } from '@src/modules/Users/application/ports/IAuthUseCases';
 
 // events
 export { UserCreateRequestEvent } from '@src/modules/Users/events/UserCreateRequestEvent';

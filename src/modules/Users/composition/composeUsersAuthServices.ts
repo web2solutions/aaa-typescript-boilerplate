@@ -8,6 +8,10 @@ import { UserDataRepository } from '@src/modules/Users/infra/repository/UserData
 import { UserService } from '@src/modules/Users/service/UserService';
 import { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 import { AuthService } from '@src/modules/Users/service/AuthService';
+import { UserUseCases } from '@src/modules/Users/application/UserUseCases';
+import { AuthUseCases } from '@src/modules/Users/application/AuthUseCases';
+import { IUserUseCases } from '@src/modules/Users/application/ports/IUserUseCases';
+import { IAuthUseCases } from '@src/modules/Users/application/ports/IAuthUseCases';
 import { IUserProvider } from '@src/modules/Users/service/ports/IUserProvider';
 import { IAuthService } from '@src/modules/Users/service/ports/IAuthService';
 
@@ -24,6 +28,8 @@ interface IUsersAuthComposition {
   userService: UserService;
   userProvider: IUserProvider;
   authService: IAuthService;
+  userUseCases: IUserUseCases;
+  authUseCases: IAuthUseCases;
 }
 
 export const composeUsersAuthServices = (
@@ -54,11 +60,15 @@ export const composeUsersAuthServices = (
     passwordCryptoService,
     jwtService
   );
+  const userUseCases = UserUseCases.compile(userService);
+  const authUseCases = AuthUseCases.compile(authService, mutexService);
 
   return {
     dataRepository,
     userService,
     userProvider,
-    authService
+    authService,
+    userUseCases,
+    authUseCases
   };
 };

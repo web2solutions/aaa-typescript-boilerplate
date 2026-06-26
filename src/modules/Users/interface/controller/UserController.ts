@@ -24,19 +24,19 @@ import { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpda
 import { RequestUpdatePassword } from '@src/modules/Users/interface/dto/RequestUpdatePassword';
 import { RequestUpdatePhone } from '@src/modules/Users/interface/dto/RequestUpdatePhone';
 import { RequestUpdateUser } from '@src/modules/Users/interface/dto/RequestUpdateUser';
-import { UserService } from '@src/modules/Users/service/UserService';
+import { IUserUseCases } from '@src/modules/Users/application/ports/IUserUseCases';
 
 export class UserController extends BaseController implements IController {
-  private readonly userService: UserService;
+  private readonly userUseCases: IUserUseCases;
 
   constructor(factory: IControllerFactory) {
     super(factory);
-    if (!factory.userService) {
-      const error = new Error('UserService is not implemented');
+    if (!factory.userUseCases) {
+      const error = new Error('UserUseCases is not implemented');
       error.name = _INFRA_NOT_IMPLEMENTED_;
       throw error;
     }
-    this.userService = factory.userService;
+    this.userUseCases = factory.userUseCases;
   }
 
   @Authorize()
@@ -49,7 +49,7 @@ export class UserController extends BaseController implements IController {
       event.schemaOAS,
       requestCreateUser
     );
-    const { result, error } = await this.userService.create(requestCreateUser);
+    const { result, error } = await this.userUseCases.create(requestCreateUser);
     return { result, error };
   }
 
@@ -65,7 +65,7 @@ export class UserController extends BaseController implements IController {
       requestUpdateUser
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.update(
+    const { result, error } = await this.userUseCases.update(
       userId,
       requestUpdateUser
     );
@@ -84,7 +84,7 @@ export class UserController extends BaseController implements IController {
       requestUpdatePassword
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.updatePassword(
+    const { result, error } = await this.userUseCases.updatePassword(
       userId,
       requestUpdatePassword
     );
@@ -97,7 +97,7 @@ export class UserController extends BaseController implements IController {
   ): Promise<IServiceResponse<boolean>> {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.delete(userId);
+    const { result, error } = await this.userUseCases.delete(userId);
     return { result, error };
   }
 
@@ -107,7 +107,7 @@ export class UserController extends BaseController implements IController {
   ): Promise<IServiceResponse<IUser>> {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.getOneById(userId);
+    const { result, error } = await this.userUseCases.getOneById(userId);
     return { result, error };
   }
 
@@ -119,7 +119,7 @@ export class UserController extends BaseController implements IController {
     // const page = parseInt(Security.xss(event.params.page || 0), 2);
     const filters = setFilter(event);
     const paging = setPaging(event);
-    const result = await this.userService.getAll(
+    const result = await this.userUseCases.getAll(
       { ...filters },
       paging
     );
@@ -139,7 +139,7 @@ export class UserController extends BaseController implements IController {
       requestCreateDocument
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.createDocument(
+    const { result, error } = await this.userUseCases.createDocument(
       userId,
       requestCreateDocument
     );
@@ -159,7 +159,7 @@ export class UserController extends BaseController implements IController {
     );
     const userId = Security.xss(event.params.id);
     const documentId = Security.xss(event.params.documentId);
-    const { result, error } = await this.userService.updateDocument(
+    const { result, error } = await this.userUseCases.updateDocument(
       userId,
       documentId,
       requestUpdateDocument
@@ -174,7 +174,7 @@ export class UserController extends BaseController implements IController {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
     const documentId = Security.xss(event.params.documentId);
-    const { result, error } = await this.userService.deleteDocument(
+    const { result, error } = await this.userUseCases.deleteDocument(
       userId,
       documentId
     );
@@ -193,7 +193,7 @@ export class UserController extends BaseController implements IController {
       requestCreatePhone
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.createPhone(
+    const { result, error } = await this.userUseCases.createPhone(
       userId,
       requestCreatePhone
     );
@@ -213,7 +213,7 @@ export class UserController extends BaseController implements IController {
     );
     const userId = Security.xss(event.params.id);
     const phoneId = Security.xss(event.params.phoneId);
-    const { result, error } = await this.userService.updatePhone(
+    const { result, error } = await this.userUseCases.updatePhone(
       userId,
       phoneId,
       requestUpdatePhone
@@ -228,7 +228,7 @@ export class UserController extends BaseController implements IController {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
     const phoneId = Security.xss(event.params.phoneId);
-    const { result, error } = await this.userService.deletePhone(
+    const { result, error } = await this.userUseCases.deletePhone(
       userId,
       phoneId
     );
@@ -247,7 +247,7 @@ export class UserController extends BaseController implements IController {
       requestCreateEmail
     );
     const userId = Security.xss(event.params.id);
-    const { result, error } = await this.userService.createEmail(
+    const { result, error } = await this.userUseCases.createEmail(
       userId,
       requestCreateEmail
     );
@@ -267,7 +267,7 @@ export class UserController extends BaseController implements IController {
     );
     const userId = Security.xss(event.params.id);
     const emailId = Security.xss(event.params.emailId);
-    const { result, error } = await this.userService.updateEmail(
+    const { result, error } = await this.userUseCases.updateEmail(
       userId,
       emailId,
       requestUpdateEmail
@@ -282,7 +282,7 @@ export class UserController extends BaseController implements IController {
     validateRequestParams(event.schemaOAS, event.params);
     const userId = Security.xss(event.params.id);
     const emailId = Security.xss(event.params.emailId);
-    const { result, error } = await this.userService.deleteEmail(
+    const { result, error } = await this.userUseCases.deleteEmail(
       userId,
       emailId
     );

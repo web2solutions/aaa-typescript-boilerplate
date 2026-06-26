@@ -13,6 +13,7 @@ Align the codebase with DDD + Event-Driven + Hexagonal Architecture and SOLID wi
 - Move composition out of controllers.
 - Controllers receive application use-cases/facades via composition root.
 - Eliminate direct repository/service instantiation inside controllers.
+- Status: in progress globally, completed for Users module (`UserController`/`AuthController` now use `UserUseCases`/`AuthUseCases`).
 
 2. Port-first core contracts
 - Introduce outbound repository interfaces in core.
