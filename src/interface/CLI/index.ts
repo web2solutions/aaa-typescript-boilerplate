@@ -24,8 +24,10 @@ const buildContext = (prompt: Prompt): ISubApplicationContext => ({
   saveCatalog
 });
 
-const runCli = async (): Promise<void> => {
-  const prompt = new Prompt();
+export const runCli = async (
+  prompt = new Prompt(),
+  registeredSubApplications: ISubApplication[] = subApplications
+): Promise<void> => {
   const context = buildContext(prompt);
 
   // eslint-disable-next-line no-console
@@ -36,19 +38,19 @@ const runCli = async (): Promise<void> => {
   try {
     while (true) {
       const option = await context.choose('Main Menu', [
-        ...subApplications.map((item) => item.title),
+        ...registeredSubApplications.map((item) => item.title),
         'List registered sub applications',
         'Exit'
       ]);
 
-      if (option < subApplications.length) {
-        await subApplications[option].run(context);
+      if (option < registeredSubApplications.length) {
+        await registeredSubApplications[option].run(context);
         continue;
       }
 
-      if (option === subApplications.length) {
+      if (option === registeredSubApplications.length) {
         context.log('\nRegistered sub applications:');
-        subApplications.forEach((item, index) => {
+        registeredSubApplications.forEach((item, index) => {
           context.log(` ${index + 1}. ${item.title} (${item.id})`);
         });
         continue;
@@ -62,8 +64,11 @@ const runCli = async (): Promise<void> => {
   }
 };
 
-runCli().catch((error: unknown) => {
-  // eslint-disable-next-line no-console
-  console.error('CLI execution failed:', error);
-  process.exitCode = 1;
-});
+/* istanbul ignore next */
+if (require.main === module) {
+  runCli().catch((error: unknown) => {
+    // eslint-disable-next-line no-console
+    console.error('CLI execution failed:', error);
+    process.exitCode = 1;
+  });
+}
