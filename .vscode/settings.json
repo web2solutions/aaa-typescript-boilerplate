@@ -1,6 +1,0 @@
-{
-    "sonarlint.connectedMode.project": {
-        "connectionId": "mycon",
-        "projectKey": "web2solutions_aaa-typescript-boilerplate"
-    }
-}
