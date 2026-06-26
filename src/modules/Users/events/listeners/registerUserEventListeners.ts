@@ -19,7 +19,7 @@ export const registerUserEventListeners = (
   eventBus.subscribe(UserIntegrationEventName.Updated, safeListeners.onUserUpdated);
   eventBus.subscribe(UserIntegrationEventName.Deleted, safeListeners.onUserDeleted);
   eventBus.subscribe(
-    UserIntegrationEventName.PasswordUpdated,
+    UserIntegrationEventName.CredentialChanged,
     safeListeners.onUserPasswordUpdated
   );
 };

@@ -34,7 +34,7 @@ describe('registerUserEventListeners', () => {
       occurredAt: new Date().toISOString()
     });
     await eventBus.publish({
-      name: UserIntegrationEventName.PasswordUpdated,
+      name: UserIntegrationEventName.CredentialChanged,
       payload: { id: 'u1' },
       occurredAt: new Date().toISOString()
     });

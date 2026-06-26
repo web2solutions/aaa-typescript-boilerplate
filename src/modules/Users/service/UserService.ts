@@ -224,7 +224,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
       newData.salt = salt;
       const user = await updatePassword(id, newData, this.dataRepository);
       serviceResponse.result = UserService.sanitizeUser(user);
-      await this.publishEvent(UserIntegrationEventName.PasswordUpdated, { id });
+      await this.publishEvent(UserIntegrationEventName.CredentialChanged, { id });
 
       await this.mutexService.unlock(this.entityName, id);
     } catch (error) {

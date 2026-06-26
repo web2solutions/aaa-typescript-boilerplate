@@ -160,7 +160,7 @@ describe('user service', () => {
     const password = await service.updatePassword('u1', { password: '12345678' } as any);
     expect((password.result as any)?.password).toBeUndefined();
     expect(eventBus.publish).toHaveBeenCalledWith(expect.objectContaining({
-      name: UserIntegrationEventName.PasswordUpdated
+      name: UserIntegrationEventName.CredentialChanged
     }));
 
     expect((await service.createDocument('u1', { type: EDocumentType.RG, countryIssue: 'BR', data: '1' } as any)).result?.id).toBe('u1');
