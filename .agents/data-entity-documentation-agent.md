@@ -8,6 +8,7 @@ Standardize and maintain domain data entity documentation with field-level preci
 - Value objects
 - API-facing schema mappings (OpenAPI)
 - Validation contracts
+- Documentation updates for every new feature affecting domain/entity behavior
 
 ## Mandatory output for each domain
 1. Entity/value object catalog.

@@ -18,6 +18,24 @@ const printEntity = (context: ISubApplicationContext, item: IEntityDefinition): 
   );
 };
 
+const printFieldSummary = (context: ISubApplicationContext, field: IFieldDefinition): void => {
+  context.log(
+    `- ${field.name}: ${field.type}${field.required ? ' (required)' : ''} | validations=${
+      field.validations.join(', ') || 'none'
+    }`
+  );
+};
+
+const printFieldDetails = (context: ISubApplicationContext, field: IFieldDefinition): void => {
+  context.log(`Field: ${field.name}`);
+  context.log(`  type: ${field.type}`);
+  context.log(`  required: ${field.required ? 'yes' : 'no'}`);
+  context.log(`  format: ${field.format || 'n/a'}`);
+  context.log(`  defaultValue: ${field.defaultValue || 'n/a'}`);
+  context.log(`  validations: ${field.validations.join(', ') || 'none'}`);
+  context.log(`  behavior: ${field.behavior || 'n/a'}`);
+};
+
 const selectEntityIndex = async (
   context: ISubApplicationContext,
   catalog: IWorkspaceCatalog,
@@ -235,8 +253,10 @@ const manageFields = async (context: ISubApplicationContext): Promise<void> => {
   while (true) {
     const option = await context.choose(`Field Manager - ${target.name}`, [
       'List fields',
+      'View field details',
       'Add field',
       'Update field',
+      'Edit field behavior',
       'Delete field',
       'Back'
     ]);
@@ -245,15 +265,19 @@ const manageFields = async (context: ISubApplicationContext): Promise<void> => {
       if (target.fields.length === 0) {
         context.log('No fields defined.');
       } else {
-        target.fields.forEach((field) => {
-          context.log(
-            `- ${field.name}: ${field.type}${field.required ? ' (required)' : ''} | validations=${
-              field.validations.join(', ') || 'none'
-            }`
-          );
-        });
+        target.fields.forEach((field) => printFieldSummary(context, field));
       }
     } else if (option === 1) {
+      if (target.fields.length === 0) {
+        context.log('No fields defined.');
+        continue;
+      }
+      const fieldIndex = await context.choose(
+        'Choose field to view details',
+        target.fields.map((item) => `${item.name}: ${item.type}`)
+      );
+      printFieldDetails(context, target.fields[fieldIndex]);
+    } else if (option === 2) {
       const field = await askFieldDefinition(context);
       if (field) {
         if (target.fields.some((item) => item.name.toLowerCase() === field.name.toLowerCase())) {
@@ -265,7 +289,7 @@ const manageFields = async (context: ISubApplicationContext): Promise<void> => {
           context.log(`Field "${field.name}" added.`);
         }
       }
-    } else if (option === 2) {
+    } else if (option === 3) {
       if (target.fields.length === 0) {
         context.log('No fields to update.');
         continue;
@@ -281,7 +305,25 @@ const manageFields = async (context: ISubApplicationContext): Promise<void> => {
         await context.saveCatalog(catalog);
         context.log(`Field "${field.name}" updated.`);
       }
-    } else if (option === 3) {
+    } else if (option === 4) {
+      if (target.fields.length === 0) {
+        context.log('No fields to update behavior.');
+        continue;
+      }
+      const fieldIndex = await context.choose(
+        'Choose field to edit behavior',
+        target.fields.map((item) => `${item.name}: ${item.type}`)
+      );
+      const current = target.fields[fieldIndex];
+      const behavior = await context.ask(`Behavior notes (${current.behavior || ''}): `);
+      target.fields[fieldIndex] = {
+        ...current,
+        behavior: behavior || current.behavior || ''
+      };
+      target.updatedAt = new Date().toISOString();
+      await context.saveCatalog(catalog);
+      context.log(`Field "${target.fields[fieldIndex].name}" behavior updated.`);
+    } else if (option === 5) {
       if (target.fields.length === 0) {
         context.log('No fields to delete.');
         continue;

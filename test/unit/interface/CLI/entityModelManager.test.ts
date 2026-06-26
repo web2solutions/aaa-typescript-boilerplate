@@ -59,13 +59,13 @@ describe('cli entity/model manager', () => {
         5, // manage fields
         0, // choose entity index for manage fields
         0, // list fields
-        1, // add field
-        1, // add field (duplicate)
-        2, // update field
+        2, // add field
+        2, // add field (duplicate)
+        3, // update field
         0, // choose field to update
-        3, // delete field
+        5, // delete field
         0, // choose field to delete
-        4, // back from field manager
+        6, // back from field manager
         3, // update entity/model
         0, // choose entity to update
         3, // kind=model
@@ -121,6 +121,70 @@ describe('cli entity/model manager', () => {
       'Field "id" already exists.',
       'Entity/model "Task" updated.'
     ]));
+  });
+
+  it('covers field details listing and behavior edit for selected field', async () => {
+    expect.hasAssertions();
+    const catalog: IWorkspaceCatalog = {
+      version: 1,
+      domains: [{
+        id: 'd1',
+        name: 'Users',
+        description: '',
+        boundedContext: '',
+        status: 'active',
+        tags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }],
+      entities: [{
+        id: 'e1',
+        name: 'Task',
+        domain: 'Users',
+        kind: 'entity',
+        description: '',
+        fields: [{
+          name: 'id',
+          type: 'uuid',
+          required: true,
+          format: 'uuid',
+          defaultValue: '',
+          validations: ['required'],
+          behavior: 'immutable'
+        }],
+        behaviors: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }]
+    };
+
+    const run = createContext(
+      catalog,
+      [
+        5, // manage fields
+        0, // select entity
+        1, // view details
+        0, // select field
+        4, // edit behavior
+        0, // select field
+        6, // back field manager
+        6 // back main
+      ],
+      [
+        'system-managed'
+      ]
+    );
+
+    await entityModelManagerSubApplication.run(run.context as any);
+
+    expect(run.logs).toStrictEqual(expect.arrayContaining([
+      'Field: id',
+      '  type: uuid',
+      '  required: yes',
+      '  behavior: immutable',
+      'Field "id" behavior updated.'
+    ]));
+    expect(catalog.entities[0].fields[0].behavior).toBe('system-managed');
   });
 
   it('handles empty selections and no-match search', async () => {
@@ -184,7 +248,7 @@ describe('cli entity/model manager', () => {
 
     const manageEmptyFields = createContext(
       fieldsCatalog,
-      [5, 0, 0, 2, 3, 1, 1, 4, 6],
+      [5, 0, 0, 3, 4, 5, 2, 2, 6, 6],
       [
         '',
         'title',
@@ -201,6 +265,7 @@ describe('cli entity/model manager', () => {
     expect(manageEmptyFields.logs).toStrictEqual(expect.arrayContaining([
       'No fields defined.',
       'No fields to update.',
+      'No fields to update behavior.',
       'No fields to delete.',
       'Field "title" added.'
     ]));

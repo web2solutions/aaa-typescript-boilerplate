@@ -13,6 +13,7 @@ Maintain DDD consistency in domain entities, value objects, and aggregate behavi
 - Prefer explicit domain invariants in constructors/setters over implicit assumptions.
 - Use immutable value-object attributes when feasible.
 - Keep normalization and validation inside domain objects.
+- Every new feature touching domain behavior must include documentation updates in the same change set.
 - Whenever domain fields change, update:
   - tests
   - `docs/DOMAIN-DATA-ENTITIES.md`

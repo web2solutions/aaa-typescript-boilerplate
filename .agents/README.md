@@ -2,6 +2,10 @@
 
 This folder tracks technical requirements and implementation guardrails agreed for this project.
 
+Global rule:
+
+- Every new feature must include documentation updates (and README index links when applicable).
+
 Each requirement has one dedicated file under:
 
 - `.agents/requirements/`
@@ -34,6 +38,7 @@ Use these files as living constraints for future maintenance and feature develop
 - [022-document-value-object-ddd-alignment](requirements/022-document-value-object-ddd-alignment.md)
 - [023-domain-model-entity-documentation-per-domain](requirements/023-domain-model-entity-documentation-per-domain.md)
 - [024-readme-architecture-and-runtime-sync](requirements/024-readme-architecture-and-runtime-sync.md)
+- [025-feature-documentation-mandatory](requirements/025-feature-documentation-mandatory.md)
 - [Data Entity Documentation Agent](data-entity-documentation-agent.md)
 - [Domain Modeling Agent](domain-modeling-agent.md)
 - [Message Mediator Domain Agent](message-mediator-domain-agent.md)

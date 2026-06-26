@@ -14,6 +14,7 @@ Preserve independent domain-worker behavior through contract-based messaging.
 - Prefer domain contracts over concrete service imports.
 - Keep message metadata (correlation/request IDs) consistent across adapters.
 - Validate handler registration and contract resolution in unit tests.
+- Every new mediator-related feature must update docs and README index links when new docs are added.
 
 ## Definition of done
 - Domain integrates through mediator contracts only.
