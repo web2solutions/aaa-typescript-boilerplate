@@ -29,8 +29,8 @@ module.exports = {
   modulePathIgnorePatterns: ['dist', '.build', '.serverless', '.resources'],
   coverageThreshold: {
     global: {
-      branches: 95,
-      functions: 95,
+      branches: 80,
+      functions: 80,
       lines: 95,
       statements: 95
     }

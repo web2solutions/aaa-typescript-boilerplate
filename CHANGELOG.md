@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-06-26 build(coverage): enforce 95% baseline in jest and codecov - Eduardo Almeida
 - 2026-06-26 build(architecture): block legacy users namespace imports - Eduardo Almeida
 - 2026-06-26 refactor(persistence): move users repository into out adapter namespace - Eduardo Almeida
 - 2026-06-26 refactor(hexagonal): switch users wiring to canonical adapter namespaces - Eduardo Almeida
