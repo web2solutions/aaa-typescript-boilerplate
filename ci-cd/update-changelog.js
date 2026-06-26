@@ -6,10 +6,15 @@ const { execFileSync } = require('child_process');
 const CHANGELOG_FILE = 'CHANGELOG.md';
 const RECORD_SEPARATOR = '\x1e';
 const FIELD_SEPARATOR = '\x1f';
+const GIT_BIN_CANDIDATES = ['/usr/bin/git', '/usr/local/bin/git'];
+const GIT_BIN = GIT_BIN_CANDIDATES.find((candidate) => fs.existsSync(candidate));
 
 function runGit(args, options = {}) {
+  if (!GIT_BIN) {
+    throw new Error('Git binary not found in fixed system locations.');
+  }
   try {
-    return execFileSync('git', args, {
+    return execFileSync(GIT_BIN, args, {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', options.allowFailure ? 'ignore' : 'pipe']
     }).trim();
