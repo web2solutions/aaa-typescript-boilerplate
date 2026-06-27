@@ -245,6 +245,76 @@ describe('user service', () => {
     );
   });
 
+  it('synchronizes organization-user relationship on update and delete', async () => {
+    expect.hasAssertions();
+    const { service, organizationDataRepository, dataRepository } = setup();
+    (dataRepository.getOneById as jest.Mock).mockResolvedValueOnce({
+      ...baseUser,
+      organization: 'org-1'
+    });
+    organizationDataRepository.getOneById
+      .mockResolvedValueOnce({
+        id: 'org-1',
+        name: 'Org 1',
+        address: [],
+        phone: [],
+        email: [],
+        users: [baseUser.id]
+      })
+      .mockResolvedValueOnce({
+        id: 'org-2',
+        name: 'Org 2',
+        address: [],
+        phone: [],
+        email: [],
+        users: []
+      })
+      .mockResolvedValueOnce({
+        id: 'org-2',
+        name: 'Org 2',
+        address: [],
+        phone: [],
+        email: [],
+        users: [baseUser.id]
+      });
+    mockedUpdateUser.mockResolvedValueOnce({
+      ...baseUser,
+      organization: 'org-2'
+    } as any);
+
+    const updated = await service.update(baseUser.id, { organization: 'org-2' } as any);
+    expect(updated.result?.id).toBe(baseUser.id);
+    expect(organizationDataRepository.update).toHaveBeenNthCalledWith(
+      1,
+      'org-1',
+      expect.objectContaining({ users: [] })
+    );
+    expect(organizationDataRepository.update).toHaveBeenNthCalledWith(
+      2,
+      'org-2',
+      expect.objectContaining({ users: [baseUser.id] })
+    );
+
+    (dataRepository.getOneById as jest.Mock).mockResolvedValueOnce({
+      ...baseUser,
+      organization: 'org-2'
+    });
+    organizationDataRepository.getOneById.mockResolvedValueOnce({
+      id: 'org-2',
+      name: 'Org 2',
+      address: [],
+      phone: [],
+      email: [],
+      users: [baseUser.id]
+    });
+
+    await service.delete(baseUser.id);
+    expect(organizationDataRepository.update).toHaveBeenLastCalledWith(
+      'org-2',
+      expect.objectContaining({ users: [] })
+    );
+  });
+
   it('keeps main flow when integration publish fails and handles lookup failure', async () => {
     expect.hasAssertions();
     const { service, eventBus } = setup();

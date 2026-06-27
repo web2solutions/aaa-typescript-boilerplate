@@ -49,7 +49,11 @@ const users: Array<IUser> = [{
     'create_user',
     'read_user',
     'update_user',
-    'delete_user'
+    'delete_user',
+    'create_organization',
+    'read_organization',
+    'update_organization',
+    'delete_organization'
   ],
   documents: [
     {

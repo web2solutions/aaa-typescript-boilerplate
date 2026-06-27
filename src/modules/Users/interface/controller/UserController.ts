@@ -24,9 +24,15 @@ import { RequestUpdatePassword } from '@src/modules/Users/interface/dto/RequestU
 import { RequestUpdatePhone } from '@src/modules/Users/interface/dto/RequestUpdatePhone';
 import { RequestUpdateUser } from '@src/modules/Users/interface/dto/RequestUpdateUser';
 import { IUserUseCases } from '@src/modules/Users/application/ports/IUserUseCases';
+import { IOrganizationUseCases } from '@src/modules/Users/application/ports/IOrganizationUseCases';
+import { IOrganization } from '@src/modules/Users/domain/Entity/IOrganization';
+import { RequestCreateOrganization } from '@src/modules/Users/interface/dto/RequestCreateOrganization';
+import { RequestUpdateOrganization } from '@src/modules/Users/interface/dto/RequestUpdateOrganization';
 
 export class UserController extends BaseController implements IController {
   private readonly userUseCases: IUserUseCases;
+
+  private readonly organizationUseCases?: IOrganizationUseCases;
 
   constructor(factory: IControllerFactory) {
     super(factory);
@@ -36,6 +42,15 @@ export class UserController extends BaseController implements IController {
       throw error;
     }
     this.userUseCases = factory.userUseCases;
+    this.organizationUseCases = factory.organizationUseCases;
+  }
+
+  private throwIfOrganizationUseCasesIsMissing(): void {
+    if (!this.organizationUseCases) {
+      const error = new Error('OrganizationUseCases is not implemented');
+      error.name = _INFRA_NOT_IMPLEMENTED_;
+      throw error;
+    }
   }
 
   @Authorize()
@@ -301,6 +316,88 @@ export class UserController extends BaseController implements IController {
       emailId
     );
     return { result, error };
+  }
+
+  @Authorize()
+  public async createOrganization(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IOrganization>> {
+    this.throwIfOrganizationUseCasesIsMissing();
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
+    const requestCreateOrganization = event.input as RequestCreateOrganization;
+    const { result, error } = await this.organizationUseCases!.create(requestCreateOrganization);
+    return { result, error };
+  }
+
+  @Authorize()
+  public async updateOrganization(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IOrganization>> {
+    this.throwIfOrganizationUseCasesIsMissing();
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
+    const requestUpdateOrganization = event.input as RequestUpdateOrganization;
+    const organizationId = Security.xss(event.params.id);
+    const { result, error } = await this.organizationUseCases!.update(
+      organizationId,
+      requestUpdateOrganization
+    );
+    return { result, error };
+  }
+
+  @Authorize()
+  public async deleteOrganization(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<boolean>> {
+    this.throwIfOrganizationUseCasesIsMissing();
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
+    const organizationId = Security.xss(event.params.id);
+    const { result, error } = await this.organizationUseCases!.delete(organizationId);
+    return { result, error };
+  }
+
+  @Authorize()
+  public async getOrganizationById(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IOrganization>> {
+    this.throwIfOrganizationUseCasesIsMissing();
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
+    const organizationId = Security.xss(event.params.id);
+    const { result, error } = await this.organizationUseCases!.getOneById(organizationId);
+    return { result, error };
+  }
+
+  @Authorize()
+  public async getAllOrganizations(
+    event: BaseDomainEvent
+  ): Promise<IServiceResponse<IOrganization[]>> {
+    this.throwIfOrganizationUseCasesIsMissing();
+    validateRequestAgainstOAS(
+      this.openApiSpecification,
+      event.schemaOAS,
+      event
+    );
+    const filters = setFilter(event);
+    const paging = setPaging(event);
+    return this.organizationUseCases!.getAll(
+      { ...filters },
+      paging
+    );
   }
 
   public static compile(factory: IControllerFactory) {

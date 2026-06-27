@@ -22,6 +22,11 @@ import {
   UserPhoneUpdateRequestEvent,
   UserUpdateRequestEvent
 } from '@src/modules/Users';
+import { OrganizationCreateRequestEvent } from '@src/modules/Users/events/OrganizationCreateRequestEvent';
+import { OrganizationGetAllRequestEvent } from '@src/modules/Users/events/OrganizationGetAllRequestEvent';
+import { OrganizationGetOneRequestEvent } from '@src/modules/Users/events/OrganizationGetOneRequestEvent';
+import { OrganizationUpdateRequestEvent } from '@src/modules/Users/events/OrganizationUpdateRequestEvent';
+import { OrganizationDeleteRequestEvent } from '@src/modules/Users/events/OrganizationDeleteRequestEvent';
 import {
   authController,
   userController,
@@ -48,7 +53,12 @@ type OperationId =
   | 'deleteDocument'
   | 'createPhone'
   | 'updatePhone'
-  | 'deletePhone';
+  | 'deletePhone'
+  | 'createOrganization'
+  | 'getAllOrganizations'
+  | 'getOrganizationById'
+  | 'updateOrganization'
+  | 'deleteOrganization';
 
 type OperationConfig = {
   statusCode: number;
@@ -129,6 +139,21 @@ const OPERATION_CONFIG: Record<OperationId, OperationConfig> = {
   },
   deletePhone: {
     target: 'user', controllerKey: 'deletePhone', EventClass: UserPhoneDeleteRequestEvent, statusCode: 200
+  },
+  createOrganization: {
+    target: 'user', controllerKey: 'createOrganization', EventClass: OrganizationCreateRequestEvent, statusCode: 201
+  },
+  getAllOrganizations: {
+    target: 'user', controllerKey: 'getAllOrganizations', EventClass: OrganizationGetAllRequestEvent, statusCode: 200
+  },
+  getOrganizationById: {
+    target: 'user', controllerKey: 'getOrganizationById', EventClass: OrganizationGetOneRequestEvent, statusCode: 200
+  },
+  updateOrganization: {
+    target: 'user', controllerKey: 'updateOrganization', EventClass: OrganizationUpdateRequestEvent, statusCode: 200
+  },
+  deleteOrganization: {
+    target: 'user', controllerKey: 'deleteOrganization', EventClass: OrganizationDeleteRequestEvent, statusCode: 200
   }
 };
 
@@ -167,7 +192,7 @@ export const createLambdaOperationHandler = (operationId: OperationId): Handler 
         } = await method.bind(controller)(domainEvent);
         if (error) throw error;
 
-        const body = operationId === 'getAll'
+        const body = operationId === 'getAll' || operationId === 'getAllOrganizations'
           ? {
             result, error, page, size, total
           }

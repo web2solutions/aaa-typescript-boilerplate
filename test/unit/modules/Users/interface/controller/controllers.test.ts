@@ -41,6 +41,15 @@ const makeFactory = (overrides: Record<string, any> = {}) => {
       updateEmail: jest.fn().mockResolvedValue({ result: { id: 'u1' } }),
       deleteEmail: jest.fn().mockResolvedValue({ result: { id: 'u1' } })
     },
+    organizationUseCases: {
+      create: jest.fn().mockResolvedValue({ result: { id: 'o1', name: 'Org 1' } }),
+      update: jest.fn().mockResolvedValue({ result: { id: 'o1', name: 'Org 1 Updated' } }),
+      delete: jest.fn().mockResolvedValue({ result: true }),
+      getOneById: jest.fn().mockResolvedValue({ result: { id: 'o1', name: 'Org 1' } }),
+      getAll: jest.fn().mockResolvedValue({
+        result: [], page: 1, size: 10, total: 0
+      })
+    },
     authUseCases: {
       login: jest.fn().mockResolvedValue({ result: { token: 't' } }),
       register: jest.fn().mockResolvedValue({ result: { id: 'u1' } }),
@@ -107,11 +116,21 @@ describe('users controllers', () => {
     await controller.createEmail(event);
     await controller.updateEmail(event);
     await controller.deleteEmail(event);
+    await controller.createOrganization(event);
+    await controller.updateOrganization(event);
+    await controller.deleteOrganization(event);
+    await controller.getOrganizationById(event);
+    await controller.getAllOrganizations(event);
 
     expect(factory.userUseCases.create).toHaveBeenCalled();
     expect(factory.userUseCases.update).toHaveBeenCalledWith('u1', event.input);
     expect(factory.userUseCases.getAll).toHaveBeenCalled();
     expect(factory.userUseCases.deleteEmail).toHaveBeenCalledWith('u1', 'e1');
+    expect(factory.organizationUseCases.create).toHaveBeenCalledWith(event.input);
+    expect(factory.organizationUseCases.update).toHaveBeenCalledWith('u1', event.input);
+    expect(factory.organizationUseCases.delete).toHaveBeenCalledWith('u1');
+    expect(factory.organizationUseCases.getOneById).toHaveBeenCalledWith('u1');
+    expect(factory.organizationUseCases.getAll).toHaveBeenCalled();
     expect(factory.authService.authorize).toHaveBeenCalled();
     expect(UserController.compile(factory as any)).toBeInstanceOf(UserController);
   });

@@ -129,6 +129,26 @@ const serverlessConfiguration: Serverless = {
     user_delete_phone: {
       handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deletePhone.handler',
       events: [{ http: { path: '/users/{id}/phoneDelete/{phoneId}', method: 'DELETE' } }]
+    },
+    organization_create: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/createOrganization.handler',
+      events: [{ http: { path: '/organizations', method: 'POST' } }]
+    },
+    organization_get_all: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/getAllOrganizations.handler',
+      events: [{ http: { path: '/organizations', method: 'GET' } }]
+    },
+    organization_get_one: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/getOrganizationById.handler',
+      events: [{ http: { path: '/organizations/{id}', method: 'GET' } }]
+    },
+    organization_update: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/updateOrganization.handler',
+      events: [{ http: { path: '/organizations/{id}', method: 'PUT' } }]
+    },
+    organization_delete: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deleteOrganization.handler',
+      events: [{ http: { path: '/organizations/{id}', method: 'DELETE' } }]
     }
   }
 };

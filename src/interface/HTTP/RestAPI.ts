@@ -22,6 +22,7 @@ import {
 } from '@src/modules/Users';
 
 import users from '@seed/users';
+import organizations from '@seed/organizations';
 
 export class RestAPI<T> {
   private readonly oas: Map<string, OpenAPIV3.Document> = new Map();
@@ -170,6 +171,7 @@ export class RestAPI<T> {
       databaseClient: this.databaseClient,
       userService: usersModuleComposition?.userService,
       userUseCases: usersModuleComposition?.userUseCases,
+      organizationUseCases: usersModuleComposition?.organizationUseCases,
       authUseCases: usersModuleComposition?.authUseCases,
       mutexService: this.mutexClient,
       passwordCryptoService: this.passwordCryptoService,
@@ -227,6 +229,9 @@ export class RestAPI<T> {
     if (module === 'auth') {
       return { moduleName: 'Users', controllerName: 'AuthController' };
     }
+    if (module === 'organizations') {
+      return { moduleName: 'Users', controllerName: 'UserController' };
+    }
     const moduleName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length)}`;
     const controllerName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length - 1)}Controller`;
     return { moduleName, controllerName };
@@ -277,10 +282,37 @@ export class RestAPI<T> {
   }
 
   public async seedData(): Promise<void> {
+    await this.seedOrganizations();
     await this.seedUsers();
   }
 
+  public async seedOrganizations(): Promise<any[]> {
+    const { organizationUseCases } = this.composeUsersModule();
+    const requests: Promise<any>[] = [];
+    for (const organization of organizations) {
+      requests.push(new Promise((resolve, reject) => {
+        (async () => {
+          try {
+            const existing = await organizationUseCases.getOneById(organization.id);
+            if (existing.result) {
+              resolve(existing.result);
+              return;
+            }
+            const created = await organizationUseCases.create(organization as any);
+            if (created.error) throw created.error;
+            if (!created.result) throw new Error('Organization seed failed');
+            resolve(created.result);
+          } catch (error: any) {
+            reject(new Error(error.message));
+          }
+        })();
+      }));
+    }
+    return Promise.all(requests);
+  }
+
   public async seedUsers(): Promise<IUser[]> {
+    await this.seedOrganizations();
     const { userUseCases } = this.composeUsersModule();
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
