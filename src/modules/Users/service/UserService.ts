@@ -115,7 +115,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
 
     if (previousOrganizationId && previousOrganizationId !== nextOrganizationId) {
       const previous = await this.organizationDataRepository.getOneById(previousOrganizationId);
-      const nextUsers = previous.users.filter((id) => id !== userId);
+      const nextUsers = previous.users.filter((id: string) => id !== userId);
       await this.organizationDataRepository.update(previousOrganizationId, {
         id: previous.id,
         name: previous.name,

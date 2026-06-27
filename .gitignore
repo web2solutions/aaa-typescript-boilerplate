@@ -89,6 +89,8 @@ src/config/.env.dev
 # Next.js build output
 .next
 out
+!src/modules/**/adapters/out/
+!src/modules/**/adapters/out/**
 
 # Nuxt.js build / generate output
 .nuxt
