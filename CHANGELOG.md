@@ -4,6 +4,14 @@
 
 ## Unreleased
 
+- 2026-06-26 test(codecov): raise patch coverage for CI-required branches - web2solutions
+- 2026-06-26 test(ci): include organization repository coverage in tracked tests - web2solutions
+- 2026-06-26 fix(ci): include organization repository and strict typing for user sync - web2solutions
+- 2026-06-26 feat(users): add organization API surfaces and framework handlers - web2solutions
+- 2026-06-26 ci(circleci): bump node image to 22.11 to satisfy engine constraints - web2solutions
+- 2026-06-26 test(ci): make smoke integration deterministic without socket binding - web2solutions
+- 2026-06-26 ci: harden env loading and stabilize codecov patch scope - web2solutions
+- 2026-06-26 feat(users): add multi-tenancy RBAC, organization entity, and relational in-memory adapter - web2solutions
 - 2026-06-26 feat(validation): enforce OpenAPI 3.1 request/domain validation and refresh docs - web2solutions
 - 2026-06-26 feat(http): add native adapters and integration contract maps - web2solutions
 - 2026-06-26 chore(git): ignore vscode settings and untrack file - web2solutions

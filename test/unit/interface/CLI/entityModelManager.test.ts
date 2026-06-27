@@ -428,4 +428,83 @@ describe('cli entity/model manager', () => {
     ]));
     expect(run.logs.some((line) => line.startsWith('Validation failed:'))).toBe(true);
   });
+
+  it('covers empty-entity selection branches for update/delete/manage and field-name validation', async () => {
+    expect.hasAssertions();
+    const catalog: IWorkspaceCatalog = {
+      version: 1,
+      domains: [],
+      entities: []
+    };
+
+    const run = createContext(
+      catalog,
+      [
+        3, // update
+        4, // delete
+        5, // manage fields
+        2, // create
+        0, // kind
+        0, // choose custom domain
+        6 // back
+      ],
+      [
+        'Task',
+        'tenant-domain',
+        'desc',
+        'y', // add field now
+        '', // field name empty => null
+        'n', // stop adding fields
+        '' // no behaviors
+      ]
+    );
+
+    await entityModelManagerSubApplication.run(run.context as any);
+
+    expect(run.logs).toStrictEqual(expect.arrayContaining([
+      'No entities/models registered yet.',
+      'Field name is required.',
+      'Entity/model "Task" created.'
+    ]));
+  });
+
+  it('covers field-based search branch explicitly', async () => {
+    expect.hasAssertions();
+    const catalog: IWorkspaceCatalog = {
+      version: 1,
+      domains: [{
+        id: 'd1',
+        name: 'Users',
+        description: '',
+        boundedContext: '',
+        status: 'active',
+        tags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }],
+      entities: [{
+        id: 'e1',
+        name: 'Task',
+        domain: 'Users',
+        kind: 'entity',
+        description: '',
+        fields: [{
+          name: 'ticketCode',
+          type: 'string',
+          required: true,
+          format: '',
+          defaultValue: '',
+          validations: [],
+          behavior: ''
+        }],
+        behaviors: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }]
+    };
+
+    const run = createContext(catalog, [1, 6], ['ticket']);
+    await entityModelManagerSubApplication.run(run.context as any);
+    expect(run.logs).toContain('Found 1 item(s):');
+  });
 });

@@ -35,4 +35,25 @@ describe('document value object', () => {
       data: '123'
     })).toThrow(DomainValidationError);
   });
+
+  it('should reject empty type, countryIssue and data values', () => {
+    expect.hasAssertions();
+    expect(() => new DocumentValueObject({
+      type: '',
+      countryIssue: 'BR',
+      data: '123'
+    } as any)).toThrow('type can not be empty');
+
+    expect(() => new DocumentValueObject({
+      type: EDocumentType.CPF,
+      countryIssue: '   ',
+      data: '123'
+    } as any)).toThrow('countryIssue can not be empty');
+
+    expect(() => new DocumentValueObject({
+      type: EDocumentType.CPF,
+      countryIssue: 'BR',
+      data: '   '
+    } as any)).toThrow('data can not be empty');
+  });
 });

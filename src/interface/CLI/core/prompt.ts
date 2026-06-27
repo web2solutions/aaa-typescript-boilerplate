@@ -7,6 +7,7 @@ export class Prompt {
   private readonly rl: readline.Interface;
 
   constructor(
+    /* istanbul ignore next */
     createInterface: () => readline.Interface = () => readline.createInterface({ input, output })
   ) {
     this.rl = createInterface();

@@ -70,5 +70,28 @@ describe('users request events', () => {
     expect(() => new UserCreateRequestEvent({} as IEventMessage)).toThrow(ComposeEventError);
     expect(() => new UserUpdateRequestEvent({ authorization: 'Bearer token' } as IEventMessage)).toThrow(ComposeEventError);
     expect(() => new UserGetAllRequestEvent({ authorization: 'Bearer token' } as IEventMessage)).toThrow(ComposeEventError);
+
+    const eventCtors = [
+      LoginRequestEvent,
+      LogoutRequestEvent,
+      RegisterRequestEvent,
+      UpdatePasswordRequestEvent,
+      UserDeleteRequestEvent,
+      UserDocumentCreateRequestEvent,
+      UserDocumentDeleteRequestEvent,
+      UserDocumentUpdateRequestEvent,
+      UserEmailCreateRequestEvent,
+      UserEmailDeleteRequestEvent,
+      UserEmailUpdateRequestEvent,
+      UserGetOneRequestEvent,
+      UserPasswordUpdateRequestEvent,
+      UserPhoneCreateRequestEvent,
+      UserPhoneDeleteRequestEvent,
+      UserPhoneUpdateRequestEvent
+    ];
+
+    for (const EventCtor of eventCtors) {
+      expect(() => new EventCtor({ authorization: 'Bearer token' } as IEventMessage)).toThrow(ComposeEventError);
+    }
   });
 });

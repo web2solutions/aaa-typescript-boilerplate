@@ -42,4 +42,19 @@ describe('organization service', () => {
     const response = await service.create({ name: 'Org' } as any);
     expect(response.error).toBeDefined();
   });
+
+  it('covers error branches for remaining CRUD methods', async () => {
+    expect.hasAssertions();
+    const { service, dataRepository } = setup();
+
+    dataRepository.update.mockRejectedValueOnce(new Error('update-fail'));
+    dataRepository.delete.mockRejectedValueOnce(new Error('delete-fail'));
+    dataRepository.getOneById.mockRejectedValueOnce(new Error('get-fail'));
+    dataRepository.getAll.mockRejectedValueOnce(new Error('get-all-fail'));
+
+    expect((await service.update('o1', { name: 'x' } as any)).error?.message).toBe('update-fail');
+    expect((await service.delete('o1')).error?.message).toBe('delete-fail');
+    expect((await service.getOneById('o1')).error?.message).toBe('get-fail');
+    expect((await service.getAll({}, { page: 1, size: 10 })).error?.message).toBe('get-all-fail');
+  });
 });
