@@ -91,6 +91,8 @@ src/config/.env.dev
 out
 !src/modules/**/adapters/out/
 !src/modules/**/adapters/out/**
+!test/**/out/
+!test/**/out/**
 
 # Nuxt.js build / generate output
 .nuxt
