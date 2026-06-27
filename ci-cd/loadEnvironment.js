@@ -34,6 +34,6 @@ if (selectedFile) {
   }
 }
 
-if (NODE_ENV === 'ci' && !process.env.AAA_JWT_TOKEN_SECRET_KEY) {
+if (!process.env.AAA_JWT_TOKEN_SECRET_KEY) {
   process.env.AAA_JWT_TOKEN_SECRET_KEY = 'ci_jwt_secret_key';
 }
