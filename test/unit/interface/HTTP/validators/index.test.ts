@@ -127,6 +127,17 @@ describe('http validators', () => {
       username: 'john@example.com',
       age: 10
     })).toThrow(ValidationError);
+
+    expect(() => throwIfOASInputValidationFails(spec, endPointConfig, undefined)).toThrow(
+      'Request body is required by OpenAPI schema.'
+    );
+
+    expect(throwIfOASInputValidationFails(spec, {
+      requestBody: {
+        required: false,
+        content: endPointConfig.requestBody.content
+      }
+    }, null)).toBe(true);
   });
 
   it('validates request path params', () => {
@@ -155,6 +166,17 @@ describe('http validators', () => {
     expect(validateRequestParams(endPointConfig, {}, { page: 1 })).toBe(true);
     expect(() => validateRequestParams(endPointConfig, {}, { page: 0 })).toThrow(ValidationError);
     expect(() => validateRequestParams(endPointConfig, {}, { page: 'x' })).toThrow(ValidationError);
+
+    const headerConfig = {
+      parameters: [{
+        name: 'x-tenant-id',
+        in: 'header',
+        required: true,
+        schema: { type: 'string', minLength: 1 }
+      }]
+    };
+    expect(() => validateRequestParams(headerConfig, {}, {}, { 'x-tenant-id': '' })).toThrow(ValidationError);
+    expect(validateRequestParams(headerConfig, {}, {}, { 'x-tenant-id': 'tenant-1' })).toBe(true);
   });
 
   it('validates full request against OAS (params + body)', () => {

@@ -179,4 +179,32 @@ describe('cli domain manager', () => {
       'No domains available.'
     ]));
   });
+
+  it('keeps update branch validation when edited name becomes empty', async () => {
+    expect.hasAssertions();
+    const catalog: IWorkspaceCatalog = {
+      version: 1,
+      domains: [{
+        id: 'd1',
+        name: '',
+        description: '',
+        boundedContext: '',
+        status: 'active',
+        tags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }],
+      entities: []
+    };
+
+    const run = createContext(
+      catalog,
+      [3, 0, 5],
+      ['', '', '', '', '']
+    );
+
+    await domainManagerSubApplication.run(run.context as any);
+    expect(run.logs).toContain('Domain name is required.');
+    expect(run.saveCatalog).not.toHaveBeenCalled();
+  });
 });

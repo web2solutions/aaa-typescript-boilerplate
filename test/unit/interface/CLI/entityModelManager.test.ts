@@ -364,4 +364,68 @@ describe('cli entity/model manager', () => {
     expect(run.logs).toContain('Delete cancelled.');
     expect(run.saveCatalog).not.toHaveBeenCalled();
   });
+
+  it('covers schema preview and payload validation branches', async () => {
+    expect.hasAssertions();
+    const catalog: IWorkspaceCatalog = {
+      version: 1,
+      domains: [{
+        id: 'd1',
+        name: 'Users',
+        description: '',
+        boundedContext: '',
+        status: 'active',
+        tags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }],
+      entities: [{
+        id: 'e1',
+        name: 'Task',
+        domain: 'Users',
+        kind: 'entity',
+        description: '',
+        fields: [{
+          name: 'title',
+          type: 'string',
+          required: true,
+          format: '',
+          defaultValue: '',
+          validations: ['minLength:3'],
+          behavior: ''
+        }],
+        behaviors: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }]
+    };
+
+    const run = createContext(
+      catalog,
+      [
+        5, // manage fields
+        0, // choose entity
+        6, // preview schema
+        7, // validate payload
+        7, // validate payload (empty)
+        7, // validate payload (invalid json)
+        8, // back field manager
+        6 // back manager
+      ],
+      [
+        '{"title":"hello"}',
+        '',
+        '{broken-json'
+      ]
+    );
+
+    await entityModelManagerSubApplication.run(run.context as any);
+
+    expect(run.logs.some((line) => line.includes('"required"'))).toBe(true);
+    expect(run.logs).toStrictEqual(expect.arrayContaining([
+      'Payload is valid against generated OpenAPI schema.',
+      'Sample payload is required.'
+    ]));
+    expect(run.logs.some((line) => line.startsWith('Validation failed:'))).toBe(true);
+  });
 });

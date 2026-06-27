@@ -40,4 +40,28 @@ describe('base controller', () => {
     expect(() => { controller.passwordCryptoService = {} as any; }).toThrow('PasswordCryptoService is not implemented');
     expect(() => { controller.mutexService = {} as any; }).toThrow('MutexService is not implemented');
   });
+
+  it('supports optional message mediator wiring and validates contract', () => {
+    expect.hasAssertions();
+    const controller = new ControllerUnderTest({
+      authService: {
+        authenticate: jest.fn(),
+        authorize: jest.fn(),
+        throwIfUserHasNoAccessToResource: jest.fn()
+      } as any,
+      databaseClient: { stores: {} } as any,
+      openApiSpecification: {},
+      messageMediator: {
+        request: jest.fn(),
+        registerHandler: jest.fn()
+      } as any
+    });
+
+    expect(controller.messageMediator).toBeDefined();
+    controller.messageMediator = undefined;
+    expect(controller.messageMediator).toBeUndefined();
+    expect(() => { controller.messageMediator = { request: jest.fn() } as any; }).toThrow(
+      'MessageMediator is not implemented'
+    );
+  });
 });

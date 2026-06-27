@@ -68,4 +68,29 @@ describe('registerUserMessageHandlers', () => {
     expect(response.error).toBeInstanceOf(Error);
     expect((response.error as Error).message).toBe('invalid token');
   });
+
+  it('returns error in authorize contract when auth service throws', async () => {
+    expect.hasAssertions();
+    const handlers: Record<string, any> = {};
+    const messageMediator = {
+      registerHandler: jest.fn((contract: string, handler: any) => {
+        handlers[contract] = handler;
+      })
+    };
+    const authService = {
+      authorize: jest.fn().mockRejectedValue(new Error('authorize failed')),
+      throwIfUserHasNoAccessToResource: jest.fn()
+    };
+
+    registerUserMessageHandlers(messageMediator as any, authService as any);
+
+    const response = await handlers[UserMessageContracts.Authorize]({
+      contract: UserMessageContracts.Authorize,
+      version: 1,
+      payload: { authorization: 'Bearer invalid' }
+    });
+
+    expect(response.error).toBeInstanceOf(Error);
+    expect((response.error as Error).message).toBe('authorize failed');
+  });
 });

@@ -1,4 +1,5 @@
 import { ISubApplication, IWorkspaceCatalog } from '@src/interface/CLI/types';
+import { Prompt } from '@src/interface/CLI/core/prompt';
 
 const loadCatalogMock = jest.fn();
 const saveCatalogMock = jest.fn();
@@ -86,6 +87,25 @@ describe('cli index', () => {
     await runCli(prompt as any);
 
     expect(prompt.close).toHaveBeenCalledTimes(1);
+    logSpy.mockRestore();
+  });
+
+  it('covers default prompt initialization branch', async () => {
+    expect.hasAssertions();
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const chooseSpy = jest.spyOn(Prompt.prototype, 'choose').mockResolvedValue(1);
+    const closeSpy = jest.spyOn(Prompt.prototype, 'close').mockImplementation(() => {});
+
+    await runCli(undefined as any, []);
+
+    expect(chooseSpy).toHaveBeenCalledWith('Main Menu', [
+      'List registered sub applications',
+      'Exit'
+    ]);
+    expect(closeSpy).toHaveBeenCalledWith();
+
+    closeSpy.mockRestore();
+    chooseSpy.mockRestore();
     logSpy.mockRestore();
   });
 });

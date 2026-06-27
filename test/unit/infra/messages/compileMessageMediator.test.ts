@@ -52,4 +52,17 @@ describe('compileMessageMediator', () => {
       'AAA_RABBITMQ_URL is required when AAA_MESSAGE_MEDIATOR_ADAPTER=rabbitmq'
     );
   });
+
+  it('supports adapter aliases and invalid numeric env fallbacks', () => {
+    expect.hasAssertions();
+    process.env.AAA_MESSAGE_MEDIATOR_ADAPTER = 'rabbit';
+    process.env.AAA_RABBITMQ_URL = 'amqp://guest:guest@127.0.0.1:5672';
+    process.env.AAA_RABBITMQ_PREFETCH = 'invalid';
+    expect(compileMessageMediator()).toBeInstanceOf(RabbitMqMessageMediatorAdapter);
+
+    process.env.AAA_MESSAGE_MEDIATOR_ADAPTER = 'bull';
+    process.env.AAA_BULLMQ_REDIS_PORT = 'invalid';
+    process.env.AAA_REDIS_PORT = 'invalid';
+    expect(compileMessageMediator()).toBeInstanceOf(BullMqMessageMediatorAdapter);
+  });
 });
