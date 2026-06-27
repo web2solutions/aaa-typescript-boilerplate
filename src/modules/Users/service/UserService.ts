@@ -10,9 +10,11 @@ import {
   BaseService,
   IEventBus
 } from '@src/modules/port';
+import { UUID } from '@src/modules/port/UUID';
 
 import { IUser } from '@src/modules/Users/domain/Entity/IUser';
 import { UserDataRepository } from '@src/modules/Users/adapters/out/persistence/UserDataRepository';
+import { OrganizationDataRepository } from '@src/modules/Users/adapters/out/persistence/OrganizationDataRepository';
 import { createUser } from '@src/modules/Users/features/createUser';
 import { updateUser } from '@src/modules/Users/features/updateUser';
 import { deleteUserById } from '@src/modules/Users/features/deleteUserById';
@@ -45,13 +47,16 @@ import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 
 import { BaseError, ResourceLockedError } from '@src/infra/exceptions';
+import { shouldRequireOrganization } from '@src/modules/Users/domain/security/Rbac';
 
 interface IUserServiceConfig extends IServiceConfig {
-
+  organizationDataRepository?: OrganizationDataRepository;
 }
 
 export class UserService extends BaseService<IUser, RequestCreateUser, RequestUpdateUser> {
   public dataRepository: UserDataRepository;
+
+  public organizationDataRepository?: OrganizationDataRepository;
 
   private readonly entityName = 'User';
 
@@ -67,6 +72,9 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     super(config);
     const { dataRepository, services } = config;
     this.dataRepository = dataRepository as UserDataRepository;
+    this.organizationDataRepository = (
+      config.organizationDataRepository as OrganizationDataRepository | undefined
+    );
     this.passwordCryptoService = services!.passwordCryptoService;
     // this.services.mutexService = services!.mutexService;
     this.mutexService = services!.mutexService;
@@ -83,6 +91,53 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
 
   private static sanitizeUsers(users?: IUser[]): IUser[] {
     return (users || []).map((user) => UserService.sanitizeUser(user) as IUser);
+  }
+
+  private async ensureOrganizationCompliance(
+    data: { organization?: string; roles?: string[] }
+  ): Promise<void> {
+    const roles = data.roles || [];
+    const organization = data.organization || '';
+    if (shouldRequireOrganization(roles) && !organization) {
+      throw new Error('organization is required for admin and user roles');
+    }
+    if (!organization) return;
+    if (!this.organizationDataRepository) return;
+    await this.organizationDataRepository.getOneById(organization);
+  }
+
+  private async syncOrganizationUsers(
+    userId: string,
+    previousOrganizationId: string = '',
+    nextOrganizationId: string = ''
+  ): Promise<void> {
+    if (!this.organizationDataRepository) return;
+
+    if (previousOrganizationId && previousOrganizationId !== nextOrganizationId) {
+      const previous = await this.organizationDataRepository.getOneById(previousOrganizationId);
+      const nextUsers = previous.users.filter((id: string) => id !== userId);
+      await this.organizationDataRepository.update(previousOrganizationId, {
+        id: previous.id,
+        name: previous.name,
+        address: previous.address,
+        phone: previous.phone,
+        email: previous.email,
+        users: nextUsers
+      });
+    }
+
+    if (nextOrganizationId) {
+      const organization = await this.organizationDataRepository.getOneById(nextOrganizationId);
+      const linkedUsers = [...new Set([...(organization.users || []), userId])];
+      await this.organizationDataRepository.update(nextOrganizationId, {
+        id: organization.id,
+        name: organization.name,
+        address: organization.address,
+        phone: organization.phone,
+        email: organization.email,
+        users: linkedUsers
+      });
+    }
   }
 
   private async publishEvent(name: string, payload: Record<string, any>): Promise<void> {
@@ -119,6 +174,10 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     try {
       const password = data.password || '';
       mustBePassword('password', password);
+      await this.ensureOrganizationCompliance({
+        organization: data.organization,
+        roles: data.roles
+      });
 
       const newData = { ...data };
       const { hash, salt } = await this.passwordCryptoService.hash(password);
@@ -127,6 +186,7 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
 
       const createdUser = await createUser((newData ?? {}), this.dataRepository);
       serviceResponse.result = UserService.sanitizeUser(createdUser);
+      await this.syncOrganizationUsers(createdUser.id, '', createdUser.organization || '');
       await this.publishEvent(UserIntegrationEventName.Created, { id: serviceResponse.result?.id });
     } catch (error) {
       serviceResponse.error = error as BaseError;
@@ -138,12 +198,23 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
   public async update(id: string, data: RequestUpdateUser): Promise<IServiceResponse<IUser>> {
     const serviceResponse: IServiceResponse<IUser> = {};
     try {
+      UUID.parse(id);
+      const previous = await this.dataRepository.getOneById(id);
+      await this.ensureOrganizationCompliance({
+        organization: data.organization ?? previous.organization,
+        roles: data.roles ?? previous.roles
+      });
       const { result: { previouslyLocked } } = await this.mutexService.lock(this.entityName, id);
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
       // console.log('data', data);
       const user = await updateUser(id, data, this.dataRepository);
       // console.log('user', user)
       serviceResponse.result = UserService.sanitizeUser(user);
+      await this.syncOrganizationUsers(
+        id,
+        previous.organization || '',
+        user.organization || ''
+      );
       await this.publishEvent(UserIntegrationEventName.Updated, { id });
 
       await this.mutexService.unlock(this.entityName, id);
@@ -160,9 +231,10 @@ export class UserService extends BaseService<IUser, RequestCreateUser, RequestUp
     try {
       const { result: { previouslyLocked } } = await this.mutexService.lock(this.entityName, id);
       if (previouslyLocked) throw new ResourceLockedError(`${this.entityName} ${id} is locked`);
-
+      const previous = await this.dataRepository.getOneById(id);
       const deleted = await deleteUserById(id, this.dataRepository);
       serviceResponse.result = deleted;
+      await this.syncOrganizationUsers(id, previous.organization || '', '');
       await this.publishEvent(UserIntegrationEventName.Deleted, { id });
 
       await this.mutexService.unlock(this.entityName, id);

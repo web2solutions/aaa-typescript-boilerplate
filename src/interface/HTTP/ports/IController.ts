@@ -16,6 +16,11 @@ export interface IController {
   logout?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   register?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   updatePassword?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  createOrganization?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  updateOrganization?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  deleteOrganization?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  getOrganizationById?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  getAllOrganizations?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   // update(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   // create(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   // create(event: BaseDomainEvent): Promise<IServiceResponse<any>>;

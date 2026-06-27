@@ -7,6 +7,7 @@ const createUser = (id: string, username: string, firstName: string): IUser => (
   lastName: 'test',
   avatar: 'avatar.png',
   username,
+  organization: '',
   password: 'password_hash',
   emails: [] as any[],
   documents: [],
@@ -71,5 +72,19 @@ describe('user store api', () => {
     expect(page2.result).toHaveLength(1);
 
     await Promise.all(users.map((user) => UserStoreAPI.delete(user.id)));
+  });
+
+  it('should support relation lookup by organization id', async () => {
+    expect.hasAssertions();
+    const marker = `${Date.now()}-${Math.random()}`;
+    const orgId = `org-${marker}`;
+    const u1 = { ...createUser(`user-a-${marker}`, `org-a-${marker}@x.dev`, 'orgA'), organization: orgId };
+    const u2 = { ...createUser(`user-b-${marker}`, `org-b-${marker}@x.dev`, 'orgB'), organization: orgId };
+    await UserStoreAPI.create(u1.id, u1);
+    await UserStoreAPI.create(u2.id, u2);
+    const byOrg = await UserStoreAPI.getByRelation!('organization', orgId);
+    expect(byOrg).toHaveLength(2);
+    await UserStoreAPI.delete(u1.id);
+    await UserStoreAPI.delete(u2.id);
   });
 });

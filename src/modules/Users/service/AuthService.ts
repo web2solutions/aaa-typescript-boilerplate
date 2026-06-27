@@ -16,6 +16,12 @@ import {
 } from '@src/infra/exceptions/';
 
 import { EEmailType, EmailValueObject } from '@src/modules/ddd/valueObjects';
+import {
+  EUserRole,
+  hasSuperadminRole,
+  shouldRequireOrganization,
+  userCanAccessScope
+} from '@src/modules/Users/domain/security/Rbac';
 
 import { IServiceResponse } from '@src/modules/port';
 
@@ -24,6 +30,7 @@ const tokenKeys = [
   'username',
   'firstName',
   'avatar',
+  'organization',
   'roles'
 ];
 
@@ -178,15 +185,20 @@ export class AuthService implements IAuthService {
 
   public async register(data: Record<string, any>): Promise<IServiceResponse<Record<string, any>>> {
     // eslint-disable-next-line no-param-reassign
+    const { roles: incomingRoles, organization, username } = data;
+    let roles = incomingRoles;
+    if (!roles || roles.length === 0) {
+      roles = organization ? [EUserRole.user] : ['access_allow'];
+    }
     const record = {
       ...data,
       // set default email
       emails: [{
-        email: data.username,
+        email: username,
         type: EEmailType.work,
         isPrimary: true
       } as EmailValueObject],
-      roles: ['access_allow']
+      roles
     };
     return this.userProvider.register(record);
   }
@@ -217,9 +229,15 @@ export class AuthService implements IAuthService {
       if (!user.roles) {
         throw new ForbiddenError('Insufficient permission - invalid user - user.roles is missing');
       }
+      if (shouldRequireOrganization(user.roles) && !user.organization) {
+        throw new ForbiddenError('Insufficient permission - organization is required for this user role');
+      }
+      if (hasSuperadminRole(user.roles)) {
+        return true;
+      }
       if (routePermission.length > 0) {
         for (const permission of routePermission) {
-          if (user.roles.indexOf(permission) === -1) {
+          if (!userCanAccessScope(user.roles, permission)) {
             throw new ForbiddenError(`Insufficient permission - user must have the ${permission} role`);
           }
         }

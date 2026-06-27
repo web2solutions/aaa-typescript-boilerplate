@@ -22,6 +22,8 @@ tags:
       url: http://xpertminds.dev
   - name: auth
     description: API access end points
+  - name: organization
+    description: Tenant organizations
 paths:
   /auth/login:
     post:
@@ -748,6 +750,181 @@ paths:
           - delete_user
         - bearerAuth: 
           - delete_user
+  /organizations:
+    get:
+      tags:
+        - organization
+      summary: Get all organizations
+      description: Returns a collection of organizations
+      operationId: getAllOrganizations
+      parameters:
+        - name: page
+          in: path
+          description: Page number to fetch
+          required: false
+          schema:
+            type: string
+          default: 1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationArrayOf'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - basicAuth:
+          - read_organization
+        - bearerAuth:
+          - read_organization
+    post:
+      tags:
+        - organization
+      summary: Add a new organization
+      description: Add a new organization
+      operationId: createOrganization
+      requestBody:
+        description: Create organization payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCreateOrganization'
+        required: true
+      responses:
+        '201':
+          description: Organization created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+      security:
+        - basicAuth:
+          - create_organization
+        - bearerAuth:
+          - create_organization
+  /organizations/{id}:
+    get:
+      tags:
+        - organization
+      summary: Get organization by ID
+      description: Returns a single organization
+      operationId: getOrganizationById
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Organization not found
+      security:
+        - basicAuth:
+          - read_organization
+        - bearerAuth:
+          - read_organization
+    put:
+      tags:
+        - organization
+      summary: Update organization
+      description: Updates a single organization
+      operationId: updateOrganization
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Organization update payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateOrganization'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Organization not found
+        '409':
+          description: Conflict
+      security:
+        - basicAuth:
+          - update_organization
+        - bearerAuth:
+          - update_organization
+    delete:
+      tags:
+        - organization
+      summary: Delete organization
+      description: Deletes a single organization
+      operationId: deleteOrganization
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceDeleteResponse'
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Organization not found
+      security:
+        - basicAuth:
+          - delete_organization
+        - bearerAuth:
+          - delete_organization
 components:
   schemas:
     # ################################ #
@@ -813,6 +990,11 @@ components:
           format: email
           minLength: 8
           description: Username to access the system
+        organization:
+          type: string
+          format: uuid
+          nullable: true
+          description: Organization id for tenant users (admin/user)
         password: 
           type: string
           minLength: 8
@@ -910,6 +1092,11 @@ components:
           format: email
           minLength: 8
           description: Username to access the system
+        organization:
+          type: string
+          format: uuid
+          nullable: true
+          description: Organization id for tenant users (admin/user)
         emails: 
           type: array
           items:
@@ -931,6 +1118,60 @@ components:
           items:
             type: 'string'
           description: User's access roles
+    RequestCreateOrganization:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        address:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        phone:
+          type: array
+          items:
+            $ref: '#/components/schemas/Phone'
+        email:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+        users:
+          type: array
+          items:
+            type: string
+    RequestUpdateOrganization:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        address:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        phone:
+          type: array
+          items:
+            $ref: '#/components/schemas/Phone'
+        email:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+        users:
+          type: array
+          items:
+            type: string
 
     RequestCreatePhone:
       description: Phone number data to create 
@@ -1080,7 +1321,11 @@ components:
     UserArrayOf:
       type: array
       items:
-        $ref: '#/components/schemas/User'    
+        $ref: '#/components/schemas/User'
+    OrganizationArrayOf:
+      type: array
+      items:
+        $ref: '#/components/schemas/Organization'
     Document:
       description: Document
       type: object
@@ -1127,6 +1372,27 @@ components:
           type: boolean
           example: true
           description: Is this the primary User's e-mail address?
+          default: false
+    Address:
+      description: Generic address value object
+      type: object
+      required:
+        - email
+        - type
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        type:
+          type: string
+          enum:
+            - work
+            - home
+            - vacation
+        isPrimary:
+          type: boolean
           default: false
     Phone:
       description: Phone numbers
@@ -1177,6 +1443,11 @@ components:
           format: email
           minLength: 8
           description: Username to access the system
+        organization:
+          type: string
+          format: uuid
+          nullable: true
+          description: Organization id for tenant users (admin/user)
         password: 
           type: string
           minLength: 8
@@ -1209,6 +1480,32 @@ components:
         _updatedAt:
           type: string
           format: date-time
+    Organization:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        address:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        phone:
+          type: array
+          items:
+            $ref: '#/components/schemas/Phone'
+        email:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+        users:
+          type: array
+          items:
+            type: string
   securitySchemes:
     basicAuth:
       type: http

@@ -33,6 +33,12 @@ function getModuleNames(routePath) {
       controllerName: 'AuthController'
     };
   }
+  if (moduleNameRaw === 'organizations') {
+    return {
+      moduleName: 'Users',
+      controllerName: 'UserController'
+    };
+  }
 
   const singularName = moduleNameRaw.substring(0, moduleNameRaw.length - 1);
   return {

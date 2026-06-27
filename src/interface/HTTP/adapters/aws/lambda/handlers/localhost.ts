@@ -8,3 +8,5 @@ Promise<APIGatewayProxyResult> => {
     body: JSON.stringify({ status: 'result' })
   };
 };
+
+export const getHandler = handler;

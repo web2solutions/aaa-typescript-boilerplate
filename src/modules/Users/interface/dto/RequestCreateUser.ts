@@ -11,6 +11,7 @@ export interface RequestCreateUser {
   password: string;
   salt?: string;
   avatar?: string;
+  organization?: string;
   emails: EmailValueObject[];
   documents?: DocumentValueObject[]
   phones?: PhoneValueObject[];

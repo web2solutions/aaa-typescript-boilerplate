@@ -1,4 +1,12 @@
 /* eslint-disable no-underscore-dangle */
+import {
+  IOpenApiDataEntityLike,
+  IOpenApiFieldDefinitionLike,
+  throwIfDataEntityPayloadIsNotOpenApi31Compliant,
+  throwIfDataEntityIsNotOpenApi31Compliant,
+  throwIfFieldDefinitionIsNotOpenApi31Compliant
+} from '@src/shared/openapi/OpenApi31DataEntity';
+import { DomainValidationError } from '@src/infra/exceptions';
 import { UUID } from './UUID';
 
 export abstract class BaseModel<T> {
@@ -31,6 +39,29 @@ export abstract class BaseModel<T> {
 
   public set updatedAt(_updatedAt: Date) {
     this._updatedAt = _updatedAt;
+  }
+
+  public static throwIfFieldSchemaIsNotOpenApi31Compliant(
+    field: IOpenApiFieldDefinitionLike
+  ): void {
+    throwIfFieldDefinitionIsNotOpenApi31Compliant(field);
+  }
+
+  public static throwIfDataEntitySchemaIsNotOpenApi31Compliant(
+    entity: IOpenApiDataEntityLike
+  ): void {
+    throwIfDataEntityIsNotOpenApi31Compliant(entity);
+  }
+
+  public static throwIfModelPayloadIsNotOpenApi31Compliant(
+    payload: Record<string, any>,
+    entity: IOpenApiDataEntityLike
+  ): void {
+    try {
+      throwIfDataEntityPayloadIsNotOpenApi31Compliant(payload, entity);
+    } catch (error) {
+      throw new DomainValidationError((error as Error).message);
+    }
   }
 
   public serialize(): T {

@@ -18,7 +18,7 @@ Field-level ambiguity creates integration bugs, inconsistent validation, and slo
 - Entity documentation must be updated in the same PR as schema/domain field changes.
 
 ## Canonical location
-- `docs/DOMAIN-DATA-ENTITIES.md`
+- `documentation/md/DOMAIN-DATA-ENTITIES.md`
 
 ## Status
 Active

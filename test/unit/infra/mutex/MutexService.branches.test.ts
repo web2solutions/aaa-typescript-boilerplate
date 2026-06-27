@@ -30,6 +30,25 @@ describe('mutex service branches', () => {
     expect(second).toBe(service);
   });
 
+  it('returns lock/unlock service errors when storage fails', async () => {
+    expect.hasAssertions();
+    jest.resetModules();
+    const { MutexService: FreshMutexService } = await import('@src/infra/mutex/adapter/MutexService');
+    const storage = {
+      get: jest.fn().mockResolvedValue({ result: undefined }),
+      set: jest.fn().mockResolvedValueOnce({ error: new Error('set-failed') }),
+      del: jest.fn().mockResolvedValueOnce({ error: new Error('del-failed') })
+    };
+
+    const service = FreshMutexService.compile(storage as any);
+
+    const lockError = await service.lock('user', 'u4');
+    expect(lockError.error).toBeDefined();
+
+    const unlockError = await service.unlock('user', 'u5');
+    expect(unlockError.error).toBeDefined();
+  });
+
   it('returns existing singleton instance when compiled again', () => {
     expect.hasAssertions();
     const first = MutexService.compile({
@@ -39,5 +58,14 @@ describe('mutex service branches', () => {
     } as any);
     const second = MutexService.compile(undefined as any);
     expect(second).toBe(first);
+  });
+
+  it('throws when compiling without storage on a fresh module instance', async () => {
+    expect.hasAssertions();
+    jest.resetModules();
+    const { MutexService: FreshMutexService } = await import('@src/infra/mutex/adapter/MutexService');
+    expect(() => FreshMutexService.compile(undefined as any)).toThrow(
+      'MutexService depends on KeyValueStorageClient implementation'
+    );
   });
 });

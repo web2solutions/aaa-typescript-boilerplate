@@ -89,6 +89,10 @@ src/config/.env.dev
 # Next.js build output
 .next
 out
+!src/modules/**/adapters/out/
+!src/modules/**/adapters/out/**
+!test/**/out/
+!test/**/out/**
 
 # Nuxt.js build / generate output
 .nuxt
@@ -123,6 +127,7 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+.vscode/settings.json
 
 # yarn v2
 .yarn/cache

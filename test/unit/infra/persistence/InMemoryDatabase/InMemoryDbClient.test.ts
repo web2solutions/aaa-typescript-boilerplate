@@ -4,6 +4,7 @@ describe('in-memory db client', () => {
   it('exposes stores and connect/disconnect operations', async () => {
     expect.hasAssertions();
     expect(InMemoryDbClient.stores.User).toBeDefined();
+    expect(InMemoryDbClient.stores.Organization).toBeDefined();
     await expect(InMemoryDbClient.connect()).resolves.toBeUndefined();
     await expect(InMemoryDbClient.disconnect()).resolves.toBeUndefined();
   });

@@ -8,6 +8,7 @@ import {
   EmailValueObject,
   PhoneValueObject
 } from '@src/modules/ddd/valueObjects';
+import organizations from '@seed/organizations';
 
 const buildSeedCredential = (account: string): string => `seed-${account}-A1!`;
 
@@ -35,6 +36,7 @@ const users: Array<IUser> = [{
   avatar: 'avatar.png',
   username: 'eduardo@xpertminds.dev',
   password: buildSeedCredential('user1'),
+  organization: organizations[0].id,
   roles: [
     'access_allow',
     'create_account',
@@ -47,7 +49,11 @@ const users: Array<IUser> = [{
     'create_user',
     'read_user',
     'update_user',
-    'delete_user'
+    'delete_user',
+    'create_organization',
+    'read_organization',
+    'update_organization',
+    'delete_organization'
   ],
   documents: [
     {
@@ -99,6 +105,7 @@ const users: Array<IUser> = [{
   avatar: 'avatar.png',
   username: 'user2',
   password: buildSeedCredential('user2'),
+  organization: organizations[0].id,
   roles: [
     'access_allow',
     'create_transaction',
@@ -122,6 +129,7 @@ const users: Array<IUser> = [{
   avatar: 'avatar.png',
   username: 'user3@xpertminds.dev',
   password: buildSeedCredential('user3'),
+  organization: organizations[1].id,
   roles: [
     'access_allow',
     'read_account',
@@ -144,6 +152,7 @@ const users: Array<IUser> = [{
   avatar: 'avatar.png',
   username: 'user4@xpertminds.dev',
   password: buildSeedCredential('user4'),
+  organization: organizations[1].id,
   roles: [
     'access_allow',
     'create_transaction'

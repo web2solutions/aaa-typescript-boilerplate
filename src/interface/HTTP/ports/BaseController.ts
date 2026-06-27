@@ -4,6 +4,7 @@ import { IControllerFactory } from '@src/interface/HTTP/ports/IControllerFactory
 import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
+import { IMessageMediator } from '@src/modules/port';
 
 export abstract class BaseController {
   private _authService: IAuthService = {} as IAuthService;
@@ -13,6 +14,8 @@ export abstract class BaseController {
   private _passwordCryptoService: IPasswordCryptoService = {} as IPasswordCryptoService;
 
   private _mutexService: IMutexService = {} as IMutexService;
+
+  private _messageMediator: IMessageMediator | undefined;
 
   public openApiSpecification: any;
 
@@ -29,6 +32,10 @@ export abstract class BaseController {
 
     if (factory.mutexService) {
       this.mutexService = factory.mutexService;
+    }
+
+    if (factory.messageMediator) {
+      this.messageMediator = factory.messageMediator;
     }
   }
 
@@ -69,6 +76,23 @@ export abstract class BaseController {
       throw error;
     }
     this._authService = service;
+  }
+
+  public get messageMediator(): IMessageMediator | undefined {
+    return this._messageMediator;
+  }
+
+  public set messageMediator(service: IMessageMediator | undefined) {
+    if (!service) {
+      this._messageMediator = undefined;
+      return;
+    }
+    if (!service.request || !service.registerHandler) {
+      const error = new Error('MessageMediator is not implemented');
+      error.name = _INFRA_NOT_IMPLEMENTED_;
+      throw error;
+    }
+    this._messageMediator = service;
   }
 
   public get databaseClient() {

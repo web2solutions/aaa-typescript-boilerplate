@@ -1,8 +1,7 @@
 import { IController, IControllerFactory } from '@src/interface/HTTP/ports';
 import { BaseController } from '@src/interface/HTTP/ports/BaseController';
 import {
-  throwIfOASInputValidationFails,
-  validateRequestParams
+  validateRequestAgainstOAS
 } from '@src/interface/HTTP/validators';
 // import { Security } from '@src/infra/security';
 
@@ -36,13 +35,12 @@ export class AuthController extends BaseController implements IController {
   public async login(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<IAuthorizationHeader>> {
-    validateRequestParams(event.schemaOAS, event.params);
-    const loginRequest = event.input as ILoginRequest;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      loginRequest
+      event
     );
+    const loginRequest = event.input as ILoginRequest;
     const { result, error } = await this.authUseCases.login({
       ...loginRequest,
       schemaType: loginRequest.schemaType ?? EAuthSchemaType.Bearer
@@ -54,12 +52,12 @@ export class AuthController extends BaseController implements IController {
   public async register(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<Record<string, any>>> {
-    const registerRequest = event.input as IRegisterRequest;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      registerRequest
+      event
     );
+    const registerRequest = event.input as IRegisterRequest;
 
     const { result, error } = await this.authUseCases.register(registerRequest);
 
@@ -70,12 +68,12 @@ export class AuthController extends BaseController implements IController {
   public async updatePassword(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<boolean>> {
-    const updatePasswordRequest = event.input as IUpdatePasswordRequest;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      updatePasswordRequest
+      event
     );
+    const updatePasswordRequest = event.input as IUpdatePasswordRequest;
     return this.authUseCases.updatePassword(event.authorization, updatePasswordRequest);
   }
 
@@ -83,12 +81,12 @@ export class AuthController extends BaseController implements IController {
   public async logout(
     event: BaseDomainEvent
   ): Promise<IServiceResponse<boolean>> {
-    const logoutRequest = event.input as ILogoutRequest;
-    throwIfOASInputValidationFails(
+    validateRequestAgainstOAS(
       this.openApiSpecification,
       event.schemaOAS,
-      logoutRequest
+      event
     );
+    const logoutRequest = event.input as ILogoutRequest;
     return this.authUseCases.logout(event.authorization, logoutRequest);
   }
 

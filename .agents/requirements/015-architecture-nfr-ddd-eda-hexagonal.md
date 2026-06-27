@@ -27,4 +27,4 @@ In progress
 - Controllers call application use cases (Users module).
 - CI includes `arch:check-boundaries` to prevent controller-level service/repository instantiation.
 - Event contracts and listeners are standardized for Users integration events.
-- Data entity documentation is now standardized through requirement `019` and `docs/DOMAIN-DATA-ENTITIES.md`.
+- Data entity documentation is now standardized through requirement `019` and `documentation/md/DOMAIN-DATA-ENTITIES.md`.

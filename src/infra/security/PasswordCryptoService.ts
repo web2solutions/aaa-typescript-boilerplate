@@ -25,16 +25,20 @@ export class PasswordCryptoService implements IPasswordCryptoService {
   public hash(password: string): Promise<IHash> {
     return new Promise((resolve, reject) => {
       (async () => {
-        const salt = await this.genSalt();
-        bcrypt.hash(password, salt, (err: Error | null, hash: string) => {
-          if (err) {
-            return reject(err);
-          }
-          return resolve({
-            hash,
-            salt
-          } as unknown as IHash);
-        });
+        try {
+          const salt = await this.genSalt();
+          bcrypt.hash(password, salt, (err: Error | null, hash: string) => {
+            if (err) {
+              return reject(err);
+            }
+            return resolve({
+              hash,
+              salt
+            } as unknown as IHash);
+          });
+        } catch (error) {
+          reject(error);
+        }
       })();
     });
   }

@@ -13,7 +13,7 @@ import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 import { IKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/IKeyValueStorageClient';
-import { IEventBus } from '@src/modules/port';
+import { IEventBus, IMessageMediator } from '@src/modules/port';
 
 import {
   IUser,
@@ -22,6 +22,7 @@ import {
 } from '@src/modules/Users';
 
 import users from '@seed/users';
+import organizations from '@seed/organizations';
 
 export class RestAPI<T> {
   private readonly oas: Map<string, OpenAPIV3.Document> = new Map();
@@ -43,6 +44,8 @@ export class RestAPI<T> {
   private readonly keyValueStorageClient: IKeyValueStorageClient | undefined;
 
   private readonly eventBus: IEventBus | undefined;
+
+  private readonly messageMediator: IMessageMediator | undefined;
 
   private usersComposition: ReturnType<typeof composeUsersAuthServices> | undefined;
 
@@ -71,6 +74,11 @@ export class RestAPI<T> {
 
     if (config.eventBus) {
       this.eventBus = config.eventBus;
+    }
+
+    if (config.messageMediator) {
+      this.messageMediator = config.messageMediator;
+      this.eventBus = config.messageMediator;
     }
 
     this.buildWithOAS();
@@ -163,13 +171,16 @@ export class RestAPI<T> {
       databaseClient: this.databaseClient,
       userService: usersModuleComposition?.userService,
       userUseCases: usersModuleComposition?.userUseCases,
+      organizationUseCases: usersModuleComposition?.organizationUseCases,
       authUseCases: usersModuleComposition?.authUseCases,
       mutexService: this.mutexClient,
-      passwordCryptoService: this.passwordCryptoService
+      passwordCryptoService: this.passwordCryptoService,
+      messageMediator: this.messageMediator
     });
 
-    const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${this.serverType}/handlers/${endPointConfig.operationId}`;
-    const handlerFactory = require(handlerPath).default({
+    const handlerFactory = this.getHandlerFactory({
+      moduleName,
+      operationId: endPointConfig.operationId,
       databaseClient: this.databaseClient,
       mutexService: this.mutexClient,
       endPointConfig,
@@ -184,11 +195,42 @@ export class RestAPI<T> {
     });
   }
 
+  private getHandlerFactory({
+    moduleName,
+    operationId,
+    ...factoryDeps
+  }: {
+    moduleName: string;
+    operationId: string;
+    [key: string]: any;
+  }): any {
+    const frameworkCandidates = [this.serverType, EHTTPFrameworks.express];
+    for (const framework of frameworkCandidates) {
+      const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${framework}/handlers/${operationId}`;
+      try {
+        const handlerModule = require(handlerPath);
+        if (handlerModule?.default) {
+          return handlerModule.default(factoryDeps);
+        }
+      } catch (error: any) {
+        if (error?.code !== 'MODULE_NOT_FOUND') {
+          throw error;
+        }
+      }
+    }
+    throw new Error(
+      `Handler not found for module ${moduleName}, operation ${operationId}, framework ${this.serverType}.`
+    );
+  }
+
   private static resolveControllerMetadata(
     module: string
   ): { moduleName: string; controllerName: string } {
     if (module === 'auth') {
       return { moduleName: 'Users', controllerName: 'AuthController' };
+    }
+    if (module === 'organizations') {
+      return { moduleName: 'Users', controllerName: 'UserController' };
     }
     const moduleName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length)}`;
     const controllerName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length - 1)}Controller`;
@@ -240,10 +282,37 @@ export class RestAPI<T> {
   }
 
   public async seedData(): Promise<void> {
+    await this.seedOrganizations();
     await this.seedUsers();
   }
 
+  public async seedOrganizations(): Promise<any[]> {
+    const { organizationUseCases } = this.composeUsersModule();
+    const requests: Promise<any>[] = [];
+    for (const organization of organizations) {
+      requests.push(new Promise((resolve, reject) => {
+        (async () => {
+          try {
+            const existing = await organizationUseCases.getOneById(organization.id);
+            if (existing.result) {
+              resolve(existing.result);
+              return;
+            }
+            const created = await organizationUseCases.create(organization as any);
+            if (created.error) throw created.error;
+            if (!created.result) throw new Error('Organization seed failed');
+            resolve(created.result);
+          } catch (error: any) {
+            reject(new Error(error.message));
+          }
+        })();
+      }));
+    }
+    return Promise.all(requests);
+  }
+
   public async seedUsers(): Promise<IUser[]> {
+    await this.seedOrganizations();
     const { userUseCases } = this.composeUsersModule();
     const requests: Promise<IUser>[] = [];
     for (const user of users) {
@@ -306,7 +375,8 @@ export class RestAPI<T> {
       passwordCryptoService: this.passwordCryptoService,
       mutexService: this.mutexClient,
       jwtService: this.authService.jwtService,
-      eventBus: this.eventBus
+      eventBus: this.eventBus,
+      messageMediator: this.messageMediator
     });
     return this.usersComposition;
   }

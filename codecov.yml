@@ -19,3 +19,7 @@ comment:
   layout: "reach,diff,flags,files"
   behavior: default
   require_changes: true
+
+ignore:
+  - "src/modules/Users/interface/api/frameworks/**"
+  - "src/interface/HTTP/adapters/**/responses/sendErrorResponse.ts"

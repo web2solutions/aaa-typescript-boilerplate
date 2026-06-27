@@ -2,6 +2,10 @@
 
 This folder tracks technical requirements and implementation guardrails agreed for this project.
 
+Global rule:
+
+- Every new feature must include documentation updates (and README index links when applicable).
+
 Each requirement has one dedicated file under:
 
 - `.agents/requirements/`
@@ -30,5 +34,19 @@ Use these files as living constraints for future maintenance and feature develop
 - [018-project-documentation-and-structure-sync](requirements/018-project-documentation-and-structure-sync.md)
 - [019-domain-data-entity-documentation-standard](requirements/019-domain-data-entity-documentation-standard.md)
 - [020-coverage-threshold-approval-gate](requirements/020-coverage-threshold-approval-gate.md)
+- [021-message-mediator-domain-worker-independence](requirements/021-message-mediator-domain-worker-independence.md)
+- [022-document-value-object-ddd-alignment](requirements/022-document-value-object-ddd-alignment.md)
+- [023-domain-model-entity-documentation-per-domain](requirements/023-domain-model-entity-documentation-per-domain.md)
+- [024-readme-architecture-and-runtime-sync](requirements/024-readme-architecture-and-runtime-sync.md)
+- [025-feature-documentation-mandatory](requirements/025-feature-documentation-mandatory.md)
+- [026-openapi31-data-entity-model-compliance](requirements/026-openapi31-data-entity-model-compliance.md)
+- [027-native-http-adapter-ownership](requirements/027-native-http-adapter-ownership.md)
+- [028-integration-contract-maps](requirements/028-integration-contract-maps.md)
+- [029-multi-tenancy-and-rbac-foundation](requirements/029-multi-tenancy-and-rbac-foundation.md)
+- [030-inmemory-relational-nosql-behavior-parity](requirements/030-inmemory-relational-nosql-behavior-parity.md)
+- [031-users-organization-and-address-value-object](requirements/031-users-organization-and-address-value-object.md)
 - [Data Entity Documentation Agent](data-entity-documentation-agent.md)
+- [Domain Modeling Agent](domain-modeling-agent.md)
+- [Message Mediator Domain Agent](message-mediator-domain-agent.md)
+- [Integration Contracts Agent](integration-contracts-agent.md)
 - [Architecture Alignment Plan](architecture-alignment-plan.md)

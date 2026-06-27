@@ -34,6 +34,11 @@ Align the codebase with DDD + Event-Driven + Hexagonal Architecture and SOLID wi
 - Normalize naming for entities/models/DTOs/services/use-cases.
 - Define one canonical vocabulary and layer ownership doc.
 
+6. Tenancy and ownership boundaries
+- Keep RBAC and tenancy ownership logic in domain/application policies.
+- Avoid embedding tenant authorization rules in framework-specific handlers.
+- Preserve organization/user relationship contracts across adapters.
+
 ## Done criteria
 - No controller creates repositories/services directly.
 - Use-cases are primary application entry points.
