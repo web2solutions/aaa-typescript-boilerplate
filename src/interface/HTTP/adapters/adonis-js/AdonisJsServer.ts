@@ -2,8 +2,22 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable class-methods-use-this */
 import { createServer, Server } from 'http';
+import fs from 'fs';
+import path from 'path';
 import { _HTTP_PORT_ } from '@src/config/constants';
-import { HTTPBaseServer, IbaseHandler } from '@src/interface/HTTP/ports';
+import {
+  HTTPBaseServer,
+  IbaseHandler,
+  IHTTPRequest,
+  IHTTPResponse
+} from '@src/interface/HTTP/ports';
+
+export type AdonisJsRequest = IHTTPRequest;
+export type AdonisJsResponse = {
+  status: (statusCode: number) => AdonisJsResponse;
+  json: (payload: any) => any;
+  send?: (payload: any) => any;
+} & IHTTPResponse;
 
 let adonisJsServer: HTTPBaseServer<any> | undefined;
 
@@ -13,6 +27,17 @@ class AdonisJsServer extends HTTPBaseServer<any> {
   private readonly router: any;
 
   private server: Server | undefined;
+
+  private static getContentType(fileName: string): string {
+    if (fileName.endsWith('.html')) return 'text/html; charset=utf-8';
+    if (fileName.endsWith('.js')) return 'application/javascript; charset=utf-8';
+    if (fileName.endsWith('.css')) return 'text/css; charset=utf-8';
+    if (fileName.endsWith('.json')) return 'application/json; charset=utf-8';
+    if (fileName.endsWith('.svg')) return 'image/svg+xml';
+    if (fileName.endsWith('.png')) return 'image/png';
+    if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) return 'image/jpeg';
+    return 'text/plain; charset=utf-8';
+  }
 
   constructor() {
     super();
@@ -95,7 +120,34 @@ class AdonisJsServer extends HTTPBaseServer<any> {
     );
   }
 
+  private registerStaticDocsRoutes(): void {
+    const rootDir = process.cwd();
+    const register = (prefix: string, docFolder: string) => {
+      this.router.on('GET', `${prefix}/*`, async (request: any, response: any) => {
+        const filePath = (request.url || '').replace(`${prefix}/`, '') || 'index.html';
+        const absolutePath = path.join(rootDir, docFolder, filePath);
+        if (!fs.existsSync(absolutePath)) {
+          response.statusCode = 404;
+          response.end('Not found');
+          return;
+        }
+        response.statusCode = 200;
+        response.setHeader('content-type', AdonisJsServer.getContentType(absolutePath));
+        response.end(fs.readFileSync(absolutePath));
+      });
+    };
+
+    register('/OASdoc', 'OASdoc');
+    register('/AsyncAPIdoc', 'AsyncAPIdoc');
+    this.router.on('GET', '/docs/asyncapi', async (_request: any, response: any) => {
+      response.statusCode = 302;
+      response.setHeader('location', '/AsyncAPIdoc');
+      response.end();
+    });
+  }
+
   public async start(): Promise<void> {
+    this.registerStaticDocsRoutes();
     this.server = createServer((req, res) => {
       this.router.lookup(req, res);
     });

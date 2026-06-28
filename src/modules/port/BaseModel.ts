@@ -18,11 +18,15 @@ export abstract class BaseModel<T> {
 
   public _excludeOnSerialize: string[] = [];
 
-  constructor(id?: string) {
-    this._id = id ? UUID.parse(id).toString() : UUID.create().toString();
+  constructor(meta?: {
+    id?: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+  }) {
+    this._id = meta?.id ? UUID.parse(meta.id).toString() : UUID.create().toString();
     const now = new Date();
-    this._createdAt = now;
-    this._updatedAt = now;
+    this._createdAt = meta?.createdAt ? new Date(meta.createdAt) : now;
+    this._updatedAt = meta?.updatedAt ? new Date(meta.updatedAt) : this._createdAt;
   }
 
   public get id(): string {
@@ -83,8 +87,8 @@ export abstract class BaseModel<T> {
     return Object.freeze({
       id: this.id,
       ...api,
-      _createdAt: this._createdAt,
-      _updatedAt: this._updatedAt
+      createdAt: this._createdAt,
+      updatedAt: this._updatedAt
     });
   }
 }

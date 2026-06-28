@@ -72,9 +72,16 @@ class RestifyServer extends HTTPBaseServer<Restify> {
 
   private createDocEndPoint() {
     this.application.get('/OASdoc/*', restify.plugins.serveStatic({
-      directory: path.join(__dirname, '../../../../../..'),
+      directory: path.join(__dirname, '../../../../../../OASdoc'),
       default: 'index.html'
     }));
+    this.application.get('/AsyncAPIdoc/*', restify.plugins.serveStatic({
+      directory: path.join(__dirname, '../../../../../../AsyncAPIdoc'),
+      default: 'index.html'
+    }));
+    this.application.get('/docs/asyncapi', (_req, res, next) => {
+      return res.redirect(302, '/AsyncAPIdoc', next);
+    });
   }
 
   public start(): Promise<void> {

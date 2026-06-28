@@ -26,7 +26,7 @@ export interface IAuthService {
     // oldPassword: string,
     newPassword: string
   ): Promise<IServiceResponse<boolean>>;
-  logout(): Promise<IServiceResponse<boolean>>;
+  logout(authorization?: string): Promise<IServiceResponse<boolean>>;
   throwIfUserHasNoAccessToResource(
     user: IUser,
     endPointConfig: Record<string, any>

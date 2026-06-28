@@ -1,0 +1,15 @@
+services:
+  aurora:
+    image: postgres:16
+    container_name: aaa-aurora-compatible
+    environment:
+      POSTGRES_USER: aaa
+      POSTGRES_PASSWORD: '${AAA_POSTGRES_PASSWORD:-change_me_postgres_password}'
+      POSTGRES_DB: aaa
+    ports:
+      - '5433:5432'
+    volumes:
+      - aurora_data:/var/lib/postgresql/data
+
+volumes:
+  aurora_data:

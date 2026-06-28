@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package realtime;
+
+service AsyncApiGateway {
+  rpc Request (AsyncApiRequest) returns (AsyncApiResponse);
+  rpc Exchange (stream AsyncApiRequest) returns (stream AsyncApiResponse);
+}
+
+message AsyncApiRequest {
+  string version = 1;
+  string operationId = 2;
+  string authorization = 3;
+  string inputJson = 4;
+  string paramsJson = 5;
+  string queryStringJson = 6;
+  string metadataJson = 7;
+  string requestId = 8;
+  string clientId = 9;
+}
+
+message AsyncApiResponse {
+  bool ok = 1;
+  string version = 2;
+  string operationId = 3;
+  string resultJson = 4;
+  string errorName = 5;
+  string errorMessage = 6;
+  string requestId = 7;
+  string clientId = 8;
+  string metadataJson = 9;
+}

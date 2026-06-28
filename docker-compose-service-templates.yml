@@ -1,0 +1,40 @@
+services:
+  rest-api:
+    build:
+      context: .
+      dockerfile: ./docker/services/Dockerfile.rest
+    ports:
+      - '3000:3000'
+    profiles: ['rest']
+
+  websocket-api:
+    build:
+      context: .
+      dockerfile: ./docker/services/Dockerfile.websocket
+    ports:
+      - '3001:3000'
+    profiles: ['websocket']
+
+  grpc-api:
+    build:
+      context: .
+      dockerfile: ./docker/services/Dockerfile.grpc
+    ports:
+      - '50051:50051'
+    profiles: ['grpc']
+
+  graphql-api:
+    build:
+      context: .
+      dockerfile: ./docker/services/Dockerfile.graphql
+    ports:
+      - '3002:3000'
+    profiles: ['graphql']
+
+  functions-bundle:
+    build:
+      context: .
+      dockerfile: ./docker/services/Dockerfile.functions
+    ports:
+      - '3003:3000'
+    profiles: ['functions']

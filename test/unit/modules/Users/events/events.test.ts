@@ -19,12 +19,26 @@ import { UserPhoneCreateRequestEvent } from '@src/modules/Users/events/UserPhone
 import { UserPhoneDeleteRequestEvent } from '@src/modules/Users/events/UserPhoneDeleteRequestEvent';
 import { UserPhoneUpdateRequestEvent } from '@src/modules/Users/events/UserPhoneUpdateRequestEvent';
 import { UserUpdateRequestEvent } from '@src/modules/Users/events/UserUpdateRequestEvent';
+import { OrganizationCreateRequestEvent } from '@src/modules/Users/events/OrganizationCreateRequestEvent';
+import { OrganizationDeleteRequestEvent } from '@src/modules/Users/events/OrganizationDeleteRequestEvent';
+import { OrganizationGetAllRequestEvent } from '@src/modules/Users/events/OrganizationGetAllRequestEvent';
+import { OrganizationGetOneRequestEvent } from '@src/modules/Users/events/OrganizationGetOneRequestEvent';
+import { OrganizationUpdateRequestEvent } from '@src/modules/Users/events/OrganizationUpdateRequestEvent';
+import { OrganizationAddressCreateRequestEvent } from '@src/modules/Users/events/OrganizationAddressCreateRequestEvent';
+import { OrganizationAddressUpdateRequestEvent } from '@src/modules/Users/events/OrganizationAddressUpdateRequestEvent';
+import { OrganizationAddressDeleteRequestEvent } from '@src/modules/Users/events/OrganizationAddressDeleteRequestEvent';
+import { OrganizationPhoneCreateRequestEvent } from '@src/modules/Users/events/OrganizationPhoneCreateRequestEvent';
+import { OrganizationPhoneUpdateRequestEvent } from '@src/modules/Users/events/OrganizationPhoneUpdateRequestEvent';
+import { OrganizationPhoneDeleteRequestEvent } from '@src/modules/Users/events/OrganizationPhoneDeleteRequestEvent';
+import { OrganizationEmailCreateRequestEvent } from '@src/modules/Users/events/OrganizationEmailCreateRequestEvent';
+import { OrganizationEmailUpdateRequestEvent } from '@src/modules/Users/events/OrganizationEmailUpdateRequestEvent';
+import { OrganizationEmailDeleteRequestEvent } from '@src/modules/Users/events/OrganizationEmailDeleteRequestEvent';
 
 const validMessage = (): IEventMessage => ({
   authorization: 'Bearer token',
   input: { firstName: 'John' },
   params: {
-    id: 'u1', emailId: 'e1', phoneId: 'p1', documentId: 'd1'
+    id: 'u1', emailId: 'e1', phoneId: 'p1', documentId: 'd1', addressId: 'a1'
   },
   queryString: { page: '1' },
   schemaOAS: { operationId: 'usersCreate' },
@@ -56,7 +70,21 @@ describe('users request events', () => {
       new UserPhoneCreateRequestEvent(validMessage()),
       new UserPhoneDeleteRequestEvent(validMessage()),
       new UserPhoneUpdateRequestEvent(validMessage()),
-      new UserUpdateRequestEvent(validMessage())
+      new UserUpdateRequestEvent(validMessage()),
+      new OrganizationCreateRequestEvent(validMessage()),
+      new OrganizationDeleteRequestEvent(validMessage()),
+      new OrganizationGetAllRequestEvent(validMessage()),
+      new OrganizationGetOneRequestEvent(validMessage()),
+      new OrganizationUpdateRequestEvent(validMessage()),
+      new OrganizationAddressCreateRequestEvent(validMessage()),
+      new OrganizationAddressUpdateRequestEvent(validMessage()),
+      new OrganizationAddressDeleteRequestEvent(validMessage()),
+      new OrganizationPhoneCreateRequestEvent(validMessage()),
+      new OrganizationPhoneUpdateRequestEvent(validMessage()),
+      new OrganizationPhoneDeleteRequestEvent(validMessage()),
+      new OrganizationEmailCreateRequestEvent(validMessage()),
+      new OrganizationEmailUpdateRequestEvent(validMessage()),
+      new OrganizationEmailDeleteRequestEvent(validMessage())
     ];
 
     for (const event of events) {
@@ -87,7 +115,21 @@ describe('users request events', () => {
       UserPasswordUpdateRequestEvent,
       UserPhoneCreateRequestEvent,
       UserPhoneDeleteRequestEvent,
-      UserPhoneUpdateRequestEvent
+      UserPhoneUpdateRequestEvent,
+      OrganizationCreateRequestEvent,
+      OrganizationDeleteRequestEvent,
+      OrganizationGetAllRequestEvent,
+      OrganizationGetOneRequestEvent,
+      OrganizationUpdateRequestEvent,
+      OrganizationAddressCreateRequestEvent,
+      OrganizationAddressUpdateRequestEvent,
+      OrganizationAddressDeleteRequestEvent,
+      OrganizationPhoneCreateRequestEvent,
+      OrganizationPhoneUpdateRequestEvent,
+      OrganizationPhoneDeleteRequestEvent,
+      OrganizationEmailCreateRequestEvent,
+      OrganizationEmailUpdateRequestEvent,
+      OrganizationEmailDeleteRequestEvent
     ];
 
     for (const EventCtor of eventCtors) {

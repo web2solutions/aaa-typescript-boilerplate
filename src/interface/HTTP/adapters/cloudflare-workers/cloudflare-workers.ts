@@ -1,122 +1,247 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Hono } from 'hono';
+import type { Context } from 'hono';
+import fs from 'fs';
+import path from 'path';
 
-import { handler as loginHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/login';
-import { handler as logoutHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/logout';
-import { handler as registerHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/register';
-import { handler as updateUserPasswordHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/updateUserPassword';
-import { handler as createHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/create';
-import { handler as getAllHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/getAll';
-import { handler as deleteOneHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deleteOne';
-import { handler as updateHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/update';
-import { handler as getOneByIdHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/getOneById';
-import { handler as updatePasswordHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/updatePassword';
-import { handler as createEmailHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/createEmail';
-import { handler as updateEmailHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/updateEmail';
-import { handler as deleteEmailHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deleteEmail';
-import { handler as createDocumentHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/createDocument';
-import { handler as updateDocumentHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/updateDocument';
-import { handler as deleteDocumentHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deleteDocument';
-import { handler as createPhoneHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/createPhone';
-import { handler as updatePhoneHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/updatePhone';
-import { handler as deletePhoneHandler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deletePhone';
+import { RestAPI } from '@src/interface/HTTP/RestAPI';
+import {
+  EHTTPFrameworks,
+  HTTPBaseServer,
+  IHTTPRequest,
+  IHTTPResponse,
+  IbaseHandler
+} from '@src/interface/HTTP/ports';
+import { infraHandlers } from '@src/interface/HTTP/adapters/express/handlers/infraHandlers';
+import { compileMessageMediator } from '@src/infra/messages/compileMessageMediator';
+import { compileDatabaseClient } from '@src/infra/persistence/compileDatabaseClient';
+import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { JwtService } from '@src/infra/jwt/JwtService';
+import { MutexService } from '@src/infra/mutex/adapter/MutexService';
+import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
+import { composeUsersAuthServices } from '@src/modules/Users';
 
-type RouteDef = {
-  method: string;
-  template: string;
-  handler: any;
-};
+type HonoRouteMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options' | 'head';
 
-const routes: RouteDef[] = [
-  { method: 'POST', template: '/api/1.0.0/auth/login', handler: loginHandler },
-  { method: 'POST', template: '/api/1.0.0/auth/logout', handler: logoutHandler },
-  { method: 'POST', template: '/api/1.0.0/auth/register', handler: registerHandler },
-  { method: 'POST', template: '/api/1.0.0/auth/updateUserPassword', handler: updateUserPasswordHandler },
-  { method: 'GET', template: '/api/1.0.0/users', handler: getAllHandler },
-  { method: 'POST', template: '/api/1.0.0/users', handler: createHandler },
-  { method: 'GET', template: '/api/1.0.0/users/:id', handler: getOneByIdHandler },
-  { method: 'PUT', template: '/api/1.0.0/users/:id', handler: updateHandler },
-  { method: 'DELETE', template: '/api/1.0.0/users/:id', handler: deleteOneHandler },
-  { method: 'PUT', template: '/api/1.0.0/users/:id/updatePassword', handler: updatePasswordHandler },
-  { method: 'POST', template: '/api/1.0.0/users/:id/createEmail', handler: createEmailHandler },
-  { method: 'PUT', template: '/api/1.0.0/users/:id/updateEmail/:emailId', handler: updateEmailHandler },
-  { method: 'DELETE', template: '/api/1.0.0/users/:id/deleteEmail/:emailId', handler: deleteEmailHandler },
-  { method: 'POST', template: '/api/1.0.0/users/:id/createDocument', handler: createDocumentHandler },
-  { method: 'PUT', template: '/api/1.0.0/users/:id/updateDocument/:documentId', handler: updateDocumentHandler },
-  { method: 'DELETE', template: '/api/1.0.0/users/:id/documentDelete/:documentId', handler: deleteDocumentHandler },
-  { method: 'POST', template: '/api/1.0.0/users/:id/createPhone', handler: createPhoneHandler },
-  { method: 'PUT', template: '/api/1.0.0/users/:id/updatePhone/:phoneId', handler: updatePhoneHandler },
-  { method: 'DELETE', template: '/api/1.0.0/users/:id/phoneDelete/:phoneId', handler: deletePhoneHandler }
-];
+export type CloudflareWorkersRequest = IHTTPRequest;
+export type CloudflareWorkersResponse = {
+  status: (statusCode: number) => CloudflareWorkersResponse;
+  json: (payload: any) => any;
+  send?: (payload: any) => any;
+} & IHTTPResponse;
 
-const matchPath = (
-  template: string,
-  value: string
-): { matched: boolean; params: Record<string, string> } => {
-  const templateParts = template.split('/').filter(Boolean);
-  const valueParts = value.split('/').filter(Boolean);
-  if (templateParts.length !== valueParts.length) {
-    return { matched: false, params: {} };
+class CloudflareWorkersServer extends HTTPBaseServer<Hono> {
+  private static instance: any;
+
+  public readonly application: Hono;
+
+  constructor() {
+    super();
+    this.application = new Hono();
+    this.registerStaticDocsRoutes();
   }
-  const params: Record<string, string> = {};
-  for (let i = 0; i < templateParts.length; i += 1) {
-    const templatePart = templateParts[i];
-    const valuePart = valueParts[i];
 
-    if (templatePart.startsWith(':')) {
-      params[templatePart.slice(1)] = decodeURIComponent(valuePart);
-    } else if (templatePart !== valuePart) {
-      return { matched: false, params: {} };
-    }
-  }
-  return { matched: true, params };
-};
-
-const toApiGatewayEvent = async (
-  request: Request,
-  routePath: string,
-  params: Record<string, string>
-): Promise<APIGatewayProxyEvent> => {
-  const headers: Record<string, string> = {};
-  request.headers.forEach((value, key) => {
-    headers[key] = value;
-  });
-  const method = request.method.toUpperCase();
-  const body = method === 'GET' ? '' : await request.text();
-
-  return {
-    body,
-    headers,
-    httpMethod: request.method.toUpperCase(),
-    path: routePath.replace('/api/1.0.0', ''),
-    isBase64Encoded: false,
-    pathParameters: params,
-    queryStringParameters: Object.fromEntries(new URL(request.url).searchParams.entries())
-  } as unknown as APIGatewayProxyEvent;
-};
-
-export const fetch = async (request: Request): Promise<Response> => {
-  const url = new URL(request.url);
-  const { pathname } = url;
-  const method = request.method.toUpperCase();
-  const matchedRoute = routes
-    .map((route) => ({ route, match: matchPath(route.template, pathname) }))
-    .find((candidate) => candidate.route.method === method && candidate.match.matched);
-
-  if (matchedRoute) {
-    const event = await toApiGatewayEvent(request, pathname, matchedRoute.match.params);
-    const result = await matchedRoute.route.handler(event);
-    return new Response(result.body, {
-      status: result.statusCode,
-      headers: {
-        'content-type': 'application/json; charset=utf-8'
-      }
+  private registerStaticDocsRoutes(): void {
+    const rootDir = process.cwd();
+    const getType = (fileName: string): string => {
+      if (fileName.endsWith('.html')) return 'text/html; charset=utf-8';
+      if (fileName.endsWith('.js')) return 'application/javascript; charset=utf-8';
+      if (fileName.endsWith('.css')) return 'text/css; charset=utf-8';
+      if (fileName.endsWith('.json')) return 'application/json; charset=utf-8';
+      return 'text/plain; charset=utf-8';
+    };
+    const register = (prefix: string, folder: string) => {
+      this.application.get(`${prefix}/*`, async (c: Context) => {
+        const relative = c.req.path.replace(`${prefix}/`, '') || 'index.html';
+        const absolute = path.join(rootDir, folder, relative);
+        if (!fs.existsSync(absolute)) {
+          return c.json({ message: 'Not found' }, 404);
+        }
+        const content = fs.readFileSync(absolute);
+        return c.newResponse(content, 200, {
+          'content-type': getType(absolute)
+        });
+      });
+    };
+    register('/OASdoc', 'OASdoc');
+    register('/AsyncAPIdoc', 'AsyncAPIdoc');
+    this.application.get('/docs/asyncapi', async (c: Context) => {
+      return c.redirect('/AsyncAPIdoc', 302);
     });
   }
 
-  return new Response(JSON.stringify({ message: 'Not found' }), {
-    status: 404,
-    headers: {
-      'content-type': 'application/json; charset=utf-8'
+  private static normalizeBody(raw: string): any {
+    if (!raw) return {};
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return raw;
     }
-  });
+  }
+
+  private static async parseBody(c: Context): Promise<any> {
+    const method = c.req.method.toUpperCase();
+    if (method === 'GET' || method === 'HEAD') {
+      return {};
+    }
+    const raw = await c.req.text();
+    return CloudflareWorkersServer.normalizeBody(raw);
+  }
+
+  private static buildRequest(
+    c: Context,
+    params: Record<string, string>,
+    body: any
+  ): CloudflareWorkersRequest {
+    const headers = Object.fromEntries(c.req.raw.headers.entries());
+    return {
+      params,
+      query: c.req.query(),
+      headers,
+      body,
+      method: c.req.method,
+      url: c.req.url
+    } as unknown as CloudflareWorkersRequest;
+  }
+
+  private static createResponseAdapter(c: Context) {
+    const state = {
+      statusCode: 200,
+      body: undefined as any,
+      contentType: 'application/json; charset=utf-8',
+      sent: false
+    };
+
+    const response: CloudflareWorkersResponse = {
+      status(code: number) {
+        state.statusCode = code;
+        return response;
+      },
+      json(payload: any) {
+        state.body = JSON.stringify(payload);
+        state.contentType = 'application/json; charset=utf-8';
+        state.sent = true;
+        return payload;
+      },
+      send(payload: any) {
+        if (typeof payload === 'string') {
+          state.body = payload;
+          state.contentType = 'text/plain; charset=utf-8';
+        } else {
+          state.body = JSON.stringify(payload);
+          state.contentType = 'application/json; charset=utf-8';
+        }
+        state.sent = true;
+        return payload;
+      }
+    } as CloudflareWorkersResponse;
+
+    const finalize = (handlerResult: any): Response => {
+      if (handlerResult instanceof Response) return handlerResult;
+
+      if (state.sent) {
+        return c.newResponse(state.body, state.statusCode as any, {
+          'content-type': state.contentType
+        });
+      }
+
+      if (handlerResult !== undefined) {
+        if (typeof handlerResult === 'string') {
+          return c.newResponse(handlerResult, state.statusCode as any, {
+            'content-type': 'text/plain; charset=utf-8'
+          });
+        }
+        return c.json(handlerResult, state.statusCode as any);
+      }
+
+      return c.newResponse(null, 204);
+    };
+
+    return { response, finalize };
+  }
+
+  public endPointRegister(handlerFactory: IbaseHandler): void {
+    const method = handlerFactory.method.toLowerCase() as HonoRouteMethod;
+    (this.application as any)[method](handlerFactory.path, async (c: Context) => {
+      const params = c.req.param();
+      const body = await CloudflareWorkersServer.parseBody(c);
+      const req = CloudflareWorkersServer.buildRequest(c, params, body);
+      const { response, finalize } = CloudflareWorkersServer.createResponseAdapter(c);
+      const result = await handlerFactory.handler(req, response);
+      return finalize(result);
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public async start(): Promise<void> {
+    // Cloudflare Workers is request-driven.
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public async stop(): Promise<void> {
+    // no-op
+  }
+
+  public static compile(): CloudflareWorkersServer {
+    if (!CloudflareWorkersServer.instance) {
+      CloudflareWorkersServer.instance = new CloudflareWorkersServer();
+    }
+    return CloudflareWorkersServer.instance;
+  }
+}
+
+const serverType = EHTTPFrameworks.cloudflare_workers;
+const webServer = CloudflareWorkersServer.compile();
+const passwordCryptoService = PasswordCryptoService.compile();
+const jwtService = JwtService.compile();
+const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+const mutexService = MutexService.compile(keyValueStorageClient);
+const messageMediator = compileMessageMediator();
+const databaseClient = compileDatabaseClient();
+
+const { authService } = composeUsersAuthServices({
+  databaseClient,
+  passwordCryptoService,
+  mutexService,
+  jwtService,
+  keyValueStorageClient,
+  messageMediator
+});
+
+const API = new RestAPI<Hono>({
+  databaseClient,
+  webServer,
+  infraHandlers,
+  serverType,
+  authService,
+  passwordCryptoService,
+  keyValueStorageClient,
+  mutexService,
+  eventBus: messageMediator,
+  messageMediator
+});
+
+let initialized: Promise<void> | undefined;
+
+const ensureInitialized = async (): Promise<void> => {
+  if (!initialized) {
+    initialized = (async () => {
+      await API.start();
+      await API.seedData();
+    })();
+  }
+  await initialized;
+};
+
+export const fetch = async (
+  request: Request,
+  env?: Record<string, any>,
+  executionCtx?: any
+): Promise<Response> => {
+  await ensureInitialized();
+  return webServer.application.fetch(request, env, executionCtx);
+};
+
+export default {
+  fetch
 };

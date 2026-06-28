@@ -1,0 +1,138 @@
+asyncapi: 3.0.0
+info:
+  title: ANYWhere, ANYHow, ANYTime WebSocket API
+  version: 1.0.0
+  description: AsyncAPI contract for bidirectional WebSocket communication built from OpenAPI 1.0.0 operations.
+defaultContentType: application/json
+servers:
+  local:
+    host: localhost:3001
+    protocol: ws
+    description: Local Socket.IO endpoint.
+channels:
+  api/request:
+    address: api:request
+    messages:
+      request:
+        $ref: '#/components/messages/ApiRequestMessage'
+  api/response:
+    address: api:response
+    messages:
+      response:
+        $ref: '#/components/messages/ApiResponseMessage'
+  api/operation/request:
+    address: api:{operationId}:request
+    messages:
+      request:
+        $ref: '#/components/messages/ApiRequestMessage'
+  api/operation/response:
+    address: api:{operationId}:response
+    messages:
+      response:
+        $ref: '#/components/messages/ApiResponseMessage'
+operations:
+  sendRequest:
+    action: send
+    channel:
+      $ref: '#/channels/api/request'
+    messages:
+      - $ref: '#/channels/api/request/messages/request'
+  receiveResponse:
+    action: receive
+    channel:
+      $ref: '#/channels/api/response'
+    messages:
+      - $ref: '#/channels/api/response/messages/response'
+components:
+  messages:
+    ApiRequestMessage:
+      name: ApiRequestMessage
+      title: Unified async request envelope
+      payload:
+        $ref: '#/components/schemas/ApiRequest'
+    ApiResponseMessage:
+      name: ApiResponseMessage
+      title: Unified async response envelope
+      payload:
+        $ref: '#/components/schemas/ApiResponse'
+  schemas:
+    ApiRequest:
+      type: object
+      required:
+        - operationId
+      properties:
+        version:
+          type: string
+          description: API specification version, for example 1.0.0.
+        operationId:
+          type: string
+          enum:
+            - login
+            - logout
+            - updateUserPassword
+            - register
+            - getAll
+            - create
+            - deleteOne
+            - update
+            - getOneById
+            - updatePassword
+            - createEmail
+            - updateEmail
+            - deleteEmail
+            - createDocument
+            - updateDocument
+            - deleteDocument
+            - createPhone
+            - updatePhone
+            - deletePhone
+            - getAllOrganizations
+            - createOrganization
+            - getOrganizationById
+            - updateOrganization
+            - deleteOrganization
+            - createOrganizationAddress
+            - updateOrganizationAddress
+            - deleteOrganizationAddress
+            - createOrganizationPhone
+            - updateOrganizationPhone
+            - deleteOrganizationPhone
+            - createOrganizationEmail
+            - updateOrganizationEmail
+            - deleteOrganizationEmail
+        authorization:
+          type: string
+        input:
+          type: object
+          additionalProperties: true
+        params:
+          type: object
+          additionalProperties: true
+        queryString:
+          type: object
+          additionalProperties: true
+        metadata:
+          type: object
+          additionalProperties: true
+    ApiResponse:
+      type: object
+      required:
+        - ok
+        - operationId
+      properties:
+        ok:
+          type: boolean
+        version:
+          type: string
+        operationId:
+          type: string
+        result:
+          type: object
+          additionalProperties: true
+        error:
+          type: object
+          properties:
+            name:
+              type: string
+            message:
+              type: string

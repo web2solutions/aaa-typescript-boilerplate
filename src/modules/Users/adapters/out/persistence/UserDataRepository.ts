@@ -64,6 +64,8 @@ export class UserDataRepository
     const newData = { ...(new User({ ...data, password: '' })).serialize() };
     delete (newData as any).password;
     delete (newData as any).salt;
+    delete (newData as any).createdAt;
+    delete (newData as any).updatedAt;
     const updatedDoc = await this.store.update(id, newData as IUser);
     return new User(updatedDoc);
   }

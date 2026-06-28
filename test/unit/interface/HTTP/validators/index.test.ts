@@ -54,6 +54,50 @@ describe('http validators', () => {
         }
       }
     })?.required).toStrictEqual(['name']);
+
+    expect(getSchema(spec, {
+      'application/json': {
+        schema: {
+          $ref: 'components/schemas/RequestCreateUser'
+        }
+      }
+    })).toBeUndefined();
+
+    expect(getSchema(spec, {
+      'application/json': {
+        schema: {
+          $ref: '#/components/schemas/RequestCreateUser/properties/firstName/type'
+        }
+      }
+    })).toBe('string');
+  });
+
+  it('returns undefined when content or schema are missing', () => {
+    expect.hasAssertions();
+    const spec = { components: { schemas: {} } } as any;
+    expect(getSchema(spec, undefined as any)).toBeUndefined();
+    expect(getSchema(spec, {} as any)).toBeUndefined();
+    expect(getSchema(spec, { 'application/json': {} } as any)).toBeUndefined();
+  });
+
+  it('returns undefined when ref traversal reaches non-object node', () => {
+    expect.hasAssertions();
+    const spec = {
+      components: {
+        schemas: {
+          RequestCreateUser: {
+            properties: { firstName: { type: 'string' } }
+          }
+        }
+      }
+    } as any;
+    expect(getSchema(spec, {
+      'application/json': {
+        schema: {
+          $ref: '#/components/schemas/RequestCreateUser/properties/firstName/type/value'
+        }
+      }
+    })).toBeUndefined();
   });
 
   it('validates payload against endpoint request body schema', () => {

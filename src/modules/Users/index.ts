@@ -13,18 +13,22 @@ export { AuthUseCases } from '@src/modules/Users/application/use-cases/AuthUseCa
 
 export { UserController } from '@src/modules/Users/adapters/in/http/controllers/UserController';
 export { AuthController } from '@src/modules/Users/adapters/in/http/controllers/AuthController';
+export { OrganizationController } from '@src/modules/Users/adapters/in/http/controllers/OrganizationController';
 export { UserController as UserHttpController } from '@src/modules/Users/adapters/in/http/controllers/UserController';
 export { AuthController as AuthHttpController } from '@src/modules/Users/adapters/in/http/controllers/AuthController';
+export { OrganizationController as OrganizationHttpController } from '@src/modules/Users/adapters/in/http/controllers/OrganizationController';
 export { AuthService } from '@src/modules/Users/service/AuthService';
 export { UserProviderLocal } from '@src/modules/Users/service/UserProviderLocal';
 
 // dtos
 export { RequestCreateDocument } from '@src/modules/Users/interface/dto/RequestCreateDocument';
+export { RequestCreateAddress } from '@src/modules/Users/interface/dto/RequestCreateAddress';
 export { RequestCreateEmail } from '@src/modules/Users/interface/dto/RequestCreateEmail';
 export { RequestCreatePhone } from '@src/modules/Users/interface/dto/RequestCreatePhone';
 export { RequestCreateUser } from '@src/modules/Users/interface/dto/RequestCreateUser';
 export { RequestCreateOrganization } from '@src/modules/Users/interface/dto/RequestCreateOrganization';
 export { RequestUpdateDocument } from '@src/modules/Users/interface/dto/RequestUpdateDocument';
+export { RequestUpdateAddress } from '@src/modules/Users/interface/dto/RequestUpdateAddress';
 export { RequestUpdateEmail } from '@src/modules/Users/interface/dto/RequestUpdateEmail';
 export { RequestUpdatePassword } from '@src/modules/Users/interface/dto/RequestUpdatePassword';
 export { RequestUpdatePhone } from '@src/modules/Users/interface/dto/RequestUpdatePhone';
@@ -89,6 +93,20 @@ export { LoginRequestEvent } from '@src/modules/Users/events/LoginRequestEvent';
 export { LogoutRequestEvent } from '@src/modules/Users/events/LogoutRequestEvent';
 export { RegisterRequestEvent } from '@src/modules/Users/events/RegisterRequestEvent';
 export { UpdatePasswordRequestEvent } from '@src/modules/Users/events/UpdatePasswordRequestEvent';
+export { OrganizationCreateRequestEvent } from '@src/modules/Users/events/OrganizationCreateRequestEvent';
+export { OrganizationGetAllRequestEvent } from '@src/modules/Users/events/OrganizationGetAllRequestEvent';
+export { OrganizationGetOneRequestEvent } from '@src/modules/Users/events/OrganizationGetOneRequestEvent';
+export { OrganizationUpdateRequestEvent } from '@src/modules/Users/events/OrganizationUpdateRequestEvent';
+export { OrganizationDeleteRequestEvent } from '@src/modules/Users/events/OrganizationDeleteRequestEvent';
+export { OrganizationAddressCreateRequestEvent } from '@src/modules/Users/events/OrganizationAddressCreateRequestEvent';
+export { OrganizationAddressUpdateRequestEvent } from '@src/modules/Users/events/OrganizationAddressUpdateRequestEvent';
+export { OrganizationAddressDeleteRequestEvent } from '@src/modules/Users/events/OrganizationAddressDeleteRequestEvent';
+export { OrganizationPhoneCreateRequestEvent } from '@src/modules/Users/events/OrganizationPhoneCreateRequestEvent';
+export { OrganizationPhoneUpdateRequestEvent } from '@src/modules/Users/events/OrganizationPhoneUpdateRequestEvent';
+export { OrganizationPhoneDeleteRequestEvent } from '@src/modules/Users/events/OrganizationPhoneDeleteRequestEvent';
+export { OrganizationEmailCreateRequestEvent } from '@src/modules/Users/events/OrganizationEmailCreateRequestEvent';
+export { OrganizationEmailUpdateRequestEvent } from '@src/modules/Users/events/OrganizationEmailUpdateRequestEvent';
+export { OrganizationEmailDeleteRequestEvent } from '@src/modules/Users/events/OrganizationEmailDeleteRequestEvent';
 export { UserIntegrationEventName } from '@src/modules/Users/events/contracts/UserIntegrationEventName';
 export { UserMessageContracts } from '@src/modules/Users/events/contracts/UserMessageContracts';
 export { IUserEventListeners } from '@src/modules/Users/events/contracts/IUserEventListeners';

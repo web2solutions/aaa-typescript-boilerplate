@@ -8,7 +8,8 @@ import {
 } from '@src/modules/Users';
 
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
-import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
+import { compileDatabaseClient } from '@src/infra/persistence/compileDatabaseClient';
+// import { MongooseDbClient } from '@src/infra/persistence/MongoseDatabase/MongooseDbClient';
 import { JwtService } from '@src/infra/jwt/JwtService';
 import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
@@ -24,17 +25,19 @@ const jwtService = JwtService.compile();
 const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
 const mutexService = MutexService.compile(keyValueStorageClient);
 const messageMediator = compileMessageMediator();
+const databaseClient = compileDatabaseClient();
 
 const { authService } = composeUsersAuthServices({
-  databaseClient: InMemoryDbClient,
+  databaseClient,
   passwordCryptoService,
   mutexService,
   jwtService,
+  keyValueStorageClient,
   messageMediator
 });
 
 const API = new RestAPI<Express>({
-  databaseClient: InMemoryDbClient,
+  databaseClient,
   webServer,
   infraHandlers,
   serverType,

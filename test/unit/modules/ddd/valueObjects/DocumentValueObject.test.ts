@@ -56,4 +56,13 @@ describe('document value object', () => {
       data: '   '
     } as any)).toThrow('data can not be empty');
   });
+
+  it('should reject whitespace-only type after normalization', () => {
+    expect.hasAssertions();
+    expect(() => new DocumentValueObject({
+      type: '   ',
+      countryIssue: 'BR',
+      data: '123'
+    } as any)).toThrow('type can not be empty');
+  });
 });

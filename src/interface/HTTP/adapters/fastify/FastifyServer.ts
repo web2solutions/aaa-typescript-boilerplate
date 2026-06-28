@@ -1,12 +1,13 @@
 import fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
-// import helmet from '@fastify/helmet';
+import helmet from '@fastify/helmet';
 import fastifyStatic from '@fastify/static';
 import formBody from '@fastify/formbody';
 import path from 'node:path';
 import { v4 } from 'uuid';
 
 import { _HTTP_PORT_ } from '@src/config/constants';
+import { isCorsOriginAllowed } from '@src/config/security';
 import { HTTPBaseServer } from '@src/interface/HTTP/ports';
 import { Context } from '@src/infra/context/Context';
 
@@ -23,12 +24,20 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
   constructor() {
     super();
     this.application = fastifyApp;
-    this.application.register(cors, {});
-    /* this.application.register(helmet, {
+    this.application.register(cors, {
+      origin(origin, callback) {
+        if (isCorsOriginAllowed(origin)) {
+          callback(null, true);
+          return;
+        }
+        callback(new Error('Not allowed by CORS'), false);
+      }
+    });
+    this.application.register(helmet, {
       contentSecurityPolicy: {
         useDefaults: false
       }
-    }); */
+    });
     this.application.register(formBody);
     (this.application as any).addHook('preHandler', (req: FastifyRequest, res: FastifyReply, next: any) => {
       const store = new Map();
@@ -65,6 +74,13 @@ class FastifyServer extends HTTPBaseServer<Fastify> {
     this.application.register(fastifyStatic, {
       root: path.join(__dirname, '../../../../../../OASdoc'),
       prefix: '/OASdoc/'
+    });
+    this.application.register(fastifyStatic, {
+      root: path.join(__dirname, '../../../../../../AsyncAPIdoc'),
+      prefix: '/AsyncAPIdoc/'
+    });
+    this.application.get('/docs/asyncapi', async (_, reply) => {
+      return reply.redirect('/AsyncAPIdoc/');
     });
   }
 

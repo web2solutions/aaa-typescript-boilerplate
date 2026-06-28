@@ -4,6 +4,9 @@
 
 ## Unreleased
 
+- 2026-06-28 feat: consolidate dev changes on clean history to satisfy security scanning - web2solutions
+- 2026-06-26 feat(cli): developer automation wrapper for domains and entities (#59) - Eduardo A.
+- 2026-06-26 test(ci): enforce strict local gates and stabilize coverage - web2solutions
 - 2026-06-26 test(codecov): raise patch coverage for CI-required branches - web2solutions
 - 2026-06-26 test(ci): include organization repository coverage in tracked tests - web2solutions
 - 2026-06-26 fix(ci): include organization repository and strict typing for user sync - web2solutions
@@ -23,9 +26,11 @@
 - 2026-06-26 feat(messaging): add contract-based mediator adapters and broker wiring - Eduardo Almeida
 - 2026-06-26 docs(structure): split documentation by domain and audience - Eduardo Almeida
 - 2026-06-26 docs(readme): rebuild README for product and engineering audiences - Eduardo Almeida
+- 2026-06-26 chore: security fixes, CI docs, and PR templates (#58) - Eduardo A.
 - 2026-06-26 docs(pr): add comprehensive and specialized PR templates - Eduardo Almeida
 - 2026-06-26 fix(security): resolve Sonar vulnerabilities on main - Eduardo Almeida
 - 2026-06-26 docs(ci): add troubleshooting guide and link from README - Eduardo Almeida
+- 2026-06-26 Refactor - Architecture improvement and 95% coverage (#57) - Eduardo A.
 - 2026-06-26 fix(sonar): remove password-like event identifier from new code - Eduardo Almeida
 - 2026-06-26 fix(sonar): resolve security and complexity quality gate failures - Eduardo Almeida
 - 2026-06-26 ci(github): default secrets for PR test workflow stability - Eduardo Almeida
@@ -47,6 +52,7 @@
 - 2026-06-25 refactor(architecture): add event bus port and reduce core coupling - Eduardo Almeida
 - 2026-06-25 refactor(hexagonal): inject user service from composition and add user repository port - Eduardo Almeida
 - 2026-06-25 docs(architecture): expand README and add agents requirements registry - Eduardo Almeida
+- 2026-06-25 ci: revert to npm and run git actions (#55) - Eduardo A.
 - 2026-06-25 fix(ci): prevent smoke test from overwriting codecov coverage - Eduardo Almeida
 - 2026-06-25 fix(ci): install redis latest - Eduardo Almeida
 - 2026-06-25 fix(ci): make env loader resilient when .env.dev is missing - Eduardo Almeida
@@ -60,6 +66,8 @@
 - 2026-06-25 fix: wire service dependencies correctly - Eduardo Almeida
 - 2026-06-25 refactor: centralize endpoint registration - Eduardo Almeida
 - 2026-06-25 fix: restore TypeScript build - Eduardo Almeida
+- 2024-10-19 feat(hyperexpress): add handlers and tests (#54) - Eduardo A.
+- 2024-10-15 badges (#53) - Eduardo A.
 
 ## v0.0.3 - 2024-11-04
 

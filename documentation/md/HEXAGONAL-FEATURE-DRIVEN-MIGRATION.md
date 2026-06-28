@@ -107,10 +107,11 @@ Done criteria:
 
 - Completed:
   - Canonical namespaces created for Users (`adapters/in`, `adapters/out`, `application/use-cases`).
-  - Runtime wiring now prefers canonical controller namespace in `RestAPI` with compatibility fallback.
+  - Runtime wiring now resolves controllers from canonical adapter namespace in `RestAPI`.
   - Users composition and module exports now use canonical application/repository namespaces.
   - Lambda Users create handler now imports controller from canonical adapter path.
   - `UserDataRepository` implementation moved physically to `adapters/out/persistence` with compatibility bridge on legacy path.
+  - Controller implementation files moved physically from `interface/controller` to `adapters/in/http/controllers`.
+  - `RestAPI` legacy controller fallback path removed; canonical adapter path is now required.
 - Remaining:
-  - Move controller implementation files physically from `interface/controller` to `adapters/in/http/controllers`.
-  - Remove fallback paths once all modules are migrated.
+  - None for the current codebase scope (Users is fully migrated in this plan).

@@ -21,6 +21,15 @@ export interface IController {
   deleteOrganization?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   getOrganizationById?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   getAllOrganizations?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  createOrganizationAddress?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  updateOrganizationAddress?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  deleteOrganizationAddress?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  createOrganizationPhone?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  updateOrganizationPhone?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  deleteOrganizationPhone?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  createOrganizationEmail?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  updateOrganizationEmail?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
+  deleteOrganizationEmail?(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   // update(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   // create(event: BaseDomainEvent): Promise<IServiceResponse<any>>;
   // create(event: BaseDomainEvent): Promise<IServiceResponse<any>>;

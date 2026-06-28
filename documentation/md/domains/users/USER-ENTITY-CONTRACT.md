@@ -11,6 +11,8 @@
 | Field | Type | Required | Format / semantics | Validation owner |
 |---|---|---|---|---|
 | `id` | `string` | Yes | UUID string | Domain model / BaseModel |
+| `createdAt` | `Date` | Yes | Entity creation timestamp | BaseModel / persistence |
+| `updatedAt` | `Date` | Yes | Last mutation timestamp | BaseModel / persistence |
 | `firstName` | `string` | Yes | Free text | Domain model (`canNotBeEmpty`) |
 | `lastName` | `string` | Yes | Free text (can be empty string) | Domain model |
 | `avatar` | `string` | Yes | Avatar filename/path | Domain model (`canNotBeEmpty` when set) |

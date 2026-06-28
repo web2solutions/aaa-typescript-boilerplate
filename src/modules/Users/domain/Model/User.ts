@@ -31,6 +31,8 @@ import {
 
 interface UserFactory extends RequestCreateUser {
   id?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
   readOnly?: boolean;
   active?: boolean;
 }
@@ -45,6 +47,20 @@ export class User extends BaseModel<IUser> implements IUser {
         format: 'uuid',
         required: true,
         validations: ['pattern:^[0-9a-fA-F-]{36}$']
+      },
+      {
+        name: 'createdAt',
+        type: 'string',
+        format: 'date-time',
+        required: true,
+        validations: []
+      },
+      {
+        name: 'updatedAt',
+        type: 'string',
+        format: 'date-time',
+        required: true,
+        validations: []
       },
       {
         name: 'firstName',
@@ -147,7 +163,11 @@ export class User extends BaseModel<IUser> implements IUser {
   private _skipDomainValidation: boolean = true;
 
   constructor(payload: UserFactory) {
-    super(payload.id);
+    super({
+      id: payload.id,
+      createdAt: payload.createdAt,
+      updatedAt: payload.updatedAt
+    });
     BaseModel.throwIfDataEntitySchemaIsNotOpenApi31Compliant(User.dataEntitySchema as any);
     const {
       firstName,
@@ -200,6 +220,8 @@ export class User extends BaseModel<IUser> implements IUser {
     this.ensureTenancyRules();
     const payload: Record<string, any> = {
       id: this.id,
+      createdAt: this.createdAt.toISOString(),
+      updatedAt: this.updatedAt.toISOString(),
       firstName: this.firstName,
       lastName: this.lastName,
       avatar: this.avatar,

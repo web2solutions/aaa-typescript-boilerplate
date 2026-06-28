@@ -2,7 +2,9 @@ import { IDatabaseClient } from '@src/infra/persistence/port/IDatabaseClient';
 import { IPasswordCryptoService } from '@src/infra/security/IPasswordCryptoService';
 import { IMutexService } from '@src/infra/mutex/port/IMutexService';
 import { IJwtService } from '@src/infra/jwt/IJwtService';
+import { IKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/IKeyValueStorageClient';
 import { IEventBus, IMessageMediator } from '@src/modules/port';
+import { InMemorySecurityAuditRepository } from '@src/infra/audit';
 
 import { UserDataRepository } from '@src/modules/Users/adapters/out/persistence/UserDataRepository';
 import { OrganizationDataRepository } from '@src/modules/Users/adapters/out/persistence/OrganizationDataRepository';
@@ -27,6 +29,7 @@ interface IUsersAuthCompositionConfig {
   passwordCryptoService: IPasswordCryptoService;
   mutexService: IMutexService;
   jwtService: IJwtService;
+  keyValueStorageClient?: IKeyValueStorageClient;
   eventBus?: IEventBus;
   messageMediator?: IMessageMediator;
   userEventListeners?: IUserEventListeners;
@@ -52,6 +55,7 @@ export const composeUsersAuthServices = (
     passwordCryptoService,
     mutexService,
     jwtService,
+    keyValueStorageClient,
     eventBus,
     messageMediator,
     userEventListeners
@@ -80,7 +84,10 @@ export const composeUsersAuthServices = (
   const authService = AuthService.compile(
     userProvider,
     passwordCryptoService,
-    jwtService
+    jwtService,
+    keyValueStorageClient,
+    integrationBus,
+    InMemorySecurityAuditRepository.compile()
   );
   const userUseCases = UserUseCases.compile(userService);
   const organizationUseCases = OrganizationUseCases.compile(organizationService);

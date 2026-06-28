@@ -6,7 +6,7 @@ orbs:
 jobs:
   test-source:
     docker:
-      - image: cimg/node:22.11
+      - image: cimg/node:22.23
       - image: redis:latest
         environment:
           REDIS_ARGS: "--sysctl vm.overcommit_memory=1"

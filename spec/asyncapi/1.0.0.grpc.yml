@@ -1,0 +1,133 @@
+asyncapi: 3.0.0
+info:
+  title: ANYWhere, ANYHow, ANYTime gRPC API
+  version: 1.0.0
+  description: AsyncAPI contract for bidirectional gRPC communication built from OpenAPI 1.0.0 operations.
+defaultContentType: application/json
+servers:
+  local:
+    host: localhost:3002
+    protocol: grpc
+    description: Local AsyncApiGateway gRPC endpoint.
+channels:
+  request:
+    address: realtime.AsyncApiGateway/Request
+    messages:
+      request:
+        $ref: '#/components/messages/GrpcRequestMessage'
+      response:
+        $ref: '#/components/messages/GrpcResponseMessage'
+  exchange:
+    address: realtime.AsyncApiGateway/Exchange
+    messages:
+      request:
+        $ref: '#/components/messages/GrpcRequestMessage'
+      response:
+        $ref: '#/components/messages/GrpcResponseMessage'
+operations:
+  unaryRequest:
+    action: send
+    channel:
+      $ref: '#/channels/request'
+    messages:
+      - $ref: '#/channels/request/messages/request'
+  unaryResponse:
+    action: receive
+    channel:
+      $ref: '#/channels/request'
+    messages:
+      - $ref: '#/channels/request/messages/response'
+  streamExchangeSend:
+    action: send
+    channel:
+      $ref: '#/channels/exchange'
+    messages:
+      - $ref: '#/channels/exchange/messages/request'
+  streamExchangeReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/exchange'
+    messages:
+      - $ref: '#/channels/exchange/messages/response'
+components:
+  messages:
+    GrpcRequestMessage:
+      name: GrpcRequestMessage
+      payload:
+        $ref: '#/components/schemas/GrpcRequest'
+    GrpcResponseMessage:
+      name: GrpcResponseMessage
+      payload:
+        $ref: '#/components/schemas/GrpcResponse'
+  schemas:
+    GrpcRequest:
+      type: object
+      required:
+        - operationId
+      properties:
+        version:
+          type: string
+        operationId:
+          type: string
+          enum:
+            - login
+            - logout
+            - updateUserPassword
+            - register
+            - getAll
+            - create
+            - deleteOne
+            - update
+            - getOneById
+            - updatePassword
+            - createEmail
+            - updateEmail
+            - deleteEmail
+            - createDocument
+            - updateDocument
+            - deleteDocument
+            - createPhone
+            - updatePhone
+            - deletePhone
+            - getAllOrganizations
+            - createOrganization
+            - getOrganizationById
+            - updateOrganization
+            - deleteOrganization
+            - createOrganizationAddress
+            - updateOrganizationAddress
+            - deleteOrganizationAddress
+            - createOrganizationPhone
+            - updateOrganizationPhone
+            - deleteOrganizationPhone
+            - createOrganizationEmail
+            - updateOrganizationEmail
+            - deleteOrganizationEmail
+        authorization:
+          type: string
+        inputJson:
+          type: string
+        paramsJson:
+          type: string
+        queryStringJson:
+          type: string
+        metadataJson:
+          type: string
+    GrpcResponse:
+      type: object
+      required:
+        - ok
+        - operationId
+      properties:
+        ok:
+          type: boolean
+        version:
+          type: string
+        operationId:
+          type: string
+        resultJson:
+          type: string
+        errorName:
+          type: string
+        errorMessage:
+          type: string

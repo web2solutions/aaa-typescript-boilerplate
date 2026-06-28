@@ -1,0 +1,115 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: aaa-postgres
+    environment:
+      POSTGRES_USER: aaa
+      POSTGRES_PASSWORD: '${AAA_POSTGRES_PASSWORD:-change_me_postgres_password}'
+      POSTGRES_DB: aaa
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mysql:
+    image: mysql:8.4
+    container_name: aaa-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: '${AAA_MYSQL_ROOT_PASSWORD:-change_me_mysql_root_password}'
+      MYSQL_DATABASE: aaa
+      MYSQL_USER: aaa
+      MYSQL_PASSWORD: '${AAA_MYSQL_PASSWORD:-change_me_mysql_password}'
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: aaa-mssql
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD: '${AAA_MSSQL_SA_PASSWORD:-change_me_mssql_password}'
+    ports:
+      - '1433:1433'
+
+  oracle:
+    image: gvenzl/oracle-free:23-slim
+    container_name: aaa-oracle
+    environment:
+      ORACLE_PASSWORD: '${AAA_ORACLE_PASSWORD:-change_me_oracle_password}'
+      APP_USER: aaa
+      APP_USER_PASSWORD: '${AAA_ORACLE_APP_USER_PASSWORD:-change_me_oracle_app_password}'
+    ports:
+      - '1521:1521'
+
+  mongodb:
+    image: mongo:7
+    container_name: aaa-mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+  cassandra:
+    image: cassandra:5.0
+    container_name: aaa-cassandra
+    ports:
+      - '9042:9042'
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: aaa-dynamodb-local
+    command: '-jar DynamoDBLocal.jar -sharedDb'
+    ports:
+      - '8000:8000'
+    volumes:
+      - dynamodb_data:/home/dynamodblocal/data
+
+  localstack:
+    image: localstack/localstack:3
+    container_name: aaa-localstack
+    environment:
+      SERVICES: rds,lambda,sqs,sns,apigateway,cloudwatch,sts,iam
+      DEBUG: '0'
+      DOCKER_HOST: unix:///var/run/docker.sock
+    ports:
+      - '4566:4566'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - localstack_data:/var/lib/localstack
+
+  firebase-emulator:
+    image: andreysenov/firebase-tools:latest
+    container_name: aaa-firebase-emulator
+    command: >
+      sh -c "firebase setup:emulators:firestore && firebase emulators:start --project demo-project --only firestore --host 0.0.0.0"
+    ports:
+      - '8080:8080'
+      - '4000:4000'
+    volumes:
+      - firebase_data:/home/node/.cache
+
+  redis:
+    image: redis:7-alpine
+    container_name: aaa-redis
+    ports:
+      - '6379:6379'
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: aaa-rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+volumes:
+  postgres_data:
+  mysql_data:
+  mongo_data:
+  cassandra_data:
+  dynamodb_data:
+  localstack_data:
+  firebase_data:

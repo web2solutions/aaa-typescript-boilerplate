@@ -27,6 +27,18 @@ All commands start the same CLI entrypoint:
 
 - `src/interface/CLI/index.ts`
 
+Bootstrap/scaffold command:
+
+```bash
+npm run cli:bootstrap
+```
+
+The bootstrap flow is also exposed as installable bin command:
+
+```bash
+aaa-bootstrap
+```
+
 ## Current Sub Applications
 
 ### 1) Domains CRUD
@@ -146,3 +158,13 @@ CLI behavior is covered by unit tests under:
 - `test/unit/interface/CLI/`
 
 This ensures new CLI features and flows remain stable and coverage-compliant.
+
+## Related Service Management UI
+
+The visual design surface moved to:
+
+- `servicemangement/`
+
+See:
+
+- `documentation/md/SERVICE-MANAGEMENT-APPLICATION.md`

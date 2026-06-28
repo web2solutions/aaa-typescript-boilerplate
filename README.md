@@ -21,6 +21,13 @@ This project is a feature-driven backend boilerplate for teams that want speed w
 - Coverage policy is enforced as a release discipline.
 - Runtime and docs are aligned by project requirements and agents.
 
+### 4) Compliance-Ready by Design (PCI-Focused)
+- Security controls are embedded in day-to-day engineering flow, not postponed to release week.
+- RBAC and tenant scope checks are enforced at controller boundaries.
+- Sensitive error exposure is environment-aware (`dev/staging` visible, `production` masked).
+- Security smoke checks run inside CI gate, alongside lint/build/test.
+- Audit-oriented documentation and evidence mapping are already part of the repository.
+
 ## What You Can Build
 
 - REST APIs with multiple Node.js HTTP frameworks
@@ -75,6 +82,7 @@ Production equivalents are also available (`prod:*` scripts).
 - Faster feature delivery with reduced architectural risk.
 - Better roadmap confidence from enforced quality checks.
 - Easier scaling from MVP to multi-runtime deployment strategies.
+- Lower compliance risk during growth phases with a baseline mapped to PCI-oriented controls.
 
 ### For Software Engineers
 - Clear layer ownership:
@@ -86,6 +94,18 @@ Production equivalents are also available (`prod:*` scripts).
 - Contract-driven integration over direct cross-domain dependency.
 - Stable patterns for adding features with minimum blast radius.
 - Multi-tenancy ready by default with role-aware organization boundaries.
+- Data-entity ownership is explicit: each entity has its own controller contract and boundary.
+
+## PCI Compliance Positioning
+
+This boilerplate is not marketed as “PCI certified by default”, but it gives teams a practical head start toward PCI-aligned implementation and audit readiness:
+
+- Authorization and tenant boundaries are test-covered.
+- Error payload behavior is controlled by environment with production masking.
+- Security runbooks and evidence references are versioned with source code.
+- CI includes security smoke checks to prevent regressions from reaching pull requests.
+
+For teams building payment-adjacent platforms, this reduces rework and creates an auditable engineering trail from day one.
 
 ## Architecture at a Glance
 
@@ -191,15 +211,41 @@ await API.seedData();
 
 ```bash
 npm install
+npm run cli:bootstrap
 npm run docker:composeredis
 npm run docker:composerabbit
+npm run docker:compose:platform-services
+npm run docker:compose:service-template
 npm run ci:gate
-npm run dev:fastify
+npm run dev
 ```
 
 API docs after startup:
 - UI: `http://localhost:3000/OASdoc/`
 - JSON: `http://localhost:3000/docs/1.0.0`
+- AsyncAPI UI: `http://localhost:3000/AsyncAPIdoc/`
+- AsyncAPI JSON index: `http://localhost:3000/docs/asyncapi/versions`
+
+For VM profiles, runtime services are orchestrated with PM2.
+`WebSocketAPI + RESTAPI` and `gRPCAPI + RESTAPI` run as separated processes and ports.
+Service Management (`servicemangement`) is also served via PM2.
+Runtime adapter startup is controlled by:
+
+```bash
+AAA_HTTP_FRAMEWORK=express
+AAA_REALTIME_API=no
+AAA_REALTIME_API_PROTOCOL=websocket
+AAA_REALTIME_API_DATABASE_DRIVER=Mongo
+```
+
+Official startup entrypoints:
+- `src/interface/HTTP/adapters/start-rest-api.ts`
+- `src/interface/WebSocket/adapters/start-websocket-api.ts`
+- `src/interface/gRPC/adapters/start-grpc-api.ts`
+
+Service Management runtime env API:
+- `GET /api/runtime/env?environment=dev|staging|ci`
+- `POST /api/runtime/env`
 
 ## Quality Gate and CI Discipline
 
@@ -212,6 +258,20 @@ This project is designed to block risky changes before merge:
 - smoke integration
 - coverage threshold policy
 
+## Service Docker Templates
+
+Service Dockerfiles are available under:
+
+- `docker/services/Dockerfile.rest`
+- `docker/services/Dockerfile.websocket`
+- `docker/services/Dockerfile.grpc`
+- `docker/services/Dockerfile.graphql`
+- `docker/services/Dockerfile.functions`
+
+Compose template:
+
+- `docker-compose-service-templates.yml`
+
 ## Documentation Index
 
 | Nature | Document | Description |
@@ -219,6 +279,7 @@ This project is designed to block risky changes before merge:
 | Product Context | [Project Overview](documentation/md/PROJECT-OVERVIEW.md) | Purpose, use cases, acceleration strategy, and product value. |
 | Architecture | [Architecture and Structure](documentation/md/ARCHITECTURE-AND-STRUCTURE.md) | Folder structure, boundaries, and layer responsibilities. |
 | Runtime and Ops | [Setup, Runtime, and API](documentation/md/SETUP-RUNTIME-AND-API.md) | Setup, commands, runtime adapters, and API docs endpoints. |
+| Runtime Contract | [Runtime Environment Contracts](documentation/md/RUNTIME-ENVIRONMENT-CONTRACTS.md) | Canonical env keys, startup entrypoints, PM2 process model, and Service Management env API. |
 | Integration Contracts | [Events and Messages Map](documentation/md/EVENTS-AND-MESSAGES-MAP.md) | Event and mediator contract map. |
 | Error Contracts | [Error Contracts and Responses](documentation/md/ERROR-CONTRACTS-AND-RESPONSES.md) | Error codes, mapping, and HTTP response contracts. |
 | Quality | [Testing, CI, and Quality](documentation/md/TESTING-CI-AND-QUALITY.md) | Test strategy, CI gate, coverage policy, Sonar/Codecov. |
@@ -226,6 +287,14 @@ This project is designed to block risky changes before merge:
 | Dependencies | [Dependencies](documentation/md/DEPENDENCIES.md) | Runtime and infrastructure dependencies. |
 | Domain Entities | [Domain Data Entities](documentation/md/DOMAIN-DATA-ENTITIES.md) | Data entity catalog and field contracts. |
 | Developer CLI | [Developer Automation CLI](documentation/md/DEVELOPER-AUTOMATION-CLI.md) | CLI wrapper and sub-app workflows. |
+| Bootstrap CLI | [Bootstrap CLI Scaffolding](documentation/md/BOOTSTRAP-CLI-SCAFFOLDING.md) | Installable scaffold command to clone and configure new projects. |
+| Service Management | [Service Management App](servicemangement/README.md) | Tabbed suite for domain design, communication interfaces, service configuration, and deploy management. |
+| External Adapters | [External Data Adapter Foundations](documentation/md/EXTERNAL-DATA-ADAPTER-FOUNDATIONS.md) | SQL/NoSQL repository foundations and queue request-response adapter. |
+| Database Validation | [Database Drivers Smoke Tests](documentation/md/DATABASE-DRIVERS-SMOKE-TESTS.md) | Driver matrix, per-database Docker compose, and smoke execution commands. |
+| Security Compliance | [PCI Remediation Plan and Evidence](documentation/md/PCI-REMEDIATION-PLAN-AND-EVIDENCE.md) | Sprint-based remediation plan (P0/P1/P2) and audit evidence checklist. |
+| Security Operations | [Security Runbook (PCI)](documentation/md/SECURITY-RUNBOOK-PCI.md) | Key rotation, incident response, retention and audit export procedures. |
+| Domain Designer Roadmap | [Domain Designer MVP Roadmap](documentation/md/DOMAIN-DESIGNER-MVP-ROADMAP.md) | MVP status, delivered increments, and next priorities. |
+| Project Management | [Project Management](documentation/md/PROJECT-MANAGEMENT.md) | Backlog references, requirement tracking, and governance links. |
 | Agents Registry | [.agents/README.md](.agents/README.md) | Technical requirements and specialized agents. |
 
 ## Additional Detailed Documents
@@ -237,6 +306,8 @@ This project is designed to block risky changes before merge:
 - [Users Value Objects](documentation/md/domains/users/USER-VALUE-OBJECTS.md)
 - [Users Organization Model](documentation/md/domains/users/ORGANIZATION-MODEL.md)
 - [CI Troubleshooting](documentation/md/CI-TROUBLESHOOTING.md)
+- [Service Management Application](documentation/md/SERVICE-MANAGEMENT-APPLICATION.md)
+- [Security Runbook (PCI)](documentation/md/SECURITY-RUNBOOK-PCI.md)
 
 ---
 

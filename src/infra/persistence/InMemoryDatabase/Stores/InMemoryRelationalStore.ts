@@ -128,11 +128,11 @@ export class InMemoryRelationalStore<T extends Record<string, any>> implements I
     if (!previous) {
       throw new DataBaseNotFoundError('Record not found');
     }
-    const merged = { ...previous, ...value, _updatedAt: new Date() } as T;
+    const merged = { ...previous, ...value, updatedAt: new Date() } as T;
     this.ensureUniqueIndexes(key, merged, previous);
     this.syncRelationIndexes(key, merged, previous);
     this.records.set(key, merged);
-    return value;
+    return merged;
   }
 
   public async getAll(

@@ -6,6 +6,8 @@ import {
 
 export interface IOrganization {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
   name: string;
   address: AddressValueObject[];
   phone: PhoneValueObject[];

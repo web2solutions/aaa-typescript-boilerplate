@@ -8,16 +8,27 @@ import { UUID } from '@src/modules/port/UUID';
 import { setFilter } from '@src/modules/port/setFilter';
 import { setFilterAndPaging } from '@src/modules/port/setFilterAndPaging';
 import { setPaging } from '@src/modules/port/setPaging';
+import { Context } from '@src/infra/context/Context';
 
 class TestEvent extends BaseDomainEvent<any> {}
 
 class TestModel extends BaseModel<any> {
   constructor(id?: string, public name: string = 'name') {
-    super(id);
+    super({ id });
   }
 
   public get label() {
     return this.name;
+  }
+}
+
+class TestModelWithOwnSerialize extends BaseModel<any> {
+  constructor(public value: string = 'v') {
+    super();
+  }
+
+  public override serialize(): any {
+    return super.serialize();
   }
 }
 
@@ -63,9 +74,19 @@ describe('port core helpers', () => {
     model._excludeOnSerialize = ['label'];
     const serialized = model.serialize();
     expect(serialized.id).toBeDefined();
-    expect((serialized as any)._createdAt).toBeDefined();
-    expect((serialized as any)._updatedAt).toBeDefined();
+    expect((serialized as any).createdAt).toBeDefined();
+    expect((serialized as any).updatedAt).toBeDefined();
     expect((serialized as any).label).toBeUndefined();
+  });
+
+  it('serializes model that overrides serialize without leaking method metadata', () => {
+    expect.hasAssertions();
+    const model = new TestModelWithOwnSerialize('x');
+    const serialized = model.serialize();
+    expect(serialized.id).toBeDefined();
+    expect((serialized as any).createdAt).toBeDefined();
+    expect((serialized as any).updatedAt).toBeDefined();
+    expect(typeof (serialized as any).serialize).toBe('undefined');
   });
 
   it('exposes createdAt/updatedAt and allows updating updatedAt', () => {
@@ -99,6 +120,23 @@ describe('port core helpers', () => {
       causationId: 'p',
       timestamp: 1,
       userId: 'u'
+    });
+  });
+
+  it('loads event metadata defaults from async context store when metadata is missing', () => {
+    expect.hasAssertions();
+    Context.run(new Map([
+      ['correlationId', 'ctx-correlation'],
+      ['userId', 'ctx-user']
+    ]), () => {
+      const event = new TestEvent({
+        input: { ok: true }
+      } as any);
+
+      expect(event.metadata.correlationId).toBe('ctx-correlation');
+      expect(event.metadata.causationId).toBe('ctx-correlation');
+      expect(event.metadata.userId).toBe('ctx-user');
+      expect(typeof event.metadata.timestamp).toBe('number');
     });
   });
 

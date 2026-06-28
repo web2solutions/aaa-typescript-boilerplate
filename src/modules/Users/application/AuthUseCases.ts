@@ -86,7 +86,7 @@ export class AuthUseCases implements IAuthUseCases {
         throw new ValidationError('Invalid request');
       }
 
-      const logoutResponse = await this.authService.logout();
+      const logoutResponse = await this.authService.logout(authorization);
       if (logoutResponse.error) {
         throw logoutResponse.error;
       }
