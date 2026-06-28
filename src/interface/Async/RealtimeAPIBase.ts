@@ -236,6 +236,13 @@ export abstract class RealtimeAPIBase {
   }
 
   private buildOperationsFromOAS(): void {
+    this.loadOpenApiSpecs();
+    for (const [version, spec] of this.oas) {
+      this.registerOperationsFromSpec(version, spec);
+    }
+  }
+
+  private loadOpenApiSpecs(): void {
     const specs = fs.readdirSync(this.specDir)
       .filter((fileName) => fileName.endsWith('.yml') || fileName.endsWith('.yaml'));
 
@@ -246,60 +253,78 @@ export abstract class RealtimeAPIBase {
         this.oas.set(parsed.info.version, parsed);
       }
     }
+  }
 
-    for (const [version, spec] of this.oas) {
-      for (const path of Object.keys(spec.paths || {})) {
-        const operationConfigByMethod: Record<string, any> = spec.paths[path] ?? {};
-        for (const method of Object.keys(operationConfigByMethod)) {
-          const endPointConfig = operationConfigByMethod[method] as Record<string, any>;
-          if (endPointConfig?.operationId) {
-            const module = path.split('/')[1];
-            const {
-              moduleName,
-              controllerName
-            } = RealtimeAPIBase.resolveControllerMetadata(module);
-            const ControllerModule = RealtimeAPIBase.getControllerModule(
-              moduleName,
-              controllerName
-            );
-            const usersModuleComposition = moduleName === 'Users' ? this.composeUsersModule() : undefined;
-
-            const controller = new ControllerModule({
-              authService: usersModuleComposition?.authService ?? this.authService,
-              openApiSpecification: spec,
-              databaseClient: this.databaseClient,
-              userService: usersModuleComposition?.userService,
-              userUseCases: usersModuleComposition?.userUseCases,
-              organizationUseCases: usersModuleComposition?.organizationUseCases,
-              authUseCases: usersModuleComposition?.authUseCases,
-              mutexService: this.mutexClient,
-              passwordCryptoService: this.passwordCryptoService,
-              messageMediator: this.messageMediator
-            });
-
-            const operationId = endPointConfig.operationId as string;
-            const controllerMethod = OPERATION_TO_CONTROLLER_METHOD[operationId]
-              || operationId;
-            const runtimeHandler = this.getRuntimeHandlerFactory({
-              moduleName,
-              operationId,
-              controllerMethod,
-              controller,
-              endPointConfig
-            });
-            this.registerOperation({
-              version,
-              operationId,
-              moduleName,
-              endPointConfig,
-              controller,
-              controllerMethod,
-              runtimeHandler
-            });
-          }
+  private registerOperationsFromSpec(version: string, spec: OpenAPIV3.Document): void {
+    for (const path of Object.keys(spec.paths || {})) {
+      const operationConfigByMethod: Record<string, any> = spec.paths[path] ?? {};
+      for (const method of Object.keys(operationConfigByMethod)) {
+        const endPointConfig = operationConfigByMethod[method] as Record<string, any>;
+        if (endPointConfig?.operationId) {
+          this.registerOperationFromEndpoint({
+            version,
+            spec,
+            path,
+            endPointConfig
+          });
         }
       }
     }
+  }
+
+  private registerOperationFromEndpoint({
+    version,
+    spec,
+    path,
+    endPointConfig
+  }: {
+    version: string;
+    spec: OpenAPIV3.Document;
+    path: string;
+    endPointConfig: Record<string, any>;
+  }): void {
+    const module = path.split('/')[1];
+    const {
+      moduleName,
+      controllerName
+    } = RealtimeAPIBase.resolveControllerMetadata(module);
+    const ControllerModule = RealtimeAPIBase.getControllerModule(
+      moduleName,
+      controllerName
+    );
+    const usersModuleComposition = moduleName === 'Users' ? this.composeUsersModule() : undefined;
+    const controller = new ControllerModule({
+      authService: usersModuleComposition?.authService ?? this.authService,
+      openApiSpecification: spec,
+      databaseClient: this.databaseClient,
+      userService: usersModuleComposition?.userService,
+      userUseCases: usersModuleComposition?.userUseCases,
+      organizationUseCases: usersModuleComposition?.organizationUseCases,
+      authUseCases: usersModuleComposition?.authUseCases,
+      mutexService: this.mutexClient,
+      passwordCryptoService: this.passwordCryptoService,
+      messageMediator: this.messageMediator
+    });
+
+    const operationId = endPointConfig.operationId as string;
+    const controllerMethod = OPERATION_TO_CONTROLLER_METHOD[operationId]
+      || operationId;
+    const runtimeHandler = this.getRuntimeHandlerFactory({
+      moduleName,
+      operationId,
+      controllerMethod,
+      controller,
+      endPointConfig
+    });
+    this.registerOperation({
+      version,
+      operationId,
+      moduleName,
+      endPointConfig,
+      controller,
+      controllerMethod,
+      runtimeHandler
+    });
   }
 
   private getRuntimeHandlerFactory({
