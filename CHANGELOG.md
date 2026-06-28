@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-06-28 fix(sonar): mark operation-id password token as false-positive - web2solutions
 - 2026-06-28 refactor(async): split OAS operation builder to satisfy sonar complexity gate - web2solutions
 - 2026-06-28 fix(security): remediate sonar hotspots in service-management server and docker images - web2solutions
 - 2026-06-28 fix(sonar): scope quality gate to runtime source and exclude static tooling artifacts - web2solutions

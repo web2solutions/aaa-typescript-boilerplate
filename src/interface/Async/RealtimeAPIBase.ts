@@ -70,7 +70,8 @@ export interface IRealtimeHandlerFactoryDeps {
 
 const OPERATION_TO_CONTROLLER_METHOD: Record<string, string> = {
   deleteOne: 'delete',
-  updateUserPassword: 'updatePassword'
+  // SONAR false-positive: this is an operation-id mapping, not a credential literal.
+  updateUserPassword: 'updatePassword' // NOSONAR
 };
 
 export abstract class RealtimeAPIBase {
