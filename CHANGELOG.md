@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-06-28 fix(sonar): scope quality gate to runtime source and exclude static tooling artifacts - web2solutions
 - 2026-06-28 feat: consolidate dev changes on clean history to satisfy security scanning - web2solutions
 - 2026-06-26 feat(cli): developer automation wrapper for domains and entities (#59) - Eduardo A.
 - 2026-06-26 test(ci): enforce strict local gates and stabilize coverage - web2solutions
