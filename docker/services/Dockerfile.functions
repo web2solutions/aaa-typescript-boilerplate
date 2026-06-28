@@ -5,7 +5,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY . .
+COPY tsconfig*.json ./
+COPY src ./src
+COPY spec ./spec
+COPY seed ./seed
+COPY ci-cd ./ci-cd
 RUN npm run build:dev
 
 EXPOSE 3000

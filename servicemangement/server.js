@@ -42,8 +42,9 @@ const contentTypeByExtension = {
 function resolveRequestPath(urlPath) {
   const cleanPath = String(urlPath || '/').split('?')[0];
   const normalized = cleanPath === '/' ? '/index.html' : cleanPath;
-  const absoluteFilePath = path.join(rootDirectory, normalized);
-  if (!absoluteFilePath.startsWith(rootDirectory)) return null;
+  const absoluteFilePath = path.resolve(rootDirectory, `.${normalized}`);
+  const normalizedRoot = `${path.resolve(rootDirectory)}${path.sep}`;
+  if (absoluteFilePath !== path.resolve(rootDirectory) && !absoluteFilePath.startsWith(normalizedRoot)) return null;
   return absoluteFilePath;
 }
 

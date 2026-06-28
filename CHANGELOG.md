@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-06-28 fix(security): remediate sonar hotspots in service-management server and docker images - web2solutions
 - 2026-06-28 fix(sonar): scope quality gate to runtime source and exclude static tooling artifacts - web2solutions
 - 2026-06-28 feat: consolidate dev changes on clean history to satisfy security scanning - web2solutions
 - 2026-06-26 feat(cli): developer automation wrapper for domains and entities (#59) - Eduardo A.
