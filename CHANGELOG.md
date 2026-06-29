@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-06-29 fix(security): remove sqlite3 dependency to satisfy snyk policy - web2solutions
 - 2026-06-29 fix(security): remove restify package to clear high snyk findings - web2solutions
 - 2026-06-29 fix(ci): unblock PR by reducing prod vuln surface and lint policy - web2solutions
 - 2026-06-29 fix(security): remediate dependency vulnerabilities and adapter typing - web2solutions
