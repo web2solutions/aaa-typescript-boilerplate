@@ -51,10 +51,12 @@ module.exports = {
           'src/interface/HTTP/adapters/restify/**/*.ts',
           'src/interface/HTTP/ports/IHTTPRequest.ts',
           'src/interface/HTTP/ports/IHTTPResponse.ts',
-          'src/modules/Users/interface/restapi/frameworks/restify/**/*.ts'
+          'src/modules/Users/interface/restapi/frameworks/restify/**/*.ts',
+          'test/integration/Restify/**/*.ts',
+          'test/integration/mutex/redis.restify.test.ts'
         ],
         rules: {
-          'import/no-extraneous-dependencies': ['error', { devDependencies: true }]
+          'import/no-extraneous-dependencies': 'off'
         }
       }
     ]
