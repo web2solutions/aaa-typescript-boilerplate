@@ -1,9 +1,5 @@
 /* eslint-disable no-console */
 import {
-  RedisClientType,
-  RedisFunctions,
-  RedisScripts,
-  RedisModules,
   createClient
 } from 'redis';
 
@@ -17,7 +13,7 @@ import { BaseError } from '@src/infra/exceptions';
 let redisKeyValueStorageClient: any;
 
 export class RedisKeyValueStorageClient extends BaseKeyValueStorageClient {
-  public client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+  public client: ReturnType<typeof createClient>;
 
   public prefix: string;
 

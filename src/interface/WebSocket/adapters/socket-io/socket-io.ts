@@ -1,6 +1,6 @@
 import { compileDatabaseClient } from '@src/infra/persistence/compileDatabaseClient';
 import { JwtService } from '@src/infra/jwt/JwtService';
-import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { compileKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/compileKeyValueStorageClient';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import { compileMessageMediator } from '@src/infra/messages/compileMessageMediator';
@@ -18,7 +18,9 @@ export function shouldStartFallbackRestApi(env: NodeJS.ProcessEnv = process.env)
 export async function startWebSocketAdapter(): Promise<void> {
   const passwordCryptoService = PasswordCryptoService.compile();
   const jwtService = JwtService.compile();
-  const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+  const keyValueStorageClient = compileKeyValueStorageClient(
+    process.env.AAA_KEYVALUESTORAGE_DRIVER
+  );
   const mutexService = MutexService.compile(keyValueStorageClient);
   const messageMediator = compileMessageMediator();
   const databaseClient = compileDatabaseClient();

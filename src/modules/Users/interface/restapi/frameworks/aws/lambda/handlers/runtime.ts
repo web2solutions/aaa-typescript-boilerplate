@@ -4,7 +4,7 @@ import path from 'path';
 import { OpenAPIV3 } from 'openapi-types';
 import YAML from 'yaml';
 import { v4 } from 'uuid';
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import type { APIGatewayProxyEvent } from 'aws-lambda';
 
 import { Context } from '@src/infra/context/Context';
 import { JwtService } from '@src/infra/jwt/JwtService';

@@ -15,7 +15,7 @@ import {
 import { infraHandlers } from '@src/interface/HTTP/adapters/express/handlers/infraHandlers';
 import { compileMessageMediator } from '@src/infra/messages/compileMessageMediator';
 import { compileDatabaseClient } from '@src/infra/persistence/compileDatabaseClient';
-import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { compileKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/compileKeyValueStorageClient';
 import { JwtService } from '@src/infra/jwt/JwtService';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
@@ -194,7 +194,7 @@ const serverType = EHTTPFrameworks.cloudflare_workers;
 const webServer = CloudflareWorkersServer.compile();
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();
-const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+const keyValueStorageClient = compileKeyValueStorageClient(process.env.AAA_KEYVALUESTORAGE_DRIVER);
 const mutexService = MutexService.compile(keyValueStorageClient);
 const messageMediator = compileMessageMediator();
 const databaseClient = compileDatabaseClient();

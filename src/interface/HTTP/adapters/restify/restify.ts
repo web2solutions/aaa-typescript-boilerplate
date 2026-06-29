@@ -10,7 +10,7 @@ import {
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import { compileDatabaseClient } from '@src/infra/persistence/compileDatabaseClient';
 import { JwtService } from '@src/infra/jwt/JwtService';
-import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { compileKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/compileKeyValueStorageClient';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { compileMessageMediator } from '@src/infra/messages/compileMessageMediator';
 import { EHTTPFrameworks } from '@src/interface/HTTP/ports/EHTTPFrameworks';
@@ -23,7 +23,7 @@ const webServer = RestifyServer.compile();
 
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();
-const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+const keyValueStorageClient = compileKeyValueStorageClient(process.env.AAA_KEYVALUESTORAGE_DRIVER);
 const mutexService = MutexService.compile(keyValueStorageClient);
 const messageMediator = compileMessageMediator();
 const databaseClient = compileDatabaseClient();

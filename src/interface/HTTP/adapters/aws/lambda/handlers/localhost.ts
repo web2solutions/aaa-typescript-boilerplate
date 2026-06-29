@@ -1,4 +1,4 @@
-import { Handler, APIGatewayProxyResult } from 'aws-lambda';
+import type { Handler, APIGatewayProxyResult } from 'aws-lambda';
 
 export const handler: Handler = async ():
 Promise<APIGatewayProxyResult> => {

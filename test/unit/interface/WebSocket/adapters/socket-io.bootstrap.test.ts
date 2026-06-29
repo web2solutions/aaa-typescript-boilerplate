@@ -49,8 +49,8 @@ jest.mock('@src/infra/jwt/JwtService', () => ({
   JwtService: { compile: jest.fn().mockReturnValue({}) }
 }));
 
-jest.mock('@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient', () => ({
-  InMemoryKeyValueStorageClient: { compile: jest.fn().mockReturnValue({}) }
+jest.mock('@src/infra/persistence/KeyValueStorage/compileKeyValueStorageClient', () => ({
+  compileKeyValueStorageClient: jest.fn().mockReturnValue({})
 }));
 
 jest.mock('@src/infra/mutex/adapter/MutexService', () => ({
