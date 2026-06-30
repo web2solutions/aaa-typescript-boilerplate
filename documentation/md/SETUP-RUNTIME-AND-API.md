@@ -194,6 +194,7 @@ Combined service profiles:
 ```bash
 npm run dev:websocket
 npm run dev:grpc
+npm run test:integration:servicemangement
 ```
 
 Serverless dev mode:

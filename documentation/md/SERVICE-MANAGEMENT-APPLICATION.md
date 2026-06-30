@@ -6,10 +6,29 @@ The previous `domaindesigner` static app was consolidated into:
 
 It is now a tabbed suite for service lifecycle design.
 
+Core implementation files:
+
+- `servicemangement/index.html`
+- `servicemangement/script.js`
+- `servicemangement/styles.css`
+- `servicemangement/server.js`
+
 ## Tabs
 
 1. **Domain Designer**
-   - Existing ER modeling MVP (domains/entities/relationships, OpenAPI export/import, model checks).
+   - Full ER modeling MVP including:
+     - domain/entity lifecycle and inspector
+     - relationship anchors, bend/path controls, routing style
+     - bounded-context metadata
+     - aggregate + invariants
+     - RBAC per entity/action
+     - message contracts (`event/command/request/response`)
+     - OpenAPI composition (`oneOf/allOf/anyOf`, external refs, discriminator)
+     - schema diff + migration hints
+     - request/response examples
+     - code skeleton preview
+     - export/import flows (JSON, OAS, Markdown, JSON Schema, AsyncAPI, package, boilerplate bundle)
+     - mini-map and large-canvas mode
 2. **Communication Interface Designer**
    - Registers inbound interface adapters and controller mappings:
      - HTTP/REST
@@ -36,6 +55,10 @@ It is now a tabbed suite for service lifecycle design.
 4. **Deploy Management**
    - Tracks deploy targets and runtime deployment metadata.
 
+Detailed usage guide:
+
+- [Domain Designer Features and Usage](./DOMAIN-DESIGNER-FEATURES-AND-USAGE.md)
+
 ## Run
 
 PM2-served:
@@ -44,6 +67,14 @@ PM2-served:
 - default dev profile (`npm run dev`) also starts `servicemangement` through PM2.
 
 The app state persists with browser `localStorage`.
+
+Recommended dev path:
+
+1. `npm run dev:service-management`
+2. Open the local Service Management URL
+3. Model domains/entities
+4. Run exports (OAS/AsyncAPI/JSON Schema/package)
+5. Use generated artifacts as contracts for API implementation
 
 ## Runtime Env API (built-in)
 
@@ -74,3 +105,17 @@ Service-level container templates are provided in:
 Orchestrated profiles:
 
 - `docker-compose-service-templates.yml`
+
+## Tests
+
+Integration smoke:
+
+```bash
+npm run test:integration:servicemangement
+```
+
+Unit smoke for roadmap feature presence:
+
+```bash
+NODE_ENV=dev npx jest test/unit/servicemangement/mvp.roadmap.features.test.ts --runInBand
+```

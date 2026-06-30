@@ -18,6 +18,10 @@
 
 `servicemangement` is a tabbed local application for engineering setup and design workflows in this boilerplate.
 
+Detailed feature usage:
+
+- [Domain Designer Features and Usage](../documentation/md/DOMAIN-DESIGNER-FEATURES-AND-USAGE.md)
+
 ## Tabs
 
 1. **Domain Designer**
