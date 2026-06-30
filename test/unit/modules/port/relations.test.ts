@@ -31,4 +31,10 @@ describe('model relations decorators', () => {
       })
     ]));
   });
+
+  it('returns empty metadata for model without decorators', () => {
+    expect.hasAssertions();
+    class PlainModel {}
+    expect(getModelRelations(PlainModel as any)).toStrictEqual([]);
+  });
 });

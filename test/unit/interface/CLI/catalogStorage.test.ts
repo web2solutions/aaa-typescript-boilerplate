@@ -66,6 +66,27 @@ describe('cli catalog storage', () => {
 
       expect(loaded).toStrictEqual(payload);
       expect(fs.existsSync(module.getCatalogFilePath())).toBe(true);
+
+      await module.saveCatalog(payload as any);
+      const raw = await fs.promises.readFile(module.getCatalogFilePath(), 'utf8');
+      expect(JSON.parse(raw).domains).toHaveLength(1);
+    });
+  });
+
+  it('normalizes loaded catalog when optional fields are missing', async () => {
+    expect.hasAssertions();
+    await runInTempWorkspace(async () => {
+      const module = await import('@src/interface/CLI/core/catalogStorage');
+      const catalogPath = module.getCatalogFilePath();
+      await fs.promises.mkdir(path.dirname(catalogPath), { recursive: true });
+      await fs.promises.writeFile(catalogPath, JSON.stringify({ version: 0 }), 'utf8');
+
+      const loaded = await module.loadCatalog();
+      expect(loaded).toStrictEqual({
+        version: 1,
+        domains: [],
+        entities: []
+      });
     });
   });
 });

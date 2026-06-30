@@ -34,12 +34,20 @@ export function mustBeNumeric(field: string, value: number) {
 }
 
 export function mustBePassword(field: string, value: string) {
-  let errorMessage = '';
-  if (typeof value !== 'string') errorMessage = `${field} must be a string.`;
+  if (typeof value !== 'string') {
+    throw new DomainValidationError(`${field} must be a string.`);
+  }
+  if (value.length < _PASSWORD_MIN_LENGTH_) {
+    throw new DomainValidationError(`${field} must have at least 8 chars.`);
+  }
 
-  if (value.length < _PASSWORD_MIN_LENGTH_) errorMessage = `${field} must have at least 8 chars.`;
+  const strictPasswordPolicy = String(process.env.AAA_STRICT_PASSWORD_POLICY || '').toLowerCase() === 'yes';
+  if (!strictPasswordPolicy) return;
 
-  if (errorMessage !== '') throw new DomainValidationError(errorMessage);
+  if (!/[A-Z]/.test(value)) throw new DomainValidationError(`${field} must include at least one uppercase letter.`);
+  if (!/[a-z]/.test(value)) throw new DomainValidationError(`${field} must include at least one lowercase letter.`);
+  if (!/[0-9]/.test(value)) throw new DomainValidationError(`${field} must include at least one number.`);
+  if (!/[^A-Za-z0-9]/.test(value)) throw new DomainValidationError(`${field} must include at least one symbol.`);
 }
 
 export function mustBeArray<T>(field: string, value: T[]) {

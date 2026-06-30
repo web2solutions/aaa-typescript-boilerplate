@@ -9,8 +9,9 @@ export function Authorize(): Function {
     descriptor.value = async function (...args: any[]) {
       const [event] = args;
       const { messageMediator, authService } = this as any;
+      let authorizedUser: any;
       if (messageMediator?.request) {
-        const { error } = await messageMediator.request({
+        const { result, error } = await messageMediator.request({
           contract: UserMessageContracts.EnsureAccess,
           payload: {
             authorization: event.authorization,
@@ -20,8 +21,9 @@ export function Authorize(): Function {
         if (error) {
           throw error;
         }
+        authorizedUser = result;
       } else {
-        const authorizedUser = await authService.authorize(
+        authorizedUser = await authService.authorize(
           event.authorization
         );
         authService.throwIfUserHasNoAccessToResource(
@@ -29,7 +31,10 @@ export function Authorize(): Function {
           event.schemaOAS
         );
       }
-      // (this as any).authorizedUser = authorizedUser;
+      (event as any).authenticatedUser = authorizedUser;
+      if ((event as any).metadata) {
+        (event as any).metadata.userId = authorizedUser?.id || '';
+      }
       return originalMethod.apply(this, [...args]);
     };
     return descriptor;

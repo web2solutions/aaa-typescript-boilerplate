@@ -9,6 +9,7 @@
 - RabbitMQ or BullMQ/Redis (optional, for `MessageMediator` adapter)
 - OpenAPI typings
 - YAML parser
+- PM2
 
 ## Setup
 
@@ -68,81 +69,131 @@ AAA_BULLMQ_REQUEST_QUEUE=app.requests
 
 - UI: <http://localhost:3000/OASdoc/>
 - JSON: <http://localhost:3000/docs/1.0.0>
+- AsyncAPI UI: <http://localhost:3000/AsyncAPIdoc/>
+- AsyncAPI JSON index: <http://localhost:3000/docs/asyncapi/versions>
 
-Start the app before opening those URLs.
+For VM profiles, services are orchestrated through PM2.
+`REST`, `WebSocket`, and `gRPC` run as separated processes/ports in combined profiles.
+Start the selected PM2 profile before opening documentation URLs.
 
-## Run the API (port 3000)
+## PM2 Runtime Profiles (VM)
 
-Express:
+Runtime adapter selection is environment-driven through:
+
+```bash
+AAA_HTTP_FRAMEWORK=express
+AAA_REALTIME_API=no
+AAA_REALTIME_API_PROTOCOL=websocket
+AAA_REALTIME_API_DATABASE_DRIVER=Mongo
+```
+
+Detailed runtime contract:
+
+- [Runtime Environment Contracts](./RUNTIME-ENVIRONMENT-CONTRACTS.md)
+
+Startup entrypoints used by PM2:
+
+- `src/interface/HTTP/adapters/start-rest-api.ts`
+- `src/interface/WebSocket/adapters/start-websocket-api.ts`
+- `src/interface/gRPC/adapters/start-grpc-api.ts`
+
+Behavior summary:
+
+- `start-rest-api.ts` resolves `AAA_HTTP_FRAMEWORK` and starts the configured HTTP adapter.
+- `start-websocket-api.ts` starts only when `AAA_REALTIME_API=yes` and `AAA_REALTIME_API_PROTOCOL=websocket`.
+- `start-grpc-api.ts` starts only when `AAA_REALTIME_API=yes` and `AAA_REALTIME_API_PROTOCOL=grpc`.
+
+Dev (auto-starts `servicemangement`):
+
+```bash
+npm run pm2:start:dev:restapi
+npm run pm2:start:dev:websocket-rest
+npm run pm2:start:dev:grpc-rest
+```
+
+Staging:
+
+```bash
+npm run pm2:start:staging:restapi
+npm run pm2:start:staging:websocket-rest
+npm run pm2:start:staging:grpc-rest
+```
+
+Production:
+
+```bash
+npm run pm2:start:prod:restapi
+npm run pm2:start:prod:websocket-rest
+npm run pm2:start:prod:grpc-rest
+```
+
+PM2 operations:
+
+```bash
+npm run pm2:list
+npm run pm2:logs
+npm run pm2:stop:all
+npm run pm2:delete:all
+```
+
+Service Management can read and persist these runtime env values through:
+
+- `GET /api/runtime/env?environment=dev|staging|ci`
+- `POST /api/runtime/env`
+
+`POST /api/runtime/env` payload example:
+
+```json
+{
+  "environment": "dev",
+  "values": {
+    "AAA_HTTP_FRAMEWORK": "express",
+    "AAA_REALTIME_API": "yes",
+    "AAA_REALTIME_API_PROTOCOL": "websocket",
+    "AAA_REALTIME_API_DATABASE_DRIVER": "Mongo"
+  }
+}
+```
+
+Response payload example:
+
+```json
+{
+  "environment": "dev",
+  "fileName": ".env.dev",
+  "values": {
+    "AAA_HTTP_FRAMEWORK": "express",
+    "AAA_REALTIME_API": "yes",
+    "AAA_REALTIME_API_PROTOCOL": "websocket",
+    "AAA_REALTIME_API_DATABASE_DRIVER": "Mongo"
+  }
+}
+```
+
+## Single Adapter Boot Commands (via PM2)
+
+HTTP adapters:
 
 ```bash
 npm run dev:express
-```
-
-Fastify:
-
-```bash
 npm run dev:fastify
-```
-
-Restify:
-
-```bash
 npm run dev:restify
-```
-
-Hyper-Express:
-
-```bash
 npm run dev:hyper-express
-```
-
-Cloudflare Workers adapter (serverless style, no Express runtime):
-
-```bash
 npm run dev:cloudflare-workers
-```
-
-Vercel Functions adapter (serverless request/response wrapper):
-
-```bash
 npm run dev:vercel-functions
-```
-
-LoopBack adapter (LoopBack runtime):
-
-```bash
 npm run dev:loopback
-```
-
-Sails.js adapter (Sails runtime):
-
-```bash
 npm run dev:sails-js
-```
-
-Feathers adapter (Feathers + Koa runtime):
-
-```bash
 npm run dev:feathers
-```
-
-Derby.js adapter (Derby runtime):
-
-```bash
 npm run dev:derby-js
-```
-
-Adonis.js adapter (Adonis-style runtime bridge):
-
-```bash
 npm run dev:adonis-js
+npm run dev:total-js
 ```
 
-Total.js adapter (Total-style runtime bridge):
+Combined service profiles:
 
 ```bash
-npm run dev:total-js
+npm run dev:websocket
+npm run dev:grpc
 ```
 
 Serverless dev mode:
@@ -157,26 +208,18 @@ Developer automation CLI:
 npm run dev:cli
 ```
 
+Service Management app (PM2-served):
+
+```bash
+npm run dev:service-management
+```
+
 ![serverless dev mode](../images/sls.png "serverless dev mode")
 
 ## Production Commands
 
-```bash
-npm run build:prod
-npm run prod:express
-npm run prod:fastify
-npm run prod:restify
-npm run prod:hyper-express
-npm run prod:cloudflare-workers
-npm run prod:vercel-functions
-npm run prod:loopback
-npm run prod:sails-js
-npm run prod:feathers
-npm run prod:derby-js
-npm run prod:adonis-js
-npm run prod:total-js
-npm run prod:serverless
-```
+All `prod:*` adapter commands now boot through PM2.
+Use `pm2:start:prod:*` profiles for separated REST/WebSocket/gRPC orchestration.
 
 ## Lambda Handlers Coverage
 

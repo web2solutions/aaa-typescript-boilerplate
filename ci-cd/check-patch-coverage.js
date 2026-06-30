@@ -11,7 +11,8 @@ const threshold = Number(process.env.PATCH_COVERAGE_THRESHOLD || '99');
 const run = (cmd) => cp.execSync(cmd, {
   cwd: ROOT,
   encoding: 'utf8',
-  stdio: ['ignore', 'pipe', 'pipe']
+  stdio: ['ignore', 'pipe', 'pipe'],
+  maxBuffer: 1024 * 1024 * 32
 }).trim();
 
 const resolveBaseRef = () => {

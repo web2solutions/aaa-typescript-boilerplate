@@ -20,6 +20,30 @@ Run integration tests:
 npm run test:integration
 ```
 
+Run database driver smoke tests:
+
+```bash
+npm run test:smoke:db:all
+```
+
+`test:smoke:db:all` orchestrates each driver-specific smoke command, including
+automatic `docker compose up/down` for container-backed databases.
+
+Container-backed smoke shortcuts:
+
+```bash
+npm run smoke:db:postgresql
+npm run smoke:db:mysql
+npm run smoke:db:mssql
+npm run smoke:db:oracle
+npm run smoke:db:mongodb
+npm run smoke:db:cassandra
+npm run smoke:db:dynamodb
+npm run smoke:db:firebase
+npm run smoke:db:aurora
+npm run smoke:db:rds
+```
+
 Per runtime:
 
 ```bash
@@ -48,7 +72,7 @@ Included checks:
 - OpenAPI route resolution check
 - build
 - integration smoke
-- minimum coverage threshold (95% global via Jest + Codecov status)
+- minimum coverage threshold (99% global via Jest + Codecov status)
 
 Local enforcement:
 

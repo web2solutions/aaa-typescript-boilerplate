@@ -50,4 +50,11 @@ describe('base service', () => {
     expect(service.repos).toBe(repos);
     expect(service.services).toBe(services);
   });
+
+  it('throws when data repository is missing', () => {
+    expect.hasAssertions();
+    expect(() => new TestService({} as any)).toThrow(
+      'You must provide a data repository when creating a service instance.'
+    );
+  });
 });

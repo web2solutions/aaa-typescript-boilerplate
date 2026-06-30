@@ -1,7 +1,8 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: ANYWhere, ANYHow, ANYTime API
-  description:  '`REST API` built with `AnyWhere, AnyHow, AnyTime Typescript Boilerplate` and `Domain Designer`'
+  description: "`REST API` built with `AnyWhere, AnyHow, AnyTime Typescript
+    Boilerplate` and `Domain Designer`"
   termsOfService: https://www.xpertminds.dev/terms/
   contact:
     email: apiteam@xpertminds.dev
@@ -37,18 +38,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestLogin'
+              $ref: "#/components/schemas/RequestLogin"
         required: true
       responses:
-        '200':
+        "200":
           description: User did login successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthorizationHeader'          
-        '400':
+                $ref: "#/components/schemas/AuthorizationHeader"
+        "400":
           description: Invalid request
-        '401':
+        "401":
           description: Unauthorized
   /auth/logout:
     post:
@@ -62,25 +63,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestLogout'
+              $ref: "#/components/schemas/RequestLogout"
         required: true
       responses:
-        '200':
+        "200":
           description: User did logout successfully
           content:
             text/plain:
               schema:
-                type: string
-                example: true
-        '400':
+                $ref: "#/components/schemas/BooleanStringResult"
+        "400":
           description: Invalid request
-        '401':
+        "401":
           description: Unauthorized
       security:
-        - basicAuth: 
-          - access_allow
-        - bearerAuth: 
-          - access_allow
+        - bearerAuth:
+            - access_allow
   /auth/updateUserPassword:
     post:
       tags:
@@ -93,25 +91,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestUpdatePassword'
+              $ref: "#/components/schemas/RequestUpdatePassword"
         required: true
       responses:
-        '200':
+        "200":
           description: User did update password successfully
           content:
             text/plain:
               schema:
-                type: string  
-                example: true      
-        '400':
+                $ref: "#/components/schemas/BooleanStringResult"
+        "400":
           description: Invalid request
-        '401':
+        "401":
           description: Unauthorized
       security:
-        - basicAuth: 
-          - access_allow
-        - bearerAuth: 
-          - access_allow
+        - bearerAuth:
+            - access_allow
   /auth/register:
     post:
       tags:
@@ -124,18 +119,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestRegister'
+              $ref: "#/components/schemas/RequestRegister"
         required: true
       responses:
-        '201':
+        "201":
           description: User did update password successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
+                $ref: "#/components/schemas/User"
+        "400":
           description: Invalid request
-  # users
   /users:
     get:
       tags:
@@ -152,25 +146,23 @@ paths:
             type: string
           default: 1
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserArrayOf'          
-        '400':
+                $ref: "#/components/schemas/UserArrayOf"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
       security:
-        - basicAuth: 
-          - read_user
-        - bearerAuth: 
-          - read_user
+        - bearerAuth:
+            - read_user
     post:
       tags:
         - user
@@ -182,26 +174,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestCreateUser'
+              $ref: "#/components/schemas/RequestCreateUser"
         required: true
       responses:
-        '201':
+        "201":
           description: User created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'          
-        '400':
+                $ref: "#/components/schemas/User"
+        "400":
           description: Invalid request
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '409':
+        "409":
           description: Conflict
       security:
-         - basicAuth: ["create_user"]
-         - bearerAuth: ["create_user"]
+        - bearerAuth:
+            - create_user
   /users/{id}:
     delete:
       tags:
@@ -217,25 +209,23 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResourceDeleteResponse'          
-        '400':
+                $ref: "#/components/schemas/ResourceDeleteResponse"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
       security:
-        - basicAuth: 
-          - delete_user
-        - bearerAuth: 
-          - delete_user
+        - bearerAuth:
+            - delete_user
     put:
       tags:
         - user
@@ -254,30 +244,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestUpdateUser'
+              $ref: "#/components/schemas/RequestUpdateUser"
         required: true
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'          
-        '400':
+                $ref: "#/components/schemas/User"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth: 
-          - update_user
-        - bearerAuth: 
-          - update_user
+        - bearerAuth:
+            - update_user
     get:
       tags:
         - user
@@ -292,25 +280,23 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'          
-        '400':
+                $ref: "#/components/schemas/User"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
       security:
-        - basicAuth: 
-          - read_user
-        - bearerAuth: 
-          - read_user
+        - bearerAuth:
+            - read_user
   /users/{id}/updatePassword:
     put:
       tags:
@@ -330,30 +316,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestUpdatePassword'
+              $ref: "#/components/schemas/RequestUpdatePassword"
         required: true
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'          
-        '400':
+                $ref: "#/components/schemas/User"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth: 
-          - update_user
-        - bearerAuth: 
-          - update_user
+        - bearerAuth:
+            - update_user
   /users/{id}/createEmail:
     post:
       tags:
@@ -373,30 +357,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestCreateEmail'
+              $ref: "#/components/schemas/RequestCreateEmail"
         required: true
       responses:
-        '201':
+        "201":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Email'          
-        '400':
+                $ref: "#/components/schemas/Email"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth: 
-          - update_user
-        - bearerAuth: 
-          - update_user
+        - bearerAuth:
+            - update_user
   /users/{id}/updateEmail/{emailId}:
     put:
       tags:
@@ -422,30 +404,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestUpdateEmail'
+              $ref: "#/components/schemas/RequestUpdateEmail"
         required: true
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Email'          
-        '400':
+                $ref: "#/components/schemas/Email"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Resource not found
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth: 
-          - update_user
-        - bearerAuth: 
-          - update_user
+        - bearerAuth:
+            - update_user
   /users/{id}/deleteEmail/{emailId}:
     delete:
       tags:
@@ -467,25 +447,23 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResourceDeleteResponse'          
-        '400':
+                $ref: "#/components/schemas/ResourceDeleteResponse"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Resource not found
       security:
-        - basicAuth: 
-          - delete_user
-        - bearerAuth: 
-          - update_user
+        - bearerAuth:
+            - update_user
   /users/{id}/createDocument:
     post:
       tags:
@@ -505,30 +483,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestCreateDocument'
+              $ref: "#/components/schemas/RequestCreateDocument"
         required: true
       responses:
-        '201':
+        "201":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Document'          
-        '400':
+                $ref: "#/components/schemas/Document"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth: 
-          - update_user
-        - bearerAuth: 
-          - update_user
+        - bearerAuth:
+            - update_user
   /users/{id}/updateDocument/{documentId}:
     put:
       tags:
@@ -554,30 +530,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestUpdateDocument'
+              $ref: "#/components/schemas/RequestUpdateDocument"
         required: true
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Document'          
-        '400':
+                $ref: "#/components/schemas/Document"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth: 
-          - update_user
-        - bearerAuth: 
-          - update_user
+        - bearerAuth:
+            - update_user
   /users/{id}/documentDelete/{documentId}:
     delete:
       tags:
@@ -599,25 +573,23 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResourceDeleteResponse'          
-        '400':
+                $ref: "#/components/schemas/ResourceDeleteResponse"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Resource not found
       security:
-        - basicAuth: 
-          - delete_user
-        - bearerAuth: 
-          - delete_user
+        - bearerAuth:
+            - delete_user
   /users/{id}/createPhone:
     post:
       tags:
@@ -637,30 +609,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestCreatePhone'
+              $ref: "#/components/schemas/RequestCreatePhone"
         required: true
       responses:
-        '201':
+        "201":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Phone'          
-        '400':
+                $ref: "#/components/schemas/Phone"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth: 
-          - update_user
-        - bearerAuth: 
-          - update_user
+        - bearerAuth:
+            - update_user
   /users/{id}/updatePhone/{phoneId}:
     put:
       tags:
@@ -686,30 +656,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestUpdatePhone'
+              $ref: "#/components/schemas/RequestUpdatePhone"
         required: true
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Phone'          
-        '400':
+                $ref: "#/components/schemas/Phone"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth: 
-          - update_user
-        - bearerAuth: 
-          - update_user
+        - bearerAuth:
+            - update_user
   /users/{id}/phoneDelete/{phoneId}:
     delete:
       tags:
@@ -731,25 +699,23 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResourceDeleteResponse'          
-        '400':
+                $ref: "#/components/schemas/ResourceDeleteResponse"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Resource not found
       security:
-        - basicAuth: 
-          - delete_user
-        - bearerAuth: 
-          - delete_user
+        - bearerAuth:
+            - delete_user
   /organizations:
     get:
       tags:
@@ -766,23 +732,21 @@ paths:
             type: string
           default: 1
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrganizationArrayOf'
-        '400':
+                $ref: "#/components/schemas/OrganizationArrayOf"
+        "400":
           description: Invalid request
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
       security:
-        - basicAuth:
-          - read_organization
         - bearerAuth:
-          - read_organization
+            - read_organization
     post:
       tags:
         - organization
@@ -794,28 +758,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestCreateOrganization'
+              $ref: "#/components/schemas/RequestCreateOrganization"
         required: true
       responses:
-        '201':
+        "201":
           description: Organization created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-        '400':
+                $ref: "#/components/schemas/Organization"
+        "400":
           description: Invalid request
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth:
-          - create_organization
         - bearerAuth:
-          - create_organization
+            - create_organization
   /organizations/{id}:
     get:
       tags:
@@ -831,25 +793,23 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-        '400':
+                $ref: "#/components/schemas/Organization"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Organization not found
       security:
-        - basicAuth:
-          - read_organization
         - bearerAuth:
-          - read_organization
+            - read_organization
     put:
       tags:
         - organization
@@ -868,30 +828,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestUpdateOrganization'
+              $ref: "#/components/schemas/RequestUpdateOrganization"
         required: true
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-        '400':
+                $ref: "#/components/schemas/Organization"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Organization not found
-        '409':
+        "409":
           description: Conflict
       security:
-        - basicAuth:
-          - update_organization
         - bearerAuth:
-          - update_organization
+            - update_organization
     delete:
       tags:
         - organization
@@ -906,86 +864,450 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResourceDeleteResponse'
-        '400':
+                $ref: "#/components/schemas/ResourceDeleteResponse"
+        "400":
           description: Invalid ID supplied
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Organization not found
       security:
-        - basicAuth:
-          - delete_organization
         - bearerAuth:
-          - delete_organization
+            - delete_organization
+  /organizations/{id}/createAddress:
+    post:
+      tags:
+        - organization
+      summary: Create organization address entry
+      description: Creates an address value object entry for an organization
+      operationId: createOrganizationAddress
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Address create payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestCreateAddress"
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Organization not found
+      security:
+        - bearerAuth:
+            - update_organization
+  /organizations/{id}/updateAddress/{addressId}:
+    put:
+      tags:
+        - organization
+      summary: Update organization address entry
+      description: Updates an address value object entry from an organization
+      operationId: updateOrganizationAddress
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+        - name: addressId
+          in: path
+          description: Address entry ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Address update payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestUpdateAddress"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Organization or address not found
+      security:
+        - bearerAuth:
+            - update_organization
+  /organizations/{id}/deleteAddress/{addressId}:
+    delete:
+      tags:
+        - organization
+      summary: Delete organization address entry
+      description: Deletes an address value object entry from an organization
+      operationId: deleteOrganizationAddress
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+        - name: addressId
+          in: path
+          description: Address entry ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Organization or address not found
+      security:
+        - bearerAuth:
+            - update_organization
+  /organizations/{id}/createPhone:
+    post:
+      tags:
+        - organization
+      summary: Create organization phone entry
+      description: Creates a phone value object entry for an organization
+      operationId: createOrganizationPhone
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Phone create payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestCreatePhone"
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Organization not found
+      security:
+        - bearerAuth:
+            - update_organization
+  /organizations/{id}/updatePhone/{phoneId}:
+    put:
+      tags:
+        - organization
+      summary: Update organization phone entry
+      description: Updates a phone value object entry from an organization
+      operationId: updateOrganizationPhone
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+        - name: phoneId
+          in: path
+          description: Phone entry ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Phone update payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestUpdatePhone"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Organization or phone not found
+      security:
+        - bearerAuth:
+            - update_organization
+  /organizations/{id}/deletePhone/{phoneId}:
+    delete:
+      tags:
+        - organization
+      summary: Delete organization phone entry
+      description: Deletes a phone value object entry from an organization
+      operationId: deleteOrganizationPhone
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+        - name: phoneId
+          in: path
+          description: Phone entry ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Organization or phone not found
+      security:
+        - bearerAuth:
+            - update_organization
+  /organizations/{id}/createEmail:
+    post:
+      tags:
+        - organization
+      summary: Create organization email entry
+      description: Creates an email value object entry for an organization
+      operationId: createOrganizationEmail
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Email create payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestCreateEmail"
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Organization not found
+      security:
+        - bearerAuth:
+            - update_organization
+  /organizations/{id}/updateEmail/{emailId}:
+    put:
+      tags:
+        - organization
+      summary: Update organization email entry
+      description: Updates an email value object entry from an organization
+      operationId: updateOrganizationEmail
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+        - name: emailId
+          in: path
+          description: Email entry ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Email update payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestUpdateEmail"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Organization or email not found
+      security:
+        - bearerAuth:
+            - update_organization
+  /organizations/{id}/deleteEmail/{emailId}:
+    delete:
+      tags:
+        - organization
+      summary: Delete organization email entry
+      description: Deletes an email value object entry from an organization
+      operationId: deleteOrganizationEmail
+      parameters:
+        - name: id
+          in: path
+          description: Organization ID
+          required: true
+          schema:
+            type: string
+        - name: emailId
+          in: path
+          description: Email entry ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Organization or email not found
+      security:
+        - bearerAuth:
+            - update_organization
 components:
   schemas:
-    # ################################ #
-    # reusable dtos
-    # ################################ #
-    ResourceDeleteResponse: 
+    ResourceDeleteResponse:
+      description: Port output object for delete operations.
       required:
         - data
       type: object
       properties:
-        data: 
+        data:
           type: boolean
           default: false
           description: Result of request to delete resource
     RequestLogin:
+      description: Port input object for authentication login endpoint.
       required:
         - username
         - password
       type: object
       properties:
-        username: 
+        username:
           type: string
           minLength: 2
           example: me@mydomain.com
           description: Username
-        password: 
+        password:
           type: string
           description: Password
           minLength: 2
           format: password
-        schemaType: 
+        schemaType:
           type: string
-          example: Basic
+          example: Bearer
           default: Bearer
           description: HTTP token schema type
-          enum: 
+          enum:
             - Bearer
-            - Basic
     RequestLogout:
+      description: Port input object for logout endpoint.
       required:
         - username
       type: object
       properties:
-        username: 
+        username:
           type: string
           minLength: 2
           example: me@mydomain.com
           description: Username
-    RequestRegister: 
+    RequestRegister:
+      description: Port input object for user registration endpoint.
       required:
         - firstName
         - username
         - password
       type: object
       properties:
-        firstName: 
+        firstName:
           type: string
           minLength: 2
           example: Abraham
           description: User's first name
-        username: 
+        username:
           type: string
           format: email
           minLength: 8
@@ -995,21 +1317,23 @@ components:
           format: uuid
           nullable: true
           description: Organization id for tenant users (admin/user)
-        password: 
+        password:
           type: string
           minLength: 8
           format: password
           description: Password to access the system
     AuthorizationHeader:
+      description: Port output object containing authorization header response contract.
       required:
         - Authorization
       type: object
       properties:
-        Authorization: 
+        Authorization:
           type: string
           example: Bearer saiudyas87dahsd8sahdas87dhas8d7hsa87dhas78dh=
           description: Authorization Header
-    RequestCreateUser: 
+    RequestCreateUser:
+      description: Port input object for user creation endpoint.
       required:
         - firstName
         - username
@@ -1017,77 +1341,78 @@ components:
         - emails
       type: object
       properties:
-        id: 
+        id:
           type: string
-        firstName: 
+        firstName:
           type: string
           minLength: 2
           example: Abraham
           description: User's first name
-        lastName: 
+        lastName:
           type: string
           example: Abraham
           nullable: true
           description: User's last name
-        avatar: 
+        avatar:
           type: string
           example: avatar.png
           default: avatar.png
           description: User's avatar
-        username: 
+        username:
           type: string
           format: email
           minLength: 8
           description: Username to access the system
-        password: 
+        password:
           type: string
           minLength: 8
           format: password
           description: Password to access the system
-        emails: 
+        emails:
           type: array
           items:
-            $ref: '#/components/schemas/Email'
+            $ref: "#/components/schemas/Email"
           description: User's e-mail addresses
           minItems: 1
-        documents: 
+        documents:
           type: array
           items:
-            $ref: '#/components/schemas/Document'
+            $ref: "#/components/schemas/Document"
           description: User's attached documents
-        phones: 
+        phones:
           type: array
           items:
-            $ref: '#/components/schemas/Phone'
+            $ref: "#/components/schemas/Phone"
           description: User's attached documents
-        roles: 
+        roles:
           type: array
           items:
-            type: 'string'
+            type: string
           description: User's access roles
-    RequestUpdateUser: 
+    RequestUpdateUser:
+      description: Port input object for user update endpoint.
       type: object
       required:
         - id
       properties:
-        id: 
+        id:
           type: string
-        firstName: 
+        firstName:
           type: string
           minLength: 2
           example: Abraham
           description: User's first name
-        lastName: 
+        lastName:
           type: string
           example: Abraham
           nullable: true
           description: User's last name
-        avatar: 
+        avatar:
           type: string
           example: avatar.png
           default: avatar.png
           description: User's avatar
-        username: 
+        username:
           type: string
           format: email
           minLength: 8
@@ -1097,28 +1422,29 @@ components:
           format: uuid
           nullable: true
           description: Organization id for tenant users (admin/user)
-        emails: 
+        emails:
           type: array
           items:
-            $ref: '#/components/schemas/Email'
+            $ref: "#/components/schemas/Email"
           description: User's e-mail addresses
           minItems: 1
-        documents: 
+        documents:
           type: array
           items:
-            $ref: '#/components/schemas/Document'
+            $ref: "#/components/schemas/Document"
           description: User's attached documents
-        phones: 
+        phones:
           type: array
           items:
-            $ref: '#/components/schemas/Phone'
+            $ref: "#/components/schemas/Phone"
           description: User's attached documents
-        roles: 
+        roles:
           type: array
           items:
-            type: 'string'
+            type: string
           description: User's access roles
     RequestCreateOrganization:
+      description: Port input object for organization creation endpoint.
       required:
         - name
       type: object
@@ -1132,20 +1458,21 @@ components:
         address:
           type: array
           items:
-            $ref: '#/components/schemas/Address'
+            $ref: "#/components/schemas/Address"
         phone:
           type: array
           items:
-            $ref: '#/components/schemas/Phone'
+            $ref: "#/components/schemas/Phone"
         email:
           type: array
           items:
-            $ref: '#/components/schemas/Email'
+            $ref: "#/components/schemas/Email"
         users:
           type: array
           items:
             type: string
     RequestUpdateOrganization:
+      description: Port input object for organization update endpoint.
       required:
         - id
       type: object
@@ -1159,97 +1486,135 @@ components:
         address:
           type: array
           items:
-            $ref: '#/components/schemas/Address'
+            $ref: "#/components/schemas/Address"
         phone:
           type: array
           items:
-            $ref: '#/components/schemas/Phone'
+            $ref: "#/components/schemas/Phone"
         email:
           type: array
           items:
-            $ref: '#/components/schemas/Email'
+            $ref: "#/components/schemas/Email"
         users:
           type: array
           items:
             type: string
-
     RequestCreatePhone:
-      description: Phone number data to create 
+      description: Port input object for phone create endpoint.
       type: object
       required:
         - countryCode
         - localCode
         - number
       properties:
-        countryCode: 
+        countryCode:
           type: integer
-        localCode: 
+        localCode:
           type: integer
         number:
           type: string
-        isPrimary: 
+        isPrimary:
           type: boolean
           example: true
           description: Is this the primary User's phone number?
           default: false
     RequestUpdatePhone:
-      description: Phone number data to update
+      description: Port input object for phone update endpoint.
       type: object
       required:
         - id
       properties:
-        id: 
-          type: string 
-        countryCode: 
+        id:
+          type: string
+        countryCode:
           type: integer
-        localCode: 
+        localCode:
           type: integer
         number:
           type: string
-        isPrimary: 
+        isPrimary:
           type: boolean
           example: true
           description: Is this the primary User's phone number?
-    RequestCreateEmail:
-      description: E-mail address
+    RequestCreateAddress:
+      description: Port input object for address create endpoint.
       type: object
       required:
         - email
         - type
       properties:
-        email: 
-          type: string 
+        email:
+          type: string
+          format: email
         type:
           type: string
-          enum: 
+          enum:
+            - work
+            - home
+            - vacation
+        isPrimary:
+          type: boolean
+          default: false
+    RequestUpdateAddress:
+      description: Port input object for address update endpoint.
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        type:
+          type: string
+          enum:
+            - work
+            - home
+            - vacation
+        isPrimary:
+          type: boolean
+    RequestCreateEmail:
+      description: Port input object for email create endpoint.
+      type: object
+      required:
+        - email
+        - type
+      properties:
+        email:
+          type: string
+        type:
+          type: string
+          enum:
             - work
             - personal
-        isPrimary: 
+        isPrimary:
           type: boolean
           example: true
           description: Is this the primary User's e-mail address?
           default: false
     RequestUpdateEmail:
-      description: E-mail address
+      description: Port input object for email update endpoint.
       type: object
       required:
         - id
       properties:
-        id: 
-          type: string 
-        email: 
-          type: string 
+        id:
+          type: string
+        email:
+          type: string
         type:
           type: string
-          enum: 
+          enum:
             - work
             - personal
-        isPrimary: 
+        isPrimary:
           type: boolean
           example: true
           description: Is this the primary User's e-mail address?
     RequestCreateDocument:
-      description: Document
+      description: Port input object for document create endpoint.
       type: object
       required:
         - data
@@ -1258,123 +1623,117 @@ components:
       properties:
         type:
           type: string
-          enum: 
+          enum:
             - CPF
             - RG
             - SSN
           example: CPF
           description: Type of document
-        countryIssue: 
+        countryIssue:
           type: string
           example: BR
           description: Country which emitted the document
-          enum: 
+          enum:
             - BR
             - US
             - SSN
-        data: 
+        data:
           type: string
     RequestUpdateDocument:
-      description: Document
+      description: Port input object for document update endpoint.
       type: object
       required:
         - id
       properties:
-        id: 
+        id:
           type: string
         type:
           type: string
-          enum: 
+          enum:
             - CPF
             - RG
             - SSN
           example: CPF
           description: Type of document
-        countryIssue: 
+        countryIssue:
           type: string
           example: BR
           description: Country which emitted the document
-          enum: 
+          enum:
             - BR
             - US
             - SSN
-        data: 
+        data:
           type: string
     RequestUpdatePassword:
-      description: User's password
+      description: Port input object for password update endpoint.
       type: object
       required:
-        #- oldPassword
         - password
       properties:
-        #oldPassword: 
-        #  type: string
-        #  minLength: 8
-        #  format: password
-        password: 
+        password:
           type: string
           minLength: 8
           format: password
-    # ################################ #
-    # reusable value objects
-    # ################################ #
     UserArrayOf:
+      description: Port output array of users.
       type: array
       items:
-        $ref: '#/components/schemas/User'
+        $ref: "#/components/schemas/User"
     OrganizationArrayOf:
+      description: Port output array of organizations.
       type: array
       items:
-        $ref: '#/components/schemas/Organization'
+        $ref: "#/components/schemas/Organization"
     Document:
-      description: Document
+      description: Value object contract for Document.
       type: object
       required:
         - data
         - type
       properties:
-        id: 
+        id:
           type: string
         type:
           type: string
-          enum: 
+          enum:
             - CPF
             - RG
             - SSN
           example: CPF
           description: Type of document
-        countryIssue: 
+        countryIssue:
           type: string
           example: BR
           description: Country which emitted the document
-          enum: 
+          enum:
             - BR
             - US
-        data: 
+        data:
           type: string
     Email:
-      description: E-mail addresses
+      description: Value object contract for Email.
       type: object
       required:
         - email
         - type
       properties:
-        id: 
-          type: string 
-        email: 
-          type: string 
+        id:
+          type: string
+        email:
+          type: string
         type:
           type: string
-          enum: 
+          enum:
             - work
             - personal
-        isPrimary: 
+        isPrimary:
           type: boolean
           example: true
           description: Is this the primary User's e-mail address?
           default: false
     Address:
-      description: Generic address value object
+      description: Value object contract for Address.
       type: object
       required:
         - email
@@ -1395,50 +1754,51 @@ components:
           type: boolean
           default: false
     Phone:
-      description: Phone numbers
+      description: Value object contract for Phone.
       type: object
       required:
         - countryCode
         - localCode
         - number
       properties:
-        id: 
-          type: string 
-        countryCode: 
+        id:
+          type: string
+        countryCode:
           type: integer
-        localCode: 
+        localCode:
           type: integer
         number:
           type: string
-        isPrimary: 
+        isPrimary:
           type: boolean
           example: true
           description: Is this the primary User's phone number?
           default: false
-    # ################################ #
-    # Reusable data models
-    # ################################ #
     User:
+      description: Port output object for User resource.
       required:
+        - id
+        - createdAt
+        - updatedAt
         - firstName
         - username
         - password
         - emails
       type: object
       properties:
-        id: 
+        id:
           type: string
-        firstName: 
+        firstName:
           type: string
           minLength: 2
           example: Abraham
           description: User's first name
-        lastName: 
+        lastName:
           type: string
           example: Abraham
           nullable: true
           description: User's last name
-        username: 
+        username:
           type: string
           format: email
           minLength: 8
@@ -1448,40 +1808,44 @@ components:
           format: uuid
           nullable: true
           description: Organization id for tenant users (admin/user)
-        password: 
+        password:
           type: string
           minLength: 8
           format: password
           description: Password to access the system
-        emails: 
+        emails:
           type: array
           items:
-            $ref: '#/components/schemas/Email'
+            $ref: "#/components/schemas/Email"
           description: User's e-mail addresses
           minItems: 1
-        documents: 
+        documents:
           type: array
           items:
-            $ref: '#/components/schemas/Document'
+            $ref: "#/components/schemas/Document"
           description: User's attached documents
-        phones: 
+        phones:
           type: array
           items:
-            $ref: '#/components/schemas/Phone'
+            $ref: "#/components/schemas/Phone"
           description: User's attached documents
-        roles: 
+        roles:
           type: array
           items:
-            type: 'string'
+            type: string
           description: User's access roles
-        _createdAt:
+        createdAt:
           type: string
           format: date-time
-        _updatedAt:
+        updatedAt:
           type: string
           format: date-time
     Organization:
+      description: Port output object for Organization resource.
       required:
+        - id
+        - createdAt
+        - updatedAt
         - name
       type: object
       properties:
@@ -1493,23 +1857,31 @@ components:
         address:
           type: array
           items:
-            $ref: '#/components/schemas/Address'
+            $ref: "#/components/schemas/Address"
         phone:
           type: array
           items:
-            $ref: '#/components/schemas/Phone'
+            $ref: "#/components/schemas/Phone"
         email:
           type: array
           items:
-            $ref: '#/components/schemas/Email'
+            $ref: "#/components/schemas/Email"
         users:
           type: array
           items:
             type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    BooleanStringResult:
+      description: Port output object for legacy text/plain success responses
+        (`true`/`false`).
+      type: string
+      example: true
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
     bearerAuth:
       type: http
       scheme: bearer

@@ -3,6 +3,8 @@ import { IUser } from '@src/modules/Users';
 
 const createUser = (id: string, username: string, firstName: string): IUser => ({
   id,
+  createdAt: new Date(),
+  updatedAt: new Date(),
   firstName,
   lastName: 'test',
   avatar: 'avatar.png',

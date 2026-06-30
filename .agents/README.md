@@ -5,6 +5,7 @@ This folder tracks technical requirements and implementation guardrails agreed f
 Global rule:
 
 - Every new feature must include documentation updates (and README index links when applicable).
+- Domain Designer/Service Management MVP ideas must be tracked in `.agents/project-todos.md` (`Open` and `Done`).
 
 Each requirement has one dedicated file under:
 
@@ -45,8 +46,24 @@ Use these files as living constraints for future maintenance and feature develop
 - [029-multi-tenancy-and-rbac-foundation](requirements/029-multi-tenancy-and-rbac-foundation.md)
 - [030-inmemory-relational-nosql-behavior-parity](requirements/030-inmemory-relational-nosql-behavior-parity.md)
 - [031-users-organization-and-address-value-object](requirements/031-users-organization-and-address-value-object.md)
+- [032-entity-timestamps-domain-object-methods-and-oas-sync](requirements/032-entity-timestamps-domain-object-methods-and-oas-sync.md)
+- [033-domain-designer-mvp-backlog-governance](requirements/033-domain-designer-mvp-backlog-governance.md)
+- [034-domain-designer-oas31-er-alignment](requirements/034-domain-designer-oas31-er-alignment.md)
+- [035-domain-designer-documentation-sync](requirements/035-domain-designer-documentation-sync.md)
+- [036-openapi-port-objects-contracts](requirements/036-openapi-port-objects-contracts.md)
+- [037-bootstrap-cli-scaffolding](requirements/037-bootstrap-cli-scaffolding.md)
+- [038-service-management-tabbed-suite](requirements/038-service-management-tabbed-suite.md)
+- [039-external-data-adapter-foundations](requirements/039-external-data-adapter-foundations.md)
+- [040-platform-infrastructure-containers](requirements/040-platform-infrastructure-containers.md)
+- [041-pm2-vm-runtime-orchestration](requirements/041-pm2-vm-runtime-orchestration.md)
+- [042-env-driven-runtime-adapter-selection](requirements/042-env-driven-runtime-adapter-selection.md)
+- [043-runtime-env-documentation-and-governance](requirements/043-runtime-env-documentation-and-governance.md)
+- [044-pci-security-compliance-hardening](requirements/044-pci-security-compliance-hardening.md)
+- [045-data-entity-controller-ownership](requirements/045-data-entity-controller-ownership.md)
+- [046-multi-database-driver-smoke-validation](requirements/046-multi-database-driver-smoke-validation.md)
 - [Data Entity Documentation Agent](data-entity-documentation-agent.md)
 - [Domain Modeling Agent](domain-modeling-agent.md)
+- [Domain Designer Agent](domain-designer-agent.md)
 - [Message Mediator Domain Agent](message-mediator-domain-agent.md)
 - [Integration Contracts Agent](integration-contracts-agent.md)
 - [Architecture Alignment Plan](architecture-alignment-plan.md)

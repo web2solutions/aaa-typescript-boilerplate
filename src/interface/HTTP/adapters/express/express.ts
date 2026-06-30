@@ -8,9 +8,9 @@ import {
 } from '@src/modules/Users';
 
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
-import { InMemoryDbClient } from '@src/infra/persistence/InMemoryDatabase/InMemoryDbClient';
+import { compileDatabaseClient } from '@src/infra/persistence/compileDatabaseClient';
 import { JwtService } from '@src/infra/jwt/JwtService';
-import { InMemoryKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/InMemoryKeyValueStorageClient';
+import { compileKeyValueStorageClient } from '@src/infra/persistence/KeyValueStorage/compileKeyValueStorageClient';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { compileMessageMediator } from '@src/infra/messages/compileMessageMediator';
 import { EHTTPFrameworks } from '@src/interface/HTTP/ports';
@@ -21,20 +21,23 @@ const webServer = ExpressServer.compile();
 
 const passwordCryptoService = PasswordCryptoService.compile();
 const jwtService = JwtService.compile();
-const keyValueStorageClient = InMemoryKeyValueStorageClient.compile();
+
+const keyValueStorageClient = compileKeyValueStorageClient(process.env.AAA_KEYVALUESTORAGE_DRIVER);
 const mutexService = MutexService.compile(keyValueStorageClient);
 const messageMediator = compileMessageMediator();
+const databaseClient = compileDatabaseClient();
 
 const { authService } = composeUsersAuthServices({
-  databaseClient: InMemoryDbClient,
+  databaseClient,
   passwordCryptoService,
   mutexService,
   jwtService,
+  keyValueStorageClient,
   messageMediator
 });
 
 const API = new RestAPI<Express>({
-  databaseClient: InMemoryDbClient,
+  databaseClient,
   webServer,
   infraHandlers,
   serverType,

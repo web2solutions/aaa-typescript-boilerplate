@@ -1,0 +1,12 @@
+services:
+  cassandra:
+    image: cassandra:5.0
+    container_name: aaa-cassandra
+    ports:
+      - '9042:9042'
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+
+volumes:
+  cassandra_data:
+

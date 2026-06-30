@@ -149,6 +149,42 @@ const serverlessConfiguration: Serverless = {
     organization_delete: {
       handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deleteOrganization.handler',
       events: [{ http: { path: '/organizations/{id}', method: 'DELETE' } }]
+    },
+    organization_create_address: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/createOrganizationAddress.handler',
+      events: [{ http: { path: '/organizations/{id}/createAddress', method: 'POST' } }]
+    },
+    organization_update_address: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/updateOrganizationAddress.handler',
+      events: [{ http: { path: '/organizations/{id}/updateAddress/{addressId}', method: 'PUT' } }]
+    },
+    organization_delete_address: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deleteOrganizationAddress.handler',
+      events: [{ http: { path: '/organizations/{id}/deleteAddress/{addressId}', method: 'DELETE' } }]
+    },
+    organization_create_phone: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/createOrganizationPhone.handler',
+      events: [{ http: { path: '/organizations/{id}/createPhone', method: 'POST' } }]
+    },
+    organization_update_phone: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/updateOrganizationPhone.handler',
+      events: [{ http: { path: '/organizations/{id}/updatePhone/{phoneId}', method: 'PUT' } }]
+    },
+    organization_delete_phone: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deleteOrganizationPhone.handler',
+      events: [{ http: { path: '/organizations/{id}/deletePhone/{phoneId}', method: 'DELETE' } }]
+    },
+    organization_create_email: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/createOrganizationEmail.handler',
+      events: [{ http: { path: '/organizations/{id}/createEmail', method: 'POST' } }]
+    },
+    organization_update_email: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/updateOrganizationEmail.handler',
+      events: [{ http: { path: '/organizations/{id}/updateEmail/{emailId}', method: 'PUT' } }]
+    },
+    organization_delete_email: {
+      handler: 'src/modules/Users/interface/api/frameworks/aws/lambda/handlers/deleteOrganizationEmail.handler',
+      events: [{ http: { path: '/organizations/{id}/deleteEmail/{emailId}', method: 'DELETE' } }]
     }
   }
 };

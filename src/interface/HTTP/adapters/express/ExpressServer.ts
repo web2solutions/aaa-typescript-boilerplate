@@ -5,6 +5,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { v4 } from 'uuid';
 import { _HTTP_PORT_ } from '@src/config/constants';
+import { isCorsOriginAllowed } from '@src/config/security';
 import { HTTPBaseServer } from '@src/interface/HTTP/ports';
 import { Context } from '@src/infra/context/Context';
 import { InternalServerError } from '@src/infra/exceptions';
@@ -20,7 +21,15 @@ class ExpressServer extends HTTPBaseServer<Express> {
   constructor() {
     super();
     this.application = express();
-    this.application.use(cors());
+    this.application.use(cors({
+      origin(origin, callback) {
+        if (isCorsOriginAllowed(origin)) {
+          callback(null, true);
+          return;
+        }
+        callback(new Error('Not allowed by CORS'));
+      }
+    }));
     this.application.use(helmet());
     this.application.use(bodyParser.json({ limit: '100mb' }));
 
@@ -42,14 +51,19 @@ class ExpressServer extends HTTPBaseServer<Express> {
 
   private createDocEndPoint() {
     this.application.use('/OASdoc', express.static('OASdoc'));
+    this.application.use('/AsyncAPIdoc', express.static('AsyncAPIdoc'));
+    this.application.get('/docs/asyncapi', (_, res) => {
+      res.redirect('/AsyncAPIdoc');
+    });
   }
 
   public start(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        this.server = this.application.listen(_HTTP_PORT_, () => {
+        const port = Number(process.env.AAA_HTTP_PORT || _HTTP_PORT_);
+        this.server = this.application.listen(port, () => {
           // eslint-disable-next-line no-console
-          console.log(`Express App Listening on Port ${_HTTP_PORT_}`);
+          console.log(`Express App Listening on Port ${port}`);
           resolve();
         });
       } catch (error) {

@@ -38,6 +38,14 @@ describe('domain validators', () => {
       }
     ).toThrow(`The property ${field} must be an object`);
   });
+  it('throwIfIsNotObject must throw for primitive value', async () => {
+    const field = 'field name';
+    expect(
+      () => {
+        throwIfIsNotObject(field, 'not-an-object' as any);
+      }
+    ).toThrow(`The property ${field} must be an object`);
+  });
   it('canNotWriteDirectly must throw with field name', async () => {
     const field = 'field name';
     expect(
@@ -72,6 +80,20 @@ describe('domain validators', () => {
         mustBePassword(field, value as any);
       }
     ).toThrow(`${field} must have at least 8 chars.`);
+  });
+  it('mustBePassword strict policy branches', async () => {
+    const field = 'password field';
+    const previous = process.env.AAA_STRICT_PASSWORD_POLICY;
+    process.env.AAA_STRICT_PASSWORD_POLICY = 'yes';
+    try {
+      expect(() => mustBePassword(field, 'lower123!')).toThrow(`${field} must include at least one uppercase letter.`);
+      expect(() => mustBePassword(field, 'UPPER123!')).toThrow(`${field} must include at least one lowercase letter.`);
+      expect(() => mustBePassword(field, 'Uppercase!')).toThrow(`${field} must include at least one number.`);
+      expect(() => mustBePassword(field, 'Upper1234')).toThrow(`${field} must include at least one symbol.`);
+      expect(() => mustBePassword(field, 'Upper123!')).not.toThrow();
+    } finally {
+      process.env.AAA_STRICT_PASSWORD_POLICY = previous;
+    }
   });
   it('mustBeArray', async () => {
     const field = 'password field';
@@ -182,6 +204,11 @@ describe('domain validators', () => {
         canNotBeEmpty(field, value as any);
       }
     ).toThrow(`${field} can not be empty`);
+  });
+  it('canNotBeEmpty allows non-empty values', async () => {
+    expect(() => canNotBeEmpty('field', 'x')).not.toThrow();
+    expect(() => canNotBeEmpty('field', { id: '1' })).not.toThrow();
+    expect(() => canNotBeEmpty('field', [1])).not.toThrow();
   });
   it('mustEndsAtLeastInMinutes must ends before 5 minutes - 2 hours in the past', async () => {
     const twoHoursBefore = new Date();

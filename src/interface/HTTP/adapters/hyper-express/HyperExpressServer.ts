@@ -16,6 +16,13 @@ const LiveAssets = new LiveDirectory(path.join(__dirname, '../../../../../OASdoc
     max_file_size: 1024 * 1024 * 2.5
   }
 });
+const AsyncLiveAssets = new LiveDirectory(path.join(__dirname, '../../../../../AsyncAPIdoc'), {
+  static: true,
+  cache: {
+    max_file_count: 200,
+    max_file_size: 1024 * 1024 * 2.5
+  }
+});
 
 let hyperExpressServer: any;
 class HyperExpressServer extends HTTPBaseServer<HyperExpress.Server> {
@@ -70,6 +77,22 @@ class HyperExpressServer extends HTTPBaseServer<HyperExpress.Server> {
       } catch (error: any) {
         return response.status(500).json({ message: error.message, error });
       }
+    });
+    this.application.get('/AsyncAPIdoc/*', (request: HyperExpress.Request, response: HyperExpress.Response) => {
+      try {
+        const filePath = request.path.replace('/AsyncAPIdoc/', '');
+        const file = AsyncLiveAssets.get(filePath);
+        if (file === undefined) return response.status(404).json({ message: 'file not found' });
+        const fileParts = file.path.split('.');
+        const extension = fileParts[fileParts.length - 1];
+        const { content } = file;
+        return response.type(extension).send(content);
+      } catch (error: any) {
+        return response.status(500).json({ message: error.message, error });
+      }
+    });
+    this.application.get('/docs/asyncapi', (_request: HyperExpress.Request, response: HyperExpress.Response) => {
+      response.redirect('/AsyncAPIdoc');
     });
   }
 

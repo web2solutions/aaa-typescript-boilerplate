@@ -43,7 +43,21 @@ module.exports = {
       '@typescript-eslint/no-explicit-any': 'off',
       'import/no-cycle' : 'off',
       'arrow-body-style' : 'off',
-      'jest/unbound-method': 'off',
-      
-    }
+      'jest/unbound-method': 'off'
+    },
+    overrides: [
+      {
+        files: [
+          'src/interface/HTTP/adapters/restify/**/*.ts',
+          'src/interface/HTTP/ports/IHTTPRequest.ts',
+          'src/interface/HTTP/ports/IHTTPResponse.ts',
+          'src/modules/Users/interface/restapi/frameworks/restify/**/*.ts',
+          'test/integration/Restify/**/*.ts',
+          'test/integration/mutex/redis.restify.test.ts'
+        ],
+        rules: {
+          'import/no-extraneous-dependencies': 'off'
+        }
+      }
+    ]
   };

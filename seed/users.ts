@@ -11,9 +11,12 @@ import {
 import organizations from '@seed/organizations';
 
 const buildSeedCredential = (account: string): string => `seed-${account}-A1!`;
+const now = new Date();
 
 const users: Array<IUser> = [{
   id: UUID.create().toString(),
+  createdAt: now,
+  updatedAt: now,
   firstName: 'Abraham',
   lastName: 'Lincoln',
   emails: [
@@ -95,6 +98,8 @@ const users: Array<IUser> = [{
 },
 {
   id: UUID.create().toString(),
+  createdAt: now,
+  updatedAt: now,
   firstName: 'Barack',
   lastName: 'Obama',
   emails: [{
@@ -119,6 +124,8 @@ const users: Array<IUser> = [{
 },
 {
   id: UUID.create().toString(),
+  createdAt: now,
+  updatedAt: now,
   firstName: 'Jimmy',
   lastName: 'Carter',
   emails: [{
@@ -142,6 +149,8 @@ const users: Array<IUser> = [{
 },
 {
   id: UUID.create().toString(),
+  createdAt: now,
+  updatedAt: now,
   firstName: 'James',
   lastName: 'Bush',
   emails: [{

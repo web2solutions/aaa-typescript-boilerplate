@@ -8,9 +8,13 @@ import {
 } from '@src/modules/ddd/valueObjects';
 import { IOrganization } from '@src/modules/Users/domain/Entity/IOrganization';
 
+const now = new Date();
+
 const organizations: IOrganization[] = [
   {
     id: UUID.create().toString(),
+    createdAt: now,
+    updatedAt: now,
     name: 'ACME',
     address: [{
       email: 'hq@acme.dev',
@@ -32,6 +36,8 @@ const organizations: IOrganization[] = [
   },
   {
     id: UUID.create().toString(),
+    createdAt: now,
+    updatedAt: now,
     name: 'Umbrella',
     address: [{
       email: 'ops@umbrella.dev',

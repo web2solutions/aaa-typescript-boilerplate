@@ -11,7 +11,7 @@ import { JwtService } from '@src/infra/jwt/JwtService';
 import {
   IUser, UserDataRepository, UserService, UserProviderLocal, IAuthorizationHeader, EAuthSchemaType
 } from '@src/modules/Users';
-import { handler } from '@src/modules/Users/interface/api/frameworks/aws/lambda/handlers/create';
+import { handler } from '@src/modules/Users/interface/restapi/frameworks/aws/lambda/handlers/create';
 
 import {
   BasicAuthorizationHeaderUserGuest,

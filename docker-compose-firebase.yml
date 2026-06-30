@@ -1,0 +1,15 @@
+services:
+  firebase-emulator:
+    image: andreysenov/firebase-tools:latest
+    container_name: aaa-firebase-emulator
+    command: >
+      sh -c "firebase setup:emulators:firestore && firebase emulators:start --project demo-project --only firestore --host 0.0.0.0"
+    ports:
+      - '8080:8080'
+      - '4000:4000'
+    volumes:
+      - firebase_data:/home/node/.cache
+
+volumes:
+  firebase_data:
+

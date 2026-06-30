@@ -1,0 +1,15 @@
+services:
+  rds:
+    image: postgres:16
+    container_name: aaa-rds-compatible
+    environment:
+      POSTGRES_USER: aaa
+      POSTGRES_PASSWORD: '${AAA_POSTGRES_PASSWORD:-change_me_postgres_password}'
+      POSTGRES_DB: aaa
+    ports:
+      - '5434:5432'
+    volumes:
+      - rds_data:/var/lib/postgresql/data
+
+volumes:
+  rds_data:

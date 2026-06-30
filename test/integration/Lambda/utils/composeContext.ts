@@ -1,4 +1,4 @@
-import { ClientContext, CognitoIdentity, Context } from 'aws-lambda';
+import type { ClientContext, CognitoIdentity, Context } from 'aws-lambda';
 
 export const composeContext = (): Context => {
   return {

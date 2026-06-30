@@ -3,7 +3,7 @@
 
 echo \"[Husky] post-commit\"
 
-ts-node ci-cd/bumpTag.ts
+node -r ts-node/register ci-cd/bumpTag.ts
 npm run changelog:update
 
 if [ -z "$SKIP_CHANGELOG_AMEND" ] && ! git diff --quiet -- CHANGELOG.md; then

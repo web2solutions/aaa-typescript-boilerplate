@@ -52,3 +52,26 @@ export function formatErrorMessage(error: BaseError) {
 
   return message;
 }
+
+export function isProductionEnv(env: NodeJS.ProcessEnv = process.env): boolean {
+  const nodeEnv = String(env.NODE_ENV || '').trim().toLowerCase();
+  return nodeEnv === 'prod' || nodeEnv === 'production';
+}
+
+export function shouldExposeInternalErrors(env: NodeJS.ProcessEnv = process.env): boolean {
+  return !isProductionEnv(env);
+}
+
+export function buildErrorResponsePayload(
+  error: BaseError,
+  env: NodeJS.ProcessEnv = process.env
+): Record<string, unknown> {
+  const payload: Record<string, unknown> = {
+    message: formatErrorMessage(error),
+    correlationId: error.correlationId || undefined
+  };
+  if (shouldExposeInternalErrors(env)) {
+    payload.error = error;
+  }
+  return payload;
+}

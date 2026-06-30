@@ -4,6 +4,8 @@ import { UserIntegrationEventName } from '@src/modules/Users/events/contracts/Us
 
 const userWithSecrets = (id: string): IUser & { salt: string } => ({
   id,
+  createdAt: new Date(),
+  updatedAt: new Date(),
   firstName: 'John',
   lastName: 'Doe',
   avatar: 'avatar.png',

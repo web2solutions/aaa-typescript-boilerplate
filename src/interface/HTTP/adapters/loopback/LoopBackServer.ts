@@ -2,7 +2,19 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable class-methods-use-this */
 import { _HTTP_PORT_ } from '@src/config/constants';
-import { HTTPBaseServer, IbaseHandler } from '@src/interface/HTTP/ports';
+import {
+  HTTPBaseServer,
+  IbaseHandler,
+  IHTTPRequest,
+  IHTTPResponse
+} from '@src/interface/HTTP/ports';
+
+export type LoopBackRequest = IHTTPRequest;
+export type LoopBackResponse = {
+  status: (statusCode: number) => LoopBackResponse;
+  json: (payload: any) => any;
+  send?: (payload: any) => any;
+} & IHTTPResponse;
 
 let loopBackServer: HTTPBaseServer<any> | undefined;
 
@@ -19,6 +31,18 @@ class LoopBackServer extends HTTPBaseServer<any> {
     });
     if (this.application.static) {
       this.application.static('/OASdoc', 'OASdoc');
+      this.application.static('/AsyncAPIdoc', 'AsyncAPIdoc');
+    }
+    if (this.application.get) {
+      this.application.get('/docs/asyncapi', (_req: any, res: any) => {
+        if (res.redirect) {
+          res.redirect('/AsyncAPIdoc');
+          return;
+        }
+        if (res.status && res.json) {
+          res.status(302).json({ location: '/AsyncAPIdoc' });
+        }
+      });
     }
   }
 

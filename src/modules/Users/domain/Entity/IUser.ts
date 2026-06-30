@@ -6,6 +6,8 @@ import {
 
 export interface IUser {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
   firstName: string;
   lastName: string;
   avatar: string;

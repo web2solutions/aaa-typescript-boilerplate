@@ -27,6 +27,8 @@ import organizations from '@seed/organizations';
 export class RestAPI<T> {
   private readonly oas: Map<string, OpenAPIV3.Document> = new Map();
 
+  private readonly asyncApiSpecs: Map<string, Record<string, any>> = new Map();
+
   private started: boolean = false;
 
   public readonly server: HTTPBaseServer<T>;
@@ -125,18 +127,56 @@ export class RestAPI<T> {
         path: `${_DOCS_PREFIX_}/${version}`
       });
     }
+
+    this.server.endPointRegister({
+      method: 'get',
+      path: `${_DOCS_PREFIX_}/asyncapi/versions`,
+      handler: (_req: any, res: any): void => {
+        const versions: Record<string, string> = {};
+        for (const [version] of this.asyncApiSpecs) {
+          versions[version] = `${_DOCS_PREFIX_}/asyncapi/${version}`;
+        }
+        res.status(200).json({ versions });
+      }
+    });
+
+    for (const [version, spec] of this.asyncApiSpecs) {
+      this.server.endPointRegister({
+        ...config.infraHandlers.apiDocGetHandlerFactory({
+          spec: spec as any,
+          version,
+          databaseClient: {} as IDatabaseClient,
+          endPointConfig: {}
+        }),
+        path: `${_DOCS_PREFIX_}/asyncapi/${version}`
+      });
+    }
   }
 
   private buildWithOAS(): void {
-    // console.time('Load spec files');
-    const specs = fs.readdirSync('./spec');
-    for (const version of specs) {
-      const file = fs.readFileSync(`./spec/${version}`, 'utf8');
-      const jsonOAS: OpenAPIV3.Document = YAML.parse(file);
-      this.oas.set(jsonOAS.info.version, jsonOAS);
+    const specs = fs.readdirSync('./spec')
+      .filter((specName) => specName.endsWith('.yml') || specName.endsWith('.yaml'));
+    for (const specFileName of specs) {
+      const file = fs.readFileSync(`./spec/${specFileName}`, 'utf8');
+      const parsedSpec = YAML.parse(file);
+      if (parsedSpec?.openapi && parsedSpec?.info?.version) {
+        this.oas.set(parsedSpec.info.version, parsedSpec as OpenAPIV3.Document);
+      }
+    }
+
+    const asyncApiDir = './spec/asyncapi';
+    if (fs.existsSync(asyncApiDir) && fs.lstatSync(asyncApiDir).isDirectory()) {
+      const asyncApiSpecFiles = fs.readdirSync(asyncApiDir)
+        .filter((specName) => specName.endsWith('.yml') || specName.endsWith('.yaml'));
+      for (const specFileName of asyncApiSpecFiles) {
+        const file = fs.readFileSync(`${asyncApiDir}/${specFileName}`, 'utf8');
+        const parsedSpec = YAML.parse(file);
+        if (parsedSpec?.asyncapi && parsedSpec?.info?.version) {
+          this.asyncApiSpecs.set(parsedSpec.info.version, parsedSpec);
+        }
+      }
     }
     this.buildEndPoints();
-    // console.timeEnd('Load spec files');
   }
 
   private buildEndPoints(): void {
@@ -206,7 +246,7 @@ export class RestAPI<T> {
   }): any {
     const frameworkCandidates = [this.serverType, EHTTPFrameworks.express];
     for (const framework of frameworkCandidates) {
-      const handlerPath = `@src/modules/${moduleName}/interface/api/frameworks/${framework}/handlers/${operationId}`;
+      const handlerPath = `@src/modules/${moduleName}/interface/restapi/frameworks/${framework}/handlers/${operationId}`;
       try {
         const handlerModule = require(handlerPath);
         if (handlerModule?.default) {
@@ -230,7 +270,7 @@ export class RestAPI<T> {
       return { moduleName: 'Users', controllerName: 'AuthController' };
     }
     if (module === 'organizations') {
-      return { moduleName: 'Users', controllerName: 'UserController' };
+      return { moduleName: 'Users', controllerName: 'OrganizationController' };
     }
     const moduleName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length)}`;
     const controllerName = `${module.charAt(0).toUpperCase()}${module.substring(1, module.length - 1)}Controller`;
@@ -238,20 +278,15 @@ export class RestAPI<T> {
   }
 
   private static getControllerModule(moduleName: string, controllerName: string): any {
-    const controllerPaths = [
-      `@src/modules/${moduleName}/adapters/in/http/controllers/${controllerName}`,
-      `@src/modules/${moduleName}/interface/controller/${controllerName}`
-    ];
-    for (const controllerPath of controllerPaths) {
-      try {
-        const controllerModule = require(controllerPath)[controllerName];
-        if (controllerModule) {
-          return controllerModule;
-        }
-      } catch (error: any) {
-        if (error?.code !== 'MODULE_NOT_FOUND') {
-          throw error;
-        }
+    const controllerPath = `@src/modules/${moduleName}/adapters/in/http/controllers/${controllerName}`;
+    try {
+      const controllerModule = require(controllerPath)[controllerName];
+      if (controllerModule) {
+        return controllerModule;
+      }
+    } catch (error: any) {
+      if (error?.code !== 'MODULE_NOT_FOUND') {
+        throw error;
       }
     }
 
@@ -375,6 +410,7 @@ export class RestAPI<T> {
       passwordCryptoService: this.passwordCryptoService,
       mutexService: this.mutexClient,
       jwtService: this.authService.jwtService,
+      keyValueStorageClient: this.keyValueStorageClient,
       eventBus: this.eventBus,
       messageMediator: this.messageMediator
     });

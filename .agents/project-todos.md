@@ -40,7 +40,206 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - Added `documentation/md/ERROR-CONTRACTS-AND-RESPONSES.md`.
   - Linked both documents in README glossary index.
 
+- [x] Enforce controller ownership per data entity
+  - Split organization operations from `UserController` into a dedicated `OrganizationController`.
+  - Updated REST and Realtime controller resolution to map `organizations` to `OrganizationController`.
+  - Updated controller tests to validate separated ownership and behavior.
+
+- [x] Refactor external database client compilation and add smoke validation matrix
+  - `compileDatabaseClient` now uses explicit external store proxies for non-in-memory drivers (fail-fast mapping).
+  - Added dedicated `OracleRepository` connector and expanded external repository coverage.
+  - Added smoke tests for each supported database driver.
+  - Added per-database Docker compose files and package scripts (`docker:up:*`, `docker:down:*`, `smoke:db:*`).
+  - Updated env examples and documentation for driver-specific configuration keys.
+  - Extended bootstraps for gRPC, WebSocket, and Lambda runtime to inject `compileDatabaseClient()` based on `AAA_DATABASE_DRIVER`.
+  - Expanded `ExternalStoreProxy` to provide `IStore` mapping for Mongo, Sequelize-based SQL drivers, DynamoDB, Cassandra, Firebase, and Oracle.
+
 ## Open
+
+- [x] PCI Remediation Plan (Sprint-based: P0/P1/P2) with audit evidence criteria
+  - [x] P0 - Access control and auth hardening
+    - Tasks:
+      - Enforce tenant scope checks in `UserController` for user and organization operations.
+      - Add auth lockout/revocation paths in `AuthService` with key-value storage support.
+      - Keep internal error details visible in `dev/staging` and masked in `production`.
+    - Audit evidence:
+      - Unit evidence: `test/unit/modules/Users/interface/controller/controllers.test.ts`.
+      - Unit evidence: `test/unit/modules/Users/service/AuthService.branches.test.ts`.
+      - Runtime evidence: adapter-level error payload builders use environment-aware masking.
+
+  - [x] P0 - Security baseline for transport and headers
+    - Tasks:
+      - Restrict CORS with allowlist strategy via env (`AAA_CORS_ALLOWED_ORIGINS`).
+      - Ensure helmet is active in REST adapters where supported.
+    - Audit evidence:
+      - Config evidence: `src/config/security.ts`.
+      - Adapter evidence: `ExpressServer.ts`, `FastifyServer.ts`.
+      - Lint + unit gate green.
+
+  - [x] P1 - Authentication contract compatibility + secure defaults
+    - Tasks:
+      - Keep backward-compatible auth behavior for existing clients/tests.
+      - Add environment-driven controls for Basic auth and login lockout.
+      - Add JWT issuer/audience checks and deterministic token-id strategy for revocation support.
+    - Audit evidence:
+      - Unit evidence: `AuthService.test.ts` + `AuthService.branches.test.ts`.
+      - Config evidence in `.env.dev`, `.env.ci`, `.env.staging`, and loader.
+
+  - [x] P1 - Test and coverage hardening for compliance-critical paths
+    - Tasks:
+      - Add branch tests for tenant scope denial/allow, mediator authorization errors, and metadata propagation.
+      - Add branch tests for auth lockout, revocation, environment masking, and logout edge cases.
+    - Audit evidence:
+      - `npm run test:unit` passing with strict global thresholds.
+      - Coverage gate evidence from Jest output (global threshold enforcement satisfied).
+
+  - [x] P2 - PCI operational controls (remaining)
+    - Tasks:
+      - [x] Add explicit audit log persistence adapter for auth and privileged actions.
+      - [x] Add production runbook artifacts for key rotation, incident response, and retention policy.
+      - [x] Add security smoke tests in CI for production-env masking and CORS deny cases.
+    - Audit evidence:
+      - New runbook/docs under `documentation/md`.
+      - CI jobs and artifacts in pipeline logs proving controls are executed.
+      - `npm run ci:security-smoke` executed inside `npm run ci:gate`.
+      - `InMemorySecurityAuditRepository` and `AuthService` audit tests are green.
+
+- [x] Program Increment - Environment-driven adapter startup and runtime env editing
+  - Objective: make REST/Realtime adapter startup fully environment-driven and editable from Service Management.
+  - Scope:
+    - separated startup adapters for `src/interface/WebSocket/adapters/` and `src/interface/gRPC/adapters/`
+    - PM2 starts realtime APIs in separated processes
+    - env variables govern adapter selection and realtime startup behavior
+    - Service Management reads/updates active env file values across Windows/macOS/Linux
+
+  - [x] Phase 1 - Runtime env contract
+    - Add and document new env keys in all `src/config/.env*` files:
+      - `AAA_HTTP_FRAMEWORK` (default `express`)
+      - `AAA_REALTIME_API` (default `no`)
+      - `AAA_REALTIME_API_PROTOCOL` (default `websocket`)
+      - `AAA_REALTIME_API_DATABASE_DRIVER` (`Mongo`, `PostgreSQL`, `MySQL`, `MS SQL`, `RDS`, `Aurora`, `Cassandra`)
+
+  - [x] Phase 2 - Startup adapter separation
+    - Create dedicated startup adapter files:
+      - `src/interface/WebSocket/adapters/start-websocket-api.ts`
+      - `src/interface/gRPC/adapters/start-grpc-api.ts`
+    - Keep protocol-specific bootstraps isolated and independently PM2-runnable.
+
+  - [x] Phase 3 - Env-driven startup loaders
+    - Add REST startup loader using `AAA_HTTP_FRAMEWORK`.
+    - Add realtime startup gate using:
+      - `AAA_REALTIME_API`
+      - `AAA_REALTIME_API_PROTOCOL`
+    - Ensure PM2 profiles call startup loaders and keep processes separated.
+
+  - [x] Phase 4 - Service Management env read/write
+    - Add backend API in `servicemangement/server.js` to:
+      - read active env values
+      - update and persist values in selected env file
+    - Add Service Management UI controls to display/edit/save these env variables.
+
+  - [x] Phase 5 - Tests, docs, agents sync
+    - Add unit coverage for new TS startup loaders and env gates.
+    - Update runtime and Service Management docs.
+    - Register requirement in `.agents/requirements`.
+    - Keep `ci:gate` and patch coverage threshold green.
+  - [x] Phase 6 - Detailed runtime documentation hardening
+    - Add dedicated runtime environment contract document.
+    - Expand README and setup docs with startup entrypoints and env API examples.
+    - Add governance requirement to keep runtime docs and implementation synchronized.
+
+- [x] Program Increment - PM2 runtime orchestration + Service Configuration runtime profiles
+  - Objective: enforce PM2 as the process manager for VM-based environments (dev/staging/prod), with explicit service profiles:
+    - `RESTAPI`
+    - `websocketAPI + RESTAPI`
+    - `grpcAPI + RESTAPI`
+  - Mandatory constraints:
+    - gRPC, WebSocket, and REST run as separate PM2 processes in VM environments.
+    - `servicemangement` must also be served through PM2.
+    - Dev environment must auto-start `servicemangement` via PM2.
+
+  - [x] Phase 1 - PM2 dependency + baseline process management scripts
+    - Install `pm2` in project dependencies.
+    - Add package scripts for PM2 lifecycle (`start`, `stop`, `restart`, `logs`, `delete`) and environment-aware boot commands.
+    - Replace direct adapter boot scripts (`node`/`nodemon` against adapter entrypoints) with PM2-driven scripts.
+
+  - [x] Phase 2 - Environment PM2 ecosystem configuration
+    - Add PM2 ecosystem files for:
+      - `dev`
+      - `staging`
+      - `production`
+    - Include process definitions for:
+      - REST API adapter process
+      - WebSocket API adapter process
+      - gRPC API adapter process
+      - Service Management UI process
+    - Ensure separated ports and environment variables are explicit per process.
+
+  - [x] Phase 3 - Runtime decoupling for separated VM processes
+    - Adjust WebSocket/gRPC adapter bootstrap behavior so REST fallback can be disabled when PM2 runs REST as an independent process.
+    - Preserve compatibility for fallback mode where required.
+    - Add/adjust unit tests to keep coverage and branch guarantees for bootstrap behavior.
+
+  - [x] Phase 4 - Service Management UI: service-type selection aligned to runtime profiles
+    - Update Service Configuration tab to allow selecting:
+      - REST API
+      - WebSocket API + REST API
+      - gRPC API + REST API
+    - Expose profile/port preview with PM2-oriented runtime hints for developers.
+
+  - [x] Phase 5 - Documentation + agents sync
+    - Update README and runtime/setup docs with PM2 workflow and new service profile behavior.
+    - Register a new `.agents/requirements` entry for PM2 VM orchestration and profile separation.
+    - Keep requirement index and project TODOs synchronized.
+
+  - [x] Acceptance criteria
+    - `npm run ci:gate` passes.
+    - `npm run coverage:patch` remains above required threshold.
+    - PM2 configs exist and can start declared profiles in dev/staging/prod.
+    - `servicemangement` is served via PM2 and included in dev startup flow.
+
+- [x] Program Increment - Service Bootstrap CLI + Service Management Suite
+  - Objective: evolve the boilerplate into an npm-installable scaffolding CLI plus a unified service management application.
+  - Global acceptance criteria: no partially wired feature without docs and at least one automated validation path.
+
+  - [x] Phase 1 - OpenAPI port-object governance
+    - Ensure `spec/1.0.0.yml` has explicit input/output port objects with descriptions.
+    - Add CI validation so each endpoint operation points to request/response schemas and those schemas are documented.
+    - Acceptance: `npm run oas:check-routes` fails on missing contract docs and passes for valid contract coverage.
+
+  - [x] Phase 2 - Standalone scaffolding CLI
+    - Create an npm-installable bootstrap CLI that clones and configures a new workspace from this repository.
+    - Service templates: REST, WebSocket, gRPC, GraphQL, Functions bundle (AWS/Google/Azure/Vercel/Cloudflare).
+    - Acceptance: CLI can scaffold project metadata + initial runtime profile by selected service type.
+
+  - [x] Phase 3 - Persistence and messaging adapter foundations
+    - Add repository classes/ports for Sequelize SQL (PostgreSQL/MySQL/SQL Server/Oracle/SQLite), Mongoose, DynamoDB, Cassandra, Firebase, Aurora/RDS.
+    - Add queue request-response repository adapter abstraction with BullMQ and RabbitMQ compatibility.
+    - Acceptance: classes compile, expose consistent contracts, and have initialization smoke tests.
+
+  - [x] Phase 4 - Service management UI consolidation
+    - Rename `domaindesigner` folder to `servicemangement`. (completed)
+    - Deliver tabbed app with:
+      - Domain Designer
+      - Communication Interface Designer
+      - Service Configuration
+      - Deploy Management
+    - Acceptance: all tabs render and keep Domain Designer MVP fully operational.
+
+  - [x] Phase 5 - Container assets
+    - Add Docker assets for the required service dependencies.
+    - Expose npm scripts for local startup of support infrastructure.
+    - Acceptance: declared compose stacks start successfully in local development.
+
+  - [x] Phase 6 - Documentation and agents synchronization
+    - Update README/index and detailed docs for CLI + Service Management + adapter foundations.
+    - Register new requirements under `.agents/requirements`.
+    - Acceptance: docs and requirements are aligned with delivered code paths.
+
+  - [x] Phase 7 - Coverage and gate hardening
+    - Add tests for new CLI and contract validations.
+    - Keep strict gate green (`ci:gate:strict`).
+    - Acceptance: full local gate passes with current thresholds.
 
 - [x] Fix user persistence correctness
   - `UserStoreAPI.ts` should remove unique indexes on delete.
@@ -123,3 +322,96 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
 - [x] Rework in-memory persistence to better reflect relational/NoSQL adapter behavior
   - Added generic `InMemoryRelationalStore` with unique indexes, relation lookup, and stable pagination/filter semantics.
   - Updated user and organization stores to use shared behavior.
+
+- [x] Enforce canonical entity timestamps and domain-object mutation API
+  - Standardized entity serialized fields to `createdAt`/`updatedAt`.
+  - Added explicit `create/update/delete` methods for `Organization` value-object arrays (`address`, `phone`, `email`).
+  - Updated OpenAPI `User` and `Organization` schemas with required lifecycle timestamps.
+  - Synchronized domain documentation and requirement registry with these rules.
+
+## Domain Designer MVP Backlog
+
+### Done (MVP ideas already delivered)
+
+- [x] Visual domain canvas with color-coded domain rectangles
+- [x] Entity lifecycle on canvas (`create`, `rename`, `delete`, `duplicate`, `move`)
+- [x] Relationship lifecycle (`create`, `edit`, `delete`, pick-on-canvas mode)
+- [x] Relationship productivity helpers
+  - Smart relationship naming
+  - Auto-FK generation for `1:N` and `N:1`
+  - N:N junction auto-entity generation
+  - Reverse selected relationship direction/cardinality
+- [x] Field editor baseline
+  - Field flags (`required`, `PK`, `FK`, `unique`, `nullable`)
+  - OpenAPI-oriented field type selection
+  - Reusable field templates (`tenantRef`, `auditTrail`, `softDelete`, `contactPack`)
+- [x] OpenAPI 3.1 integration baseline
+  - Export schemas + relation metadata
+  - Export CRUD path skeletons per entity
+  - Import entities from `components.schemas`
+  - Preserve field-level OpenAPI constraints in import/export path
+- [x] Navigation and interaction UX
+  - Pan/zoom/fit/reset
+  - Compact view toggle
+  - Snap-to-grid toggle
+  - Keyboard nudge for entities
+  - Undo/redo history
+  - Relationship routing style switch (`Curved` / `Orthogonal`)
+- [x] Model quality guardrail
+  - Built-in model checks (duplicates, PK missing, relation consistency)
+  - Clickable check issues that focus affected entity
+- [x] Inspector productivity
+  - CRUD endpoint preview (path + operationId) for selected entity
+
+### Open (next MVP ideas to prioritize)
+
+Backlog sync status:
+- Synced with `documentation/md/DOMAIN-DESIGNER-MVP-ROADMAP.md` open priorities.
+
+- [ ] Add true drag-and-drop relationship connectors on entity edge anchors
+  - Current pick/form flows are productive, but visual anchor-to-anchor linking is still missing.
+
+- [ ] Add relationship label positioning and advanced path controls
+  - Let users reposition relation labels and configure custom bend points/anchor behavior.
+
+- [ ] Add domain-level bounded-context metadata editor
+  - Ubiquitous language, owner team, upstream/downstream dependencies, integration channel.
+
+- [ ] Add explicit aggregate root and invariant editor
+  - Mark aggregate roots and attach invariant rules per entity/aggregate.
+
+- [ ] Add entity templates and scaffolding packs by pattern
+  - CRUD aggregate, event-sourced aggregate, reference data, tenant-owned entity.
+
+- [ ] Add schema diff and migration preview
+  - Compare current model with previous snapshot and output human-readable migration hints.
+
+- [ ] Add event/message contract designer connected to entities
+  - Define domain events, commands, request/response contracts, payload schema, and version.
+
+- [ ] Add RBAC policy mapping UI per entity/action
+  - Connect resource operations to role/scope matrix and export policy contract.
+
+- [ ] Add advanced OpenAPI controls
+  - OneOf/AllOf/AnyOf builders, external `$ref` management, discriminator support.
+
+- [ ] Add request/response example generator from entity schema
+  - Auto-generate examples for API docs and handler test fixtures.
+
+- [ ] Add code generation preview pane
+  - Show generated domain model, repository contract, use case, and handler skeletons before export.
+
+- [ ] Add pluggable exporter targets
+  - OpenAPI, JSON schema, markdown docs, and boilerplate module skeletons.
+
+- [ ] Add validation severity levels and quality gates in designer
+  - Error/warn/info levels and “block export when critical issues exist”.
+
+- [ ] Add collaborative model package support
+  - Import/export reusable domain packages and shared value object libraries.
+
+- [ ] Add visual mini-map and large-canvas performance mode
+  - Required for very large multi-domain models.
+
+- [ ] Add starter e2e test coverage for `servicemangement`
+  - Smoke checks for create/edit/export/import to reduce regression risk.

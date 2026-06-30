@@ -24,7 +24,14 @@ export class JwtService implements IJwtService {
     // console.log('+++++++  decodeToken() SECRET', this.secret);
     let valid = null;
     try {
-      valid = jwt.verify(token, this.secret, { }) as ITokenObject;
+      const verifyOptions: jwt.VerifyOptions = {};
+      if (process.env.AAA_JWT_ISSUER) {
+        verifyOptions.issuer = process.env.AAA_JWT_ISSUER;
+      }
+      if (process.env.AAA_JWT_AUDIENCE) {
+        verifyOptions.audience = process.env.AAA_JWT_AUDIENCE;
+      }
+      valid = jwt.verify(token, this.secret, verifyOptions) as ITokenObject;
     } catch (error) {
       valid = null;
     }
@@ -35,12 +42,25 @@ export class JwtService implements IJwtService {
     const {
       id, username, firstName, avatar, organization, roles
     } = data;
+    const signOptions: jwt.SignOptions = { expiresIn: this.expiresIn };
+    if (process.env.AAA_JWT_ISSUER) {
+      signOptions.issuer = process.env.AAA_JWT_ISSUER;
+    }
+    if (process.env.AAA_JWT_AUDIENCE) {
+      signOptions.audience = process.env.AAA_JWT_AUDIENCE;
+    }
     const token = jwt.sign(
       {
-        id, username, firstName, avatar, organization, roles
+        jti: `${id || username || 'anonymous'}:${Math.floor(Date.now() / 1000)}`,
+        id,
+        username,
+        firstName,
+        avatar,
+        organization,
+        roles
       },
       this.secret,
-      { expiresIn: this.expiresIn }
+      signOptions
     );
     return token;
   }
