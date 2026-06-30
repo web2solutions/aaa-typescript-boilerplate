@@ -362,56 +362,70 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - Clickable check issues that focus affected entity
 - [x] Inspector productivity
   - CRUD endpoint preview (path + operationId) for selected entity
+- [x] Anchor-based drag-and-drop relationship connectors
+  - Added edge anchor controls (`top`, `right`, `bottom`, `left`) on entity cards.
+  - Added drag-preview edge and anchor-to-anchor relationship creation.
+- [x] Domain-level bounded-context metadata editor
+  - Added context metadata fields per domain:
+    - ubiquitous language
+    - owner team
+    - upstream/downstream dependencies
+    - integration channel
+- [x] Relationship label positioning controls
+  - Added relationship label offset editor (`x` / `y`) and reset action in inspector.
+- [x] Aggregate root and invariant editor
+  - Added aggregate-root marker per entity and invariant rules editor in inspector.
+  - Aggregate root entities now show visual `AR` badge in entity header.
+- [x] Schema diff and migration preview
+  - Added local baseline save/clear and schema diff comparison.
+  - Added migration hints for entity/field/relationship create-drop-alter changes.
+- [x] Validation severity levels and quality gates in designer
+  - Added severity levels (`error`, `warn`, `info`) in model check results.
+  - Added configurable export gate to block export when critical issues exist.
+- [x] RBAC policy mapping UI per entity/action
+  - Added action-level role mapping (`list/getById/create/update/delete`) with tenant scope toggle.
+  - Added RBAC policy preview and model-check warnings for missing action permissions.
+- [x] Event/message contract designer connected to entities
+  - Added action panel to create/edit/remove `event`, `command`, `request`, and `response` contracts.
+  - Added contract payload schema editing and OpenAPI export extension (`x-message-contracts`).
+- [x] Code generation preview pane
+  - Added generated skeleton preview for model/repository/use-case/controller/handler.
+  - Supports selected-entity preview or full-canvas concatenated preview.
+- [x] Pluggable exporters baseline
+  - Added Markdown exporter in addition to JSON and OpenAPI exports.
+- [x] Advanced OpenAPI composition controls
+  - Added entity-level `oneOf` / `allOf` / `anyOf` composition editor with schema refs list.
+  - Composition is exported into generated OAS schemas.
+- [x] Collaborative model package support (baseline)
+  - Added domain package export/import flow from Domain Designer export panel.
+  - Supports reusable domain package import into current model canvas.
+- [x] Request/response example generator from entity schema
+  - Added generated request/response example preview for selected entity or whole canvas.
+  - Supports create/update request and response payload examples.
+- [x] Additional pluggable exporter target (JSON Schema)
+  - Added JSON Schema exporter button in Domain Designer export panel.
+- [x] Advanced relationship path controls
+  - Added bend point controls (`bendX`, `bendY`) and anchor behavior mode (`auto`, `center`).
+- [x] Entity templates and scaffolding packs by pattern
+  - Added `crudAggregate`, `eventSourced`, `referenceData`, and `tenantOwned` entity templates.
+- [x] More pluggable exporter targets
+  - Added AsyncAPI exporter and boilerplate bundle exporter.
+- [x] Expanded advanced OpenAPI controls
+  - Added external `$ref` list support and discriminator configuration.
+- [x] Expanded collaborative package support
+  - Added package dependencies and shared value-object metadata for bounded context.
+- [x] Visual mini-map and large-canvas performance mode
+  - Added mini-map navigation and large-canvas mode for simplified rendering.
+- [x] Starter e2e/smoke test coverage for `servicemangement`
+  - Added smoke tests for create/edit/export/import workflow controls.
 
 ### Open (next MVP ideas to prioritize)
 
 Backlog sync status:
 - Synced with `documentation/md/DOMAIN-DESIGNER-MVP-ROADMAP.md` open priorities.
 
-- [ ] Add true drag-and-drop relationship connectors on entity edge anchors
-  - Current pick/form flows are productive, but visual anchor-to-anchor linking is still missing.
+- [x] Expanded collaborative package support further
+  - Added package dependency normalization and shared value-object deduplication in package import/save flow.
 
-- [ ] Add relationship label positioning and advanced path controls
-  - Let users reposition relation labels and configure custom bend points/anchor behavior.
-
-- [ ] Add domain-level bounded-context metadata editor
-  - Ubiquitous language, owner team, upstream/downstream dependencies, integration channel.
-
-- [ ] Add explicit aggregate root and invariant editor
-  - Mark aggregate roots and attach invariant rules per entity/aggregate.
-
-- [ ] Add entity templates and scaffolding packs by pattern
-  - CRUD aggregate, event-sourced aggregate, reference data, tenant-owned entity.
-
-- [ ] Add schema diff and migration preview
-  - Compare current model with previous snapshot and output human-readable migration hints.
-
-- [ ] Add event/message contract designer connected to entities
-  - Define domain events, commands, request/response contracts, payload schema, and version.
-
-- [ ] Add RBAC policy mapping UI per entity/action
-  - Connect resource operations to role/scope matrix and export policy contract.
-
-- [ ] Add advanced OpenAPI controls
-  - OneOf/AllOf/AnyOf builders, external `$ref` management, discriminator support.
-
-- [ ] Add request/response example generator from entity schema
-  - Auto-generate examples for API docs and handler test fixtures.
-
-- [ ] Add code generation preview pane
-  - Show generated domain model, repository contract, use case, and handler skeletons before export.
-
-- [ ] Add pluggable exporter targets
-  - OpenAPI, JSON schema, markdown docs, and boilerplate module skeletons.
-
-- [ ] Add validation severity levels and quality gates in designer
-  - Error/warn/info levels and “block export when critical issues exist”.
-
-- [ ] Add collaborative model package support
-  - Import/export reusable domain packages and shared value object libraries.
-
-- [ ] Add visual mini-map and large-canvas performance mode
-  - Required for very large multi-domain models.
-
-- [ ] Add starter e2e test coverage for `servicemangement`
-  - Smoke checks for create/edit/export/import to reduce regression risk.
+- [x] Roadmap MVP completed
+  - All planned Domain Designer MVP roadmap items implemented.

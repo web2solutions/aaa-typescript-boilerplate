@@ -28,19 +28,31 @@ Canonical backlog source:
   - undo/redo
 - Model checks with actionable issue focus
 - CRUD endpoint preview in entity inspector
+- Anchor-based drag-and-drop relationship connectors
+- Bounded-context metadata editor per domain
+- Relationship label positioning controls (offset editor + reset)
+- Advanced relationship path controls (bend points + anchor behavior)
+- Aggregate root and invariant editor
+- Schema diff and migration preview
+- Validation severity levels and export quality gate
+- RBAC mapping editor per entity/action
+- Event/message contract designer tied to entities
+- Code generation preview pane
+- Entity templates and scaffolding packs (`crudAggregate`, `eventSourced`, `referenceData`, `tenantOwned`)
+- Pluggable exporters (JSON, OAS 3.1, Markdown, JSON Schema, AsyncAPI, Boilerplate bundle)
+- Advanced OpenAPI composition builder (`oneOf`, `allOf`, `anyOf`, external `$ref`, discriminator)
+- Collaborative model package support (domain package import/export, dependencies, shared value objects)
+- Request/response example generator from entity schema
+- Visual mini-map and large-canvas performance mode
+- Starter e2e/smoke coverage for Domain Designer workflows
 
 ## Next MVP priorities
 
-- Anchor-based drag-and-drop relationship connectors
-- Relationship label positioning and routing styles
-- Bounded-context metadata editor per domain
-- Aggregate root and invariant editor
-- Schema diff and migration preview
-- Event/message contract designer tied to entities
-- RBAC mapping UI per entity/action
-- Advanced OpenAPI composition builder (`oneOf`, `allOf`, `anyOf`)
-- Code generation preview and pluggable exporters
-- E2E smoke coverage for Domain Designer workflows
+- MVP roadmap completed.
+
+## Post-MVP enhancements
+
+- Collaborative package versioning and semantic dependency conflict resolution
 
 ## Documentation and governance rules
 

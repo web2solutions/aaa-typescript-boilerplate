@@ -23,6 +23,21 @@
 1. **Domain Designer**
    - Full ER/domain modeling MVP.
    - Domain rectangles, entity modeling, relationship design, OpenAPI export/import, model checks.
+   - Anchor-to-anchor relationship drag connectors on entity edges.
+   - Domain bounded-context editor (including package dependencies and shared value-object metadata).
+   - Relationship label position controls (offset editor + reset) and bend-point path controls.
+   - Aggregate root + invariants editor with visual AR marker on entity cards.
+   - Schema diff/migration preview with baseline snapshot support.
+   - Validation severity filter and export quality gate (block on critical issues).
+   - RBAC mapping editor by entity/action with tenant-scope flags.
+   - Event/message contract designer (`event`, `command`, `request`, `response`) with payload schema metadata.
+   - Entity templates: `crudAggregate`, `eventSourced`, `referenceData`, `tenantOwned`.
+   - Code generation preview for domain model/repository/use-case/controller/handler skeletons.
+   - Request/response example generator from entity schema.
+   - Exporters: JSON, OpenAPI 3.1, Markdown, JSON Schema, AsyncAPI and boilerplate bundle.
+   - OpenAPI composition controls (`oneOf`, `allOf`, `anyOf`, external `$ref`, discriminator) per entity.
+   - Domain package export/import for reusable model sharing.
+   - Mini-map navigation and large-canvas performance mode.
 2. **Communication Interface Designer**
    - Register inbound interface adapters (`HTTP/REST`, `gRPC`, `WebSocket`, `SSE`).
    - Track framework/runtime, entrypoint, and controller mapping.

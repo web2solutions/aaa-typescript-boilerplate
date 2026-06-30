@@ -243,6 +243,7 @@ button:focus {
 }
 
 .workspace {
+  position: relative;
   display: grid;
   grid-template-rows: 38px 1fr;
   height: 100%;
@@ -311,6 +312,10 @@ button:focus {
   background-size: 24px 24px;
 }
 
+.canvas.large-canvas-mode .entity-fields {
+  display: none;
+}
+
 .canvas.space-mode {
   cursor: grab;
 }
@@ -333,6 +338,31 @@ button:focus {
   width: 3200px;
   height: 2200px;
   pointer-events: auto;
+}
+
+.mini-map {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 180px;
+  height: 130px;
+  border: 1px solid #cbd5e1;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 6px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.mini-map-domain {
+  position: absolute;
+  border: 1px solid #64748b;
+  background: rgba(148, 163, 184, 0.12);
+  cursor: pointer;
+}
+
+.mini-map-domain.active {
+  border-width: 2px;
+  border-color: #2563eb;
 }
 
 .domain {
@@ -384,11 +414,28 @@ button:focus {
 }
 
 .entity-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 7px 8px;
   border-bottom: 1px solid #e2e8f0;
   font-size: 12px;
   font-weight: 600;
   cursor: move;
+}
+
+.entity-aggregate-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid #0ea5e9;
+  color: #0369a1;
+  font-size: 10px;
+  font-weight: 700;
+  background: #e0f2fe;
 }
 
 .entity-fields {
@@ -404,9 +451,48 @@ button:focus {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--focus) 24%, transparent);
 }
 
+.entity-anchor {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #2563eb;
+  border-radius: 999px;
+  background: #fff;
+  cursor: crosshair;
+  z-index: 3;
+}
+
+.entity-anchor-top {
+  top: -5px;
+  left: calc(50% - 5px);
+}
+
+.entity-anchor-right {
+  right: -5px;
+  top: calc(50% - 5px);
+}
+
+.entity-anchor-bottom {
+  bottom: -5px;
+  left: calc(50% - 5px);
+}
+
+.entity-anchor-left {
+  left: -5px;
+  top: calc(50% - 5px);
+}
+
 .edge-line {
   stroke: #0f172a;
   stroke-width: 1.7;
+  fill: none;
+  pointer-events: none;
+}
+
+.edge-preview {
+  stroke: #2563eb;
+  stroke-width: 1.7;
+  stroke-dasharray: 6 4;
   fill: none;
   pointer-events: none;
 }
@@ -428,4 +514,16 @@ button:focus {
   fill: #0f172a;
   font-weight: 600;
   pointer-events: none;
+}
+
+.code-preview-output {
+  margin: 8px 0 0;
+  padding: 8px;
+  max-height: 240px;
+  overflow: auto;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: pre;
 }

@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'service-management.v1';
+const DIFF_BASELINE_KEY = 'service-management.schema-baseline.v1';
 const DOMAIN_COLORS = ['#60a5fa', '#34d399', '#f59e0b', '#f472b6', '#22d3ee', '#a78bfa', '#fb7185', '#84cc16'];
 const FIELD_TYPES = ['string', 'integer', 'number', 'boolean', 'array', 'object', 'date', 'datetime', 'uuid'];
 
@@ -37,7 +38,10 @@ const state = {
     zoom: 1,
     compactEntities: false,
     snapToGrid: true,
-    edgeStyle: 'curved'
+    edgeStyle: 'curved',
+    modelCheckMinSeverity: 'info',
+    exportBlockCritical: true,
+    largeCanvasMode: false
   }
 };
 
@@ -51,6 +55,9 @@ const interaction = {
   panning: false,
   relationshipPickActive: false,
   relationshipPickFromEntityId: null,
+  relationshipAnchorDragActive: false,
+  relationshipAnchorFromEntityId: null,
+  relationshipAnchorFromSide: null,
   panStartX: 0,
   panStartY: 0,
   scrollStartLeft: 0,
@@ -75,8 +82,10 @@ const dom = {
   zoomInBtn: document.getElementById('zoom-in-btn'),
   edgeStyleSelect: document.getElementById('edge-style-select'),
   autoLayoutBtn: document.getElementById('auto-layout-btn'),
+  toggleLargeCanvasBtn: document.getElementById('toggle-large-canvas-btn'),
   fitViewBtn: document.getElementById('fit-view-btn'),
   resetViewBtn: document.getElementById('reset-view-btn'),
+  miniMap: document.getElementById('mini-map'),
   zoomIndicator: document.getElementById('zoom-indicator'),
   toggleCompactViewBtn: document.getElementById('toggle-compact-view-btn'),
   toggleSnapBtn: document.getElementById('toggle-snap-btn'),
@@ -86,6 +95,15 @@ const dom = {
   deleteDomainBtn: document.getElementById('delete-domain-btn'),
   domainColorInput: document.getElementById('domain-color-input'),
   setDomainColorBtn: document.getElementById('set-domain-color-btn'),
+  domainUbiquitousLanguageInput: document.getElementById('domain-ubiquitous-language-input'),
+  domainOwnerTeamInput: document.getElementById('domain-owner-team-input'),
+  domainUpstreamInput: document.getElementById('domain-upstream-input'),
+  domainDownstreamInput: document.getElementById('domain-downstream-input'),
+  domainIntegrationChannelInput: document.getElementById('domain-integration-channel-input'),
+  domainPackageDependenciesInput: document.getElementById('domain-package-dependencies-input'),
+  domainSharedValueObjectsInput: document.getElementById('domain-shared-value-objects-input'),
+  saveDomainContextBtn: document.getElementById('save-domain-context-btn'),
+  clearDomainContextBtn: document.getElementById('clear-domain-context-btn'),
   entityNameInput: document.getElementById('entity-name-input'),
   addEntityBtn: document.getElementById('add-entity-btn'),
   renameEntityBtn: document.getElementById('rename-entity-btn'),
@@ -93,6 +111,8 @@ const dom = {
   duplicateEntityBtn: document.getElementById('duplicate-entity-btn'),
   entitySearchInput: document.getElementById('entity-search-input'),
   entitySearchBtn: document.getElementById('entity-search-btn'),
+  entityTemplateSelect: document.getElementById('entity-template-select'),
+  applyEntityTemplateBtn: document.getElementById('apply-entity-template-btn'),
   fromEntitySelect: document.getElementById('from-entity-select'),
   toEntitySelect: document.getElementById('to-entity-select'),
   fromCardSelect: document.getElementById('from-card-select'),
@@ -109,11 +129,38 @@ const dom = {
   relationshipToCardSelect: document.getElementById('relationship-to-card-select'),
   saveRelationshipBtn: document.getElementById('save-relationship-btn'),
   reverseRelationshipBtn: document.getElementById('reverse-relationship-btn'),
+  relationshipLabelOffsetXInput: document.getElementById('relationship-label-offset-x-input'),
+  relationshipLabelOffsetYInput: document.getElementById('relationship-label-offset-y-input'),
+  resetRelationshipLabelOffsetBtn: document.getElementById('reset-relationship-label-offset-btn'),
+  relationshipBendXInput: document.getElementById('relationship-bend-x-input'),
+  relationshipBendYInput: document.getElementById('relationship-bend-y-input'),
+  relationshipAnchorBehaviorSelect: document.getElementById('relationship-anchor-behavior-select'),
   entityInspectorTitle: document.getElementById('entity-inspector-title'),
   entityRenameInput: document.getElementById('entity-rename-input'),
   saveEntityRenameBtn: document.getElementById('save-entity-rename-btn'),
   entityMoveDomainSelect: document.getElementById('entity-move-domain-select'),
   moveEntityBtn: document.getElementById('move-entity-btn'),
+  entityAggregateRootCheck: document.getElementById('entity-aggregate-root-check'),
+  entityInvariantsInput: document.getElementById('entity-invariants-input'),
+  saveEntityRulesBtn: document.getElementById('save-entity-rules-btn'),
+  entityRbacActionSelect: document.getElementById('entity-rbac-action-select'),
+  entityRbacSuperadminCheck: document.getElementById('entity-rbac-superadmin-check'),
+  entityRbacAdminCheck: document.getElementById('entity-rbac-admin-check'),
+  entityRbacUserCheck: document.getElementById('entity-rbac-user-check'),
+  entityRbacTenantCheck: document.getElementById('entity-rbac-tenant-check'),
+  saveEntityRbacBtn: document.getElementById('save-entity-rbac-btn'),
+  entityRbacList: document.getElementById('entity-rbac-list'),
+  entityContractNameInput: document.getElementById('entity-contract-name-input'),
+  entityContractTypeSelect: document.getElementById('entity-contract-type-select'),
+  entityContractChannelInput: document.getElementById('entity-contract-channel-input'),
+  entityContractVersionInput: document.getElementById('entity-contract-version-input'),
+  addEntityContractBtn: document.getElementById('add-entity-contract-btn'),
+  entityContractList: document.getElementById('entity-contract-list'),
+  entityOasCompositionModeSelect: document.getElementById('entity-oas-composition-mode-select'),
+  entityOasCompositionRefsInput: document.getElementById('entity-oas-composition-refs-input'),
+  entityOasExternalRefsInput: document.getElementById('entity-oas-external-refs-input'),
+  entityOasDiscriminatorInput: document.getElementById('entity-oas-discriminator-input'),
+  saveEntityOasCompositionBtn: document.getElementById('save-entity-oas-composition-btn'),
   fieldNameInput: document.getElementById('field-name-input'),
   fieldTemplateSelect: document.getElementById('field-template-select'),
   applyFieldTemplateBtn: document.getElementById('apply-field-template-btn'),
@@ -130,16 +177,33 @@ const dom = {
   entityApiPreviewList: document.getElementById('entity-api-preview-list'),
   exportJsonBtn: document.getElementById('export-json-btn'),
   exportOasBtn: document.getElementById('export-oas-btn'),
+  exportMdBtn: document.getElementById('export-md-btn'),
+  exportJsonschemaBtn: document.getElementById('export-jsonschema-btn'),
+  exportAsyncapiBtn: document.getElementById('export-asyncapi-btn'),
+  exportBoilerplateBundleBtn: document.getElementById('export-boilerplate-bundle-btn'),
+  exportPackageBtn: document.getElementById('export-package-btn'),
   importJsonBtn: document.getElementById('import-json-btn'),
   importJsonInput: document.getElementById('import-json-input'),
   importOasBtn: document.getElementById('import-oas-btn'),
   importOasInput: document.getElementById('import-oas-input'),
+  importPackageBtn: document.getElementById('import-package-btn'),
+  importPackageInput: document.getElementById('import-package-input'),
+  generateCodePreviewBtn: document.getElementById('generate-code-preview-btn'),
+  generateExamplesBtn: document.getElementById('generate-examples-btn'),
+  codePreviewOutput: document.getElementById('code-preview-output'),
+  examplesPreviewOutput: document.getElementById('examples-preview-output'),
   resetCanvasBtn: document.getElementById('reset-canvas-btn'),
   clearStorageBtn: document.getElementById('clear-storage-btn'),
   undoBtn: document.getElementById('undo-btn'),
   redoBtn: document.getElementById('redo-btn'),
   runModelCheckBtn: document.getElementById('run-model-check-btn'),
   modelCheckList: document.getElementById('model-check-list'),
+  exportBlockCriticalCheck: document.getElementById('export-block-critical-check'),
+  modelCheckMinSeveritySelect: document.getElementById('model-check-min-severity-select'),
+  saveBaselineBtn: document.getElementById('save-baseline-btn'),
+  runSchemaDiffBtn: document.getElementById('run-schema-diff-btn'),
+  clearBaselineBtn: document.getElementById('clear-baseline-btn'),
+  schemaDiffList: document.getElementById('schema-diff-list'),
   interfaceTypeSelect: document.getElementById('interface-type-select'),
   interfaceFrameworkInput: document.getElementById('interface-framework-input'),
   interfaceEntrypointInput: document.getElementById('interface-entrypoint-input'),
@@ -202,6 +266,18 @@ function parseEnumValues(raw) {
     .filter(Boolean);
 }
 
+function parseCommaSeparated(raw) {
+  if (Array.isArray(raw)) return raw.map((item) => String(item).trim()).filter(Boolean);
+  return String(raw || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function uniqueStrings(values) {
+  return Array.from(new Set((values || []).map((item) => String(item).trim()).filter(Boolean)));
+}
+
 function normalizeOptionalNumber(value) {
   if (value === null || value === undefined || value === '') return null;
   const numeric = Number(value);
@@ -238,6 +314,20 @@ function normalizeField(field, fieldIndex) {
     minimum,
     maximum,
     itemsType: type === 'array' ? (itemsType || 'string') : ''
+  };
+}
+
+function normalizeContractInput(contract, contractIndex = 0) {
+  const id = String(contract?.id || '').trim() || fallbackId('contract', contractIndex);
+  return {
+    id,
+    name: String(contract?.name || '').trim() || `Contract_${contractIndex + 1}`,
+    type: ['event', 'command', 'request', 'response'].includes(contract?.type) ? contract.type : 'event',
+    channel: String(contract?.channel || '').trim(),
+    version: String(contract?.version || '').trim() || '1.0.0',
+    payloadSchema: contract?.payloadSchema && typeof contract.payloadSchema === 'object'
+      ? contract.payloadSchema
+      : {}
   };
 }
 
@@ -337,11 +427,18 @@ function renderView() {
   state.view.zoom = zoom;
   if (typeof state.view.snapToGrid !== 'boolean') state.view.snapToGrid = true;
   if (!['curved', 'orthogonal'].includes(state.view.edgeStyle)) state.view.edgeStyle = 'curved';
+  if (!['info', 'warn', 'error'].includes(state.view.modelCheckMinSeverity)) state.view.modelCheckMinSeverity = 'info';
+  if (typeof state.view.exportBlockCritical !== 'boolean') state.view.exportBlockCritical = true;
+  if (typeof state.view.largeCanvasMode !== 'boolean') state.view.largeCanvasMode = false;
   dom.canvasInner.style.transform = `scale(${zoom})`;
+  dom.canvas.classList.toggle('large-canvas-mode', Boolean(state.view.largeCanvasMode));
   dom.zoomIndicator.textContent = `${Math.round(zoom * 100)}%`;
   dom.toggleCompactViewBtn.textContent = state.view.compactEntities ? 'Full View' : 'Compact View';
   dom.toggleSnapBtn.textContent = state.view.snapToGrid ? 'Snap: On' : 'Snap: Off';
+  dom.toggleLargeCanvasBtn.textContent = state.view.largeCanvasMode ? 'Large Canvas: On' : 'Large Canvas: Off';
   dom.edgeStyleSelect.value = state.view.edgeStyle;
+  dom.modelCheckMinSeveritySelect.value = state.view.modelCheckMinSeverity;
+  dom.exportBlockCriticalCheck.checked = state.view.exportBlockCritical;
 }
 
 function renderTabs() {
@@ -719,6 +816,15 @@ function addDomain(name, options = {}) {
     color: options.color || DOMAIN_COLORS[state.domains.length % DOMAIN_COLORS.length],
     x: options.x ?? 120 + state.domains.length * 40,
     y: options.y ?? 90 + state.domains.length * 30,
+    context: {
+      ubiquitousLanguage: String(options?.context?.ubiquitousLanguage || '').trim(),
+      ownerTeam: String(options?.context?.ownerTeam || '').trim(),
+      upstreamDependencies: parseCommaSeparated(options?.context?.upstreamDependencies || []),
+      downstreamDependencies: parseCommaSeparated(options?.context?.downstreamDependencies || []),
+      integrationChannel: String(options?.context?.integrationChannel || '').trim(),
+      packageDependencies: parseCommaSeparated(options?.context?.packageDependencies || []),
+      sharedValueObjects: parseCommaSeparated(options?.context?.sharedValueObjects || [])
+    },
     entities: []
   };
   state.domains.push(domain);
@@ -739,7 +845,25 @@ function addEntity(domainId, name, options = {}) {
     name,
     x: options.x ?? 14 + (index % 2) * 206,
     y: options.y ?? 14 + Math.floor(index / 2) * 120,
-    fields: (options.fields || defaultFields()).map((field, fieldIndex) => normalizeField(field, fieldIndex))
+    fields: (options.fields || defaultFields()).map((field, fieldIndex) => normalizeField(field, fieldIndex)),
+    meta: {
+      aggregateRoot: Boolean(options?.meta?.aggregateRoot),
+      invariants: Array.isArray(options?.meta?.invariants)
+        ? options.meta.invariants.map((item) => String(item).trim()).filter(Boolean)
+        : [],
+      rbac: options?.meta?.rbac || getDefaultRbacPolicy(),
+      contracts: Array.isArray(options?.meta?.contracts)
+        ? options.meta.contracts.map((contract, index) => normalizeContractInput(contract, index))
+        : [],
+      oasComposition: {
+        mode: ['oneOf', 'allOf', 'anyOf'].includes(options?.meta?.oasComposition?.mode)
+          ? options.meta.oasComposition.mode
+          : '',
+        refs: parseCommaSeparated(options?.meta?.oasComposition?.refs || []),
+        externalRefs: parseCommaSeparated(options?.meta?.oasComposition?.externalRefs || []),
+        discriminator: String(options?.meta?.oasComposition?.discriminator || '').trim()
+      }
+    }
   };
   domain.entities.push(entity);
   state.selectedEntityId = entity.id;
@@ -911,7 +1035,7 @@ function removeField(entityId, fieldName) {
   });
 }
 
-function addRelationship(fromEntityId, toEntityId, fromCardinality, toCardinality) {
+function addRelationship(fromEntityId, toEntityId, fromCardinality, toCardinality, options = {}) {
   if (!fromEntityId || !toEntityId || fromEntityId === toEntityId) {
     window.alert('Select two different entities to create a relationship.');
     return;
@@ -941,7 +1065,14 @@ function addRelationship(fromEntityId, toEntityId, fromCardinality, toCardinalit
         toEntityId: fromEntityId,
         name: `${junctionName} -> ${from.entity.name}`,
         fromCardinality: 'N',
-        toCardinality: '1'
+        toCardinality: '1',
+        fromAnchorSide: options.fromAnchorSide || null,
+        toAnchorSide: options.toAnchorSide || null,
+        anchorBehavior: 'auto',
+        bendX: null,
+        bendY: null,
+        labelOffsetX: 0,
+        labelOffsetY: 0
       };
       const relB = {
         id: nextId('rel'),
@@ -949,7 +1080,14 @@ function addRelationship(fromEntityId, toEntityId, fromCardinality, toCardinalit
         toEntityId: toEntityId,
         name: `${junctionName} -> ${to.entity.name}`,
         fromCardinality: 'N',
-        toCardinality: '1'
+        toCardinality: '1',
+        fromAnchorSide: options.fromAnchorSide || null,
+        toAnchorSide: options.toAnchorSide || null,
+        anchorBehavior: 'auto',
+        bendX: null,
+        bendY: null,
+        labelOffsetX: 0,
+        labelOffsetY: 0
       };
       state.relationships.push(relA);
       state.relationships.push(relB);
@@ -973,7 +1111,14 @@ function addRelationship(fromEntityId, toEntityId, fromCardinality, toCardinalit
       toEntityId,
       name: buildRelationshipName(fromEntityId, toEntityId, fromCardinality, toCardinality),
       fromCardinality,
-      toCardinality
+      toCardinality,
+      fromAnchorSide: options.fromAnchorSide || null,
+      toAnchorSide: options.toAnchorSide || null,
+      anchorBehavior: 'auto',
+      bendX: null,
+      bendY: null,
+      labelOffsetX: 0,
+      labelOffsetY: 0
     };
     state.relationships.push(relationship);
     if (dom.relationshipAutoFkCheck.checked) {
@@ -1024,6 +1169,12 @@ function syncRelationshipInspector() {
   dom.relationshipToEntitySelect.disabled = disabled;
   dom.relationshipFromCardSelect.disabled = disabled;
   dom.relationshipToCardSelect.disabled = disabled;
+  dom.relationshipLabelOffsetXInput.disabled = disabled;
+  dom.relationshipLabelOffsetYInput.disabled = disabled;
+  dom.relationshipBendXInput.disabled = disabled;
+  dom.relationshipBendYInput.disabled = disabled;
+  dom.relationshipAnchorBehaviorSelect.disabled = disabled;
+  dom.resetRelationshipLabelOffsetBtn.disabled = disabled;
   dom.saveRelationshipBtn.disabled = disabled;
   dom.reverseRelationshipBtn.disabled = disabled;
   if (!relationship) {
@@ -1032,6 +1183,11 @@ function syncRelationshipInspector() {
     dom.relationshipToEntitySelect.value = '';
     dom.relationshipFromCardSelect.value = '1';
     dom.relationshipToCardSelect.value = '1';
+    dom.relationshipLabelOffsetXInput.value = '';
+    dom.relationshipLabelOffsetYInput.value = '';
+    dom.relationshipBendXInput.value = '';
+    dom.relationshipBendYInput.value = '';
+    dom.relationshipAnchorBehaviorSelect.value = 'auto';
     dom.relationshipNameInput.placeholder = 'Select a relationship';
     return;
   }
@@ -1041,6 +1197,11 @@ function syncRelationshipInspector() {
   dom.relationshipToEntitySelect.value = relationship.toEntityId;
   dom.relationshipFromCardSelect.value = relationship.fromCardinality || '1';
   dom.relationshipToCardSelect.value = relationship.toCardinality || '1';
+  dom.relationshipLabelOffsetXInput.value = Number.isFinite(relationship.labelOffsetX) ? String(relationship.labelOffsetX) : '0';
+  dom.relationshipLabelOffsetYInput.value = Number.isFinite(relationship.labelOffsetY) ? String(relationship.labelOffsetY) : '0';
+  dom.relationshipBendXInput.value = Number.isFinite(relationship.bendX) ? String(relationship.bendX) : '';
+  dom.relationshipBendYInput.value = Number.isFinite(relationship.bendY) ? String(relationship.bendY) : '';
+  dom.relationshipAnchorBehaviorSelect.value = relationship.anchorBehavior === 'center' ? 'center' : 'auto';
 }
 
 function saveSelectedRelationship() {
@@ -1079,6 +1240,11 @@ function saveSelectedRelationship() {
       || buildRelationshipName(fromEntityId, toEntityId, fromCardinality, toCardinality);
     relationship.fromCardinality = fromCardinality;
     relationship.toCardinality = toCardinality;
+    relationship.labelOffsetX = normalizeOptionalNumber(dom.relationshipLabelOffsetXInput.value) ?? 0;
+    relationship.labelOffsetY = normalizeOptionalNumber(dom.relationshipLabelOffsetYInput.value) ?? 0;
+    relationship.bendX = normalizeOptionalNumber(dom.relationshipBendXInput.value);
+    relationship.bendY = normalizeOptionalNumber(dom.relationshipBendYInput.value);
+    relationship.anchorBehavior = dom.relationshipAnchorBehaviorSelect.value === 'center' ? 'center' : 'auto';
     render();
   });
 }
@@ -1207,6 +1373,24 @@ function renderStatus() {
   const selected = getSelectedDomain();
   dom.status.textContent = selected ? `Selected domain: ${selected.name}` : 'No domain selected';
   dom.domainColorInput.value = selected?.color || '#60a5fa';
+  const context = selected?.context || {};
+  dom.domainUbiquitousLanguageInput.value = context.ubiquitousLanguage || '';
+  dom.domainOwnerTeamInput.value = context.ownerTeam || '';
+  dom.domainUpstreamInput.value = Array.isArray(context.upstreamDependencies) ? context.upstreamDependencies.join(', ') : '';
+  dom.domainDownstreamInput.value = Array.isArray(context.downstreamDependencies) ? context.downstreamDependencies.join(', ') : '';
+  dom.domainIntegrationChannelInput.value = context.integrationChannel || '';
+  dom.domainPackageDependenciesInput.value = Array.isArray(context.packageDependencies) ? context.packageDependencies.join(', ') : '';
+  dom.domainSharedValueObjectsInput.value = Array.isArray(context.sharedValueObjects) ? context.sharedValueObjects.join(', ') : '';
+  const disabled = !selected;
+  dom.domainUbiquitousLanguageInput.disabled = disabled;
+  dom.domainOwnerTeamInput.disabled = disabled;
+  dom.domainUpstreamInput.disabled = disabled;
+  dom.domainDownstreamInput.disabled = disabled;
+  dom.domainIntegrationChannelInput.disabled = disabled;
+  dom.domainPackageDependenciesInput.disabled = disabled;
+  dom.domainSharedValueObjectsInput.disabled = disabled;
+  dom.saveDomainContextBtn.disabled = disabled;
+  dom.clearDomainContextBtn.disabled = disabled;
 }
 
 function setSelectedDomainColor(color) {
@@ -1223,6 +1407,26 @@ function setSelectedDomainColor(color) {
   withPersist(() => {
     selected.color = color;
     render();
+  });
+}
+
+function saveSelectedDomainContext() {
+  const selected = getSelectedDomain();
+  if (!selected) {
+    window.alert('Select a domain first.');
+    return;
+  }
+  withPersist(() => {
+    selected.context = {
+      ubiquitousLanguage: String(dom.domainUbiquitousLanguageInput.value || '').trim(),
+      ownerTeam: String(dom.domainOwnerTeamInput.value || '').trim(),
+      upstreamDependencies: parseCommaSeparated(dom.domainUpstreamInput.value),
+      downstreamDependencies: parseCommaSeparated(dom.domainDownstreamInput.value),
+      integrationChannel: String(dom.domainIntegrationChannelInput.value || '').trim(),
+      packageDependencies: uniqueStrings(parseCommaSeparated(dom.domainPackageDependenciesInput.value)),
+      sharedValueObjects: uniqueStrings(parseCommaSeparated(dom.domainSharedValueObjectsInput.value))
+    };
+    renderStatus();
   });
 }
 
@@ -1247,6 +1451,179 @@ function saveSelectedEntityName(name) {
   });
 }
 
+function saveSelectedEntityRules() {
+  const found = findEntity(state.selectedEntityId);
+  if (!found) {
+    window.alert('Select an entity first.');
+    return;
+  }
+  withPersist(() => {
+    const invariants = String(dom.entityInvariantsInput.value || '')
+      .split('\n')
+      .map((item) => item.trim())
+      .filter(Boolean);
+    found.entity.meta = found.entity.meta || {};
+    found.entity.meta.aggregateRoot = Boolean(dom.entityAggregateRootCheck.checked);
+    found.entity.meta.invariants = invariants;
+    render();
+  });
+}
+
+function getDefaultRbacPolicy() {
+  return {
+    list: { roles: ['superadmin', 'admin'], tenantScoped: true },
+    getById: { roles: ['superadmin', 'admin', 'user'], tenantScoped: true },
+    create: { roles: ['superadmin', 'admin'], tenantScoped: true },
+    update: { roles: ['superadmin', 'admin'], tenantScoped: true },
+    delete: { roles: ['superadmin', 'admin'], tenantScoped: true }
+  };
+}
+
+function getEntityRbacPolicy(entity) {
+  if (!entity.meta) entity.meta = {};
+  if (!entity.meta.rbac) entity.meta.rbac = getDefaultRbacPolicy();
+  return entity.meta.rbac;
+}
+
+function renderEntityRbacInspector(entity) {
+  const policy = getEntityRbacPolicy(entity);
+  const action = dom.entityRbacActionSelect.value || 'list';
+  const rule = policy[action] || { roles: [], tenantScoped: true };
+  const roles = Array.isArray(rule.roles) ? rule.roles : [];
+  dom.entityRbacSuperadminCheck.checked = roles.includes('superadmin');
+  dom.entityRbacAdminCheck.checked = roles.includes('admin');
+  dom.entityRbacUserCheck.checked = roles.includes('user');
+  dom.entityRbacTenantCheck.checked = Boolean(rule.tenantScoped);
+  dom.entityRbacList.innerHTML = '';
+  ['list', 'getById', 'create', 'update', 'delete'].forEach((key) => {
+    const item = document.createElement('li');
+    const actionRule = policy[key] || { roles: [], tenantScoped: true };
+    const label = `${key}: [${(actionRule.roles || []).join(', ')}] | tenantScoped=${Boolean(actionRule.tenantScoped)}`;
+    item.textContent = label;
+    dom.entityRbacList.appendChild(item);
+  });
+}
+
+function saveSelectedEntityRbacRule() {
+  const found = findEntity(state.selectedEntityId);
+  if (!found) {
+    window.alert('Select an entity first.');
+    return;
+  }
+  const action = dom.entityRbacActionSelect.value || 'list';
+  const roles = [];
+  if (dom.entityRbacSuperadminCheck.checked) roles.push('superadmin');
+  if (dom.entityRbacAdminCheck.checked) roles.push('admin');
+  if (dom.entityRbacUserCheck.checked) roles.push('user');
+  withPersist(() => {
+    const policy = getEntityRbacPolicy(found.entity);
+    policy[action] = {
+      roles,
+      tenantScoped: Boolean(dom.entityRbacTenantCheck.checked)
+    };
+    renderEntityRbacInspector(found.entity);
+  });
+}
+
+function renderEntityContractsInspector(entity) {
+  if (!entity.meta) entity.meta = {};
+  if (!Array.isArray(entity.meta.contracts)) entity.meta.contracts = [];
+  dom.entityContractList.innerHTML = '';
+  entity.meta.contracts.forEach((contract) => {
+    const item = document.createElement('li');
+    item.className = 'relationship-item';
+    const summary = document.createElement('div');
+    summary.className = 'relationship-name';
+    summary.textContent = `${contract.type}:${contract.name} | ${contract.channel || '-'} | v${contract.version}`;
+    item.appendChild(summary);
+    const payloadBtn = document.createElement('button');
+    payloadBtn.type = 'button';
+    payloadBtn.textContent = 'payload';
+    payloadBtn.onclick = () => {
+      const raw = window.prompt(
+        `Payload schema JSON for ${contract.type}:${contract.name}`,
+        JSON.stringify(contract.payloadSchema || {}, null, 2)
+      );
+      if (raw === null) return;
+      try {
+        const parsed = raw.trim() ? JSON.parse(raw) : {};
+        withPersist(() => {
+          contract.payloadSchema = parsed;
+          renderEntityContractsInspector(entity);
+        });
+      } catch (_) {
+        window.alert('Invalid JSON payload schema.');
+      }
+    };
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = 'x';
+    removeBtn.onclick = () => {
+      withPersist(() => {
+        entity.meta.contracts = entity.meta.contracts.filter((candidate) => candidate.id !== contract.id);
+        renderEntityContractsInspector(entity);
+      });
+    };
+    item.appendChild(payloadBtn);
+    item.appendChild(removeBtn);
+    dom.entityContractList.appendChild(item);
+  });
+}
+
+function addSelectedEntityContract() {
+  const found = findEntity(state.selectedEntityId);
+  if (!found) {
+    window.alert('Select an entity first.');
+    return;
+  }
+  const name = String(dom.entityContractNameInput.value || '').trim();
+  const type = dom.entityContractTypeSelect.value || 'event';
+  const channel = String(dom.entityContractChannelInput.value || '').trim();
+  const version = String(dom.entityContractVersionInput.value || '').trim() || '1.0.0';
+  if (!name) {
+    window.alert('Contract name is required.');
+    return;
+  }
+  withPersist(() => {
+    if (!found.entity.meta) found.entity.meta = {};
+    if (!Array.isArray(found.entity.meta.contracts)) found.entity.meta.contracts = [];
+    found.entity.meta.contracts.push(normalizeContractInput({
+      id: nextId('contract'),
+      name,
+      type,
+      channel,
+      version,
+      payloadSchema: {}
+    }, found.entity.meta.contracts.length));
+    dom.entityContractNameInput.value = '';
+    dom.entityContractChannelInput.value = '';
+    dom.entityContractVersionInput.value = '1.0.0';
+    renderEntityContractsInspector(found.entity);
+  });
+}
+
+function saveSelectedEntityOasComposition() {
+  const found = findEntity(state.selectedEntityId);
+  if (!found) {
+    window.alert('Select an entity first.');
+    return;
+  }
+  const mode = dom.entityOasCompositionModeSelect.value;
+  const refs = parseCommaSeparated(dom.entityOasCompositionRefsInput.value);
+  const externalRefs = parseCommaSeparated(dom.entityOasExternalRefsInput.value);
+  const discriminator = String(dom.entityOasDiscriminatorInput.value || '').trim();
+  withPersist(() => {
+    if (!found.entity.meta) found.entity.meta = {};
+    found.entity.meta.oasComposition = {
+      mode: ['oneOf', 'allOf', 'anyOf'].includes(mode) ? mode : '',
+      refs,
+      externalRefs,
+      discriminator
+    };
+    renderEntityInspector();
+  });
+}
+
 function duplicateSelectedEntity() {
   const found = findEntity(state.selectedEntityId);
   if (!found) {
@@ -1262,10 +1639,12 @@ function duplicateSelectedEntity() {
   }
   withPersist(() => {
     const clonedFields = JSON.parse(JSON.stringify(found.entity.fields || []));
+    const clonedMeta = JSON.parse(JSON.stringify(found.entity.meta || { aggregateRoot: false, invariants: [] }));
     addEntity(found.domain.id, candidateName, {
       x: Math.min(320, found.entity.x + 22),
       y: Math.min(180, found.entity.y + 22),
-      fields: clonedFields
+      fields: clonedFields,
+      meta: clonedMeta
     });
     render();
   });
@@ -1419,18 +1798,24 @@ function buildRelationshipName(fromEntityId, toEntityId, fromCardinality, toCard
   return `${from} relates to ${to}`;
 }
 
-function runModelChecks() {
+function severityRank(severity) {
+  if (severity === 'error') return 3;
+  if (severity === 'warn') return 2;
+  return 1;
+}
+
+function collectModelIssues() {
   const issues = [];
-  const pushIssue = (message, entityId = null) => issues.push({ message, entityId });
+  const pushIssue = (message, entityId = null, severity = 'error') => issues.push({ message, entityId, severity });
   const seenDomainNames = new Set();
 
   state.domains.forEach((domain) => {
     const domainNameKey = normalizedName(domain.name);
     if (!domain.name || !domainNameKey) {
-      pushIssue('Domain with empty name found.');
+      pushIssue('Domain with empty name found.', null, 'error');
     }
     if (seenDomainNames.has(domainNameKey)) {
-      pushIssue(`Duplicate domain name: ${domain.name}`);
+      pushIssue(`Duplicate domain name: ${domain.name}`, null, 'error');
     }
     seenDomainNames.add(domainNameKey);
 
@@ -1438,10 +1823,10 @@ function runModelChecks() {
     domain.entities.forEach((entity) => {
       const entityKey = normalizedName(entity.name);
       if (!entity.name || !entityKey) {
-        pushIssue(`Entity with empty name in domain ${domain.name}`, entity.id);
+        pushIssue(`Entity with empty name in domain ${domain.name}`, entity.id, 'error');
       }
       if (seenEntityNames.has(entityKey)) {
-        pushIssue(`Duplicate entity name in domain ${domain.name}: ${entity.name}`, entity.id);
+        pushIssue(`Duplicate entity name in domain ${domain.name}: ${entity.name}`, entity.id, 'error');
       }
       seenEntityNames.add(entityKey);
 
@@ -1450,25 +1835,56 @@ function runModelChecks() {
       entity.fields.forEach((field) => {
         const fieldKey = normalizedName(field.name);
         if (!field.name || !fieldKey) {
-          pushIssue(`Entity ${domain.name}/${entity.name} has an empty field name.`, entity.id);
+          pushIssue(`Entity ${domain.name}/${entity.name} has an empty field name.`, entity.id, 'error');
         }
         if (seenFields.has(fieldKey)) {
-          pushIssue(`Entity ${domain.name}/${entity.name} has duplicated field: ${field.name}`, entity.id);
+          pushIssue(`Entity ${domain.name}/${entity.name} has duplicated field: ${field.name}`, entity.id, 'error');
         }
         seenFields.add(fieldKey);
         if (field.type === 'array' && !field.itemsType) {
-          pushIssue(`Field ${domain.name}/${entity.name}.${field.name} is array but has no itemsType.`, entity.id);
+          pushIssue(`Field ${domain.name}/${entity.name}.${field.name} is array but has no itemsType.`, entity.id, 'error');
         }
         if (field.minLength !== null && field.maxLength !== null && field.minLength > field.maxLength) {
-          pushIssue(`Field ${domain.name}/${entity.name}.${field.name} has minLength > maxLength.`, entity.id);
+          pushIssue(`Field ${domain.name}/${entity.name}.${field.name} has minLength > maxLength.`, entity.id, 'error');
         }
         if (field.minimum !== null && field.maximum !== null && field.minimum > field.maximum) {
-          pushIssue(`Field ${domain.name}/${entity.name}.${field.name} has minimum > maximum.`, entity.id);
+          pushIssue(`Field ${domain.name}/${entity.name}.${field.name} has minimum > maximum.`, entity.id, 'error');
         }
         if (field.pk) hasPrimaryKey = true;
+        if (field.required && field.nullable) {
+          pushIssue(`Field ${domain.name}/${entity.name}.${field.name} is required and nullable simultaneously.`, entity.id, 'warn');
+        }
       });
       if (!hasPrimaryKey) {
-        pushIssue(`Entity ${domain.name}/${entity.name} has no primary key field.`, entity.id);
+        pushIssue(`Entity ${domain.name}/${entity.name} has no primary key field.`, entity.id, 'error');
+      }
+      if (!entity?.meta?.aggregateRoot && Array.isArray(entity?.meta?.invariants) && entity.meta.invariants.length > 0) {
+        pushIssue(`Entity ${domain.name}/${entity.name} has invariants but is not marked as aggregate root.`, entity.id, 'warn');
+      }
+      const policy = getEntityRbacPolicy(entity);
+      ['list', 'getById', 'create', 'update', 'delete'].forEach((action) => {
+        const roles = Array.isArray(policy?.[action]?.roles) ? policy[action].roles : [];
+        if (!roles.length) {
+          pushIssue(`Entity ${domain.name}/${entity.name} has no RBAC roles for action "${action}".`, entity.id, 'warn');
+        }
+      });
+      const contracts = Array.isArray(entity?.meta?.contracts) ? entity.meta.contracts : [];
+      contracts.forEach((contract) => {
+        if (!contract?.name) {
+          pushIssue(`Entity ${domain.name}/${entity.name} has a contract without name.`, entity.id, 'error');
+        }
+        if (!contract?.channel) {
+          pushIssue(`Contract ${domain.name}/${entity.name}.${contract?.name || 'unknown'} has empty channel/topic.`, entity.id, 'warn');
+        }
+      });
+      const composition = entity?.meta?.oasComposition || {};
+      const mode = ['oneOf', 'allOf', 'anyOf'].includes(composition.mode) ? composition.mode : '';
+      const refs = parseCommaSeparated(composition.refs || []);
+      if (mode && refs.length < 2) {
+        pushIssue(`Entity ${domain.name}/${entity.name} composition "${mode}" should reference at least 2 schemas.`, entity.id, 'warn');
+      }
+      if (composition.discriminator && !mode) {
+        pushIssue(`Entity ${domain.name}/${entity.name} has discriminator without composition mode.`, entity.id, 'warn');
       }
     });
   });
@@ -1477,34 +1893,48 @@ function runModelChecks() {
     const from = findEntity(relationship.fromEntityId);
     const to = findEntity(relationship.toEntityId);
     if (!from || !to) {
-      pushIssue(`Relationship "${relationship.name || relationship.id}" references missing entities.`);
+      pushIssue(`Relationship "${relationship.name || relationship.id}" references missing entities.`, null, 'error');
     }
     if (!['1', 'N'].includes(relationship.fromCardinality) || !['1', 'N'].includes(relationship.toCardinality)) {
-      pushIssue(`Relationship "${relationship.name || relationship.id}" has invalid cardinality.`);
+      pushIssue(`Relationship "${relationship.name || relationship.id}" has invalid cardinality.`, null, 'error');
+    }
+    const bendX = normalizeOptionalNumber(relationship.bendX);
+    const bendY = normalizeOptionalNumber(relationship.bendY);
+    if ((bendX === null) !== (bendY === null)) {
+      pushIssue(`Relationship "${relationship.name || relationship.id}" should define both bendX and bendY or none.`, null, 'warn');
     }
   });
 
+  return issues;
+}
+
+function runModelChecks() {
+  const issues = collectModelIssues();
   renderModelCheckResults(issues);
+  return issues;
 }
 
 function renderModelCheckResults(issues) {
   dom.modelCheckList.innerHTML = '';
-  if (!issues.length) {
+  const threshold = state.view.modelCheckMinSeverity || 'info';
+  const filtered = issues.filter((issue) => severityRank(issue.severity || 'error') >= severityRank(threshold));
+  if (!filtered.length) {
     const li = document.createElement('li');
     li.textContent = 'No issues found.';
     dom.modelCheckList.appendChild(li);
     return;
   }
-  issues.forEach((issue) => {
+  filtered.forEach((issue) => {
     const li = document.createElement('li');
+    const prefix = `[${String(issue.severity || 'error').toUpperCase()}] `;
     if (issue.entityId) {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.textContent = issue.message;
+      btn.textContent = `${prefix}${issue.message}`;
       btn.onclick = () => focusEntity(issue.entityId);
       li.appendChild(btn);
     } else {
-      li.textContent = issue.message;
+      li.textContent = `${prefix}${issue.message}`;
     }
     dom.modelCheckList.appendChild(li);
   });
@@ -1554,6 +1984,12 @@ function renderDomains() {
       const entityHeader = document.createElement('header');
       entityHeader.className = 'entity-header';
       entityHeader.textContent = entity.name;
+      if (entity?.meta?.aggregateRoot) {
+        const aggregateTag = document.createElement('span');
+        aggregateTag.className = 'entity-aggregate-tag';
+        aggregateTag.textContent = 'AR';
+        entityHeader.appendChild(aggregateTag);
+      }
       attachDrag(entityHeader, (dx, dy) => {
         moveEntityInsideDomain(entity, entityEl, dx, dy);
       });
@@ -1567,6 +2003,35 @@ function renderDomains() {
           fieldsEl.appendChild(li);
         });
       }
+
+      const anchorSides = ['top', 'right', 'bottom', 'left'];
+      anchorSides.forEach((side) => {
+        const anchorBtn = document.createElement('button');
+        anchorBtn.type = 'button';
+        anchorBtn.className = `entity-anchor entity-anchor-${side}`;
+        anchorBtn.title = `Drag from ${entity.name} (${side}) to create relationship`;
+        anchorBtn.addEventListener('pointerdown', (event) => {
+          event.stopPropagation();
+          startAnchorDrag(entity.id, side, event);
+        });
+        anchorBtn.addEventListener('pointerup', (event) => {
+          if (!interaction.relationshipAnchorDragActive) return;
+          event.stopPropagation();
+          const fromEntityId = interaction.relationshipAnchorFromEntityId;
+          if (!fromEntityId || fromEntityId === entity.id) {
+            stopAnchorDrag();
+            return;
+          }
+          const fromCardinality = dom.fromCardSelect.value || 'N';
+          const toCardinality = dom.toCardSelect.value || '1';
+          addRelationship(fromEntityId, entity.id, fromCardinality, toCardinality, {
+            fromAnchorSide: interaction.relationshipAnchorFromSide,
+            toAnchorSide: side
+          });
+          stopAnchorDrag();
+        });
+        entityEl.appendChild(anchorBtn);
+      });
 
       entityEl.appendChild(entityHeader);
       entityEl.appendChild(fieldsEl);
@@ -1599,20 +2064,89 @@ function entityCenterOnCanvas(entityId) {
   };
 }
 
+function entityAnchorOnCanvas(entityId, side) {
+  const found = findEntity(entityId);
+  if (!found) return null;
+  const originX = found.domain.x + found.entity.x;
+  const originY = found.domain.y + found.entity.y;
+  const width = 190;
+  const headerHeight = 32;
+  const bodyHeight = state.view.compactEntities ? 24 : 58;
+  const height = headerHeight + bodyHeight;
+  if (side === 'left') return { x: originX, y: originY + height / 2 };
+  if (side === 'right') return { x: originX + width, y: originY + height / 2 };
+  if (side === 'top') return { x: originX + width / 2, y: originY };
+  if (side === 'bottom') return { x: originX + width / 2, y: originY + height };
+  return entityCenterOnCanvas(entityId);
+}
+
+function pointerToCanvasPoint(clientX, clientY) {
+  const zoom = state.view.zoom || 1;
+  const rect = dom.canvas.getBoundingClientRect();
+  return {
+    x: (dom.canvas.scrollLeft + clientX - rect.left) / zoom,
+    y: (dom.canvas.scrollTop + clientY - rect.top) / zoom
+  };
+}
+
+function clearAnchorPreviewEdge() {
+  const preview = dom.edges.querySelector('.edge-preview');
+  if (preview) preview.remove();
+}
+
+function renderAnchorPreviewEdge(fromPoint, toPoint) {
+  clearAnchorPreviewEdge();
+  if (!fromPoint || !toPoint) return;
+  const controlX = (fromPoint.x + toPoint.x) / 2;
+  const isOrthogonal = state.view.edgeStyle === 'orthogonal';
+  const pathD = isOrthogonal
+    ? `M ${fromPoint.x} ${fromPoint.y} L ${controlX} ${fromPoint.y} L ${controlX} ${toPoint.y} L ${toPoint.x} ${toPoint.y}`
+    : `M ${fromPoint.x} ${fromPoint.y} C ${controlX} ${fromPoint.y}, ${controlX} ${toPoint.y}, ${toPoint.x} ${toPoint.y}`;
+  const previewPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  previewPath.setAttribute('class', 'edge-preview');
+  previewPath.setAttribute('d', pathD);
+  dom.edges.appendChild(previewPath);
+}
+
+function stopAnchorDrag() {
+  interaction.relationshipAnchorDragActive = false;
+  interaction.relationshipAnchorFromEntityId = null;
+  interaction.relationshipAnchorFromSide = null;
+  clearAnchorPreviewEdge();
+}
+
+function startAnchorDrag(entityId, side, event) {
+  const fromPoint = entityAnchorOnCanvas(entityId, side);
+  if (!fromPoint) return;
+  interaction.relationshipAnchorDragActive = true;
+  interaction.relationshipAnchorFromEntityId = entityId;
+  interaction.relationshipAnchorFromSide = side;
+  const pointer = pointerToCanvasPoint(event.clientX, event.clientY);
+  renderAnchorPreviewEdge(fromPoint, pointer);
+}
+
 function renderEdges() {
   dom.edges.innerHTML = '';
   state.relationships.forEach((relationship) => {
-    const from = entityCenterOnCanvas(relationship.fromEntityId);
-    const to = entityCenterOnCanvas(relationship.toEntityId);
+    const useCenter = relationship.anchorBehavior === 'center';
+    const from = (!useCenter && relationship.fromAnchorSide)
+      ? entityAnchorOnCanvas(relationship.fromEntityId, relationship.fromAnchorSide)
+      : entityCenterOnCanvas(relationship.fromEntityId);
+    const to = (!useCenter && relationship.toAnchorSide)
+      ? entityAnchorOnCanvas(relationship.toEntityId, relationship.toAnchorSide)
+      : entityCenterOnCanvas(relationship.toEntityId);
     if (!from || !to) return;
 
-    const controlX = (from.x + to.x) / 2;
+    const controlX = Number.isFinite(relationship.bendX) ? relationship.bendX : (from.x + to.x) / 2;
+    const controlY = Number.isFinite(relationship.bendY) ? relationship.bendY : (from.y + to.y) / 2;
     const isOrthogonal = state.view.edgeStyle === 'orthogonal';
     const edgePathD = isOrthogonal
-      ? `M ${from.x} ${from.y} L ${controlX} ${from.y} L ${controlX} ${to.y} L ${to.x} ${to.y}`
+      ? `M ${from.x} ${from.y} L ${controlX} ${from.y} L ${controlX} ${controlY} L ${controlX} ${to.y} L ${to.x} ${to.y}`
       : `M ${from.x} ${from.y} C ${controlX} ${from.y}, ${controlX} ${to.y}, ${to.x} ${to.y}`;
     const labelX = isOrthogonal ? controlX : controlX;
-    const labelY = isOrthogonal ? ((from.y + to.y) / 2) : ((from.y + to.y) / 2);
+    const labelY = isOrthogonal ? controlY : ((from.y + to.y) / 2);
+    const labelOffsetX = Number.isFinite(relationship.labelOffsetX) ? relationship.labelOffsetX : 0;
+    const labelOffsetY = Number.isFinite(relationship.labelOffsetY) ? relationship.labelOffsetY : 0;
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     const activeClass = state.selectedRelationshipId === relationship.id ? ' active' : '';
     path.setAttribute('class', `edge-line${activeClass}`);
@@ -1629,26 +2163,47 @@ function renderEdges() {
     });
     dom.edges.appendChild(hit);
 
-    const fromLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    fromLabel.setAttribute('class', 'edge-label');
-    fromLabel.setAttribute('x', String(from.x + 6));
-    fromLabel.setAttribute('y', String(from.y - 6));
-    fromLabel.textContent = relationship.fromCardinality;
-    dom.edges.appendChild(fromLabel);
+    if (!state.view.largeCanvasMode) {
+      const fromLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      fromLabel.setAttribute('class', 'edge-label');
+      fromLabel.setAttribute('x', String(from.x + 6));
+      fromLabel.setAttribute('y', String(from.y - 6));
+      fromLabel.textContent = relationship.fromCardinality;
+      dom.edges.appendChild(fromLabel);
 
-    const toLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    toLabel.setAttribute('class', 'edge-label');
-    toLabel.setAttribute('x', String(to.x + 6));
-    toLabel.setAttribute('y', String(to.y - 6));
-    toLabel.textContent = relationship.toCardinality;
-    dom.edges.appendChild(toLabel);
+      const toLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      toLabel.setAttribute('class', 'edge-label');
+      toLabel.setAttribute('x', String(to.x + 6));
+      toLabel.setAttribute('y', String(to.y - 6));
+      toLabel.textContent = relationship.toCardinality;
+      dom.edges.appendChild(toLabel);
 
-    const nameLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    nameLabel.setAttribute('class', 'edge-label');
-    nameLabel.setAttribute('x', String(labelX + 6));
-    nameLabel.setAttribute('y', String(labelY - 6));
-    nameLabel.textContent = relationship.name || '';
-    dom.edges.appendChild(nameLabel);
+      const nameLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      nameLabel.setAttribute('class', 'edge-label');
+      nameLabel.setAttribute('x', String(labelX + 6 + labelOffsetX));
+      nameLabel.setAttribute('y', String(labelY - 6 + labelOffsetY));
+      nameLabel.textContent = relationship.name || '';
+      dom.edges.appendChild(nameLabel);
+    }
+  });
+}
+
+function renderMiniMap() {
+  if (!dom.miniMap) return;
+  dom.miniMap.innerHTML = '';
+  const scale = 0.055;
+  state.domains.forEach((domain) => {
+    const box = document.createElement('div');
+    box.className = 'mini-map-domain';
+    box.style.left = `${domain.x * scale}px`;
+    box.style.top = `${domain.y * scale}px`;
+    box.style.width = `${520 * scale}px`;
+    box.style.height = `${280 * scale}px`;
+    box.style.borderColor = domain.color || '#64748b';
+    if (state.selectedDomainId === domain.id) box.classList.add('active');
+    box.title = domain.name;
+    box.onclick = () => setSelectedDomain(domain.id);
+    dom.miniMap.appendChild(box);
   });
 }
 
@@ -1664,6 +2219,40 @@ function renderEntityInspector() {
     dom.duplicateEntityBtn.disabled = true;
     dom.entityMoveDomainSelect.disabled = true;
     dom.moveEntityBtn.disabled = true;
+    dom.entityAggregateRootCheck.checked = false;
+    dom.entityAggregateRootCheck.disabled = true;
+    dom.entityInvariantsInput.value = '';
+    dom.entityInvariantsInput.disabled = true;
+    dom.saveEntityRulesBtn.disabled = true;
+    dom.entityRbacActionSelect.disabled = true;
+    dom.entityRbacSuperadminCheck.checked = false;
+    dom.entityRbacAdminCheck.checked = false;
+    dom.entityRbacUserCheck.checked = false;
+    dom.entityRbacTenantCheck.checked = false;
+    dom.entityRbacSuperadminCheck.disabled = true;
+    dom.entityRbacAdminCheck.disabled = true;
+    dom.entityRbacUserCheck.disabled = true;
+    dom.entityRbacTenantCheck.disabled = true;
+    dom.saveEntityRbacBtn.disabled = true;
+    dom.entityRbacList.innerHTML = '';
+    dom.entityContractNameInput.value = '';
+    dom.entityContractNameInput.disabled = true;
+    dom.entityContractTypeSelect.disabled = true;
+    dom.entityContractChannelInput.value = '';
+    dom.entityContractChannelInput.disabled = true;
+    dom.entityContractVersionInput.value = '1.0.0';
+    dom.entityContractVersionInput.disabled = true;
+    dom.addEntityContractBtn.disabled = true;
+    dom.entityContractList.innerHTML = '';
+    dom.entityOasCompositionModeSelect.value = '';
+    dom.entityOasCompositionModeSelect.disabled = true;
+    dom.entityOasCompositionRefsInput.value = '';
+    dom.entityOasCompositionRefsInput.disabled = true;
+    dom.entityOasExternalRefsInput.value = '';
+    dom.entityOasExternalRefsInput.disabled = true;
+    dom.entityOasDiscriminatorInput.value = '';
+    dom.entityOasDiscriminatorInput.disabled = true;
+    dom.saveEntityOasCompositionBtn.disabled = true;
     dom.fieldTemplateSelect.disabled = true;
     dom.applyFieldTemplateBtn.disabled = true;
     return;
@@ -1675,6 +2264,37 @@ function renderEntityInspector() {
   dom.duplicateEntityBtn.disabled = false;
   dom.entityMoveDomainSelect.disabled = false;
   dom.moveEntityBtn.disabled = false;
+  dom.entityAggregateRootCheck.disabled = false;
+  dom.entityAggregateRootCheck.checked = Boolean(found.entity?.meta?.aggregateRoot);
+  dom.entityInvariantsInput.disabled = false;
+  dom.entityInvariantsInput.value = Array.isArray(found.entity?.meta?.invariants)
+    ? found.entity.meta.invariants.join('\n')
+    : '';
+  dom.saveEntityRulesBtn.disabled = false;
+  dom.entityRbacActionSelect.disabled = false;
+  dom.entityRbacSuperadminCheck.disabled = false;
+  dom.entityRbacAdminCheck.disabled = false;
+  dom.entityRbacUserCheck.disabled = false;
+  dom.entityRbacTenantCheck.disabled = false;
+  dom.saveEntityRbacBtn.disabled = false;
+  renderEntityRbacInspector(found.entity);
+  dom.entityContractNameInput.disabled = false;
+  dom.entityContractTypeSelect.disabled = false;
+  dom.entityContractChannelInput.disabled = false;
+  dom.entityContractVersionInput.disabled = false;
+  dom.addEntityContractBtn.disabled = false;
+  if (!dom.entityContractVersionInput.value) dom.entityContractVersionInput.value = '1.0.0';
+  renderEntityContractsInspector(found.entity);
+  dom.entityOasCompositionModeSelect.disabled = false;
+  dom.entityOasCompositionRefsInput.disabled = false;
+  dom.entityOasExternalRefsInput.disabled = false;
+  dom.entityOasDiscriminatorInput.disabled = false;
+  dom.saveEntityOasCompositionBtn.disabled = false;
+  const composition = found.entity?.meta?.oasComposition || { mode: '', refs: [], externalRefs: [], discriminator: '' };
+  dom.entityOasCompositionModeSelect.value = composition.mode || '';
+  dom.entityOasCompositionRefsInput.value = Array.isArray(composition.refs) ? composition.refs.join(', ') : '';
+  dom.entityOasExternalRefsInput.value = Array.isArray(composition.externalRefs) ? composition.externalRefs.join(', ') : '';
+  dom.entityOasDiscriminatorInput.value = composition.discriminator || '';
   dom.fieldTemplateSelect.disabled = false;
   dom.applyFieldTemplateBtn.disabled = false;
   dom.entityMoveDomainSelect.value = found.domain.id;
@@ -1764,7 +2384,191 @@ function renderEntityInspector() {
   });
 }
 
+function buildModelSnapshot() {
+  const domains = state.domains.map((domain) => ({
+    id: domain.id,
+    name: domain.name,
+    color: domain.color,
+    context: domain.context || {},
+    entities: domain.entities.map((entity) => ({
+      id: entity.id,
+      name: entity.name,
+      meta: entity.meta || { aggregateRoot: false, invariants: [] },
+      contracts: Array.isArray(entity?.meta?.contracts)
+        ? entity.meta.contracts.map((contract, index) => normalizeContractInput(contract, index))
+        : [],
+      fields: entity.fields.map((field) => ({
+        name: field.name,
+        type: field.type,
+        required: Boolean(field.required),
+        pk: Boolean(field.pk),
+        fk: Boolean(field.fk),
+        unique: Boolean(field.unique),
+        nullable: Boolean(field.nullable),
+        format: field.format || '',
+        itemsType: field.itemsType || '',
+        enumValues: Array.isArray(field.enumValues) ? [...field.enumValues] : []
+      }))
+    }))
+  }));
+  const relationships = state.relationships.map((relationship) => ({
+    id: relationship.id,
+    fromEntityId: relationship.fromEntityId,
+    toEntityId: relationship.toEntityId,
+    fromCardinality: relationship.fromCardinality,
+    toCardinality: relationship.toCardinality
+  }));
+  return { domains, relationships };
+}
+
+function saveSchemaBaseline() {
+  const snapshot = buildModelSnapshot();
+  localStorage.setItem(DIFF_BASELINE_KEY, JSON.stringify(snapshot));
+  renderSchemaDiffResults([{ severity: 'info', message: 'Baseline saved.' }]);
+}
+
+function loadSchemaBaseline() {
+  const raw = localStorage.getItem(DIFF_BASELINE_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (_) {
+    return null;
+  }
+}
+
+function renderSchemaDiffResults(items) {
+  dom.schemaDiffList.innerHTML = '';
+  if (!Array.isArray(items) || !items.length) {
+    const li = document.createElement('li');
+    li.textContent = 'No schema diff available.';
+    dom.schemaDiffList.appendChild(li);
+    return;
+  }
+  items.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = `[${String(item.severity || 'info').toUpperCase()}] ${item.message}`;
+    dom.schemaDiffList.appendChild(li);
+  });
+}
+
+function renderSchemaDiffStatus() {
+  if (dom.schemaDiffList.children.length > 0) return;
+  const hasBaseline = Boolean(loadSchemaBaseline());
+  renderSchemaDiffResults([{
+    severity: hasBaseline ? 'info' : 'warn',
+    message: hasBaseline ? 'Baseline loaded. Run diff to preview migration hints.' : 'No baseline saved yet.'
+  }]);
+}
+
+function runSchemaDiff() {
+  const baseline = loadSchemaBaseline();
+  if (!baseline) {
+    renderSchemaDiffResults([{ severity: 'warn', message: 'No baseline found. Save baseline first.' }]);
+    return;
+  }
+  const current = buildModelSnapshot();
+  const changes = [];
+  const baseDomainsById = new Map((baseline.domains || []).map((domain) => [domain.id, domain]));
+  const currentDomainsById = new Map((current.domains || []).map((domain) => [domain.id, domain]));
+
+  current.domains.forEach((domain) => {
+    if (!baseDomainsById.has(domain.id)) {
+      changes.push({ severity: 'info', message: `Create table/collection for domain "${domain.name}".` });
+    }
+  });
+  (baseline.domains || []).forEach((domain) => {
+    if (!currentDomainsById.has(domain.id)) {
+      changes.push({ severity: 'warn', message: `Drop domain "${domain.name}" scope and related entities.` });
+    }
+  });
+
+  const baseEntities = new Map();
+  (baseline.domains || []).forEach((domain) => {
+    (domain.entities || []).forEach((entity) => baseEntities.set(entity.id, { domain, entity }));
+  });
+  const currentEntities = new Map();
+  current.domains.forEach((domain) => {
+    (domain.entities || []).forEach((entity) => currentEntities.set(entity.id, { domain, entity }));
+  });
+
+  currentEntities.forEach(({ domain, entity }, entityId) => {
+    if (!baseEntities.has(entityId)) {
+      changes.push({ severity: 'info', message: `Create entity "${domain.name}/${entity.name}".` });
+      return;
+    }
+    const baseEntity = baseEntities.get(entityId).entity;
+    const baseFieldsByName = new Map((baseEntity.fields || []).map((field) => [normalizedName(field.name), field]));
+    const currentFieldsByName = new Map((entity.fields || []).map((field) => [normalizedName(field.name), field]));
+
+    entity.fields.forEach((field) => {
+      if (!baseFieldsByName.has(normalizedName(field.name))) {
+        changes.push({ severity: 'info', message: `Add field "${domain.name}/${entity.name}.${field.name}" (${field.type}).` });
+      }
+    });
+    (baseEntity.fields || []).forEach((field) => {
+      if (!currentFieldsByName.has(normalizedName(field.name))) {
+        changes.push({ severity: 'warn', message: `Remove field "${domain.name}/${entity.name}.${field.name}".` });
+      }
+    });
+    entity.fields.forEach((field) => {
+      const previous = baseFieldsByName.get(normalizedName(field.name));
+      if (!previous) return;
+      if (previous.type !== field.type) {
+        changes.push({ severity: 'warn', message: `Alter type of "${domain.name}/${entity.name}.${field.name}" from ${previous.type} to ${field.type}.` });
+      }
+      if (Boolean(previous.required) !== Boolean(field.required)) {
+        changes.push({ severity: 'warn', message: `Change required flag on "${domain.name}/${entity.name}.${field.name}" to ${field.required}.` });
+      }
+    });
+
+    const baseContracts = new Set(((baseEntity.meta?.contracts || [])).map((contract) => `${contract.type}|${contract.name}|${contract.version}`));
+    const currentContracts = new Set(((entity.meta?.contracts || [])).map((contract) => `${contract.type}|${contract.name}|${contract.version}`));
+    currentContracts.forEach((key) => {
+      if (!baseContracts.has(key)) {
+        changes.push({ severity: 'info', message: `Add message contract "${domain.name}/${entity.name}" -> ${key}.` });
+      }
+    });
+    baseContracts.forEach((key) => {
+      if (!currentContracts.has(key)) {
+        changes.push({ severity: 'warn', message: `Remove message contract "${domain.name}/${entity.name}" -> ${key}.` });
+      }
+    });
+  });
+
+  baseEntities.forEach(({ domain, entity }, entityId) => {
+    if (!currentEntities.has(entityId)) {
+      changes.push({ severity: 'warn', message: `Drop entity "${domain.name}/${entity.name}".` });
+    }
+  });
+
+  const baseRels = new Set((baseline.relationships || []).map((rel) => `${rel.fromEntityId}|${rel.toEntityId}|${rel.fromCardinality}|${rel.toCardinality}`));
+  const currentRels = new Set((current.relationships || []).map((rel) => `${rel.fromEntityId}|${rel.toEntityId}|${rel.fromCardinality}|${rel.toCardinality}`));
+  currentRels.forEach((key) => {
+    if (!baseRels.has(key)) changes.push({ severity: 'info', message: `Add relationship ${key}.` });
+  });
+  baseRels.forEach((key) => {
+    if (!currentRels.has(key)) changes.push({ severity: 'warn', message: `Remove relationship ${key}.` });
+  });
+
+  if (!changes.length) {
+    changes.push({ severity: 'info', message: 'No schema changes detected versus baseline.' });
+  }
+  renderSchemaDiffResults(changes);
+}
+
+function canExportModel() {
+  if (!state.view.exportBlockCritical) return true;
+  const issues = collectModelIssues();
+  const criticalCount = issues.filter((issue) => issue.severity === 'error').length;
+  if (criticalCount === 0) return true;
+  renderModelCheckResults(issues);
+  window.alert(`Export blocked: ${criticalCount} critical model issue(s). Run "Validate Model" and fix errors before exporting.`);
+  return false;
+}
+
 function exportAsJson() {
+  if (!canExportModel()) return;
   const payload = { domains: state.domains, relationships: state.relationships, view: state.view };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -1773,6 +2577,299 @@ function exportAsJson() {
   a.download = 'domain-designer.json';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function exportAsMarkdown() {
+  if (!canExportModel()) return;
+  const lines = [];
+  lines.push('# Domain Designer Model');
+  lines.push('');
+  state.domains.forEach((domain) => {
+    lines.push(`## Domain: ${domain.name}`);
+    lines.push('');
+    if (domain?.context) {
+      lines.push(`- Ubiquitous Language: ${domain.context.ubiquitousLanguage || '-'}`);
+      lines.push(`- Owner Team: ${domain.context.ownerTeam || '-'}`);
+      lines.push(`- Upstream: ${(domain.context.upstreamDependencies || []).join(', ') || '-'}`);
+      lines.push(`- Downstream: ${(domain.context.downstreamDependencies || []).join(', ') || '-'}`);
+      lines.push(`- Integration Channel: ${domain.context.integrationChannel || '-'}`);
+      lines.push(`- Package Dependencies: ${(domain.context.packageDependencies || []).join(', ') || '-'}`);
+      lines.push(`- Shared Value Objects: ${(domain.context.sharedValueObjects || []).join(', ') || '-'}`);
+      lines.push('');
+    }
+    domain.entities.forEach((entity) => {
+      lines.push(`### Entity: ${entity.name}`);
+      lines.push('');
+      lines.push(`- Aggregate Root: ${Boolean(entity?.meta?.aggregateRoot)}`);
+      lines.push(`- Invariants: ${(entity?.meta?.invariants || []).join('; ') || '-'}`);
+      lines.push('');
+      lines.push('| Field | Type | Required | PK | FK | Unique | Nullable |');
+      lines.push('|---|---|---:|---:|---:|---:|---:|');
+      entity.fields.forEach((field) => {
+        lines.push(`| ${field.name} | ${field.type}${field.format ? `(${field.format})` : ''} | ${Boolean(field.required)} | ${Boolean(field.pk)} | ${Boolean(field.fk)} | ${Boolean(field.unique)} | ${Boolean(field.nullable)} |`);
+      });
+      lines.push('');
+      lines.push('RBAC:');
+      const policy = getEntityRbacPolicy(entity);
+      ['list', 'getById', 'create', 'update', 'delete'].forEach((action) => {
+        const rule = policy[action] || { roles: [], tenantScoped: true };
+        lines.push(`- ${action}: [${(rule.roles || []).join(', ')}], tenantScoped=${Boolean(rule.tenantScoped)}`);
+      });
+      lines.push('');
+      lines.push('Message Contracts:');
+      const contracts = Array.isArray(entity?.meta?.contracts) ? entity.meta.contracts : [];
+      if (!contracts.length) {
+        lines.push('- none');
+      } else {
+        contracts.forEach((contract) => {
+          lines.push(`- ${contract.type}:${contract.name} | channel=${contract.channel || '-'} | version=${contract.version}`);
+        });
+      }
+      lines.push('');
+    });
+  });
+  if (state.relationships.length) {
+    lines.push('## Relationships');
+    lines.push('');
+    state.relationships.forEach((relationship) => {
+      lines.push(`- ${relationship.name || relationship.id}: ${entityLabel(relationship.fromEntityId)} (${relationship.fromCardinality}) -> (${relationship.toCardinality}) ${entityLabel(relationship.toEntityId)}`);
+    });
+  }
+  const blob = new Blob([lines.join('\n')], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'domain-designer-model.md';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function buildExampleValueForField(field) {
+  if (field.enumValues?.length) return field.enumValues[0];
+  if (field.type === 'uuid') return '00000000-0000-4000-8000-000000000001';
+  if (field.type === 'datetime') return '2026-01-01T00:00:00.000Z';
+  if (field.type === 'date') return '2026-01-01';
+  if (field.type === 'integer') return 1;
+  if (field.type === 'number') return 10.5;
+  if (field.type === 'boolean') return true;
+  if (field.type === 'array') return [];
+  if (field.type === 'object') return {};
+  if (field.format === 'email') return 'user@example.com';
+  if (field.format === 'uri') return 'https://example.com/resource';
+  return `${field.name || 'value'}_example`;
+}
+
+function buildEntityRequestExample(entity, mode = 'create') {
+  const payload = {};
+  (entity.fields || []).forEach((field) => {
+    if (mode === 'create' && field.pk) return;
+    if (mode === 'update' && field.pk) return;
+    if (mode === 'update' && !field.required && !field.fk && !field.unique) return;
+    payload[field.name] = buildExampleValueForField(field);
+  });
+  return payload;
+}
+
+function buildEntityResponseExample(entity) {
+  const payload = {};
+  (entity.fields || []).forEach((field) => {
+    payload[field.name] = buildExampleValueForField(field);
+  });
+  return payload;
+}
+
+function generateExamplesPreview() {
+  const selected = findEntity(state.selectedEntityId);
+  const targets = selected
+    ? [{ domain: selected.domain, entity: selected.entity }]
+    : state.domains.flatMap((domain) => domain.entities.map((entity) => ({ domain, entity })));
+  if (!targets.length) {
+    dom.examplesPreviewOutput.textContent = '// No entities found for example generation.';
+    return;
+  }
+  const chunks = targets.map(({ domain, entity }) => {
+    const schemaName = toSchemaName(domain.name, entity.name);
+    const requestCreate = buildEntityRequestExample(entity, 'create');
+    const requestUpdate = buildEntityRequestExample(entity, 'update');
+    const response = buildEntityResponseExample(entity);
+    return [
+      `// ${domain.name}/${entity.name}`,
+      `// create${schemaName} request`,
+      JSON.stringify(requestCreate, null, 2),
+      `// update${schemaName} request`,
+      JSON.stringify(requestUpdate, null, 2),
+      `// ${schemaName} response`,
+      JSON.stringify(response, null, 2)
+    ].join('\n');
+  });
+  dom.examplesPreviewOutput.textContent = chunks.join('\n\n/* ---------------------------------------- */\n\n');
+}
+
+function exportAsJsonSchema() {
+  if (!canExportModel()) return;
+  const definitions = {};
+  state.domains.forEach((domain) => {
+    domain.entities.forEach((entity) => {
+      const schemaName = toSchemaName(domain.name, entity.name);
+      const properties = {};
+      const required = [];
+      (entity.fields || []).forEach((field) => {
+        properties[field.name] = toOasFieldSchema(field);
+        if (field.required) required.push(field.name);
+      });
+      definitions[schemaName] = {
+        $id: schemaName,
+        type: 'object',
+        properties,
+        required,
+        additionalProperties: false
+      };
+    });
+  });
+  const payload = {
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    title: 'Domain Designer JSON Schemas',
+    type: 'object',
+    definitions
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'domain-designer-json-schema.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportAsAsyncApi() {
+  if (!canExportModel()) return;
+  const channels = {};
+  state.domains.forEach((domain) => {
+    domain.entities.forEach((entity) => {
+      const contracts = Array.isArray(entity?.meta?.contracts) ? entity.meta.contracts : [];
+      contracts.forEach((contract) => {
+        const channelName = contract.channel || `${toPathToken(domain.name)}/${toPathToken(entity.name)}/${contract.type}`;
+        if (!channels[channelName]) channels[channelName] = {};
+        const operationKey = contract.type === 'response' ? 'subscribe' : 'publish';
+        channels[channelName][operationKey] = {
+          operationId: `${contract.type}_${toSchemaName(domain.name, entity.name)}_${contract.name}`,
+          message: {
+            name: contract.name,
+            payload: contract.payloadSchema || {}
+          }
+        };
+      });
+    });
+  });
+  const payload = {
+    asyncapi: '3.0.0',
+    info: {
+      title: 'Domain Designer AsyncAPI Export',
+      version: '1.0.0'
+    },
+    channels
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'domain-designer-asyncapi.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportBoilerplateBundle() {
+  if (!canExportModel()) return;
+  const modules = state.domains.flatMap((domain) => domain.entities.map((entity) => ({
+    module: `${domain.name}/${entity.name}`,
+    files: {
+      model: `src/modules/${domain.name}/domain/Model/${entity.name}.ts`,
+      repository: `src/modules/${domain.name}/application/ports/${entity.name}Repository.ts`,
+      useCase: `src/modules/${domain.name}/application/useCases/Create${entity.name}.ts`,
+      controller: `src/modules/${domain.name}/interface/controller/${entity.name}Controller.ts`,
+      handler: `src/modules/${domain.name}/interface/restapi/frameworks/express/handlers/create${entity.name}.ts`
+    }
+  })));
+  const payload = {
+    kind: 'boilerplate-bundle',
+    version: '1.0.0',
+    generatedAt: new Date().toISOString(),
+    modules
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'domain-designer-boilerplate-bundle.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportAsPackage() {
+  if (!canExportModel()) return;
+  const selected = getSelectedDomain();
+  if (!selected) {
+    window.alert('Select a domain to export package.');
+    return;
+  }
+  const payload = {
+    kind: 'domain-package',
+    version: '1.0.0',
+    exportedAt: new Date().toISOString(),
+    domain: selected
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${toPathToken(selected.name) || 'domain'}-package.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importDomainPackage(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(String(reader.result || '{}'));
+      const sourceDomain = parsed?.domain;
+      if (!sourceDomain || !Array.isArray(sourceDomain.entities)) {
+        window.alert('Invalid package format.');
+        return;
+      }
+      withPersist(() => {
+        const nextDomain = normalizeDomainInput(sourceDomain, state.domains.length);
+        nextDomain.context = nextDomain.context || {};
+        nextDomain.context.packageDependencies = uniqueStrings(nextDomain.context.packageDependencies || []);
+        nextDomain.context.sharedValueObjects = uniqueStrings(nextDomain.context.sharedValueObjects || []);
+        const existingDeps = new Set(
+          state.domains.flatMap((domain) => domain?.context?.packageDependencies || [])
+        );
+        const incomingNewDeps = nextDomain.context.packageDependencies.filter((dep) => !existingDeps.has(dep));
+        if (incomingNewDeps.length) {
+          nextDomain.context.packageDependencies = uniqueStrings([
+            ...nextDomain.context.packageDependencies,
+            ...incomingNewDeps
+          ]);
+        }
+        let domainName = nextDomain.name;
+        let suffix = 2;
+        while (isDomainNameTaken(domainName)) {
+          domainName = `${nextDomain.name}_${suffix}`;
+          suffix += 1;
+        }
+        nextDomain.name = domainName;
+        state.domains.push(nextDomain);
+        state.selectedDomainId = nextDomain.id;
+        state.selectedEntityId = nextDomain.entities[0]?.id || null;
+        recomputeIdCounter();
+        render();
+      });
+    } catch (_) {
+      window.alert('Could not parse package JSON.');
+    }
+  };
+  reader.readAsText(file);
 }
 
 function toOasType(fieldType) {
@@ -1838,7 +2935,64 @@ function toPathToken(value) {
     .replace(/^-+|-+$/g, '');
 }
 
+function buildCodePreviewForEntity(domain, entity) {
+  const className = toSchemaName('', entity.name).replace(/^_+/, '');
+  const repositoryName = `${className}RepositoryPort`;
+  const useCaseName = `Create${className}UseCase`;
+  const controllerName = `${className}Controller`;
+  const handlerName = `create${className}Handler`;
+  const fields = (entity.fields || []).map((field) => `  ${field.name}: ${field.type};`).join('\n');
+  return [
+    `// ${domain.name} / ${entity.name}`,
+    `export interface ${className}Model {`,
+    fields || '  id: uuid;',
+    '}',
+    '',
+    `export interface ${repositoryName} {`,
+    `  create(input: ${className}Model): Promise<${className}Model>;`,
+    `  getById(id: string): Promise<${className}Model | null>;`,
+    '}',
+    '',
+    `export class ${useCaseName} {`,
+    `  constructor(private readonly repo: ${repositoryName}) {}`,
+    `  async execute(input: ${className}Model): Promise<${className}Model> {`,
+    '    return this.repo.create(input);',
+    '  }',
+    '}',
+    '',
+    `export class ${controllerName} {`,
+    `  constructor(private readonly createUseCase: ${useCaseName}) {}`,
+    `  async create(input: ${className}Model) {`,
+    '    return this.createUseCase.execute(input);',
+    '  }',
+    '}',
+    '',
+    `export async function ${handlerName}(requestBody: unknown) {`,
+    `  // validate requestBody against OAS schema for ${className}`,
+    `  // map to controller.${'create'} and return framework-specific response`,
+    '}'
+  ].join('\n');
+}
+
+function generateCodePreview() {
+  const found = findEntity(state.selectedEntityId);
+  if (found) {
+    dom.codePreviewOutput.textContent = buildCodePreviewForEntity(found.domain, found.entity);
+    return;
+  }
+  const chunks = [];
+  state.domains.forEach((domain) => {
+    domain.entities.forEach((entity) => {
+      chunks.push(buildCodePreviewForEntity(domain, entity));
+    });
+  });
+  dom.codePreviewOutput.textContent = chunks.length
+    ? chunks.join('\n\n/* ---------------------------------------- */\n\n')
+    : '// Select an entity or create domains/entities to preview generated skeletons.';
+}
+
 function exportAsOas() {
+  if (!canExportModel()) return;
   const schemas = {};
   const paths = {};
   const entitySchemaIndex = {};
@@ -1857,8 +3011,32 @@ function exportAsOas() {
         properties,
         required,
         'x-domain': domain.name,
-        'x-entity': entity.name
+        'x-entity': entity.name,
+        'x-message-contracts': Array.isArray(entity?.meta?.contracts)
+          ? entity.meta.contracts.map((contract, index) => normalizeContractInput(contract, index))
+          : []
       };
+      const composition = entity?.meta?.oasComposition || {};
+      const mode = ['oneOf', 'allOf', 'anyOf'].includes(composition.mode) ? composition.mode : '';
+      const refs = parseCommaSeparated(composition.refs || []);
+      if (mode && refs.length) {
+        schemas[schemaName][mode] = refs.map((ref) => ({ $ref: `#/components/schemas/${ref}` }));
+      }
+      const externalRefs = parseCommaSeparated(composition.externalRefs || []);
+      if (externalRefs.length) {
+        schemas[schemaName]['x-external-refs'] = externalRefs;
+      }
+      const discriminator = String(composition.discriminator || '').trim();
+      if (discriminator) {
+        const mapping = {};
+        refs.forEach((refName) => {
+          mapping[refName] = `#/components/schemas/${refName}`;
+        });
+        schemas[schemaName].discriminator = {
+          propertyName: discriminator,
+          mapping
+        };
+      }
 
       const domainPath = toPathToken(domain.name);
       const entityPath = toPathToken(entity.name);
@@ -1967,6 +3145,15 @@ function exportAsOas() {
     info: { title: 'Domain Designer Export', version: '1.0.0' },
     paths,
     components: { schemas },
+    'x-message-contracts': state.domains.flatMap((domain) => (
+      domain.entities.flatMap((entity) => (
+        (Array.isArray(entity?.meta?.contracts) ? entity.meta.contracts : []).map((contract, index) => ({
+          ...normalizeContractInput(contract, index),
+          domain: domain.name,
+          entity: entity.name
+        }))
+      ))
+    )),
     'x-relations': state.relationships.map((relationship) => ({
       name: relationship.name,
       fromEntityId: relationship.fromEntityId,
@@ -1994,7 +3181,15 @@ function seed() {
   state.selectedEntityId = null;
   state.selectedRelationshipId = null;
   state.idCounter = 1;
-  state.view = { zoom: 1, compactEntities: false, snapToGrid: true, edgeStyle: 'curved' };
+  state.view = {
+    zoom: 1,
+    compactEntities: false,
+    snapToGrid: true,
+    edgeStyle: 'curved',
+    modelCheckMinSeverity: 'info',
+    exportBlockCritical: true,
+    largeCanvasMode: false
+  };
 
   const users = addDomain('Users', { x: 80, y: 80, color: '#93c5fd' });
   const billing = addDomain('Billing', { x: 700, y: 200, color: '#86efac' });
@@ -2041,7 +3236,14 @@ function normalizeRelationship(relationship) {
     ...relationship,
     name: relationship.name || `${relationship.fromEntityId} -> ${relationship.toEntityId}`,
     fromCardinality: relationship.fromCardinality || 'N',
-    toCardinality: relationship.toCardinality || '1'
+    toCardinality: relationship.toCardinality || '1',
+    fromAnchorSide: ['top', 'right', 'bottom', 'left'].includes(relationship.fromAnchorSide) ? relationship.fromAnchorSide : null,
+    toAnchorSide: ['top', 'right', 'bottom', 'left'].includes(relationship.toAnchorSide) ? relationship.toAnchorSide : null,
+    anchorBehavior: relationship.anchorBehavior === 'center' ? 'center' : 'auto',
+    bendX: normalizeOptionalNumber(relationship.bendX),
+    bendY: normalizeOptionalNumber(relationship.bendY),
+    labelOffsetX: normalizeOptionalNumber(relationship.labelOffsetX) ?? 0,
+    labelOffsetY: normalizeOptionalNumber(relationship.labelOffsetY) ?? 0
   };
 }
 
@@ -2053,12 +3255,46 @@ function normalizeEntityInput(entity, entityIndex) {
   const fieldsInput = Array.isArray(entity?.fields) ? entity.fields : defaultFields();
   const fields = fieldsInput.map((field, fieldIndex) => normalizeField(field, fieldIndex));
   const entityName = String(entity?.name || '').trim() || `Entity_${entityIndex + 1}`;
+  const invariants = Array.isArray(entity?.meta?.invariants)
+    ? entity.meta.invariants.map((item) => String(item).trim()).filter(Boolean)
+    : parseCommaSeparated(String(entity?.meta?.invariants || '').replace(/\n/g, ','));
+  const rbac = getDefaultRbacPolicy();
+  const sourceRbac = entity?.meta?.rbac || {};
+  ['list', 'getById', 'create', 'update', 'delete'].forEach((action) => {
+    const rule = sourceRbac[action] || rbac[action] || {};
+    rbac[action] = {
+      roles: Array.isArray(rule.roles)
+        ? rule.roles.map((role) => String(role).trim()).filter(Boolean)
+        : Array.isArray(rbac[action]?.roles)
+          ? rbac[action].roles
+          : [],
+      tenantScoped: typeof rule.tenantScoped === 'boolean' ? rule.tenantScoped : Boolean(rbac[action]?.tenantScoped)
+    };
+  });
+  const contracts = Array.isArray(entity?.meta?.contracts)
+    ? entity.meta.contracts.map((contract, index) => normalizeContractInput(contract, index))
+    : [];
+  const oasComposition = {
+    mode: ['oneOf', 'allOf', 'anyOf'].includes(entity?.meta?.oasComposition?.mode)
+      ? entity.meta.oasComposition.mode
+      : '',
+    refs: parseCommaSeparated(entity?.meta?.oasComposition?.refs || []),
+    externalRefs: parseCommaSeparated(entity?.meta?.oasComposition?.externalRefs || []),
+    discriminator: String(entity?.meta?.oasComposition?.discriminator || '').trim()
+  };
   return {
     id: entity?.id || fallbackId('entity', entityIndex),
     name: entityName,
     x: Number.isFinite(entity?.x) ? entity.x : 14 + (entityIndex % 2) * 206,
     y: Number.isFinite(entity?.y) ? entity.y : 14 + Math.floor(entityIndex / 2) * 120,
-    fields
+    fields,
+    meta: {
+      aggregateRoot: Boolean(entity?.meta?.aggregateRoot),
+      invariants,
+      rbac,
+      contracts,
+      oasComposition
+    }
   };
 }
 
@@ -2071,6 +3307,15 @@ function normalizeDomainInput(domain, domainIndex) {
     color: /^#[0-9a-f]{6}$/i.test(domain?.color || '') ? domain.color : DOMAIN_COLORS[domainIndex % DOMAIN_COLORS.length],
     x: Number.isFinite(domain?.x) ? domain.x : 120 + domainIndex * 40,
     y: Number.isFinite(domain?.y) ? domain.y : 90 + domainIndex * 30,
+    context: {
+      ubiquitousLanguage: String(domain?.context?.ubiquitousLanguage || '').trim(),
+      ownerTeam: String(domain?.context?.ownerTeam || '').trim(),
+      upstreamDependencies: parseCommaSeparated(domain?.context?.upstreamDependencies || []),
+      downstreamDependencies: parseCommaSeparated(domain?.context?.downstreamDependencies || []),
+      integrationChannel: String(domain?.context?.integrationChannel || '').trim(),
+      packageDependencies: parseCommaSeparated(domain?.context?.packageDependencies || []),
+      sharedValueObjects: parseCommaSeparated(domain?.context?.sharedValueObjects || [])
+    },
     entities
   };
 }
@@ -2087,7 +3332,12 @@ function normalizeStatePayload(parsed) {
     zoom: clampZoom(parsed?.view?.zoom || 1),
     compactEntities: Boolean(parsed?.view?.compactEntities),
     snapToGrid: parsed?.view?.snapToGrid !== false,
-    edgeStyle: ['curved', 'orthogonal'].includes(parsed?.view?.edgeStyle) ? parsed.view.edgeStyle : 'curved'
+    edgeStyle: ['curved', 'orthogonal'].includes(parsed?.view?.edgeStyle) ? parsed.view.edgeStyle : 'curved',
+    modelCheckMinSeverity: ['info', 'warn', 'error'].includes(parsed?.view?.modelCheckMinSeverity)
+      ? parsed.view.modelCheckMinSeverity
+      : 'info',
+    exportBlockCritical: parsed?.view?.exportBlockCritical !== false,
+    largeCanvasMode: Boolean(parsed?.view?.largeCanvasMode)
   };
   return {
     domains,
@@ -2140,7 +3390,15 @@ function loadState() {
   } catch (error) {
     seed();
     saveState();
-    state.view = { zoom: 1, compactEntities: false, snapToGrid: true, edgeStyle: 'curved' };
+    state.view = {
+      zoom: 1,
+      compactEntities: false,
+      snapToGrid: true,
+      edgeStyle: 'curved',
+      modelCheckMinSeverity: 'info',
+      exportBlockCritical: true,
+      largeCanvasMode: false
+    };
     history.past = [];
     history.future = [];
   }
@@ -2256,7 +3514,15 @@ function importStateFromOasFile(file) {
         state.selectedDomainId = nextDomains[0]?.id || null;
         state.selectedEntityId = null;
         state.selectedRelationshipId = null;
-        state.view = { zoom: 1, compactEntities: false, snapToGrid: true, edgeStyle: 'curved' };
+        state.view = {
+          zoom: 1,
+          compactEntities: false,
+          snapToGrid: true,
+          edgeStyle: 'curved',
+          modelCheckMinSeverity: 'info',
+          exportBlockCritical: true,
+          largeCanvasMode: false
+        };
         recomputeIdCounter();
         render();
       }, { recordHistory: false });
@@ -2285,6 +3551,10 @@ function render() {
   renderPickStatus();
   renderEntityInspector();
   renderEdges();
+  renderMiniMap();
+  renderSchemaDiffStatus();
+  generateCodePreview();
+  generateExamplesPreview();
   dom.undoBtn.disabled = history.past.length === 0;
   dom.redoBtn.disabled = history.future.length === 0;
 }
@@ -2407,6 +3677,18 @@ function wireEvents() {
     dom.addDomainBtn.click();
   };
   dom.setDomainColorBtn.onclick = () => setSelectedDomainColor(dom.domainColorInput.value);
+  dom.saveDomainContextBtn.onclick = saveSelectedDomainContext;
+  dom.clearDomainContextBtn.onclick = () => {
+    if (!getSelectedDomain()) return;
+    dom.domainUbiquitousLanguageInput.value = '';
+    dom.domainOwnerTeamInput.value = '';
+    dom.domainUpstreamInput.value = '';
+    dom.domainDownstreamInput.value = '';
+    dom.domainIntegrationChannelInput.value = '';
+    dom.domainPackageDependenciesInput.value = '';
+    dom.domainSharedValueObjectsInput.value = '';
+    saveSelectedDomainContext();
+  };
 
   dom.renameDomainBtn.onclick = () => {
     const selected = getSelectedDomain();
@@ -2448,6 +3730,33 @@ function wireEvents() {
       render();
     });
   };
+  dom.applyEntityTemplateBtn.onclick = () => {
+    const found = findEntity(state.selectedEntityId);
+    if (!found) {
+      window.alert('Select an entity first.');
+      return;
+    }
+    const template = dom.entityTemplateSelect.value;
+    if (!template) return;
+    withPersist(() => {
+      if (template === 'crudAggregate') {
+        ensureForeignKeyField(found.entity, 'owner');
+      }
+      if (template === 'eventSourced') {
+        const hasVersion = found.entity.fields.some((field) => normalizedName(field.name) === 'version');
+        if (!hasVersion) found.entity.fields.push(normalizeField({ name: 'version', type: 'integer', required: true }, found.entity.fields.length));
+        found.entity.meta.aggregateRoot = true;
+      }
+      if (template === 'referenceData') {
+        const hasCode = found.entity.fields.some((field) => normalizedName(field.name) === 'code');
+        if (!hasCode) found.entity.fields.push(normalizeField({ name: 'code', type: 'string', required: true, unique: true }, found.entity.fields.length));
+      }
+      if (template === 'tenantOwned') {
+        ensureForeignKeyField(found.entity, 'tenant');
+      }
+      render();
+    });
+  };
   dom.entityNameInput.onkeydown = (event) => {
     if (event.key !== 'Enter') return;
     event.preventDefault();
@@ -2484,6 +3793,15 @@ function wireEvents() {
     dom.entitySearchBtn.click();
   };
   dom.saveEntityRenameBtn.onclick = () => saveSelectedEntityName(dom.entityRenameInput.value);
+  dom.saveEntityRulesBtn.onclick = saveSelectedEntityRules;
+  dom.saveEntityRbacBtn.onclick = saveSelectedEntityRbacRule;
+  dom.entityRbacActionSelect.onchange = () => {
+    const found = findEntity(state.selectedEntityId);
+    if (!found) return;
+    renderEntityRbacInspector(found.entity);
+  };
+  dom.addEntityContractBtn.onclick = addSelectedEntityContract;
+  dom.saveEntityOasCompositionBtn.onclick = saveSelectedEntityOasComposition;
   dom.entityRenameInput.onkeydown = (event) => {
     if (event.key !== 'Enter') return;
     event.preventDefault();
@@ -2504,6 +3822,15 @@ function wireEvents() {
   };
   dom.saveRelationshipBtn.onclick = saveSelectedRelationship;
   dom.reverseRelationshipBtn.onclick = reverseSelectedRelationship;
+  dom.resetRelationshipLabelOffsetBtn.onclick = () => {
+    if (!state.selectedRelationshipId) return;
+    dom.relationshipLabelOffsetXInput.value = '0';
+    dom.relationshipLabelOffsetYInput.value = '0';
+    dom.relationshipBendXInput.value = '';
+    dom.relationshipBendYInput.value = '';
+    dom.relationshipAnchorBehaviorSelect.value = 'auto';
+    saveSelectedRelationship();
+  };
   dom.undoBtn.onclick = undo;
   dom.redoBtn.onclick = redo;
   dom.zoomInBtn.onclick = () => zoomBy(0.1);
@@ -2523,7 +3850,32 @@ function wireEvents() {
       renderView();
     }, { recordHistory: false });
   };
+  dom.toggleLargeCanvasBtn.onclick = () => {
+    withPersist(() => {
+      state.view.largeCanvasMode = !state.view.largeCanvasMode;
+      if (state.view.largeCanvasMode) state.view.compactEntities = true;
+      render();
+    }, { recordHistory: false });
+  };
   dom.runModelCheckBtn.onclick = runModelChecks;
+  dom.modelCheckMinSeveritySelect.onchange = () => {
+    withPersist(() => {
+      state.view.modelCheckMinSeverity = dom.modelCheckMinSeveritySelect.value;
+      renderModelCheckResults(collectModelIssues());
+    }, { recordHistory: false });
+  };
+  dom.exportBlockCriticalCheck.onchange = () => {
+    withPersist(() => {
+      state.view.exportBlockCritical = Boolean(dom.exportBlockCriticalCheck.checked);
+      renderView();
+    }, { recordHistory: false });
+  };
+  dom.saveBaselineBtn.onclick = saveSchemaBaseline;
+  dom.runSchemaDiffBtn.onclick = runSchemaDiff;
+  dom.clearBaselineBtn.onclick = () => {
+    localStorage.removeItem(DIFF_BASELINE_KEY);
+    renderSchemaDiffResults([{ severity: 'info', message: 'Baseline cleared.' }]);
+  };
   dom.autoLayoutBtn.onclick = autoLayout;
   dom.fitViewBtn.onclick = fitView;
   dom.resetViewBtn.onclick = resetView;
@@ -2537,6 +3889,13 @@ function wireEvents() {
   };
   dom.exportJsonBtn.onclick = exportAsJson;
   dom.exportOasBtn.onclick = exportAsOas;
+  dom.exportMdBtn.onclick = exportAsMarkdown;
+  dom.exportJsonschemaBtn.onclick = exportAsJsonSchema;
+  dom.exportAsyncapiBtn.onclick = exportAsAsyncApi;
+  dom.exportBoilerplateBundleBtn.onclick = exportBoilerplateBundle;
+  dom.exportPackageBtn.onclick = exportAsPackage;
+  dom.generateCodePreviewBtn.onclick = generateCodePreview;
+  dom.generateExamplesBtn.onclick = generateExamplesPreview;
   dom.importJsonBtn.onclick = () => dom.importJsonInput.click();
   dom.importJsonInput.onchange = (event) => {
     const file = event.target.files?.[0];
@@ -2550,6 +3909,13 @@ function wireEvents() {
     if (!file) return;
     importStateFromOasFile(file);
     dom.importOasInput.value = '';
+  };
+  dom.importPackageBtn.onclick = () => dom.importPackageInput.click();
+  dom.importPackageInput.onchange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    importDomainPackage(file);
+    dom.importPackageInput.value = '';
   };
 
   dom.resetCanvasBtn.onclick = () => {
@@ -2605,6 +3971,25 @@ function wireEvents() {
   dom.canvas.addEventListener('pointercancel', stopPan);
   dom.canvas.addEventListener('pointerleave', stopPan);
 
+  window.addEventListener('pointermove', (event) => {
+    if (!interaction.relationshipAnchorDragActive) return;
+    const fromPoint = entityAnchorOnCanvas(
+      interaction.relationshipAnchorFromEntityId,
+      interaction.relationshipAnchorFromSide
+    );
+    if (!fromPoint) {
+      stopAnchorDrag();
+      return;
+    }
+    const pointer = pointerToCanvasPoint(event.clientX, event.clientY);
+    renderAnchorPreviewEdge(fromPoint, pointer);
+  });
+
+  window.addEventListener('pointerup', () => {
+    if (!interaction.relationshipAnchorDragActive) return;
+    stopAnchorDrag();
+  });
+
   window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
     const targetTag = String(event.target?.tagName || '').toLowerCase();
@@ -2618,6 +4003,7 @@ function wireEvents() {
     }
     if (key === 'escape') {
       setRelationshipPickMode(false);
+      stopAnchorDrag();
       state.selectedRelationshipId = null;
       render();
       return;

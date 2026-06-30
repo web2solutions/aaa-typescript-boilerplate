@@ -46,10 +46,38 @@
           </section>
 
           <section class="panel">
+            <h2>Bounded Context</h2>
+            <p class="hint">Metadata for selected domain context and ownership.</p>
+            <div class="column compact">
+              <input id="domain-ubiquitous-language-input" type="text" placeholder="Ubiquitous language" />
+              <input id="domain-owner-team-input" type="text" placeholder="Owner team" />
+              <input id="domain-upstream-input" type="text" placeholder="Upstream dependencies (comma separated)" />
+              <input id="domain-downstream-input" type="text" placeholder="Downstream dependencies (comma separated)" />
+              <input id="domain-integration-channel-input" type="text" placeholder="Integration channel (http, async, grpc...)" />
+              <input id="domain-package-dependencies-input" type="text" placeholder="Package dependencies (comma separated)" />
+              <input id="domain-shared-value-objects-input" type="text" placeholder="Shared value objects (comma separated)" />
+              <div class="row">
+                <button id="save-domain-context-btn" type="button">Save Context</button>
+                <button id="clear-domain-context-btn" type="button">Clear</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
             <h2>Entities</h2>
             <div class="row">
               <input id="entity-name-input" type="text" placeholder="Entity name" />
               <button id="add-entity-btn" type="button">Add</button>
+            </div>
+            <div class="row">
+              <select id="entity-template-select">
+                <option value="">Entity template</option>
+                <option value="crudAggregate">crudAggregate</option>
+                <option value="eventSourced">eventSourced</option>
+                <option value="referenceData">referenceData</option>
+                <option value="tenantOwned">tenantOwned</option>
+              </select>
+              <button id="apply-entity-template-btn" type="button">Apply Entity Template</button>
             </div>
             <div class="row">
               <button id="rename-entity-btn" type="button">Rename</button>
@@ -106,6 +134,19 @@
                 <button id="save-relationship-btn" type="button">Save Relationship</button>
                 <button id="reverse-relationship-btn" type="button">Reverse</button>
               </div>
+              <div class="row">
+                <input id="relationship-label-offset-x-input" type="number" placeholder="Label X offset" />
+                <input id="relationship-label-offset-y-input" type="number" placeholder="Label Y offset" />
+                <button id="reset-relationship-label-offset-btn" type="button">Reset Label Pos</button>
+              </div>
+              <div class="row">
+                <input id="relationship-bend-x-input" type="number" placeholder="Bend X (optional)" />
+                <input id="relationship-bend-y-input" type="number" placeholder="Bend Y (optional)" />
+                <select id="relationship-anchor-behavior-select">
+                  <option value="auto">anchor auto</option>
+                  <option value="center">anchor center</option>
+                </select>
+              </div>
             </div>
           </section>
 
@@ -119,6 +160,58 @@
             <div class="row">
               <select id="entity-move-domain-select"></select>
               <button id="move-entity-btn" type="button">Move Domain</button>
+            </div>
+            <div class="column compact">
+              <label class="check"><input id="entity-aggregate-root-check" type="checkbox" /> Aggregate root</label>
+              <textarea id="entity-invariants-input" rows="3" placeholder="Invariant rules (one per line)"></textarea>
+              <button id="save-entity-rules-btn" type="button">Save Rules</button>
+            </div>
+            <div class="column compact">
+              <label for="entity-rbac-action-select">RBAC Action</label>
+              <select id="entity-rbac-action-select">
+                <option value="list">list</option>
+                <option value="getById">getById</option>
+                <option value="create">create</option>
+                <option value="update">update</option>
+                <option value="delete">delete</option>
+              </select>
+              <label class="check"><input id="entity-rbac-superadmin-check" type="checkbox" /> superadmin</label>
+              <label class="check"><input id="entity-rbac-admin-check" type="checkbox" /> admin</label>
+              <label class="check"><input id="entity-rbac-user-check" type="checkbox" /> user</label>
+              <label class="check"><input id="entity-rbac-tenant-check" type="checkbox" /> tenant scoped</label>
+              <button id="save-entity-rbac-btn" type="button">Save RBAC Rule</button>
+              <ul id="entity-rbac-list" class="list"></ul>
+            </div>
+            <div class="column compact">
+              <label for="entity-contract-name-input">Message Contract</label>
+              <input id="entity-contract-name-input" type="text" placeholder="Contract name" />
+              <div class="row">
+                <select id="entity-contract-type-select">
+                  <option value="event">event</option>
+                  <option value="command">command</option>
+                  <option value="request">request</option>
+                  <option value="response">response</option>
+                </select>
+                <input id="entity-contract-channel-input" type="text" placeholder="channel/topic" />
+              </div>
+              <div class="row">
+                <input id="entity-contract-version-input" type="text" placeholder="version (e.g. 1.0.0)" />
+                <button id="add-entity-contract-btn" type="button">Add Contract</button>
+              </div>
+              <ul id="entity-contract-list" class="list"></ul>
+            </div>
+            <div class="column compact">
+              <label for="entity-oas-composition-mode-select">OpenAPI Composition</label>
+              <select id="entity-oas-composition-mode-select">
+                <option value="">none</option>
+                <option value="oneOf">oneOf</option>
+                <option value="allOf">allOf</option>
+                <option value="anyOf">anyOf</option>
+              </select>
+              <input id="entity-oas-composition-refs-input" type="text" placeholder="Schema refs (comma), e.g. Users_User,Billing_Invoice" />
+              <input id="entity-oas-external-refs-input" type="text" placeholder="External $refs (comma URLs/paths)" />
+              <input id="entity-oas-discriminator-input" type="text" placeholder="Discriminator property (optional)" />
+              <button id="save-entity-oas-composition-btn" type="button">Save OAS Composition</button>
             </div>
             <div class="row">
               <input id="field-name-input" type="text" placeholder="fieldName" />
@@ -171,6 +264,11 @@
             <div class="row">
               <button id="export-json-btn" type="button">Export JSON</button>
               <button id="export-oas-btn" type="button">Export OAS 3.1</button>
+              <button id="export-md-btn" type="button">Export Markdown</button>
+              <button id="export-jsonschema-btn" type="button">Export JSON Schema</button>
+              <button id="export-asyncapi-btn" type="button">Export AsyncAPI</button>
+              <button id="export-boilerplate-bundle-btn" type="button">Export Boilerplate Bundle</button>
+              <button id="export-package-btn" type="button">Export Package</button>
             </div>
             <div class="row">
               <button id="import-json-btn" type="button">Import JSON</button>
@@ -180,6 +278,16 @@
               <button id="import-oas-btn" type="button">Import OAS 3.1</button>
               <input id="import-oas-input" type="file" accept="application/json,.json" hidden />
             </div>
+            <div class="row">
+              <button id="import-package-btn" type="button">Import Package</button>
+              <input id="import-package-input" type="file" accept="application/json,.json" hidden />
+            </div>
+            <div class="row">
+              <button id="generate-code-preview-btn" type="button">Code Preview</button>
+              <button id="generate-examples-btn" type="button">Generate Examples</button>
+            </div>
+            <pre id="code-preview-output" class="code-preview-output"></pre>
+            <pre id="examples-preview-output" class="code-preview-output"></pre>
             <div class="row">
               <button id="reset-canvas-btn" type="button">Reset</button>
               <button id="clear-storage-btn" type="button">Clear Save</button>
@@ -202,6 +310,7 @@
               <li>Ctrl/Cmd + wheel to zoom</li>
               <li>Alt + L to auto layout</li>
               <li>Select domain to add entity</li>
+              <li>Drag from entity edge dots to connect entities</li>
             </ul>
           </section>
 
@@ -210,7 +319,27 @@
             <div class="row">
               <button id="run-model-check-btn" type="button">Validate Model</button>
             </div>
+            <div class="column compact">
+              <label class="check"><input id="export-block-critical-check" type="checkbox" checked /> block export on critical issues</label>
+              <label for="model-check-min-severity-select">Display minimum severity</label>
+              <select id="model-check-min-severity-select">
+                <option value="info">info</option>
+                <option value="warn">warn</option>
+                <option value="error">error</option>
+              </select>
+            </div>
             <ul id="model-check-list" class="list"></ul>
+          </section>
+
+          <section class="panel">
+            <h2>Schema Diff</h2>
+            <p class="hint">Compare current model against saved baseline and preview migration hints.</p>
+            <div class="row">
+              <button id="save-baseline-btn" type="button">Save Baseline</button>
+              <button id="run-schema-diff-btn" type="button">Run Diff</button>
+              <button id="clear-baseline-btn" type="button">Clear Baseline</button>
+            </div>
+            <ul id="schema-diff-list" class="list"></ul>
           </section>
         </aside>
 
@@ -228,6 +357,7 @@
               <button id="toggle-compact-view-btn" type="button">Compact View</button>
               <button id="toggle-snap-btn" type="button">Snap: On</button>
               <button id="auto-layout-btn" type="button">Auto Layout</button>
+              <button id="toggle-large-canvas-btn" type="button">Large Canvas: Off</button>
               <button id="fit-view-btn" type="button">Fit</button>
               <button id="reset-view-btn" type="button">Reset View</button>
             </div>
@@ -237,6 +367,7 @@
               <svg id="edges" class="edges"></svg>
             </div>
           </div>
+          <div id="mini-map" class="mini-map"></div>
         </main>
       </div>
     </section>
