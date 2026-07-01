@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- 2026-07-01 docs(agents): record cli non-interactive scaffold smoke validation - web2solutions
+- 2026-07-01 feat(cli-sdk): harden non-interactive bootstrap and enforce sdk typecheck tests - web2solutions
 - 2026-07-01 refactor(monorepo): move seed ownership to apps/backend-template - web2solutions
 - 2026-07-01 refactor(pm2): move ecosystem ownership into apps/backend-template - web2solutions
 - 2026-07-01 feat(monorepo): expand backend-template workspace ownership scripts - web2solutions

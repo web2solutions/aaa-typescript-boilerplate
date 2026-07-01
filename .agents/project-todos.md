@@ -722,6 +722,7 @@ Goal:
     - Added package-level CLI README and command contracts (`jumentix-init` and `aaa-bootstrap` alias).
     - Added non-interactive CLI flags and help output (`--service-type`, `--project-name`, `--git-branch`, `--install-deps`, `--repo`) to support automation pipelines.
     - CLI package test script now performs help smoke execution (`jumentix-init --help`).
+    - Non-interactive scaffold smoke validated end-to-end using local repository source and generated `.aaa/service-profile.json`.
 
 - [ ] Wave 5 - Apps Re-homing
   - Deliverables:
