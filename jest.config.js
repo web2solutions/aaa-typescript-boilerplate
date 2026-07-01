@@ -31,7 +31,7 @@ module.exports = {
     ...redisIntegrationIgnorePatterns
   ],
   modulePathIgnorePatterns: ['dist', '.build', '.serverless', '.resources'],
-  coveragePathIgnorePatterns: ['<rootDir>/packages/'],
+  coveragePathIgnorePatterns: ['<rootDir>/packages/', '<rootDir>/ci-cd/'],
   coverageThreshold: {
     global: {
       branches: 90,

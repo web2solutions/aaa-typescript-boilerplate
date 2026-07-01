@@ -25,6 +25,7 @@
     "deps:check-cycles": "node ci-cd/check-core-import-cycles.js",
     "arch:check-boundaries": "node ci-cd/check-hexagonal-boundaries.js",
     "arch:check-users-legacy-imports": "node ci-cd/check-users-legacy-imports.js",
+    "ci:affected": "node ci-cd/check-affected-workspaces.js",
     "ci:smoke": "AAA_JWT_TOKEN_SECRET_KEY=${AAA_JWT_TOKEN_SECRET_KEY:-ci_jwt_secret_key} NODE_ENV=ci jest ./test/integration/Express/get.localhost.test.ts --runInBand --coverage=false",
     "ci:security-smoke": "NODE_ENV=ci jest ./test/unit/config/security.test.ts ./test/unit/shared/utils.errorExposure.test.ts --runInBand --coverage=false",
     "ci:gate": "npm run lint && npm run deps:check-cycles && npm run arch:check-boundaries && npm run arch:check-users-legacy-imports && npm run test:unit && npm run ci:security-smoke && npm run oas:check-routes && npm run build:dev && npm run ci:smoke",

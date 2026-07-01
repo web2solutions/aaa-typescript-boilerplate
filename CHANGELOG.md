@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-01 feat(ci): add affected workspace detector for monorepo gating - web2solutions
 - 2026-07-01 docs(agents): record cli non-interactive scaffold smoke validation - web2solutions
 - 2026-07-01 feat(cli-sdk): harden non-interactive bootstrap and enforce sdk typecheck tests - web2solutions
 - 2026-07-01 refactor(monorepo): move seed ownership to apps/backend-template - web2solutions
