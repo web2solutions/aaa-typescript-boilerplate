@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "node -e \"console.log('sdk-websocket-client smoke ok')\"",
+    "test": "npm run typecheck",
     "lint": "echo \"sdk-websocket-client: lint managed by root workspace\"",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },

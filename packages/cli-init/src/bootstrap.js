@@ -42,6 +42,7 @@ Usage:
 
 Options:
   --help                         Show this message and exit
+  --non-interactive              Disable prompts (requires --service-type and --project-name)
   --service-type=<id>            One of: rest, websocket, grpc, graphql, functions
   --project-name=<name>          Target folder name/path
   --git-branch=<branch>          Branch to clone (default: main)
@@ -53,6 +54,7 @@ Options:
 function parseCliArgs(argv) {
   const args = {
     help: false,
+    nonInteractive: false,
     serviceTypeId: '',
     projectName: '',
     gitBranch: '',
@@ -63,6 +65,11 @@ function parseCliArgs(argv) {
   for (const rawArg of argv) {
     if (rawArg === '--help' || rawArg === '-h') {
       args.help = true;
+      continue;
+    }
+
+    if (rawArg === '--non-interactive') {
+      args.nonInteractive = true;
       continue;
     }
 
@@ -169,7 +176,13 @@ async function run() {
     return;
   }
 
-  const prompt = createPrompt();
+  if (cliArgs.nonInteractive && (!cliArgs.serviceTypeId || !cliArgs.projectName)) {
+    throw new Error('Non-interactive mode requires --service-type and --project-name.');
+  }
+
+  const prompt = cliArgs.nonInteractive
+    ? { ask: async () => '', close: () => {} }
+    : createPrompt();
 
   try {
     console.log('\nJumentiX Bootstrap CLI');
