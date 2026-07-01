@@ -16,13 +16,21 @@ jobs:
       - restore_cache:
           keys:
             - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
+            - pnpm-store-v1-{{ .Branch }}
+      - run:
+          name: setup pnpm
+          command: npm install -g pnpm@9.15.3
       - run:
           name: install packages
-          command: npm install
+          command: pnpm install --no-frozen-lockfile
       - save_cache:
           key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
           paths:
             - ~/.npm
+      - save_cache:
+          key: pnpm-store-v1-{{ .Branch }}
+          paths:
+            - ~/.pnpm-store
       - run:
           name: Install dockerize
           command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
@@ -33,7 +41,7 @@ jobs:
           command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run Tests
-          command: npm run ci:gate
+          command: npm run ci:monorepo
       - codecov/upload
 
 workflows:
