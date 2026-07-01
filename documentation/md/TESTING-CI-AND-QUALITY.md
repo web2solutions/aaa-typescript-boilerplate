@@ -20,10 +20,29 @@ Run integration tests:
 npm run test:integration
 ```
 
+Run realtime integration tests:
+
+```bash
+npm run test:integration:realtime
+```
+
+Run Redis-backed multi-instance realtime integration:
+
+```bash
+npm run test:integration:realtime:redis-streams
+```
+
 Run database driver smoke tests:
 
 ```bash
 npm run test:smoke:db:all
+```
+
+Run realtime smoke tests:
+
+```bash
+npm run test:smoke:realtime
+npm run smoke:realtime:redis-streams
 ```
 
 `test:smoke:db:all` orchestrates each driver-specific smoke command, including
@@ -204,3 +223,4 @@ npm run ci:smoke
 For CI incidents and failing checks, see:
 
 - [CI / SonarQube / Codecov Troubleshooting](./CI-TROUBLESHOOTING.md)
+- [Realtime API Testing Guide](./REALTIME-API-TESTING.md)

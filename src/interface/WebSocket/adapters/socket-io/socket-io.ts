@@ -10,6 +10,14 @@ import { ExpressServer } from '@src/interface/HTTP/adapters/express/ExpressServe
 import { infraHandlers } from '@src/interface/HTTP/adapters/express/handlers/infraHandlers';
 import { EHTTPFrameworks } from '@src/interface/HTTP/ports';
 import { RestAPI } from '@src/interface/HTTP/RestAPI';
+import {
+  createRedisStreamsSocketIoAdapter,
+  isRedisStreamsSocketIoEnabled
+} from '@src/interface/WebSocket/adapters/socket-io/redisStreamsAdapter';
+import {
+  createClusterSocketIoAdapter,
+  isClusterSocketIoEnabled
+} from '@src/interface/WebSocket/adapters/socket-io/clusterAdapter';
 
 export function shouldStartFallbackRestApi(env: NodeJS.ProcessEnv = process.env): boolean {
   return env.AAA_DISABLE_FALLBACK_REST !== 'true';
@@ -34,6 +42,16 @@ export async function startWebSocketAdapter(): Promise<void> {
     messageMediator
   });
 
+  let socketIoAdapter:
+    | ReturnType<typeof createClusterSocketIoAdapter>
+    | ReturnType<typeof createRedisStreamsSocketIoAdapter>
+    | undefined;
+  if (isClusterSocketIoEnabled()) {
+    socketIoAdapter = createClusterSocketIoAdapter();
+  } else if (isRedisStreamsSocketIoEnabled()) {
+    socketIoAdapter = createRedisStreamsSocketIoAdapter();
+  }
+
   const API = new WebSocketAPI({
     databaseClient,
     authService,
@@ -41,7 +59,9 @@ export async function startWebSocketAdapter(): Promise<void> {
     keyValueStorageClient,
     mutexService,
     eventBus: messageMediator,
-    messageMediator
+    messageMediator,
+    configureSocketIo: socketIoAdapter?.configure,
+    cleanupSocketIo: socketIoAdapter?.cleanup
   });
 
   let fallbackRestAPI: RestAPI<any> | undefined;
@@ -68,6 +88,7 @@ export async function startWebSocketAdapter(): Promise<void> {
 }
 
 // eslint-disable-next-line jest/require-hook
+/* istanbul ignore if */
 if (require.main === module) {
   startWebSocketAdapter();
 }

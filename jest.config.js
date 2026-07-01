@@ -8,7 +8,10 @@ const unsupportedRuntimeIgnorePatterns = nodeMajor > 22
   : [];
 const redisIntegrationIgnorePatterns = process.env.RUN_REDIS_INTEGRATION
   ? []
-  : ['<rootDir>/test/integration/mutex/'];
+  : [
+    '<rootDir>/test/integration/mutex/',
+    '<rootDir>/test/integration/realtime/socketio.redis-streams.multi-instance.test.ts'
+  ];
 
 module.exports = {
   preset: 'ts-jest',

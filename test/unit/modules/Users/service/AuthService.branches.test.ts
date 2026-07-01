@@ -336,4 +336,19 @@ describe('auth service extra branches', () => {
     expect(response.result).toBe(true);
     expect(keyValueStorageClient.set).not.toHaveBeenCalled();
   });
+
+  it('covers logout revocation branch when key-value storage is disabled', async () => {
+    expect.hasAssertions();
+    const { service, jwtService } = setup();
+    jwtService.decodeToken.mockReturnValueOnce({
+      id: 'u1',
+      username: 'john',
+      jti: 'token-id',
+      exp: Math.floor(Date.now() / 1000) + 120
+    });
+
+    const response = await service.logout('Bearer token');
+    expect(response.result).toBe(true);
+    expect(response.error).toBeUndefined();
+  });
 });

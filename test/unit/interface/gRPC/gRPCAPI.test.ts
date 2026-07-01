@@ -11,6 +11,13 @@ const protoMockState: Record<string, any> = {};
 
 jest.mock('@grpc/grpc-js', () => ({
   __esModule: true,
+  Server: function MockedGrpcServer(...args: any[]) {
+    return grpcMockState.Server(...args);
+  },
+  loadPackageDefinition: (...args: any[]) => grpcMockState.loadPackageDefinition(...args),
+  ServerCredentials: {
+    createInsecure: (...args: any[]) => grpcMockState.createInsecure(...args)
+  },
   default: {
     Server: function MockedGrpcServer(...args: any[]) {
       return grpcMockState.Server(...args);
@@ -24,6 +31,7 @@ jest.mock('@grpc/grpc-js', () => ({
 
 jest.mock('@grpc/proto-loader', () => ({
   __esModule: true,
+  loadSync: (...args: any[]) => protoMockState.loadSync(...args),
   default: {
     loadSync: (...args: any[]) => protoMockState.loadSync(...args)
   }
@@ -207,5 +215,32 @@ describe('grpc api', () => {
       specDir: './spec/asyncapi'
     });
     await expect(api.start()).rejects.toThrow('bind failed');
+  });
+
+  it('supports module fallback when grpc/proto-loader default export is undefined', async () => {
+    expect.hasAssertions();
+    const grpcModule: any = await import('@grpc/grpc-js');
+    const protoLoaderModule: any = await import('@grpc/proto-loader');
+    const previousGrpcDefault = grpcModule.default;
+    const previousProtoDefault = protoLoaderModule.default;
+    grpcModule.default = undefined;
+    protoLoaderModule.default = undefined;
+
+    const api = new GrpcAPI({
+      databaseClient,
+      specDir: './spec/asyncapi'
+    });
+
+    await api.start();
+    await api.stop();
+
+    expect(protoMockState.loadSync).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(Object)
+    );
+    expect(grpcMockState.start).toHaveBeenCalledWith();
+
+    grpcModule.default = previousGrpcDefault;
+    protoLoaderModule.default = previousProtoDefault;
   });
 });

@@ -204,6 +204,10 @@ describe('user service', () => {
     const getAll = await service.getAll({}, { page: 1, size: 10 });
     expect(getAll.error).toBeDefined();
 
+    mockedGetUserById.mockRejectedValueOnce(new Error('not found'));
+    const getOne = await service.getOneById(baseUser.id);
+    expect(getOne.error).toBeDefined();
+
     const invalidCreate = await service.create({
       firstName: 'John',
       username: 'john',
@@ -366,5 +370,30 @@ describe('user service', () => {
       services: { mutexService, passwordCryptoService, eventBus }
     } as any);
     expect(service).toBeInstanceOf(UserService);
+  });
+
+  it('covers sanitizer fallback branches for empty inputs', () => {
+    expect.hasAssertions();
+    expect((UserService as any).sanitizeUser(undefined)).toBeUndefined();
+    expect((UserService as any).sanitizeUsers(undefined)).toStrictEqual([]);
+  });
+
+  it('covers organization sync branch when organization users list is undefined', async () => {
+    expect.hasAssertions();
+    const { service, organizationDataRepository } = setup();
+    organizationDataRepository.getOneById.mockResolvedValueOnce({
+      id: 'org-2',
+      name: 'Org 2',
+      address: [],
+      phone: [],
+      email: []
+    });
+
+    await (service as any).syncOrganizationUsers(baseUser.id, '', 'org-2');
+
+    expect(organizationDataRepository.update).toHaveBeenCalledWith(
+      'org-2',
+      expect.objectContaining({ users: [baseUser.id] })
+    );
   });
 });

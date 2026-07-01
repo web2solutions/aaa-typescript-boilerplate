@@ -406,6 +406,7 @@ npm run ci:gate
 | Integration Contracts | [Events and Messages Map](documentation/md/EVENTS-AND-MESSAGES-MAP.md) | Event and mediator contract map. |
 | Error Contracts | [Error Contracts and Responses](documentation/md/ERROR-CONTRACTS-AND-RESPONSES.md) | Error codes, mapping, and HTTP response contracts. |
 | Quality | [Testing, CI, and Quality](documentation/md/TESTING-CI-AND-QUALITY.md) | Test strategy, CI gate, coverage policy, Sonar/Codecov. |
+| Realtime Quality | [Realtime API Testing](documentation/md/REALTIME-API-TESTING.md) | Unit, integration, and smoke matrix for WebSocket and gRPC APIs. |
 | Tooling | [Contributing and Tooling](documentation/md/CONTRIBUTING-AND-TOOLING.md) | Development workflow and commands. |
 | Dependencies | [Dependencies](documentation/md/DEPENDENCIES.md) | Runtime and infrastructure dependencies. |
 | Domain Entities | [Domain Data Entities](documentation/md/DOMAIN-DATA-ENTITIES.md) | Data entity catalog and field contracts. |
@@ -414,6 +415,10 @@ npm run ci:gate
 | Service Management | [Service Management App](servicemangement/README.md) | Tabbed suite for domain design, communication interfaces, service configuration, and deploy management. |
 | Domain Designer Guide | [Domain Designer Features and Usage](documentation/md/DOMAIN-DESIGNER-FEATURES-AND-USAGE.md) | Technical usage guide for all Domain Designer MVP features and exports/imports. |
 | HTTP Adapter Docs | [HTTP Adapters Index](documentation/md/adapters/http/README.md) | Per-adapter implementation and service build guides for all HTTP interfaces. |
+| Realtime Adapter Docs | [WebSocket Realtime API](documentation/md/adapters/realtime/WEBSOCKET-API.md) | Focused guide to consume Socket.IO realtime API with request/response message patterns. |
+| Realtime Adapter Docs | [gRPC Realtime API](documentation/md/adapters/realtime/GRPC-API.md) | Focused guide to consume gRPC realtime API with unary and streaming contracts. |
+| Realtime Contracts | [WebSocket Realtime Contracts](documentation/md/contracts/WEBSOCKET-REALTIME-CONTRACTS.md) | Canonical Socket.IO channel and envelope contracts. |
+| Realtime Contracts | [gRPC Realtime Contracts](documentation/md/contracts/GRPC-REALTIME-CONTRACTS.md) | Canonical gRPC service, message, and serialization contracts. |
 | Database Adapter Docs | [Database Adapters Index](documentation/md/adapters/databases/README.md) | Per-database setup and service build guides for all supported DB technologies. |
 | External Adapters | [External Data Adapter Foundations](documentation/md/EXTERNAL-DATA-ADAPTER-FOUNDATIONS.md) | SQL/NoSQL repository foundations and queue request-response adapter. |
 | Database Validation | [Database Drivers Smoke Tests](documentation/md/DATABASE-DRIVERS-SMOKE-TESTS.md) | Driver matrix, per-database Docker compose, and smoke execution commands. |
@@ -435,8 +440,14 @@ npm run ci:gate
 - [Service Management Application](documentation/md/SERVICE-MANAGEMENT-APPLICATION.md)
 - [Domain Designer Features and Usage](documentation/md/DOMAIN-DESIGNER-FEATURES-AND-USAGE.md)
 - [HTTP Adapters Index](documentation/md/adapters/http/README.md)
+- [WebSocket Realtime API](documentation/md/adapters/realtime/WEBSOCKET-API.md)
+- [gRPC Realtime API](documentation/md/adapters/realtime/GRPC-API.md)
+- [WebSocket Realtime Contracts](documentation/md/contracts/WEBSOCKET-REALTIME-CONTRACTS.md)
+- [gRPC Realtime Contracts](documentation/md/contracts/GRPC-REALTIME-CONTRACTS.md)
+- [Realtime API Testing](documentation/md/REALTIME-API-TESTING.md)
 - [Database Adapters Index](documentation/md/adapters/databases/README.md)
 - [Security Runbook (PCI)](documentation/md/SECURITY-RUNBOOK-PCI.md)
+- [Realtime API Testing](documentation/md/REALTIME-API-TESTING.md)
 
 ---
 

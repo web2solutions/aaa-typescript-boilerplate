@@ -54,6 +54,22 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - Extended bootstraps for gRPC, WebSocket, and Lambda runtime to inject `compileDatabaseClient()` based on `AAA_DATABASE_DRIVER`.
   - Expanded `ExternalStoreProxy` to provide `IStore` mapping for Mongo, Sequelize-based SQL drivers, DynamoDB, Cassandra, Firebase, and Oracle.
 
+- [x] Add realtime API test matrix (unit, integration, smoke)
+  - Added protocol integration tests:
+    - `test/integration/realtime/websocket.basic.integration.test.ts`
+    - `test/integration/realtime/grpc.basic.integration.test.ts`
+  - Added Redis multi-instance integration:
+    - `test/integration/realtime/socketio.redis-streams.multi-instance.test.ts`
+  - Added realtime smoke test:
+    - `test/smoke/realtime/RealtimeApis.smoke.test.ts`
+  - Added package scripts:
+    - `test:integration:realtime*`
+    - `test:smoke:realtime`
+    - `smoke:realtime:redis-streams`
+  - Added documentation and requirement registry sync:
+    - `documentation/md/REALTIME-API-TESTING.md`
+    - `.agents/requirements/047-realtime-api-test-matrix.md`
+
 ## Open
 
 - [x] PCI Remediation Plan (Sprint-based: P0/P1/P2) with audit evidence criteria

@@ -14,6 +14,7 @@ Keep event/message contracts and error contracts explicit, synchronized, and enf
 - New error classes/codes/response shapes must be documented in `documentation/md/ERROR-CONTRACTS-AND-RESPONSES.md`.
 - Contract documentation and implementation must ship together.
 - Keep request/response envelope backward-compatible unless explicitly versioned.
+- Realtime contracts (`WebSocket`/`gRPC`) must maintain unit + integration + smoke coverage as defined in requirement `047`.
 
 ## Definition of done
 - Contract docs match current implementation.

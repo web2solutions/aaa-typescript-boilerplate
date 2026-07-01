@@ -1,6 +1,6 @@
 import path from 'path';
-import grpc from '@grpc/grpc-js';
-import protoLoader from '@grpc/proto-loader';
+import * as grpc from '@grpc/grpc-js';
+import * as protoLoader from '@grpc/proto-loader';
 import { loadSpecs } from '../spec/loadSpecs';
 
 export interface IGrpcApiRequest {
@@ -36,16 +36,18 @@ export class GrpcApiClient {
     this.host = host || asyncApiGrpc?.servers?.local?.host || 'localhost:3002';
     this.protoFilePath = protoFilePath || path.resolve(process.cwd(), 'src/interface/gRPC/proto/async-api.proto');
 
-    const packageDefinition = protoLoader.loadSync(this.protoFilePath, {
+    const protoLoaderLib: any = (protoLoader as any).default || protoLoader;
+    const grpcLib: any = (grpc as any).default || grpc;
+    const packageDefinition = protoLoaderLib.loadSync(this.protoFilePath, {
       longs: String,
       enums: String,
       defaults: true,
       oneofs: true
     });
-    const grpcObject = grpc.loadPackageDefinition(packageDefinition) as any;
+    const grpcObject = grpcLib.loadPackageDefinition(packageDefinition) as any;
     this.client = new grpcObject.realtime.AsyncApiGateway(
       this.host,
-      grpc.credentials.createInsecure()
+      grpcLib.credentials.createInsecure()
     );
   }
 

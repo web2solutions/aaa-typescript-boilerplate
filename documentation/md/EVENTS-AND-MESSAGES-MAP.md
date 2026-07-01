@@ -101,3 +101,12 @@ When adding a new domain:
 4. Register handlers in domain composition.
 5. Keep payloads versionable (`version` + metadata).
 6. Document new contracts in this file and in domain docs.
+
+## 9) Realtime Interface Contract References
+
+- WebSocket transport contracts:
+  - `documentation/md/contracts/WEBSOCKET-REALTIME-CONTRACTS.md`
+- gRPC transport contracts:
+  - `documentation/md/contracts/GRPC-REALTIME-CONTRACTS.md`
+
+These transport documents define the external request/response envelopes and channel/service semantics used by realtime clients.

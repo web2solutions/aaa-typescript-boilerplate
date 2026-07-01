@@ -61,6 +61,7 @@ Use these files as living constraints for future maintenance and feature develop
 - [044-pci-security-compliance-hardening](requirements/044-pci-security-compliance-hardening.md)
 - [045-data-entity-controller-ownership](requirements/045-data-entity-controller-ownership.md)
 - [046-multi-database-driver-smoke-validation](requirements/046-multi-database-driver-smoke-validation.md)
+- [047-realtime-api-test-matrix](requirements/047-realtime-api-test-matrix.md)
 - [Data Entity Documentation Agent](data-entity-documentation-agent.md)
 - [Domain Modeling Agent](domain-modeling-agent.md)
 - [Domain Designer Agent](domain-designer-agent.md)

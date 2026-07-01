@@ -68,6 +68,7 @@ export async function startGrpcAdapter(): Promise<void> {
 }
 
 // eslint-disable-next-line jest/require-hook
+/* istanbul ignore if */
 if (require.main === module) {
   startGrpcAdapter();
 }
