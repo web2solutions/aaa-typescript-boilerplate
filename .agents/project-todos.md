@@ -639,6 +639,7 @@ Goal:
 
 - [ ] Update agents and requirement registry
   - Add dedicated requirements for monorepo governance, package boundaries, and release policy.
+  - Enforce task traceability requirement: every project issue must keep commit + PR association.
 
 ### Risk Register and Anti-Waste Controls
 
