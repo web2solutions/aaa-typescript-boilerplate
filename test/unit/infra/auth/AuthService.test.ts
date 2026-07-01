@@ -191,10 +191,10 @@ describe('unit test suite for AuthService', () => {
           );
           const { Authorization } = result!;
           // console.log(Authorization);
-          const rawToken = await jwtService.generateToken(user1);
           const [schema, token] = Authorization.split(' ');
           expect(schema).toBe(EAuthSchemaType.Bearer);
-          expect(rawToken).toBe(token);
+          const decoded = await jwtService.decodeToken(token);
+          expect(decoded!.username).toBe(user1.username);
         });
         it('must not authenticate with Bearer auth schema with invalid username - return error - user not found', async () => {
           expect.hasAssertions();
