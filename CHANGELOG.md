@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-01 refactor(monorepo): move seed ownership to apps/backend-template - web2solutions
 - 2026-07-01 refactor(pm2): move ecosystem ownership into apps/backend-template - web2solutions
 - 2026-07-01 feat(monorepo): expand backend-template workspace ownership scripts - web2solutions
 - 2026-07-01 docs(service-management): fix moved app links after workspace rehome - web2solutions

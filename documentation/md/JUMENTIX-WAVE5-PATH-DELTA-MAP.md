@@ -10,6 +10,7 @@ This map defines the path rewrites required when runtime apps are moved into wor
 - `./src/interface/WebSocket/adapters/start-websocket-api.ts`
 - `./src/interface/gRPC/adapters/start-grpc-api.ts`
 - production compiled equivalents under `./.build/interface/...`
+- seed data under `./seed/*`
 
 ### Service Management anchor (root-based today)
 
@@ -24,6 +25,8 @@ This map defines the path rewrites required when runtime apps are moved into wor
 - `./apps/backend-template/src/interface/gRPC/adapters/start-grpc-api.ts`
 - compiled production output under:
   - `./apps/backend-template/.build/interface/...`
+- seed data under:
+  - `./apps/backend-template/seed/*`
 
 ### Service Management app
 

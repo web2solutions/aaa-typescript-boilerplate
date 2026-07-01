@@ -22,7 +22,7 @@ module.exports = {
   testEnvironment: 'node',
   moduleNameMapper: {
     '@src/(.*)$': '<rootDir>/src/$1',
-    '@seed/(.*)$': '<rootDir>/seed/$1',
+    '@seed/(.*)$': '<rootDir>/apps/backend-template/seed/$1',
     '@test/(.*)$': '<rootDir>/test/$1',
     '@jumentix/(.*)$': '<rootDir>/packages/$1/src',
   },
