@@ -59,7 +59,7 @@ This document defines concrete migration guardrails for the JumentiX monorepo tr
 ## Apps
 
 - `src/` + runtime bootstraps -> `apps/backend-template/src/` (staged migration with compatibility scripts).
-- `servicemangement/` -> `apps/service-management/`.
+- `service-management/` -> `apps/service-management/`.
 
 ## Packages
 

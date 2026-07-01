@@ -57,7 +57,7 @@ Canonical backlog source:
 ## Documentation and governance rules
 
 - Every Domain Designer feature must update:
-  - `servicemangement/README.md`
+  - `service-management/README.md`
   - this roadmap (when scope or priority changes)
   - relevant README/document index links
 - Every newly identified MVP item must be added to backlog tracking before or along with implementation.

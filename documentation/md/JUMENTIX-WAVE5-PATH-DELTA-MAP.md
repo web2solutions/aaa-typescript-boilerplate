@@ -13,7 +13,7 @@ This map defines the path rewrites required when runtime apps are moved into wor
 
 ### Service Management anchor (root-based today)
 
-- `./servicemangement/server.js`
+- `./service-management/server.js`
 
 ## Target anchors after re-homing
 
@@ -37,7 +37,7 @@ This map defines the path rewrites required when runtime apps are moved into wor
 4. root `package.json` scripts containing:
    - `src/interface/...`
    - `.build/interface/...`
-   - `servicemangement/server.js`
+   - `service-management/server.js`
 5. docs and onboarding references:
    - `README.md`
    - `documentation/md/SETUP-RUNTIME-AND-API.md`

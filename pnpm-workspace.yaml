@@ -3,5 +3,5 @@ packages:
   - "apps/*"
   - "packages/*"
   - "sdk-clients/*"
-  - "servicemangement"
+  - "apps/service-management"
   - "tooling/*"

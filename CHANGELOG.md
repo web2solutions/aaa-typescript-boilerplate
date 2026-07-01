@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-01 refactor(monorepo): rehome service-management app to apps workspace - web2solutions
 - 2026-07-01 docs(changelog): sync automated changelog metadata - web2solutions
 - 2026-07-01 feat(jumentix): advance monorepo package extraction and wave governance - web2solutions
 - 2026-07-01 feat(jumentix): advance monorepo package extraction and wave governance - web2solutions

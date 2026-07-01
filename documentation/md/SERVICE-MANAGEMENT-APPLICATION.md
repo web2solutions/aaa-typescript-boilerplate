@@ -2,16 +2,16 @@
 
 The previous `domaindesigner` static app was consolidated into:
 
-- `servicemangement/`
+- `service-management/`
 
 It is now a tabbed suite for service lifecycle design.
 
 Core implementation files:
 
-- `servicemangement/index.html`
-- `servicemangement/script.js`
-- `servicemangement/styles.css`
-- `servicemangement/server.js`
+- `service-management/index.html`
+- `service-management/script.js`
+- `service-management/styles.css`
+- `service-management/server.js`
 
 ## Tabs
 
@@ -64,7 +64,7 @@ Detailed usage guide:
 PM2-served:
 
 - `npm run dev:service-management`
-- default dev profile (`npm run dev`) also starts `servicemangement` through PM2.
+- default dev profile (`npm run dev`) also starts `service-management` through PM2.
 
 The app state persists with browser `localStorage`.
 
@@ -111,11 +111,11 @@ Orchestrated profiles:
 Integration smoke:
 
 ```bash
-npm run test:integration:servicemangement
+npm run test:integration:service-management
 ```
 
 Unit smoke for roadmap feature presence:
 
 ```bash
-NODE_ENV=dev npx jest test/unit/servicemangement/mvp.roadmap.features.test.ts --runInBand
+NODE_ENV=dev npx jest test/unit/service-management/mvp.roadmap.features.test.ts --runInBand
 ```

@@ -423,7 +423,7 @@ Migration progress and wave-by-wave acceptance criteria are tracked in [JumentiX
 | Domain Entities | [Domain Data Entities](documentation/md/DOMAIN-DATA-ENTITIES.md) | Data entity catalog and field contracts. |
 | Developer CLI | [Developer Automation CLI](documentation/md/DEVELOPER-AUTOMATION-CLI.md) | CLI wrapper and sub-app workflows. |
 | Bootstrap CLI | [Bootstrap CLI Scaffolding](documentation/md/BOOTSTRAP-CLI-SCAFFOLDING.md) | Installable scaffold command to clone and configure new projects. |
-| Service Management | [Service Management App](servicemangement/README.md) | Tabbed suite for domain design, communication interfaces, service configuration, and deploy management. |
+| Service Management | [Service Management App](service-management/README.md) | Tabbed suite for domain design, communication interfaces, service configuration, and deploy management. |
 | Domain Designer Guide | [Domain Designer Features and Usage](documentation/md/DOMAIN-DESIGNER-FEATURES-AND-USAGE.md) | Technical usage guide for all Domain Designer MVP features and exports/imports. |
 | HTTP Adapter Docs | [HTTP Adapters Index](documentation/md/adapters/http/README.md) | Per-adapter implementation and service build guides for all HTTP interfaces. |
 | Realtime Adapter Docs | [WebSocket Realtime API](documentation/md/adapters/realtime/WEBSOCKET-API.md) | Focused guide to consume Socket.IO realtime API with request/response message patterns. |

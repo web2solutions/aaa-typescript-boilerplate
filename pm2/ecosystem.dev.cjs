@@ -37,8 +37,8 @@ module.exports = {
       }
     },
     {
-      name: 'aaa-dev-servicemangement',
-      script: './servicemangement/server.js',
+      name: 'aaa-dev-service-management',
+      script: './apps/service-management/server.js',
       interpreter: 'node',
       env: {
         NODE_ENV: 'dev',

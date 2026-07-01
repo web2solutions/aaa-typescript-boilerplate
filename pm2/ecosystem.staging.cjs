@@ -37,8 +37,8 @@ module.exports = {
       }
     },
     {
-      name: 'aaa-staging-servicemangement',
-      script: './servicemangement/server.js',
+      name: 'aaa-staging-service-management',
+      script: './apps/service-management/server.js',
       interpreter: 'node',
       env: {
         NODE_ENV: 'staging',

@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 describe('serviceManagement domain designer smoke', () => {
-  const htmlPath = path.resolve(process.cwd(), 'servicemangement/index.html');
-  const scriptPath = path.resolve(process.cwd(), 'servicemangement/script.js');
+  const htmlPath = path.resolve(process.cwd(), 'apps/service-management/index.html');
+  const scriptPath = path.resolve(process.cwd(), 'apps/service-management/script.js');
 
   it('has create/edit/export/import controls required for MVP workflow', () => {
     const html = fs.readFileSync(htmlPath, 'utf-8');

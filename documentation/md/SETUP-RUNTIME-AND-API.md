@@ -103,7 +103,7 @@ Behavior summary:
 - `start-websocket-api.ts` starts only when `AAA_REALTIME_API=yes` and `AAA_REALTIME_API_PROTOCOL=websocket`.
 - `start-grpc-api.ts` starts only when `AAA_REALTIME_API=yes` and `AAA_REALTIME_API_PROTOCOL=grpc`.
 
-Dev (auto-starts `servicemangement`):
+Dev (auto-starts `service-management`):
 
 ```bash
 npm run pm2:start:dev:restapi
@@ -209,7 +209,7 @@ Combined service profiles:
 ```bash
 npm run dev:websocket
 npm run dev:grpc
-npm run test:integration:servicemangement
+npm run test:integration:service-management
 ```
 
 Serverless dev mode:

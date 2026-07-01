@@ -2,7 +2,7 @@
 
 This document is the technical guide for all Domain Designer MVP capabilities inside:
 
-- `servicemangement/`
+- `service-management/`
 
 It covers what each feature does and how to use it in practice.
 
@@ -234,11 +234,11 @@ How to use:
 Service Management smoke tests:
 
 - `test/integration/ServiceManagement/domainDesigner.smoke.test.ts`
-- `test/unit/servicemangement/mvp.roadmap.features.test.ts`
+- `test/unit/service-management/mvp.roadmap.features.test.ts`
 
 Run:
 
 ```bash
-npm run test:integration:servicemangement
-NODE_ENV=dev npx jest test/unit/servicemangement/mvp.roadmap.features.test.ts --runInBand
+npm run test:integration:service-management
+NODE_ENV=dev npx jest test/unit/service-management/mvp.roadmap.features.test.ts --runInBand
 ```

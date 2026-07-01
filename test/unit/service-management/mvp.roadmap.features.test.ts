@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 describe('service management mvp roadmap features', () => {
-  const indexPath = path.resolve(process.cwd(), 'servicemangement/index.html');
-  const scriptPath = path.resolve(process.cwd(), 'servicemangement/script.js');
+  const indexPath = path.resolve(process.cwd(), 'apps/service-management/index.html');
+  const scriptPath = path.resolve(process.cwd(), 'apps/service-management/script.js');
 
   it('exposes schema diff controls in UI', () => {
     const html = fs.readFileSync(indexPath, 'utf-8');

@@ -5,7 +5,7 @@ This document is the executable cutover guide for moving runtime apps into works
 ## Scope
 
 - Move backend runtime from repository root to `apps/backend-template`.
-- Move Service Management app from `/servicemangement` to `apps/service-management`.
+- Move Service Management app from `/service-management` to `apps/service-management`.
 - Preserve current behavior, PM2 profiles, CI gates, and coverage policy.
 
 ## Preconditions
@@ -44,7 +44,7 @@ Keep shared root assets in root:
 
 Move:
 
-- `/servicemangement/*` -> `apps/service-management/*`
+- `/service-management/*` -> `apps/service-management/*`
 
 Update all runtime references:
 
