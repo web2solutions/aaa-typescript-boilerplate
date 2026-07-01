@@ -32,6 +32,12 @@ Move these root directories into `apps/backend-template`:
 - `serverless.ts`
 - `docker-compose*.yml`
 
+Status:
+
+- In progress.
+- Workspace-level operational ownership already added under `apps/backend-template/package.json` (build/test/integration/ci gate/runtime starters), mapped to root runtime as a compatibility bridge.
+- Next cutover slice is physical file move with path rewrites.
+
 Keep shared root assets in root:
 
 - `.agents/`

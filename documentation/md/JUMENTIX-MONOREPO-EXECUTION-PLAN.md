@@ -138,6 +138,12 @@ Exit Criteria:
 - both apps run under workspace scripts
 - PM2 profiles remain functional
 
+Current status:
+
+- `apps/service-management` is already re-homed.
+- `apps/backend-template` now owns operational workspace scripts (build/test/integration/CI/PM2) mapped to root runtime as migration bridge.
+- Pending: physical move of backend runtime directories/files into `apps/backend-template`.
+
 Execution guide:
 
 - `documentation/md/JUMENTIX-WAVE5-APP-REHOMING-CUTOVER.md`
