@@ -50,6 +50,8 @@ Implemented in repository:
 - Wave 4 startup in progress:
   - `packages/cli-init` now exposes executable bin entrypoints and owns the bootstrap implementation used by root CLI wrapper.
   - CLI package now includes package-level README with command contract.
+- Wave 6 startup in progress:
+  - added affected-workspace detector (`npm run ci:affected`) to classify file deltas by `root`, `apps/*`, `packages/*`, and docs-only scope as a base primitive for selective monorepo CI execution.
 - reusable package extraction in progress:
   - `packages/message-mediator` (with local bridge exports in backend code)
   - `packages/key-value-storage` (with local bridge exports in backend code)

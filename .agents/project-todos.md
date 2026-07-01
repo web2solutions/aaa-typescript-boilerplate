@@ -743,3 +743,6 @@ Goal:
   - Done criteria:
     - PR checks green with monorepo matrix
     - release dry-run for at least one package and one app artifact
+  - Progress:
+    - Added `ci-cd/check-affected-workspaces.js` and root script `npm run ci:affected` to classify changed files across `root`, `apps/*`, `packages/*`, and docs-only scopes.
+    - Added unit tests for affected workspace detection and docs-only classification logic.
