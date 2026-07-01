@@ -26,6 +26,7 @@
     "arch:check-boundaries": "node ci-cd/check-hexagonal-boundaries.js",
     "arch:check-users-legacy-imports": "node ci-cd/check-users-legacy-imports.js",
     "ci:affected": "node ci-cd/check-affected-workspaces.js",
+    "ci:monorepo": "node ci-cd/run-monorepo-ci.js",
     "release:dry-run": "node ci-cd/release-dry-run.js all",
     "release:dry-run:packages": "node ci-cd/release-dry-run.js packages",
     "release:dry-run:apps": "node ci-cd/release-dry-run.js apps",
