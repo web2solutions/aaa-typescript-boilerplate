@@ -31,9 +31,9 @@ This map defines the path rewrites required when runtime apps are moved into wor
 
 ## Files that require path rewrite
 
-1. `pm2/ecosystem.dev.cjs`
-2. `pm2/ecosystem.staging.cjs`
-3. `pm2/ecosystem.production.cjs`
+1. `apps/backend-template/pm2/ecosystem.dev.cjs`
+2. `apps/backend-template/pm2/ecosystem.staging.cjs`
+3. `apps/backend-template/pm2/ecosystem.production.cjs`
 4. root `package.json` scripts containing:
    - `src/interface/...`
    - `.build/interface/...`

@@ -36,6 +36,7 @@ Status:
 
 - In progress.
 - Workspace-level operational ownership already added under `apps/backend-template/package.json` (build/test/integration/ci gate/runtime starters), mapped to root runtime as a compatibility bridge.
+- PM2 ecosystem ownership already moved to `apps/backend-template/pm2/*` while keeping runtime entrypoint behavior unchanged.
 - Next cutover slice is physical file move with path rewrites.
 
 Keep shared root assets in root:
