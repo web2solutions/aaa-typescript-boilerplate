@@ -141,4 +141,22 @@ describe('websocket api', () => {
     onConnectionCall[1](socket);
     expect(bindSocketSpy).toHaveBeenCalledWith(socket);
   });
+
+  it('runs optional socket.io configure/cleanup hooks', async () => {
+    expect.hasAssertions();
+    const configureSocketIo = jest.fn().mockResolvedValue(undefined);
+    const cleanupSocketIo = jest.fn().mockResolvedValue(undefined);
+    const api = new WebSocketAPI({
+      databaseClient,
+      specDir: './spec/asyncapi',
+      configureSocketIo,
+      cleanupSocketIo
+    });
+
+    await api.start();
+    await api.stop();
+
+    expect(configureSocketIo).toHaveBeenCalledTimes(1);
+    expect(cleanupSocketIo).toHaveBeenCalledTimes(1);
+  });
 });

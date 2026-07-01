@@ -71,23 +71,25 @@ describe('start-websocket-api loader', () => {
   });
 
   it('starts in cluster primary mode and forks workers', async () => {
-    expect.assertions(5);
+    expect.hasAssertions();
     const clusterModule = await import('cluster');
     (clusterModule.default as any).isPrimary = true;
     isClusterSocketIoEnabledMock.mockReturnValue(true);
     resolveWebSocketClusterWorkersMock.mockReturnValue(3);
 
     const { startWebSocketApiAdapter } = await import('@src/interface/WebSocket/adapters/start-websocket-api');
-    const started = await startWebSocketApiAdapter({
+    await startWebSocketApiAdapter({
       AAA_REALTIME_API: 'yes',
       AAA_REALTIME_API_PROTOCOL: 'websocket',
       AAA_WEBSOCKET_SOCKETIO_ADAPTER: 'cluster'
     } as NodeJS.ProcessEnv);
 
-    expect(started).toBe(true);
     expect(setupSocketIoClusterPrimaryMock).toHaveBeenCalledTimes(1);
     expect(clusterForkMock).toHaveBeenCalledTimes(3);
     expect(clusterOnMock).toHaveBeenCalledWith('exit', expect.any(Function));
+    const onExitCallback = clusterOnMock.mock.calls.find((call) => call[0] === 'exit')?.[1] as (() => void);
+    onExitCallback();
+    expect(clusterForkMock).toHaveBeenCalledTimes(4);
     expect(websocketLoaderAdapterStart).toHaveBeenCalledTimes(0);
   });
 

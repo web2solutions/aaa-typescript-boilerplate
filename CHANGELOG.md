@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-06-30 test(realtime): close patch coverage gaps for websocket bootstrap - web2solutions
 - 2026-06-30 feat(realtime): add resilient websocket adapters, tests, and docs - web2solutions
 - 2026-06-30 docs(adapters): add per-http and per-database implementation guides - web2solutions
 - 2026-06-30 docs(servicemangement): document all domain designer mvp features and usage - web2solutions

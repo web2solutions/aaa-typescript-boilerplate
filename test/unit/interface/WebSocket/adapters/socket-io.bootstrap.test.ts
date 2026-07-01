@@ -8,6 +8,16 @@ const compileDatabaseClientMock = jest.fn<IDatabaseClient, []>().mockReturnValue
   disconnect: jest.fn().mockResolvedValue(undefined),
   stores: {} as IDatabaseClient['stores']
 });
+const isClusterSocketIoEnabledMock = jest.fn().mockReturnValue(false);
+const isRedisStreamsSocketIoEnabledMock = jest.fn().mockReturnValue(false);
+const createClusterSocketIoAdapterMock = jest.fn().mockReturnValue({
+  configure: jest.fn().mockResolvedValue(undefined),
+  cleanup: jest.fn().mockResolvedValue(undefined)
+});
+const createRedisStreamsSocketIoAdapterMock = jest.fn().mockReturnValue({
+  configure: jest.fn().mockResolvedValue(undefined),
+  cleanup: jest.fn().mockResolvedValue(undefined)
+});
 
 jest.mock('@src/interface/WebSocket/WebSocketAPI', () => ({
   WebSocketAPI: jest.fn().mockImplementation(() => ({
@@ -61,6 +71,20 @@ jest.mock('@src/infra/persistence/compileDatabaseClient', () => ({
   compileDatabaseClient: () => compileDatabaseClientMock()
 }));
 
+jest.mock('@src/interface/WebSocket/adapters/socket-io/clusterAdapter', () => ({
+  isClusterSocketIoEnabled: (...args: any[]) => isClusterSocketIoEnabledMock(...args),
+  createClusterSocketIoAdapter: (...args: any[]) => createClusterSocketIoAdapterMock(...args),
+  setupSocketIoClusterPrimary: jest.fn(),
+  resolveWebSocketClusterWorkers: jest.fn().mockReturnValue(1)
+}));
+
+jest.mock('@src/interface/WebSocket/adapters/socket-io/redisStreamsAdapter', () => ({
+  isRedisStreamsSocketIoEnabled: (...args: any[]) => isRedisStreamsSocketIoEnabledMock(...args),
+  createRedisStreamsSocketIoAdapter: (...args: any[]) => (
+    createRedisStreamsSocketIoAdapterMock(...args)
+  )
+}));
+
 describe('websocket socket-io adapter bootstrap', () => {
   const originalEnv = process.env;
 
@@ -68,6 +92,12 @@ describe('websocket socket-io adapter bootstrap', () => {
     process.env = { ...originalEnv };
     websocketAdapterStart.mockClear();
     websocketFallbackRestStart.mockClear();
+    isClusterSocketIoEnabledMock.mockReset();
+    isRedisStreamsSocketIoEnabledMock.mockReset();
+    createClusterSocketIoAdapterMock.mockClear();
+    createRedisStreamsSocketIoAdapterMock.mockClear();
+    isClusterSocketIoEnabledMock.mockReturnValue(false);
+    isRedisStreamsSocketIoEnabledMock.mockReturnValue(false);
   });
 
   afterAll(() => {
@@ -98,5 +128,24 @@ describe('websocket socket-io adapter bootstrap', () => {
     await startWebSocketAdapter();
     expect(websocketFallbackRestStart).toHaveBeenCalledTimes(1);
     expect(websocketAdapterStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('selects cluster socket.io adapter when cluster mode is enabled', async () => {
+    expect.assertions(2);
+    isClusterSocketIoEnabledMock.mockReturnValue(true);
+    const { startWebSocketAdapter } = await import('@src/interface/WebSocket/adapters/socket-io/socket-io');
+    await startWebSocketAdapter();
+    expect(createClusterSocketIoAdapterMock).toHaveBeenCalledTimes(1);
+    expect(createRedisStreamsSocketIoAdapterMock).toHaveBeenCalledTimes(0);
+  });
+
+  it('selects redis-streams socket.io adapter when enabled and cluster is disabled', async () => {
+    expect.assertions(2);
+    isClusterSocketIoEnabledMock.mockReturnValue(false);
+    isRedisStreamsSocketIoEnabledMock.mockReturnValue(true);
+    const { startWebSocketAdapter } = await import('@src/interface/WebSocket/adapters/socket-io/socket-io');
+    await startWebSocketAdapter();
+    expect(createRedisStreamsSocketIoAdapterMock).toHaveBeenCalledTimes(1);
+    expect(createClusterSocketIoAdapterMock).toHaveBeenCalledTimes(0);
   });
 });
