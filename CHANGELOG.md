@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-01 feat(release): add monorepo dry-run checks for packages and apps - web2solutions
 - 2026-07-01 docs(monorepo): record wave6 affected-workspace tracking progress - web2solutions
 - 2026-07-01 feat(ci): add affected workspace detector for monorepo gating - web2solutions
 - 2026-07-01 docs(agents): record cli non-interactive scaffold smoke validation - web2solutions
