@@ -636,6 +636,9 @@ Goal:
   - package responsibilities
   - development flows
   - PM2 multi-app management in monorepo context.
+  - Progress:
+    - Updated `TESTING-CI-AND-QUALITY.md` with pnpm-based CI flow and strict coverage thresholds.
+    - Updated `ENGINEERING-BOOTSTRAP-GUIDE.md` with workspace map, monorepo orchestration commands, and PM2 multi-app runtime guidance.
 
 - [ ] Update agents and requirement registry
   - Add dedicated requirements for monorepo governance, package boundaries, and release policy.

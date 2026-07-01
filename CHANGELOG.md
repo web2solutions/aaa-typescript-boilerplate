@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-01 docs(onboarding): refresh monorepo workspace and ci guidance - web2solutions
 - 2026-07-01 docs(monorepo): record pnpm ci pipeline alignment progress - web2solutions
 - 2026-07-01 feat(ci): align pipelines with pnpm and scope-aware monorepo runner - web2solutions
 - 2026-07-01 docs(agents): require commit and pr traceability on all project tasks - web2solutions
