@@ -54,6 +54,7 @@ Implemented in repository:
   - added affected-workspace detector (`npm run ci:affected`) to classify file deltas by `root`, `apps/*`, `packages/*`, and docs-only scope as a base primitive for selective monorepo CI execution.
   - added release dry-run scripts (`npm run release:dry-run`, `release:dry-run:packages`, `release:dry-run:apps`) to verify package artifact readiness and app workspace build/test script contracts.
   - added monorepo CI runner (`npm run ci:monorepo`) that executes lightweight docs-only validation or strict gate + affected app/package commands depending on changed scope.
+  - CI pipelines aligned to monorepo flow: GitHub Actions now installs with pnpm and runs scope-aware `ci:monorepo`; CircleCI now installs pnpm and executes `ci:monorepo`.
 - reusable package extraction in progress:
   - `packages/message-mediator` (with local bridge exports in backend code)
   - `packages/key-value-storage` (with local bridge exports in backend code)
