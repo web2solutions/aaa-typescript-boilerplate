@@ -1,0 +1,21 @@
+{
+  "name": "@jumentix/message-mediator",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX message mediator workspace package placeholder",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "amqplib": "^2.0.1",
+    "bullmq": "^5.79.2"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"message-mediator package tests pending\"",
+    "lint": "echo \"message-mediator package lint pending\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

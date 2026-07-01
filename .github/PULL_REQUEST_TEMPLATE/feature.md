@@ -8,6 +8,16 @@
 - Expected outcome:
 - Related issue/roadmap:
 
+## Project Tracking (Required)
+
+- GitHub Project: `Jumentix` (`https://github.com/users/web2solutions/projects/1`)
+- Project item link:
+- Issue link:
+- Current status in project:
+- Target cycle (`Start date` -> `End date`):
+- Priority group for this PR (`P0` / `P1` / `P2`):
+- [ ] This PR contains only one priority group.
+
 ## Scope
 
 - Affected modules/files:
@@ -52,4 +62,3 @@
 - Feature flag: Yes / No
 - Release plan:
 - Rollback plan:
-

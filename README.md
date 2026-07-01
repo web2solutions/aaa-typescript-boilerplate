@@ -94,7 +94,7 @@ It is not a demo starter. It is a production foundation.
 
 ### Developer Productivity
 
-- CLI scaffold (`aaa-bootstrap`)
+- CLI scaffold (`aaa-bootstrap` / `jumentix-init`)
 - Developer automation CLI
 - Service Management application with Domain Designer
 - Contract/schema exporters (OpenAPI/AsyncAPI/JSON Schema/etc.)
@@ -223,50 +223,38 @@ export default async function handler(req: any, res: any) {
 
 ### LoopBack Runtime Adapter
 
-```ts
-import { startLoopBackAdapter } from "@src/interface/HTTP/adapters/loopback/loopback";
-
-await startLoopBackAdapter();
+```bash
+AAA_HTTP_FRAMEWORK=loopback node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Sails.js Runtime Adapter
 
-```ts
-import { startSailsAdapter } from "@src/interface/HTTP/adapters/sails-js/sails-js";
-
-await startSailsAdapter();
+```bash
+AAA_HTTP_FRAMEWORK=sails-js node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Feathers Runtime Adapter
 
-```ts
-import { startFeathersAdapter } from "@src/interface/HTTP/adapters/feathers/feathers";
-
-await startFeathersAdapter();
+```bash
+AAA_HTTP_FRAMEWORK=feathers node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Derby.js Runtime Adapter
 
-```ts
-import { startDerbyAdapter } from "@src/interface/HTTP/adapters/derby-js/derby-js";
-
-await startDerbyAdapter();
+```bash
+AAA_HTTP_FRAMEWORK=derby-js node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Adonis.js Runtime Bridge
 
-```ts
-import { startAdonisAdapter } from "@src/interface/HTTP/adapters/adonis-js/adonis-js";
-
-await startAdonisAdapter();
+```bash
+AAA_HTTP_FRAMEWORK=adonis-js node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Total.js Runtime Bridge
 
-```ts
-import { startTotalAdapter } from "@src/interface/HTTP/adapters/total-js/total-js";
-
-await startTotalAdapter();
+```bash
+AAA_HTTP_FRAMEWORK=total-js node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### AWS Lambda Handler Example
@@ -395,6 +383,29 @@ Command:
 npm run ci:gate
 ```
 
+## JumentiX Monorepo Snapshot
+
+The repository already contains the initial `pnpm` workspace structure for JumentiX productization:
+
+- `apps/backend-template`
+- `apps/service-management`
+- `packages/cli-init`
+- `packages/message-mediator`
+- `packages/key-value-storage`
+- `packages/persistence-contracts`
+- `packages/mutex-service`
+- `packages/external-persistence-core`
+- `packages/external-store-proxy`
+- `packages/external-db-repositories`
+- `packages/database-client-factory`
+- `packages/runtime-infra`
+- `packages/adapter-runtime-bootstrap`
+- `packages/sdk-rest-client`
+- `packages/sdk-websocket-client`
+- `packages/sdk-grpc-client`
+
+Migration progress and wave-by-wave acceptance criteria are tracked in [JumentiX Monorepo Execution Plan](documentation/md/JUMENTIX-MONOREPO-EXECUTION-PLAN.md) and [.agents/project-todos.md](.agents/project-todos.md).
+
 ## Documentation Index
 
 | Nature | Document | Description |
@@ -425,6 +436,13 @@ npm run ci:gate
 | Security Compliance | [PCI Remediation Plan and Evidence](documentation/md/PCI-REMEDIATION-PLAN-AND-EVIDENCE.md) | Sprint-based remediation plan (P0/P1/P2) and audit evidence checklist. |
 | Security Operations | [Security Runbook (PCI)](documentation/md/SECURITY-RUNBOOK-PCI.md) | Key rotation, incident response, retention and audit export procedures. |
 | Domain Designer Roadmap | [Domain Designer MVP Roadmap](documentation/md/DOMAIN-DESIGNER-MVP-ROADMAP.md) | MVP status and future enhancements. |
+| JumentiX Monorepo Plan | [JumentiX Monorepo Execution Plan](documentation/md/JUMENTIX-MONOREPO-EXECUTION-PLAN.md) | Wave-based migration plan to pnpm monorepo product structure. |
+| JumentiX Packages | [JumentiX Workspace Packages](documentation/md/JUMENTIX-WORKSPACE-PACKAGES.md) | Current workspace package catalog and migration ownership map. |
+| JumentiX Wave 5 Cutover | [Wave 5 App Re-homing Cutover](documentation/md/JUMENTIX-WAVE5-APP-REHOMING-CUTOVER.md) | Step-by-step operational cutover guide for app re-homing into workspace apps. |
+| JumentiX Wave 5 Path Map | [Wave 5 Path Delta Map](documentation/md/JUMENTIX-WAVE5-PATH-DELTA-MAP.md) | Exact path rewrite map for scripts, PM2, and docs during app re-homing. |
+| JumentiX Migration Inventory | [Migration Inventory and Rollback](documentation/md/JUMENTIX-MIGRATION-INVENTORY-AND-ROLLBACK.md) | Current-to-target mapping, wave guardrails, and rollback/tag strategy. |
+| JumentiX Governance | [Jumentix Project Governance](documentation/md/JUMENTIX-PROJECT-GOVERNANCE.md) | Official single source of truth policy using GitHub Project `Jumentix`. |
+| SDK Migration | [SDK Compatibility Bridge](documentation/md/SDK-COMPATIBILITY-BRIDGE.md) | Transitional contract between legacy `sdk-clients/*` and new `@jumentix/sdk-*` packages. |
 | Project Management | [Project Management](documentation/md/PROJECT-MANAGEMENT.md) | Backlog references, requirement tracking, and governance links. |
 | Agents Registry | [.agents/README.md](.agents/README.md) | Technical requirements and specialized agents. |
 
@@ -447,6 +465,13 @@ npm run ci:gate
 - [Realtime API Testing](documentation/md/REALTIME-API-TESTING.md)
 - [Database Adapters Index](documentation/md/adapters/databases/README.md)
 - [Security Runbook (PCI)](documentation/md/SECURITY-RUNBOOK-PCI.md)
+- [JumentiX Monorepo Execution Plan](documentation/md/JUMENTIX-MONOREPO-EXECUTION-PLAN.md)
+- [JumentiX Workspace Packages](documentation/md/JUMENTIX-WORKSPACE-PACKAGES.md)
+- [Wave 5 App Re-homing Cutover](documentation/md/JUMENTIX-WAVE5-APP-REHOMING-CUTOVER.md)
+- [Wave 5 Path Delta Map](documentation/md/JUMENTIX-WAVE5-PATH-DELTA-MAP.md)
+- [Migration Inventory and Rollback](documentation/md/JUMENTIX-MIGRATION-INVENTORY-AND-ROLLBACK.md)
+- [Jumentix Project Governance](documentation/md/JUMENTIX-PROJECT-GOVERNANCE.md)
+- [SDK Compatibility Bridge](documentation/md/SDK-COMPATIBILITY-BRIDGE.md)
 - [Realtime API Testing](documentation/md/REALTIME-API-TESTING.md)
 
 ---

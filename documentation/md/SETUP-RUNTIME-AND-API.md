@@ -172,7 +172,7 @@ Response payload example:
 
 ## Single Adapter Boot Commands (via PM2)
 
-HTTP adapters:
+HTTP adapters (all routed through `start-rest-api` loader with `AAA_HTTP_FRAMEWORK`):
 
 ```bash
 npm run dev:express
@@ -187,6 +187,21 @@ npm run dev:feathers
 npm run dev:derby-js
 npm run dev:adonis-js
 npm run dev:total-js
+```
+
+Generic REST loader commands:
+
+```bash
+# uses AAA_HTTP_FRAMEWORK from env file (default express)
+npm run dev:http
+npm run prod:http
+```
+
+Equivalent direct loader style:
+
+```bash
+AAA_HTTP_FRAMEWORK=fastify pm2 start ./src/interface/HTTP/adapters/start-rest-api.ts --name aaa-dev-fastify --interpreter node --node-args='-r ts-node/register -r tsconfig-paths/register --env-file=./src/config/.env.dev' --update-env
+AAA_HTTP_FRAMEWORK=cloudflare-workers pm2 start ./src/interface/HTTP/adapters/start-rest-api.ts --name aaa-dev-cloudflare-workers --interpreter node --node-args='-r ts-node/register -r tsconfig-paths/register --env-file=./src/config/.env.dev' --update-env
 ```
 
 Combined service profiles:
@@ -219,7 +234,7 @@ npm run dev:service-management
 
 ## Production Commands
 
-All `prod:*` adapter commands now boot through PM2.
+All `prod:*` adapter commands now boot through PM2 and route through `start-rest-api` loader.
 Use `pm2:start:prod:*` profiles for separated REST/WebSocket/gRPC orchestration.
 
 ## Lambda Handlers Coverage

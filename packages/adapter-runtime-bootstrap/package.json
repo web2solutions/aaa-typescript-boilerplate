@@ -1,0 +1,17 @@
+{
+  "name": "@jumentix/adapter-runtime-bootstrap",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared adapter runtime bootstrap compiler for JumentiX services.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint ./src --ext .ts",
+    "test": "echo \"No tests yet for @jumentix/adapter-runtime-bootstrap\""
+  }
+}

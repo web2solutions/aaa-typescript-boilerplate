@@ -1,0 +1,7 @@
+packages:
+  - "."
+  - "apps/*"
+  - "packages/*"
+  - "sdk-clients/*"
+  - "servicemangement"
+  - "tooling/*"

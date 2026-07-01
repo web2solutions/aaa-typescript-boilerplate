@@ -17,10 +17,22 @@ describe('start-rest-api adapter loader', () => {
     expect(expressAdapterEvaluated).toHaveBeenCalledTimes(1);
   });
 
+  it('loads fastify adapter when framework is fastify', async () => {
+    expect.assertions(1);
+    const fastifyAdapterEvaluated = jest.fn();
+    jest.doMock('@src/interface/HTTP/adapters/fastify/fastify', () => {
+      fastifyAdapterEvaluated();
+      return {};
+    });
+    const { startRestApiAdapter } = await import('@src/interface/HTTP/adapters/start-rest-api');
+    await startRestApiAdapter({ AAA_HTTP_FRAMEWORK: 'fastify' } as NodeJS.ProcessEnv);
+    expect(fastifyAdapterEvaluated).toHaveBeenCalledTimes(1);
+  });
+
   it('throws for unsupported framework', async () => {
     expect.assertions(1);
     const { startRestApiAdapter } = await import('@src/interface/HTTP/adapters/start-rest-api');
-    await expect(startRestApiAdapter({ AAA_HTTP_FRAMEWORK: 'fastify' } as NodeJS.ProcessEnv))
+    await expect(startRestApiAdapter({ AAA_HTTP_FRAMEWORK: 'unknown-http' } as NodeJS.ProcessEnv))
       .rejects
       .toThrow('Unsupported AAA_HTTP_FRAMEWORK');
   });

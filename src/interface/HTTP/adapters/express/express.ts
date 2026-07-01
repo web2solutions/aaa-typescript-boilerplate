@@ -15,25 +15,26 @@ import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService
 import { compileMessageMediator } from '@src/infra/messages/compileMessageMediator';
 import { EHTTPFrameworks } from '@src/interface/HTTP/ports';
 import { RestAPI } from '@src/interface/HTTP/RestAPI';
+import { compileAdapterRuntime } from '@jumentix/adapter-runtime-bootstrap';
 
 const serverType = EHTTPFrameworks.express;
 const webServer = ExpressServer.compile();
 
-const passwordCryptoService = PasswordCryptoService.compile();
-const jwtService = JwtService.compile();
-
-const keyValueStorageClient = compileKeyValueStorageClient(process.env.AAA_KEYVALUESTORAGE_DRIVER);
-const mutexService = MutexService.compile(keyValueStorageClient);
-const messageMediator = compileMessageMediator();
-const databaseClient = compileDatabaseClient();
-
-const { authService } = composeUsersAuthServices({
+const {
   databaseClient,
-  passwordCryptoService,
-  mutexService,
-  jwtService,
   keyValueStorageClient,
-  messageMediator
+  mutexService,
+  passwordCryptoService,
+  messageMediator,
+  authService
+} = compileAdapterRuntime({
+  compileDatabaseClient,
+  compileKeyValueStorageClient,
+  compileMutexService: (client) => MutexService.compile(client),
+  compilePasswordCryptoService: () => PasswordCryptoService.compile(),
+  compileJwtService: () => JwtService.compile(),
+  compileMessageMediator: () => compileMessageMediator(),
+  composeAuthServices: composeUsersAuthServices
 });
 
 const API = new RestAPI<Express>({

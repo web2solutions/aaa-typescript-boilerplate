@@ -1,0 +1,15 @@
+{
+  "name": "@jumentix/backend-template",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX backend template workspace app",
+  "scripts": {
+    "build": "npm run build:dev --prefix ../..",
+    "test": "npm run test:unit --prefix ../..",
+    "lint": "npm run lint --prefix ../..",
+    "typecheck": "npm run build:dev --prefix ../..",
+    "dev:rest": "npm run dev:http --prefix ../..",
+    "dev:websocket-rest": "npm run dev:websocket --prefix ../..",
+    "dev:grpc-rest": "npm run dev:grpc --prefix ../.."
+  }
+}

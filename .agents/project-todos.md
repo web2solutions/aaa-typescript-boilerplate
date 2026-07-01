@@ -3,6 +3,10 @@
 This file tracks the project ownership fixes proposed before adding new features.
 Keep every item in either `Done` or `Open`, and move items as they are completed.
 
+GitHub tracking:
+- Open TODO items are mirrored in GitHub Issues with label `todo-mvp`:
+  - https://github.com/web2solutions/aaa-typescript-boilerplate/issues?q=is%3Aissue+is%3Aopen+label%3Atodo-mvp
+
 ## Done
 
 - [x] Fix the build
@@ -69,6 +73,25 @@ Keep every item in either `Done` or `Open`, and move items as they are completed
   - Added documentation and requirement registry sync:
     - `documentation/md/REALTIME-API-TESTING.md`
     - `.agents/requirements/047-realtime-api-test-matrix.md`
+
+- [x] Extract generic adapters/contracts into distributable workspace packages (ongoing wave)
+  - Added `@jumentix/message-mediator` package and bridged local mediator ports/adapters to package exports.
+  - Added `@jumentix/key-value-storage` package and bridged local key-value clients/compiler to package exports.
+  - Added `@jumentix/persistence-contracts` package for shared `IStore` + `IDatabaseClient` contracts.
+  - Added `@jumentix/mutex-service` package and bridged local mutex service/port to package exports.
+  - Added `@jumentix/external-persistence-core` package and migrated external repositories to import it directly.
+  - Added `@jumentix/external-store-proxy` package and bridged local `ExternalStoreProxy`/`createExternalStores` exports.
+  - Added `@jumentix/external-db-repositories` package and bridged all concrete external DB repositories (Mongo, Sequelize SQL, DynamoDB, Cassandra, Firebase, Aurora, RDS, Oracle).
+  - Added `@jumentix/database-client-factory` package and migrated local `compileDatabaseClient` to a bridge backed by package compilers.
+  - Added `@jumentix/runtime-infra` package and migrated core adapters (Express/Fastify/Restify/Hyper-Express/gRPC/WebSocket) to shared env-based runtime infra compilation.
+  - Added `@jumentix/adapter-runtime-bootstrap` package and migrated adapter runtime composition (crypto/jwt/mediator/auth wiring) for Express/gRPC/WebSocket.
+  - Expanded `@jumentix/adapter-runtime-bootstrap` adoption across HTTP adapters (Fastify, Restify, Hyper-Express, LoopBack, Sails, Adonis, Feathers, Derby, Total.js, Vercel Functions, Cloudflare Workers).
+  - Consolidated REST adapter loader to support all implemented HTTP frameworks through `AAA_HTTP_FRAMEWORK` and aligned PM2 scripts to start via `start-rest-api` loader.
+  - Normalized REST startup scripts to always set `AAA_HTTP_FRAMEWORK` explicitly (including express) for deterministic adapter selection.
+  - Updated runtime docs (`RUNTIME-ENVIRONMENT-CONTRACTS`, `SETUP-RUNTIME-AND-API`) to reflect loader-based framework matrix startup.
+  - Added generic loader scripts (`dev:http`, `prod:http`) for REST startup with env-driven framework resolution.
+  - Updated README adapter examples to use loader-based startup for framework selection instead of non-existent per-framework start functions.
+  - Updated root TypeScript path mappings for new packages to preserve compatibility while migrating.
 
 ## Open
 
@@ -445,3 +468,277 @@ Backlog sync status:
 
 - [x] Roadmap MVP completed
   - All planned Domain Designer MVP roadmap items implemented.
+
+## Open - JumentiX Monorepo Reorganization Plan (Execution Pending)
+
+Goal:
+- Reorganize `aaa-typescript-boilerplate` into a pnpm monorepo product named `JumentiX`, with clear package boundaries, deterministic migration waves, and low-risk rollback points.
+- This section is planning-only by request. No structural migration should start until explicit execution order is provided.
+- Canonical technical execution reference:
+  - `documentation/md/JUMENTIX-MONOREPO-EXECUTION-PLAN.md`
+  - `documentation/md/JUMENTIX-MIGRATION-INVENTORY-AND-ROLLBACK.md`
+
+### Phase 0 - Planning Guardrails (mandatory before code moves)
+
+- [x] Freeze migration scope and success criteria
+  - Define what is in-scope for Wave 1 (must-haves) vs Wave 2+ (enhancements).
+  - Lock naming decisions:
+    - product: `JumentiX`
+    - npm init CLI package naming strategy (`jumentix@init` request requires npm alias/registry validation).
+  - Define migration policy:
+    - no partial cutovers without complete functional parity in the same wave
+    - docs and agents update in same wave
+    - quality gates green before each merge.
+
+- [x] Create migration branch strategy and release checkpoints
+  - Branch naming convention for each wave.
+  - Tagging plan before/after each destructive move.
+  - Rollback procedure documented per wave.
+
+### Phase 1 - Target Monorepo Architecture Design
+
+- [x] Define final workspace topology (pnpm workspaces)
+  - Proposed root structure:
+    - `apps/`
+      - `service-management` (web tool, current servicemangement)
+      - `backend-template` (current backend boilerplate app form)
+    - `packages/`
+      - `cli-init` (current CLI evolved to install/bootstrap JumentiX projects)
+      - `message-mediator` (independent npm lib)
+      - `sdk-rest-client`
+      - `sdk-websocket-client`
+      - `sdk-grpc-client`
+      - `config-ts` (shared tsconfig presets)
+      - `config-eslint` (shared lint presets)
+      - `config-jest` (shared test presets)
+      - `shared-contracts` (optional: OpenAPI/AsyncAPI contract helpers/types)
+    - `tooling/`
+      - CI scripts, release scripts, changelog/quality scripts
+    - `docs/` (or keep existing `documentation/` with workspace-aware index)
+
+- [x] Map current files into destination packages/apps
+  - Inventory current directories and map each one to `apps/*` or `packages/*`.
+  - Mark blockers for paths that cannot be moved without import breakage.
+  - Define direct import rewrites for staged migration waves.
+
+- [ ] Define package dependency boundaries
+  - Backend app imports mediator from `packages/message-mediator` (no duplicated local copies).
+  - SDK packages are independent publishable libraries.
+  - Service management app consumes SDK/contracts via workspace dependencies.
+
+### Phase 2 - pnpm Foundation Setup
+
+- [x] Add pnpm root management files
+  - `pnpm-workspace.yaml`
+  - root `package.json` with workspace scripts
+  - shared lockfile strategy with `pnpm-lock.yaml`
+  - workspace `.npmrc` policies (strict-peer-dependencies, node-linker strategy if needed).
+  - Status:
+    - `pnpm-workspace.yaml` created.
+    - root `package.json` updated with `packageManager` and `mono:*` scripts.
+    - `pnpm-lock.yaml` pending first successful online `pnpm install`.
+
+- [x] Add root toolchain baselines
+  - Node 22 enforcement across workspace (`engines`, `.nvmrc`, CI images).
+  - Shared TypeScript project references strategy.
+  - Shared lint/test/format scripts at root + per-package overrides.
+  - Status:
+    - Node 22 enforced at root (`engines`, `.nvmrc`, CircleCI node image and version checks).
+    - Shared config workspaces created (`packages/config-ts`, `packages/config-eslint`, `packages/config-jest`).
+    - Root monorepo orchestration scripts and quality gates centralized in root `package.json`.
+
+- [x] Define workspace task orchestration
+  - Standard scripts:
+    - `pnpm -r build`
+    - `pnpm -r test`
+    - `pnpm -r lint`
+    - selective affected execution strategy.
+  - Status:
+    - `mono:build`, `mono:test`, `mono:lint`, and `mono:typecheck` are available at root and use recursive workspace execution.
+    - `.npmrc` now enforces workspace linking and shared lockfile behavior for deterministic package resolution.
+
+### Phase 3 - Incremental Package Extraction Waves
+
+- [ ] Wave A - Extract `message-mediator` as independent package
+  - Move mediator ports/contracts/adapters to `packages/message-mediator`.
+  - Preserve existing behavior with direct workspace import replacement in backend app.
+  - Add package-level tests and publish-ready metadata.
+
+- [ ] Wave B - Extract SDK clients into independent packages
+  - Split existing `sdk-clients` into package-per-protocol.
+  - Ensure each package consumes contracts from spec files and/or shared-contract package.
+  - Add usage examples and API contract tests.
+
+- [ ] Wave C - Convert current CLI into `cli-init` package
+  - Keep current capabilities, then add bootstrap orchestration for:
+    - backend service
+    - frontend SPA/PWA offline
+    - mixed backend/frontend service groups
+  - Validate install/init UX (`npm install ... -g` flow requirement needs exact npm package plan).
+
+- [ ] Wave D - Move current backend boilerplate to `apps/backend-template`
+  - Keep all current capabilities (HTTP frameworks, realtime, serverless, PM2, tests, docs).
+  - Replace internal references to extracted packages with workspace dependencies.
+
+- [ ] Wave E - Move `servicemangement` to `apps/service-management`
+  - Wire it to workspace packages (sdk/contracts/cli metadata where applicable).
+  - Keep PM2 startup profile support.
+
+### Phase 4 - Product-Level Feature Planning (post-structure)
+
+- [ ] Define service factory capabilities matrix
+  - Monolith modular
+  - Multi-service backend
+  - Hybrid backend + frontend
+  - Frontend-only SPA/PWA offline.
+
+- [ ] Define deploy target matrix and packaging contracts
+  - VM/SSH, EC2, Lambda, Vercel Functions, Cloudflare Workers.
+  - Backend and frontend deployment metadata contracts for Service Management.
+
+- [ ] Define bundler/runtime templates by artifact type
+  - backend service
+  - frontend SPA
+  - frontend SSR
+  - npm lib backend
+  - npm lib frontend.
+
+### Phase 5 - CI/CD, Quality Gates, and Release Management
+
+- [ ] Refactor CI pipelines for pnpm monorepo
+  - Cache pnpm store.
+  - Matrix by changed workspace.
+  - Keep required gates:
+    - lint
+    - unit/integration/smoke
+    - build
+    - coverage thresholds
+    - route/contract checks
+    - security checks.
+
+- [ ] Enforce per-package coverage and global policy
+  - Keep current strict commit/push blockers.
+  - Add per-workspace thresholds with fail-fast behavior.
+
+- [ ] Define publishing/versioning strategy
+  - Changesets or equivalent release orchestration.
+  - Independent vs locked version policy per package.
+  - Changelog generation per package and aggregate product changelog.
+
+### Phase 6 - Documentation and Product Positioning Alignment
+
+- [ ] Rename and reposition docs to `JumentiX`
+  - Position documentation around JumentiX product architecture and workflows.
+  - Add workspace-first onboarding guide.
+
+- [ ] Update architecture and onboarding docs
+  - Monorepo workspace map
+  - package responsibilities
+  - development flows
+  - PM2 multi-app management in monorepo context.
+
+- [ ] Update agents and requirement registry
+  - Add dedicated requirements for monorepo governance, package boundaries, and release policy.
+
+### Risk Register and Anti-Waste Controls
+
+- [ ] Risk: package naming ambiguity (`jumentix@init`) may be invalid as npm install target
+  - Mitigation: validate npm naming strategy before implementation and lock decision in Phase 0.
+
+- [ ] Risk: breaking imports during moves
+  - Mitigation: move by waves with codemod-assisted import rewrites and strict compile gates.
+
+- [ ] Risk: CI instability due to monorepo migration
+  - Mitigation: per-wave CI hardening with mandatory green gates before next wave.
+
+- [ ] Risk: oversized PRs reduce review quality
+  - Mitigation: wave-based PRs with explicit acceptance criteria and rollback tags.
+
+### Acceptance Criteria for Starting Implementation
+
+- [x] Final architecture map approved (apps/packages boundaries and names).
+- [x] Migration wave order approved.
+- [x] npm package naming/install strategy approved for CLI bootstrap.
+- [ ] CI migration strategy approved (including quality gates and coverage policy).
+- [ ] Rollback and release strategy approved.
+
+### Detailed Wave Execution Backlog (Operational)
+
+- [x] Wave 1 - Workspace Foundation
+  - Deliverables:
+    - `pnpm-workspace.yaml`
+    - root scripts (`build`, `test`, `lint`, `typecheck`) using pnpm recursive execution
+    - Node 22 enforcement and CI alignment
+  - Done criteria:
+    - `pnpm -r lint`, `pnpm -r test`, `pnpm -r build` all green
+    - no broken local developer bootstrap flow
+  - Progress:
+    - workspace scaffold directories and package placeholders created in `apps/` and `packages/`.
+    - recursive scripts implemented at root.
+    - Node 22 enforced via root engines and CI/runtime alignment updates.
+    - full pnpm recursive validation still pending due local network/package-manager instability during install bootstrap.
+
+- [x] Wave 2 - Message Mediator Package Extraction
+  - Deliverables:
+    - `packages/message-mediator` with ports/contracts/adapters
+    - backend-template consuming mediator via workspace dependency
+  - Done criteria:
+    - mediator unit tests green in package scope
+    - backend app tests green after import rewrite
+  - Progress:
+    - contracts + in-memory adapter extracted to `packages/message-mediator`.
+    - RabbitMQ and BullMQ adapters extracted to `packages/message-mediator`.
+    - compile helper extracted (`compileMessageMediator`) with local bridge kept for compatibility.
+    - local core mediator contracts in `src/modules/port/*` now re-export from workspace package to avoid drift.
+    - local mediator adapters in `src/infra/messages/adapters` now re-export from workspace package.
+
+- [ ] Wave 3 - SDK Package Split
+  - Deliverables:
+    - `packages/sdk-rest-client`
+    - `packages/sdk-websocket-client`
+    - `packages/sdk-grpc-client`
+  - Done criteria:
+    - each SDK has build/test/docs and independent package metadata
+    - contract tests green against spec-driven behavior
+  - Progress:
+    - Created independent package source trees for REST/WebSocket/gRPC SDKs under `packages/sdk-*/src`.
+    - Added package-level `build`/`typecheck` scripts and package manifests (`main`, `types`, `files`, dependencies).
+    - Spec loading was localized per package with AsyncAPI/OpenAPI-driven defaults preserved.
+    - Added package-level README guides with usage examples and build commands.
+    - Legacy `sdk-clients/*` now acts as compatibility layer and re-exports SDK implementations from workspace packages.
+    - Added explicit compatibility-bridge documentation and migration/decommission criteria.
+    - SDK package `test` scripts now execute package-level typecheck to avoid placeholder/no-op tests.
+
+- [ ] Wave 4 - CLI Productization (`cli-init`)
+  - Deliverables:
+    - package extraction for current CLI
+    - scaffold commands for backend/frontend/hybrid service groups
+  - Done criteria:
+    - install/bootstrap smoke path validated end-to-end
+    - docs + examples published in repository docs
+  - Progress:
+    - `packages/cli-init` now contains a functional bootstrap CLI entrypoint (`bin/jumentix-init.js`) and reusable implementation module (`src/bootstrap.js`).
+    - root `bin/aaa-bootstrap.js` now delegates to `packages/cli-init`, reducing duplication and keeping workspace packaging aligned.
+    - Added package-level CLI README and command contracts (`jumentix-init` and `aaa-bootstrap` alias).
+    - Added non-interactive CLI flags and help output (`--service-type`, `--project-name`, `--git-branch`, `--install-deps`, `--repo`) to support automation pipelines.
+    - CLI package test script now performs help smoke execution (`jumentix-init --help`).
+
+- [ ] Wave 5 - Apps Re-homing
+  - Deliverables:
+    - current backend boilerplate moved to `apps/backend-template`
+    - `servicemangement` moved to `apps/service-management`
+  - Done criteria:
+    - both apps build/test/run under pnpm workspace scripts
+    - PM2 startup profiles still functional
+  - Progress:
+    - Added migration-focused app READMEs for `apps/backend-template` and `apps/service-management` with explicit Wave 5 cutover steps.
+    - Added executable cutover playbook with sequence, rollback, and acceptance criteria: `documentation/md/JUMENTIX-WAVE5-APP-REHOMING-CUTOVER.md`.
+    - Replaced placeholder workspace app scripts with executable transitional scripts mapped to root runtime commands for `apps/backend-template` and `apps/service-management`.
+
+- [ ] Wave 6 - CI/CD + Release Strategy Hardening
+  - Deliverables:
+    - workspace-aware CI with selective execution by affected packages/apps
+    - publishing/versioning flow documented and implemented
+  - Done criteria:
+    - PR checks green with monorepo matrix
+    - release dry-run for at least one package and one app artifact

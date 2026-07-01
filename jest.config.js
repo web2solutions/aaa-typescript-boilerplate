@@ -24,12 +24,14 @@ module.exports = {
     '@src/(.*)$': '<rootDir>/src/$1',
     '@seed/(.*)$': '<rootDir>/seed/$1',
     '@test/(.*)$': '<rootDir>/test/$1',
+    '@jumentix/(.*)$': '<rootDir>/packages/$1/src',
   },
   testPathIgnorePatterns: [
     ...unsupportedRuntimeIgnorePatterns,
     ...redisIntegrationIgnorePatterns
   ],
   modulePathIgnorePatterns: ['dist', '.build', '.serverless', '.resources'],
+  coveragePathIgnorePatterns: ['<rootDir>/packages/'],
   coverageThreshold: {
     global: {
       branches: 90,

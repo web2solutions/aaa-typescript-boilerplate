@@ -88,11 +88,14 @@ export class UserDataRepository
     const {
       result, page, size, total
     } = await this.store.getAll(filters, paging);
+    const currentPage = page ?? paging?.page ?? 1;
+    const currentSize = size ?? paging?.size ?? this.limit;
+    const rows = result ?? [];
     const pagedResponse: IPagingResponse<User[]> = {
-      page,
-      size,
+      page: currentPage,
+      size: currentSize,
       total,
-      result: result.map((rawDoc: IUser) => new User(rawDoc))
+      result: rows.map((rawDoc: IUser) => new User(rawDoc))
     };
     return pagedResponse;
   }

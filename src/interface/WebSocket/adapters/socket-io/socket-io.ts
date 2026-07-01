@@ -18,28 +18,28 @@ import {
   createClusterSocketIoAdapter,
   isClusterSocketIoEnabled
 } from '@src/interface/WebSocket/adapters/socket-io/clusterAdapter';
+import { compileAdapterRuntime } from '@jumentix/adapter-runtime-bootstrap';
 
 export function shouldStartFallbackRestApi(env: NodeJS.ProcessEnv = process.env): boolean {
   return env.AAA_DISABLE_FALLBACK_REST !== 'true';
 }
 
 export async function startWebSocketAdapter(): Promise<void> {
-  const passwordCryptoService = PasswordCryptoService.compile();
-  const jwtService = JwtService.compile();
-  const keyValueStorageClient = compileKeyValueStorageClient(
-    process.env.AAA_KEYVALUESTORAGE_DRIVER
-  );
-  const mutexService = MutexService.compile(keyValueStorageClient);
-  const messageMediator = compileMessageMediator();
-  const databaseClient = compileDatabaseClient();
-
-  const { authService } = composeUsersAuthServices({
+  const {
     databaseClient,
-    passwordCryptoService,
-    mutexService,
-    jwtService,
     keyValueStorageClient,
-    messageMediator
+    mutexService,
+    passwordCryptoService,
+    messageMediator,
+    authService
+  } = compileAdapterRuntime({
+    compileDatabaseClient,
+    compileKeyValueStorageClient,
+    compileMutexService: (client) => MutexService.compile(client),
+    compilePasswordCryptoService: () => PasswordCryptoService.compile(),
+    compileJwtService: () => JwtService.compile(),
+    compileMessageMediator: () => compileMessageMediator(),
+    composeAuthServices: composeUsersAuthServices
   });
 
   let socketIoAdapter:

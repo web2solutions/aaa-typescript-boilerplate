@@ -18,6 +18,16 @@ Include links to issue(s), incident(s), backlog items, or Sonar/Codecov check UR
 - Related PR(s):
 - Related check run(s):
 
+## Project Tracking (Required)
+
+- GitHub Project: `Jumentix` (`https://github.com/users/web2solutions/projects/1`)
+- Project item link(s):
+- Issue link(s):
+- Item status at PR creation:
+- Target cycle (`Start date` -> `End date`):
+- Priority group for this PR (`P0` / `P1` / `P2`):
+- [ ] This PR contains tasks from only one priority group.
+
 ## Scope of Change
 
 <!--
@@ -196,4 +206,3 @@ List top risks and how each is mitigated.
 - [ ] Tests are sufficient for risk level.
 - [ ] Security and data impacts are addressed.
 - [ ] CI checks pass fully.
-

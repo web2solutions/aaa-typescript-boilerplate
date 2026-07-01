@@ -18,7 +18,19 @@ The following keys are mandatory across env files in `src/config/`:
 
 - `AAA_HTTP_FRAMEWORK`
   - default: `express`
-  - current supported values: `express`
+  - current supported values:
+    - `express`
+    - `fastify`
+    - `restify`
+    - `hyper-express`
+    - `cloudflare-workers`
+    - `vercel-functions`
+    - `loopback`
+    - `sails-js`
+    - `feathers`
+    - `derby-js`
+    - `adonis-js`
+    - `total-js`
   - used by: `src/interface/HTTP/adapters/start-rest-api.ts`
 
 - `AAA_REALTIME_API`
@@ -77,6 +89,7 @@ The following keys are mandatory across env files in `src/config/`:
   - `src/interface/gRPC/adapters/start-grpc-api.ts`
 
 These files are the official process entrypoints used by PM2 ecosystem profiles.
+Single-protocol helper scripts also route through these entrypoints (`dev:http`, `prod:http`, `dev:websocket`, `dev:grpc`).
 
 ## PM2 Process Model
 
@@ -105,6 +118,7 @@ The env editor mutates only approved keys from this contract, preserving guardra
 ## Guardrails
 
 - Unsupported `AAA_HTTP_FRAMEWORK` must fail fast.
+- REST bootstrap must always resolve framework via `start-rest-api` loader.
 - Realtime boot must not start when:
   - `AAA_REALTIME_API` is not `yes`, or
   - `AAA_REALTIME_API_PROTOCOL` does not match the adapter entrypoint.

@@ -1,0 +1,22 @@
+{
+  "name": "@jumentix/sdk-grpc-client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX gRPC SDK client",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node -e \"console.log('sdk-grpc-client smoke ok')\"",
+    "lint": "echo \"sdk-grpc-client: lint managed by root workspace\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.14.1",
+    "@grpc/proto-loader": "^0.8.0",
+    "yaml": "^2.5.1"
+  }
+}

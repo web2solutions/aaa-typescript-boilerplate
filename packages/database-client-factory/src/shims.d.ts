@@ -1,0 +1,11 @@
+declare module 'mongoose';
+declare module 'sequelize';
+declare module '@aws-sdk/client-dynamodb';
+declare module 'cassandra-driver';
+declare module 'firebase-admin/app';
+declare module 'firebase-admin/firestore';
+declare module 'postgres';
+declare module '@aws/aurora-dsql-postgresjs';
+declare module '@aws/aurora-dsql-connector';
+declare module '@aws/aurora-dsql';
+declare module 'oracledb';
