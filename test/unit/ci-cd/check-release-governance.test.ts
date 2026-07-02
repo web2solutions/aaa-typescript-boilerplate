@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
+  validateReleasePolicy,
   validateRootReleaseScripts,
-  validatePackageReleaseMetadata
+  validatePackageReleaseMetadata,
+  validateAppReleaseMetadata
 } = require('../../../ci-cd/check-release-governance');
 
 describe('check-release-governance', () => {
@@ -51,6 +53,54 @@ describe('check-release-governance', () => {
     expect(failures).toStrictEqual([
       '[@jumentix/publishable] invalid semver version: 1.0',
       '[@jumentix/publishable] publishable package must define non-empty files field'
+    ]);
+  });
+
+  it('accepts release policy when package/app strategies are valid', () => {
+    expect.hasAssertions();
+    const failures = validateReleasePolicy({
+      packageVersioning: 'independent',
+      appVersioning: 'locked',
+      appLockedVersion: '0.0.2'
+    }, { version: '0.0.2' });
+    expect(failures).toStrictEqual([]);
+  });
+
+  it('rejects invalid release policy values', () => {
+    expect.hasAssertions();
+    const failures = validateReleasePolicy({
+      packageVersioning: 'locked',
+      appVersioning: 'independent',
+      appLockedVersion: '0.0'
+    }, { version: '0.0.2' });
+    expect(failures).toStrictEqual([
+      '[release-policy] packageVersioning must be "independent"',
+      '[release-policy] appVersioning must be "locked"',
+      '[release-policy] appLockedVersion must be a valid semver, got: 0.0',
+      '[release-policy] appLockedVersion must match root package version (0.0.2)'
+    ]);
+  });
+
+  it('accepts app metadata when app is private and version is locked', () => {
+    expect.hasAssertions();
+    const failures = validateAppReleaseMetadata({
+      name: '@jumentix/service-management',
+      version: '0.0.2',
+      private: true
+    }, 'apps/service-management', { appLockedVersion: '0.0.2' });
+    expect(failures).toStrictEqual([]);
+  });
+
+  it('rejects app metadata when app is public or unlocked version', () => {
+    expect.hasAssertions();
+    const failures = validateAppReleaseMetadata({
+      name: '@jumentix/service-management',
+      version: '0.0.1',
+      private: false
+    }, 'apps/service-management', { appLockedVersion: '0.0.2' });
+    expect(failures).toStrictEqual([
+      '[@jumentix/service-management] app workspace must be private',
+      '[@jumentix/service-management] app version must match release-policy appLockedVersion (0.0.2)'
     ]);
   });
 });

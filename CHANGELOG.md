@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-02 feat(release): enforce locked app versions with policy contract - web2solutions
 - 2026-07-02 docs(jumentix): add factory, deploy and runtime template matrices - web2solutions
 - 2026-07-02 feat(ci): enforce release governance checks in quality gate - web2solutions
 - 2026-07-01 docs(quality): document workspace package quality gate - web2solutions

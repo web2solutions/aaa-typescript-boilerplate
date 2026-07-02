@@ -1,0 +1,5 @@
+{
+  "packageVersioning": "independent",
+  "appVersioning": "locked",
+  "appLockedVersion": "0.0.2"
+}
