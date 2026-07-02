@@ -31,13 +31,13 @@
     //"baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     "paths": {
-      "@src": ["./src"],
-      "@src/*": ["./src/*"],
+      "@src": ["./apps/backend-template/src"],
+      "@src/*": ["./apps/backend-template/src/*"],
       "@infra": ["./infra"],
       "@infra/*": ["./infra/*"],
       "@seed": ["./apps/backend-template/seed"],
       "@seed/*": ["./apps/backend-template/seed/*"],
-      "@test/*": ["./test/*"],
+      "@test/*": ["./apps/backend-template/test/*"],
       "@jumentix/message-mediator": ["./packages/message-mediator/src/index.ts"],
       "@jumentix/message-mediator/*": ["./packages/message-mediator/src/*"],
       "@jumentix/key-value-storage": ["./packages/key-value-storage/src/index.ts"],
@@ -141,7 +141,7 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": ["./**/*.ts", "src", "config"],
+  "include": ["./**/*.ts", "apps/backend-template/src", "config"],
   "ts-node": {
     // Do not forget to `npm i -D tsconfig-paths`
     "require": ["tsconfig-paths/register"]
