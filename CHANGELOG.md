@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-02 fix(ci): support serverless handler path fallbacks during monorepo migration - web2solutions
 - 2026-07-02 fix(serverless): update handlers to monorepo restapi paths - web2solutions
 - 2026-07-02 fix(ci): fallback security smoke to roots containing tests - web2solutions
 - 2026-07-02 fix(ci): avoid duplicate legacy+monorepo test path execution - web2solutions

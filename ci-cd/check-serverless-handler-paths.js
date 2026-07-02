@@ -13,6 +13,23 @@ function collectHandlerPaths(serverlessSource) {
   return handlers;
 }
 
+function buildCandidatePaths(handlerPathWithoutExtension) {
+  const candidates = new Set([`${handlerPathWithoutExtension}.ts`]);
+
+  const withoutAppPrefix = handlerPathWithoutExtension.startsWith('apps/backend-template/')
+    ? handlerPathWithoutExtension.replace('apps/backend-template/', '')
+    : handlerPathWithoutExtension;
+  candidates.add(`${withoutAppPrefix}.ts`);
+
+  const legacyApiPath = withoutAppPrefix.replace('/interface/restapi/', '/interface/api/');
+  candidates.add(`${legacyApiPath}.ts`);
+
+  const legacyApiWithAppPrefix = handlerPathWithoutExtension.replace('/interface/restapi/', '/interface/api/');
+  candidates.add(`${legacyApiWithAppPrefix}.ts`);
+
+  return Array.from(candidates);
+}
+
 function validateServerlessHandlers() {
   const root = process.cwd();
   const serverlessFile = path.join(root, 'serverless.ts');
@@ -31,8 +48,13 @@ function validateServerlessHandlers() {
   }
 
   const missing = handlers
-    .map((handlerPath) => `${handlerPath.split('.').slice(0, -1).join('.')}.ts`)
-    .filter((resolvedPath) => !fs.existsSync(path.join(root, resolvedPath)));
+    .map((handlerPath) => handlerPath.split('.').slice(0, -1).join('.'))
+    .map((handlerPathWithoutExtension) => {
+      const candidates = buildCandidatePaths(handlerPathWithoutExtension);
+      const hasAnyCandidate = candidates.some((candidate) => fs.existsSync(path.join(root, candidate)));
+      return hasAnyCandidate ? null : `${handlerPathWithoutExtension}.ts`;
+    })
+    .filter(Boolean);
 
   if (missing.length > 0) {
     console.error('Serverless handler path validation failed. Missing files:');
