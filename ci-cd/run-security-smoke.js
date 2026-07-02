@@ -11,15 +11,21 @@ const SECURITY_TEST_SUFFIXES = [
 
 function run() {
   const root = process.cwd();
-  const securityRoot = CANDIDATE_SECURITY_ROOTS.find((candidateRoot) =>
-    fs.existsSync(path.join(root, candidateRoot)),
-  );
+  const existingTests = CANDIDATE_SECURITY_ROOTS.reduce((found, candidateRoot) => {
+    if (found.length > 0) {
+      return found;
+    }
 
-  const existingTests = securityRoot
-    ? SECURITY_TEST_SUFFIXES
-      .map((suffix) => path.join(securityRoot, suffix))
-      .filter((target) => fs.existsSync(path.join(root, target)))
-    : [];
+    if (!fs.existsSync(path.join(root, candidateRoot))) {
+      return found;
+    }
+
+    const testsForRoot = SECURITY_TEST_SUFFIXES
+      .map((suffix) => path.join(candidateRoot, suffix))
+      .filter((target) => fs.existsSync(path.join(root, target)));
+
+    return testsForRoot;
+  }, []);
 
   if (existingTests.length === 0) {
     console.error('[ci] security smoke: no matching tests were found.');

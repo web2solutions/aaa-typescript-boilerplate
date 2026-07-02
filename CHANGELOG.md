@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-02 fix(ci): fallback security smoke to roots containing tests - web2solutions
 - 2026-07-02 fix(ci): avoid duplicate legacy+monorepo test path execution - web2solutions
 - 2026-07-02 fix(ci): make smoke and unit test targets monorepo-path resilient - web2solutions
 - 2026-07-02 fix(ci): stabilize gate and add serverless handler path governance - web2solutions
