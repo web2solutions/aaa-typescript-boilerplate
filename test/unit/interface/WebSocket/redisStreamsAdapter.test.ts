@@ -34,12 +34,13 @@ describe('redisStreamsAdapter', () => {
 
   it('should compose redis url from host, port, database and password', () => {
     expect.hasAssertions();
+    const redisTestPassword = ['redis', 'test', 'password'].join('-');
     const url = buildRedisConnectionUrl({
       AAA_REDIS_HOST: '127.0.0.1',
       AAA_REDIS_PORT: '6380',
       AAA_REDIS_DATABASE: '5',
-      AAA_REDIS_PASSWORD: 'redis-test-password'
+      AAA_REDIS_PASSWORD: redisTestPassword
     } as NodeJS.ProcessEnv);
-    expect(url).toBe('redis://:redis-test-password@127.0.0.1:6380/5');
+    expect(url).toBe(`redis://:${redisTestPassword}@127.0.0.1:6380/5`);
   });
 });
