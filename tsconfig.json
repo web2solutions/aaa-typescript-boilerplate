@@ -31,8 +31,8 @@
     //"baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     "paths": {
-      "@src": ["./apps/backend-template/src"],
-      "@src/*": ["./apps/backend-template/src/*"],
+      "@src": ["./apps/backend-template/src", "./src"],
+      "@src/*": ["./apps/backend-template/src/*", "./src/*"],
       "@infra": ["./infra"],
       "@infra/*": ["./infra/*"],
       "@seed": ["./apps/backend-template/seed"],

@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-02 fix(tsconfig): allow @src path fallback to legacy src tree - web2solutions
 - 2026-07-02 fix(build): use dedicated tsconfig for compile-only sources - web2solutions
 - 2026-07-02 fix(ci): support serverless handler path fallbacks during monorepo migration - web2solutions
 - 2026-07-02 fix(serverless): update handlers to monorepo restapi paths - web2solutions
