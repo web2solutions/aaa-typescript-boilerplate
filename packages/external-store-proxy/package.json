@@ -1,0 +1,21 @@
+{
+  "name": "@jumentix/external-store-proxy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "External database IStore proxy implementations for JumentiX.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.940.0",
+    "sequelize": "^6.37.7"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint ./src --ext .ts",
+    "test": "echo \"No tests yet for @jumentix/external-store-proxy\""
+  }
+}

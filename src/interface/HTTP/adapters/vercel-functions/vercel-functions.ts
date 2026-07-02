@@ -18,6 +18,7 @@ import { JwtService } from '@src/infra/jwt/JwtService';
 import { MutexService } from '@src/infra/mutex/adapter/MutexService';
 import { PasswordCryptoService } from '@src/infra/security/PasswordCryptoService';
 import { composeUsersAuthServices } from '@src/modules/Users';
+import { compileAdapterRuntime } from '@jumentix/adapter-runtime-bootstrap';
 
 type RouteMatch = {
   matched: boolean;
@@ -192,20 +193,21 @@ class VercelFunctionsServer extends HTTPBaseServer<Record<string, never>> {
 
 const serverType = EHTTPFrameworks.vercel_functions;
 const webServer = VercelFunctionsServer.compile();
-const passwordCryptoService = PasswordCryptoService.compile();
-const jwtService = JwtService.compile();
-const keyValueStorageClient = compileKeyValueStorageClient(process.env.AAA_KEYVALUESTORAGE_DRIVER);
-const mutexService = MutexService.compile(keyValueStorageClient);
-const messageMediator = compileMessageMediator();
-const databaseClient = compileDatabaseClient();
-
-const { authService } = composeUsersAuthServices({
+const {
   databaseClient,
-  passwordCryptoService,
-  mutexService,
-  jwtService,
   keyValueStorageClient,
-  messageMediator
+  mutexService,
+  passwordCryptoService,
+  messageMediator,
+  authService
+} = compileAdapterRuntime({
+  compileDatabaseClient,
+  compileKeyValueStorageClient,
+  compileMutexService: (client) => MutexService.compile(client),
+  compilePasswordCryptoService: () => PasswordCryptoService.compile(),
+  compileJwtService: () => JwtService.compile(),
+  compileMessageMediator: () => compileMessageMediator(),
+  composeAuthServices: composeUsersAuthServices
 });
 
 const API = new RestAPI<Record<string, never>>({

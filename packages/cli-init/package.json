@@ -1,0 +1,20 @@
+{
+  "name": "@jumentix/cli-init",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX bootstrap CLI package",
+  "bin": {
+    "jumentix-init": "./bin/jumentix-init.js",
+    "aaa-bootstrap": "./bin/jumentix-init.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "scripts": {
+    "build": "echo \"cli-init is plain node script: no build step required\"",
+    "test": "node ./bin/jumentix-init.js --help",
+    "lint": "echo \"cli-init: lint managed by root workspace\"",
+    "typecheck": "echo \"cli-init: plain JS entrypoint\""
+  }
+}

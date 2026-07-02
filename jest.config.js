@@ -8,7 +8,10 @@ const unsupportedRuntimeIgnorePatterns = nodeMajor > 22
   : [];
 const redisIntegrationIgnorePatterns = process.env.RUN_REDIS_INTEGRATION
   ? []
-  : ['<rootDir>/test/integration/mutex/'];
+  : [
+    '<rootDir>/test/integration/mutex/',
+    '<rootDir>/test/integration/realtime/socketio.redis-streams.multi-instance.test.ts'
+  ];
 
 module.exports = {
   preset: 'ts-jest',
@@ -19,14 +22,16 @@ module.exports = {
   testEnvironment: 'node',
   moduleNameMapper: {
     '@src/(.*)$': '<rootDir>/src/$1',
-    '@seed/(.*)$': '<rootDir>/seed/$1',
+    '@seed/(.*)$': '<rootDir>/apps/backend-template/seed/$1',
     '@test/(.*)$': '<rootDir>/test/$1',
+    '@jumentix/(.*)$': '<rootDir>/packages/$1/src',
   },
   testPathIgnorePatterns: [
     ...unsupportedRuntimeIgnorePatterns,
     ...redisIntegrationIgnorePatterns
   ],
   modulePathIgnorePatterns: ['dist', '.build', '.serverless', '.resources'],
+  coveragePathIgnorePatterns: ['<rootDir>/packages/', '<rootDir>/ci-cd/'],
   coverageThreshold: {
     global: {
       branches: 90,

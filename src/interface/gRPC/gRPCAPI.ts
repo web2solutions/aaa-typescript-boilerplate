@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import path from 'path';
-import grpc from '@grpc/grpc-js';
-import protoLoader from '@grpc/proto-loader';
+import * as grpc from '@grpc/grpc-js';
+import * as protoLoader from '@grpc/proto-loader';
 
 import { _HTTP_PORT_ } from '@src/config/constants';
 import {
@@ -106,13 +106,15 @@ export class GrpcAPI extends RealtimeAPIBase {
   }
 
   private loadProtoService(): any {
-    const packageDefinition = protoLoader.loadSync(this.protoFilePath, {
+    const protoLoaderLib: any = (protoLoader as any).default || protoLoader;
+    const grpcLib: any = (grpc as any).default || grpc;
+    const packageDefinition = protoLoaderLib.loadSync(this.protoFilePath, {
       longs: String,
       enums: String,
       defaults: true,
       oneofs: true
     });
-    const grpcObject = grpc.loadPackageDefinition(packageDefinition) as any;
+    const grpcObject = grpcLib.loadPackageDefinition(packageDefinition) as any;
     return grpcObject.realtime;
   }
 
@@ -124,8 +126,9 @@ export class GrpcAPI extends RealtimeAPIBase {
     await this.databaseClient.connect();
 
     const realtimePackage = this.loadProtoService();
-    this.server = new grpc.Server();
-    this.server.addService(realtimePackage.AsyncApiGateway.service, {
+    const grpcLib: any = (grpc as any).default || grpc;
+    this.server = new grpcLib.Server();
+    this.server!.addService(realtimePackage.AsyncApiGateway.service, {
       request: async (
         call: grpc.ServerUnaryCall<IGrpcAsyncApiRequest, IGrpcAsyncApiResponse>,
         callback: grpc.sendUnaryData<IGrpcAsyncApiResponse>
@@ -153,7 +156,7 @@ export class GrpcAPI extends RealtimeAPIBase {
     await new Promise<void>((resolve, reject) => {
       this.server!.bindAsync(
         `${this.host}:${this.port}`,
-        grpc.ServerCredentials.createInsecure(),
+        grpcLib.ServerCredentials.createInsecure(),
         (error) => {
           if (error) {
             reject(error);

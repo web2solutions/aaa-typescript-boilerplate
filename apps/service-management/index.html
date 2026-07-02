@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Service Management</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="service-management-shell">
+    <header class="service-management-header">
+      <h1>Service Management</h1>
+      <p>Design domains, communication interfaces, runtime settings, and deployment targets.</p>
+    </header>
+
+    <nav class="tab-nav" aria-label="Service management tabs">
+      <button id="tab-domain-designer-btn" class="tab-btn active" type="button">Domain Designer</button>
+      <button id="tab-interface-designer-btn" class="tab-btn" type="button">Communication Interface Designer</button>
+      <button id="tab-service-config-btn" class="tab-btn" type="button">Service Configuration</button>
+      <button id="tab-deploy-management-btn" class="tab-btn" type="button">Deploy Management</button>
+    </nav>
+
+    <section id="tab-domain-designer" class="tab-section active">
+      <div class="app-shell">
+        <aside class="sidebar">
+          <header class="sidebar-header">
+            <h2>Domain Designer</h2>
+            <p>ER modeling by domain</p>
+          </header>
+
+          <section class="panel">
+            <h2>Domains</h2>
+            <div class="row">
+              <input id="domain-name-input" type="text" placeholder="Domain name" />
+              <button id="add-domain-btn" type="button">Add</button>
+            </div>
+            <div class="row">
+              <button id="rename-domain-btn" type="button">Rename</button>
+              <button id="delete-domain-btn" type="button">Delete</button>
+            </div>
+            <div class="row">
+              <input id="domain-color-input" type="color" value="#60a5fa" />
+              <button id="set-domain-color-btn" type="button">Set Color</button>
+            </div>
+            <ul id="domain-list" class="list"></ul>
+          </section>
+
+          <section class="panel">
+            <h2>Bounded Context</h2>
+            <p class="hint">Metadata for selected domain context and ownership.</p>
+            <div class="column compact">
+              <input id="domain-ubiquitous-language-input" type="text" placeholder="Ubiquitous language" />
+              <input id="domain-owner-team-input" type="text" placeholder="Owner team" />
+              <input id="domain-upstream-input" type="text" placeholder="Upstream dependencies (comma separated)" />
+              <input id="domain-downstream-input" type="text" placeholder="Downstream dependencies (comma separated)" />
+              <input id="domain-integration-channel-input" type="text" placeholder="Integration channel (http, async, grpc...)" />
+              <input id="domain-package-dependencies-input" type="text" placeholder="Package dependencies (comma separated)" />
+              <input id="domain-shared-value-objects-input" type="text" placeholder="Shared value objects (comma separated)" />
+              <div class="row">
+                <button id="save-domain-context-btn" type="button">Save Context</button>
+                <button id="clear-domain-context-btn" type="button">Clear</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Entities</h2>
+            <div class="row">
+              <input id="entity-name-input" type="text" placeholder="Entity name" />
+              <button id="add-entity-btn" type="button">Add</button>
+            </div>
+            <div class="row">
+              <select id="entity-template-select">
+                <option value="">Entity template</option>
+                <option value="crudAggregate">crudAggregate</option>
+                <option value="eventSourced">eventSourced</option>
+                <option value="referenceData">referenceData</option>
+                <option value="tenantOwned">tenantOwned</option>
+              </select>
+              <button id="apply-entity-template-btn" type="button">Apply Entity Template</button>
+            </div>
+            <div class="row">
+              <button id="rename-entity-btn" type="button">Rename</button>
+              <button id="delete-entity-btn" type="button">Delete</button>
+            </div>
+            <div class="row">
+              <button id="duplicate-entity-btn" type="button">Duplicate</button>
+            </div>
+            <div class="row">
+              <input id="entity-search-input" type="text" placeholder="Search entity" />
+              <button id="entity-search-btn" type="button">Find</button>
+            </div>
+            <p class="hint">Select a domain first.</p>
+          </section>
+
+          <section class="panel">
+            <h2>Relationship</h2>
+            <div class="column">
+              <select id="from-entity-select"></select>
+              <select id="from-card-select">
+                <option value="1">1</option>
+                <option value="N">N</option>
+              </select>
+              <select id="to-card-select">
+                <option value="1">1</option>
+                <option value="N">N</option>
+              </select>
+              <select id="to-entity-select"></select>
+              <label class="check"><input id="relationship-auto-fk-check" type="checkbox" checked /> auto FK</label>
+              <div class="row">
+                <button id="add-relationship-btn" type="button">Connect</button>
+                <button id="pick-relationship-btn" type="button">Pick On Canvas</button>
+              </div>
+              <p id="relationship-pick-status" class="hint">Pick mode off</p>
+            </div>
+            <ul id="relationship-list" class="list"></ul>
+            <div class="column compact">
+              <input id="relationship-name-input" type="text" placeholder="Selected relationship name" />
+              <div class="row">
+                <select id="relationship-from-entity-select"></select>
+                <select id="relationship-to-entity-select"></select>
+              </div>
+              <div class="row">
+                <select id="relationship-from-card-select">
+                  <option value="1">1</option>
+                  <option value="N">N</option>
+                </select>
+                <select id="relationship-to-card-select">
+                  <option value="1">1</option>
+                  <option value="N">N</option>
+                </select>
+              </div>
+              <div class="row">
+                <button id="save-relationship-btn" type="button">Save Relationship</button>
+                <button id="reverse-relationship-btn" type="button">Reverse</button>
+              </div>
+              <div class="row">
+                <input id="relationship-label-offset-x-input" type="number" placeholder="Label X offset" />
+                <input id="relationship-label-offset-y-input" type="number" placeholder="Label Y offset" />
+                <button id="reset-relationship-label-offset-btn" type="button">Reset Label Pos</button>
+              </div>
+              <div class="row">
+                <input id="relationship-bend-x-input" type="number" placeholder="Bend X (optional)" />
+                <input id="relationship-bend-y-input" type="number" placeholder="Bend Y (optional)" />
+                <select id="relationship-anchor-behavior-select">
+                  <option value="auto">anchor auto</option>
+                  <option value="center">anchor center</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Entity Inspector</h2>
+            <p id="entity-inspector-title" class="hint">No entity selected</p>
+            <div class="row">
+              <input id="entity-rename-input" type="text" placeholder="Entity name" />
+              <button id="save-entity-rename-btn" type="button">Save Name</button>
+            </div>
+            <div class="row">
+              <select id="entity-move-domain-select"></select>
+              <button id="move-entity-btn" type="button">Move Domain</button>
+            </div>
+            <div class="column compact">
+              <label class="check"><input id="entity-aggregate-root-check" type="checkbox" /> Aggregate root</label>
+              <textarea id="entity-invariants-input" rows="3" placeholder="Invariant rules (one per line)"></textarea>
+              <button id="save-entity-rules-btn" type="button">Save Rules</button>
+            </div>
+            <div class="column compact">
+              <label for="entity-rbac-action-select">RBAC Action</label>
+              <select id="entity-rbac-action-select">
+                <option value="list">list</option>
+                <option value="getById">getById</option>
+                <option value="create">create</option>
+                <option value="update">update</option>
+                <option value="delete">delete</option>
+              </select>
+              <label class="check"><input id="entity-rbac-superadmin-check" type="checkbox" /> superadmin</label>
+              <label class="check"><input id="entity-rbac-admin-check" type="checkbox" /> admin</label>
+              <label class="check"><input id="entity-rbac-user-check" type="checkbox" /> user</label>
+              <label class="check"><input id="entity-rbac-tenant-check" type="checkbox" /> tenant scoped</label>
+              <button id="save-entity-rbac-btn" type="button">Save RBAC Rule</button>
+              <ul id="entity-rbac-list" class="list"></ul>
+            </div>
+            <div class="column compact">
+              <label for="entity-contract-name-input">Message Contract</label>
+              <input id="entity-contract-name-input" type="text" placeholder="Contract name" />
+              <div class="row">
+                <select id="entity-contract-type-select">
+                  <option value="event">event</option>
+                  <option value="command">command</option>
+                  <option value="request">request</option>
+                  <option value="response">response</option>
+                </select>
+                <input id="entity-contract-channel-input" type="text" placeholder="channel/topic" />
+              </div>
+              <div class="row">
+                <input id="entity-contract-version-input" type="text" placeholder="version (e.g. 1.0.0)" />
+                <button id="add-entity-contract-btn" type="button">Add Contract</button>
+              </div>
+              <ul id="entity-contract-list" class="list"></ul>
+            </div>
+            <div class="column compact">
+              <label for="entity-oas-composition-mode-select">OpenAPI Composition</label>
+              <select id="entity-oas-composition-mode-select">
+                <option value="">none</option>
+                <option value="oneOf">oneOf</option>
+                <option value="allOf">allOf</option>
+                <option value="anyOf">anyOf</option>
+              </select>
+              <input id="entity-oas-composition-refs-input" type="text" placeholder="Schema refs (comma), e.g. Users_User,Billing_Invoice" />
+              <input id="entity-oas-external-refs-input" type="text" placeholder="External $refs (comma URLs/paths)" />
+              <input id="entity-oas-discriminator-input" type="text" placeholder="Discriminator property (optional)" />
+              <button id="save-entity-oas-composition-btn" type="button">Save OAS Composition</button>
+            </div>
+            <div class="row">
+              <input id="field-name-input" type="text" placeholder="fieldName" />
+              <button id="add-field-btn" type="button">Add Field</button>
+            </div>
+            <div class="row">
+              <select id="field-template-select">
+                <option value="">Field template</option>
+                <option value="tenant">tenantRef</option>
+                <option value="audit">auditTrail</option>
+                <option value="softDelete">softDelete</option>
+                <option value="contact">contactPack</option>
+              </select>
+              <button id="apply-field-template-btn" type="button">Apply Template</button>
+            </div>
+            <div class="column compact">
+              <select id="field-type-select">
+                <option value="string">string</option>
+                <option value="integer">integer</option>
+                <option value="number">number</option>
+                <option value="boolean">boolean</option>
+                <option value="array">array</option>
+                <option value="object">object</option>
+                <option value="date">date</option>
+                <option value="datetime">datetime</option>
+                <option value="uuid">uuid</option>
+              </select>
+              <select id="field-format-select">
+                <option value="">format (optional)</option>
+                <option value="uuid">uuid</option>
+                <option value="date">date</option>
+                <option value="date-time">date-time</option>
+                <option value="email">email</option>
+                <option value="uri">uri</option>
+              </select>
+              <input id="field-enum-input" type="text" placeholder="enum: a,b,c (optional)" />
+              <label class="check"><input id="field-required-check" type="checkbox" /> required</label>
+              <label class="check"><input id="field-pk-check" type="checkbox" /> PK</label>
+              <label class="check"><input id="field-fk-check" type="checkbox" /> FK</label>
+              <label class="check"><input id="field-unique-check" type="checkbox" /> unique</label>
+              <label class="check"><input id="field-nullable-check" type="checkbox" /> nullable</label>
+            </div>
+            <ul id="entity-field-list" class="list"></ul>
+            <p class="hint">API preview (OpenAPI CRUD)</p>
+            <ul id="entity-api-preview-list" class="list"></ul>
+          </section>
+
+          <section class="panel">
+            <h2>Export</h2>
+            <div class="row">
+              <button id="export-json-btn" type="button">Export JSON</button>
+              <button id="export-oas-btn" type="button">Export OAS 3.1</button>
+              <button id="export-md-btn" type="button">Export Markdown</button>
+              <button id="export-jsonschema-btn" type="button">Export JSON Schema</button>
+              <button id="export-asyncapi-btn" type="button">Export AsyncAPI</button>
+              <button id="export-boilerplate-bundle-btn" type="button">Export Boilerplate Bundle</button>
+              <button id="export-package-btn" type="button">Export Package</button>
+            </div>
+            <div class="row">
+              <button id="import-json-btn" type="button">Import JSON</button>
+              <input id="import-json-input" type="file" accept="application/json,.json" hidden />
+            </div>
+            <div class="row">
+              <button id="import-oas-btn" type="button">Import OAS 3.1</button>
+              <input id="import-oas-input" type="file" accept="application/json,.json" hidden />
+            </div>
+            <div class="row">
+              <button id="import-package-btn" type="button">Import Package</button>
+              <input id="import-package-input" type="file" accept="application/json,.json" hidden />
+            </div>
+            <div class="row">
+              <button id="generate-code-preview-btn" type="button">Code Preview</button>
+              <button id="generate-examples-btn" type="button">Generate Examples</button>
+            </div>
+            <pre id="code-preview-output" class="code-preview-output"></pre>
+            <pre id="examples-preview-output" class="code-preview-output"></pre>
+            <div class="row">
+              <button id="reset-canvas-btn" type="button">Reset</button>
+              <button id="clear-storage-btn" type="button">Clear Save</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>History</h2>
+            <div class="row">
+              <button id="undo-btn" type="button">Undo</button>
+              <button id="redo-btn" type="button">Redo</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Legend</h2>
+            <ul class="legend">
+              <li>Drag domains and entities</li>
+              <li>Use Space + drag to pan</li>
+              <li>Ctrl/Cmd + wheel to zoom</li>
+              <li>Alt + L to auto layout</li>
+              <li>Select domain to add entity</li>
+              <li>Drag from entity edge dots to connect entities</li>
+            </ul>
+          </section>
+
+          <section class="panel">
+            <h2>Model Check</h2>
+            <div class="row">
+              <button id="run-model-check-btn" type="button">Validate Model</button>
+            </div>
+            <div class="column compact">
+              <label class="check"><input id="export-block-critical-check" type="checkbox" checked /> block export on critical issues</label>
+              <label for="model-check-min-severity-select">Display minimum severity</label>
+              <select id="model-check-min-severity-select">
+                <option value="info">info</option>
+                <option value="warn">warn</option>
+                <option value="error">error</option>
+              </select>
+            </div>
+            <ul id="model-check-list" class="list"></ul>
+          </section>
+
+          <section class="panel">
+            <h2>Schema Diff</h2>
+            <p class="hint">Compare current model against saved baseline and preview migration hints.</p>
+            <div class="row">
+              <button id="save-baseline-btn" type="button">Save Baseline</button>
+              <button id="run-schema-diff-btn" type="button">Run Diff</button>
+              <button id="clear-baseline-btn" type="button">Clear Baseline</button>
+            </div>
+            <ul id="schema-diff-list" class="list"></ul>
+          </section>
+        </aside>
+
+        <main class="workspace">
+          <header class="workspace-header">
+            <div id="selection-status">No domain selected</div>
+            <div class="workspace-actions">
+              <button id="zoom-out-btn" type="button" title="Zoom out">-</button>
+              <div id="zoom-indicator" class="zoom-indicator">100%</div>
+              <button id="zoom-in-btn" type="button" title="Zoom in">+</button>
+              <select id="edge-style-select" title="Relationship routing style">
+                <option value="curved">Curved</option>
+                <option value="orthogonal">Orthogonal</option>
+              </select>
+              <button id="toggle-compact-view-btn" type="button">Compact View</button>
+              <button id="toggle-snap-btn" type="button">Snap: On</button>
+              <button id="auto-layout-btn" type="button">Auto Layout</button>
+              <button id="toggle-large-canvas-btn" type="button">Large Canvas: Off</button>
+              <button id="fit-view-btn" type="button">Fit</button>
+              <button id="reset-view-btn" type="button">Reset View</button>
+            </div>
+          </header>
+          <div id="canvas" class="canvas">
+            <div id="canvas-inner" class="canvas-inner">
+              <svg id="edges" class="edges"></svg>
+            </div>
+          </div>
+          <div id="mini-map" class="mini-map"></div>
+        </main>
+      </div>
+    </section>
+
+    <section id="tab-interface-designer" class="tab-section">
+      <div class="tab-body">
+        <h2>Communication Interface Designer</h2>
+        <p class="hint">Configure inbound adapters and the controller operation map per interface.</p>
+        <section class="panel">
+          <h3>Add Interface Adapter</h3>
+          <div class="responsive-grid">
+            <div>
+              <label for="interface-type-select">Interface Type</label>
+              <select id="interface-type-select">
+                <option value="http-rest">HTTP/REST</option>
+                <option value="grpc">gRPC</option>
+                <option value="websocket">WebSocket</option>
+                <option value="sse">SSE Server</option>
+              </select>
+            </div>
+            <div>
+              <label for="interface-framework-input">Framework/Runtime</label>
+              <input id="interface-framework-input" type="text" placeholder="fastify, ws, @grpc/grpc-js..." />
+            </div>
+            <div>
+              <label for="interface-entrypoint-input">Entrypoint</label>
+              <input id="interface-entrypoint-input" type="text" placeholder="src/interface/.../server.ts" />
+            </div>
+          </div>
+          <div class="row">
+            <input id="interface-controller-input" type="text" placeholder="Controller mapping (e.g. UsersController.create)" />
+            <button id="add-interface-adapter-btn" type="button">Add Adapter</button>
+          </div>
+          <ul id="interface-adapter-list" class="list"></ul>
+        </section>
+      </div>
+    </section>
+
+    <section id="tab-service-config" class="tab-section">
+      <div class="tab-body">
+        <h2>Service Configuration</h2>
+        <p class="hint">Define runtime, execution model, cloud target, and static asset behavior.</p>
+        <section class="panel">
+          <h3>Runtime Profile</h3>
+          <div class="responsive-grid">
+            <div>
+              <label for="service-kind-select">Service Kind</label>
+              <select id="service-kind-select">
+                <option value="rest-api">REST API</option>
+                <option value="websocket-rest-api">WebSocket API + REST API</option>
+                <option value="grpc-rest-api">gRPC API + REST API</option>
+              </select>
+            </div>
+            <div>
+              <label for="run-mode-select">Run Mode</label>
+              <select id="run-mode-select">
+                <option value="dedicated-server">Dedicated Server (SSH)</option>
+                <option value="virtual-machine">Virtual Machine (SSH)</option>
+                <option value="container">Container</option>
+                <option value="functions">Functions</option>
+              </select>
+            </div>
+            <div>
+              <label for="cloud-provider-select">Cloud Provider</label>
+              <select id="cloud-provider-select">
+                <option value="aws">AWS</option>
+                <option value="google">Google Cloud</option>
+                <option value="azure">Azure</option>
+                <option value="vercel">Vercel</option>
+                <option value="cloudflare">Cloudflare</option>
+                <option value="docker">Docker</option>
+                <option value="self-hosted">Self Hosted</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <input id="service-static-assets-input" type="text" placeholder="Static assets path (optional), e.g. public/" />
+            <button id="save-service-config-btn" type="button">Save Profile</button>
+          </div>
+          <div class="responsive-grid">
+            <div>
+              <label for="service-http-port-input">REST Port</label>
+              <input id="service-http-port-input" type="number" min="1" max="65535" placeholder="3000" />
+            </div>
+            <div>
+              <label for="service-websocket-port-input">WebSocket Port</label>
+              <input id="service-websocket-port-input" type="number" min="1" max="65535" placeholder="3001" />
+            </div>
+            <div>
+              <label for="service-grpc-port-input">gRPC Port</label>
+              <input id="service-grpc-port-input" type="number" min="1" max="65535" placeholder="3002" />
+            </div>
+          </div>
+          <pre id="service-runtime-profile-preview" class="code-preview"></pre>
+          <pre id="service-config-preview" class="code-preview"></pre>
+        </section>
+        <section class="panel">
+          <h3>Runtime Environment Variables</h3>
+          <div class="responsive-grid">
+            <div>
+              <label for="runtime-env-select">Environment</label>
+              <select id="runtime-env-select">
+                <option value="dev">dev</option>
+                <option value="staging">staging</option>
+                <option value="ci">ci</option>
+              </select>
+            </div>
+            <div>
+              <label for="runtime-http-framework-select">AAA_HTTP_FRAMEWORK</label>
+              <select id="runtime-http-framework-select">
+                <option value="express">express</option>
+              </select>
+            </div>
+            <div>
+              <label for="runtime-realtime-api-select">AAA_REALTIME_API</label>
+              <select id="runtime-realtime-api-select">
+                <option value="no">no</option>
+                <option value="yes">yes</option>
+              </select>
+            </div>
+          </div>
+          <div class="responsive-grid">
+            <div>
+              <label for="runtime-realtime-protocol-select">AAA_REALTIME_API_PROTOCOL</label>
+              <select id="runtime-realtime-protocol-select">
+                <option value="websocket">websocket</option>
+                <option value="grpc">grpc</option>
+              </select>
+            </div>
+            <div>
+              <label for="runtime-realtime-db-driver-select">AAA_DATABASE_DRIVER</label>
+              <select id="runtime-realtime-db-driver-select">
+                <option value="Mongo">Mongo</option>
+                <option value="PostgreSQL">PostgreSQL</option>
+                <option value="MySQL">MySQL</option>
+                <option value="MS SQL">MS SQL</option>
+                <option value="RDS">RDS</option>
+                <option value="Aurora">Aurora</option>
+                <option value="Cassandra">Cassandra</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <button id="runtime-env-refresh-btn" type="button">Load Environment</button>
+            <button id="runtime-env-save-btn" type="button">Save Environment</button>
+          </div>
+          <pre id="runtime-env-preview" class="code-preview"></pre>
+        </section>
+      </div>
+    </section>
+
+    <section id="tab-deploy-management" class="tab-section">
+      <div class="tab-body">
+        <h2>Deploy Management</h2>
+        <p class="hint">Register and track deployment targets for monoliths, APIs, and function sets.</p>
+        <section class="panel">
+          <h3>Deployment Target</h3>
+          <div class="responsive-grid">
+            <div>
+              <label for="deploy-name-input">Target Name</label>
+              <input id="deploy-name-input" type="text" placeholder="prod-us-east-1" />
+            </div>
+            <div>
+              <label for="deploy-type-select">Target Type</label>
+              <select id="deploy-type-select">
+                <option value="vm">Virtual Machine</option>
+                <option value="dedicated">Dedicated Server</option>
+                <option value="ec2">AWS EC2</option>
+                <option value="lambda">AWS Lambda</option>
+                <option value="azure-functions">Azure Functions</option>
+                <option value="google-functions">Google Functions</option>
+                <option value="vercel-functions">Vercel Functions</option>
+                <option value="cloudflare-workers">Cloudflare Workers</option>
+              </select>
+            </div>
+            <div>
+              <label for="deploy-region-input">Region</label>
+              <input id="deploy-region-input" type="text" placeholder="us-east-1" />
+            </div>
+          </div>
+          <div class="row">
+            <input id="deploy-runtime-input" type="text" placeholder="Runtime/version, e.g. nodejs22.x" />
+            <button id="add-deploy-target-btn" type="button">Add Target</button>
+          </div>
+          <ul id="deploy-target-list" class="list"></ul>
+        </section>
+      </div>
+    </section>
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>

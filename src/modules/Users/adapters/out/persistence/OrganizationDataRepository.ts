@@ -70,11 +70,14 @@ export class OrganizationDataRepository
     const {
       result, page, size, total
     } = await this.store.getAll(filters, paging);
+    const currentPage = page ?? paging?.page ?? 1;
+    const currentSize = size ?? paging?.size ?? this.limit;
+    const rows = result ?? [];
     return {
-      page,
-      size,
+      page: currentPage,
+      size: currentSize,
       total,
-      result: result.map((raw: IOrganization) => new Organization(raw))
+      result: rows.map((raw: IOrganization) => new Organization(raw))
     };
   }
 

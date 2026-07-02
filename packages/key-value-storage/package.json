@@ -1,0 +1,20 @@
+{
+  "name": "@jumentix/key-value-storage",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX reusable key-value storage adapters",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "redis": "^5.9.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"key-value-storage package tests pending\"",
+    "lint": "echo \"key-value-storage package lint pending\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

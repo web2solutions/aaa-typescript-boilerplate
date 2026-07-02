@@ -31,13 +31,39 @@
     //"baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     "paths": {
-      "@src": ["./src"],
-      "@src/*": ["./src/*"],
+      "@src": ["./apps/backend-template/src", "./src"],
+      "@src/*": ["./apps/backend-template/src/*", "./src/*"],
       "@infra": ["./infra"],
       "@infra/*": ["./infra/*"],
-      "@seed": ["./seed"],
-      "@seed/*": ["./seed/*"],
-      "@test/*": ["./test/*"]
+      "@seed": ["./apps/backend-template/seed"],
+      "@seed/*": ["./apps/backend-template/seed/*"],
+      "@test/*": ["./apps/backend-template/test/*"],
+      "@jumentix/message-mediator": ["./packages/message-mediator/src/index.ts"],
+      "@jumentix/message-mediator/*": ["./packages/message-mediator/src/*"],
+      "@jumentix/key-value-storage": ["./packages/key-value-storage/src/index.ts"],
+      "@jumentix/key-value-storage/*": ["./packages/key-value-storage/src/*"],
+      "@jumentix/persistence-contracts": ["./packages/persistence-contracts/src/index.ts"],
+      "@jumentix/persistence-contracts/*": ["./packages/persistence-contracts/src/*"],
+      "@jumentix/mutex-service": ["./packages/mutex-service/src/index.ts"],
+      "@jumentix/mutex-service/*": ["./packages/mutex-service/src/*"],
+      "@jumentix/external-persistence-core": ["./packages/external-persistence-core/src/index.ts"],
+      "@jumentix/external-persistence-core/*": ["./packages/external-persistence-core/src/*"],
+      "@jumentix/external-store-proxy": ["./packages/external-store-proxy/src/index.ts"],
+      "@jumentix/external-store-proxy/*": ["./packages/external-store-proxy/src/*"],
+      "@jumentix/external-db-repositories": ["./packages/external-db-repositories/src/index.ts"],
+      "@jumentix/external-db-repositories/*": ["./packages/external-db-repositories/src/*"],
+      "@jumentix/database-client-factory": ["./packages/database-client-factory/src/index.ts"],
+      "@jumentix/database-client-factory/*": ["./packages/database-client-factory/src/*"],
+      "@jumentix/runtime-infra": ["./packages/runtime-infra/src/index.ts"],
+      "@jumentix/runtime-infra/*": ["./packages/runtime-infra/src/*"],
+      "@jumentix/adapter-runtime-bootstrap": ["./packages/adapter-runtime-bootstrap/src/index.ts"],
+      "@jumentix/adapter-runtime-bootstrap/*": ["./packages/adapter-runtime-bootstrap/src/*"],
+      "@jumentix/sdk-rest-client": ["./packages/sdk-rest-client/src/index.ts"],
+      "@jumentix/sdk-rest-client/*": ["./packages/sdk-rest-client/src/*"],
+      "@jumentix/sdk-websocket-client": ["./packages/sdk-websocket-client/src/index.ts"],
+      "@jumentix/sdk-websocket-client/*": ["./packages/sdk-websocket-client/src/*"],
+      "@jumentix/sdk-grpc-client": ["./packages/sdk-grpc-client/src/index.ts"],
+      "@jumentix/sdk-grpc-client/*": ["./packages/sdk-grpc-client/src/*"]
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
@@ -115,7 +141,7 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": ["./**/*.ts", "src", "config"],
+  "include": ["./**/*.ts", "apps/backend-template/src", "config"],
   "ts-node": {
     // Do not forget to `npm i -D tsconfig-paths`
     "require": ["tsconfig-paths/register"]

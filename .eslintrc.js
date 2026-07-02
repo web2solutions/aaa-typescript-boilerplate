@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
     parser: '@typescript-eslint/parser',
     'parserOptions': {
@@ -43,11 +45,22 @@ module.exports = {
       '@typescript-eslint/no-explicit-any': 'off',
       'import/no-cycle' : 'off',
       'arrow-body-style' : 'off',
-      'jest/unbound-method': 'off'
+      'jest/unbound-method': 'off',
+      'import/no-extraneous-dependencies': ['error', {
+        packageDir: [
+          __dirname,
+          path.join(__dirname, 'apps/backend-template'),
+          path.join(__dirname, 'packages/sdk-rest-client'),
+          path.join(__dirname, 'packages/sdk-websocket-client'),
+          path.join(__dirname, 'packages/sdk-grpc-client'),
+          path.join(__dirname, 'packages/message-mediator')
+        ]
+      }]
     },
     overrides: [
       {
         files: [
+          'apps/backend-template/test/unit/sdk-clients/grpc/GrpcApiClient.test.ts',
           'src/interface/HTTP/adapters/restify/**/*.ts',
           'src/interface/HTTP/ports/IHTTPRequest.ts',
           'src/interface/HTTP/ports/IHTTPResponse.ts',
@@ -56,7 +69,8 @@ module.exports = {
           'test/integration/mutex/redis.restify.test.ts'
         ],
         rules: {
-          'import/no-extraneous-dependencies': 'off'
+          'import/no-extraneous-dependencies': 'off',
+          'import/no-relative-packages': 'off'
         }
       }
     ]

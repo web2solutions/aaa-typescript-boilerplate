@@ -108,38 +108,10 @@ export function canNotBeEmpty(field: string, value: any) {
   }
 }
 export function mustEndsAtLeastInMinutes(_eventDate: Date, minutesIntheFuture: number): void {
-  const eventDate = new Date(_eventDate);
-
-  const dateNow = new Date();
-  const hourNow = dateNow.getHours();
-  const minutesNow = dateNow.getMinutes();
-  const dayNow = dateNow.getDate();
-  const monthNow = dateNow.getUTCMonth() + 1;
-  const yearNow = dateNow.getUTCFullYear();
-  // console.log({ hourNow, minutesNow, dayNow, monthNow, yearNow })
-
-  const hourEvent = eventDate.getHours();
-  const minutesEvent = eventDate.getMinutes();
-  const dayEvent = eventDate.getDate();
-  const monthEvent = eventDate.getUTCMonth() + 1;
-  const yearEvent = eventDate.getUTCFullYear();
-  // console.log({ hourEvent, minutesEvent, dayEvent, monthEvent, yearEvent });
-
   const error = new DomainValidationError(`Event must ends in at least ${minutesIntheFuture} minutes in the future`);
-
-  if (yearNow > yearEvent) throw error;
-
-  if (yearNow === yearEvent && monthNow > monthEvent) throw error;
-
-  if (dayNow > dayEvent) throw error;
-
-  // yearEvent now is >= yearNow
-  // monthEvent now is >= monthNow
-  // dayEvent is now >= dayNow
-  if (dayNow === dayEvent) {
-    if (hourNow > hourEvent) throw error;
-    else if (hourNow === hourEvent) {
-      if ((minutesEvent - minutesNow) < minutesIntheFuture) throw error;
-    }
-  }
+  const eventDate = new Date(_eventDate);
+  const dateNow = new Date();
+  const minimumFutureWindowMs = minutesIntheFuture * 60 * 1000;
+  const diffMs = eventDate.getTime() - dateNow.getTime();
+  if (Number.isNaN(diffMs) || diffMs < minimumFutureWindowMs) throw error;
 }

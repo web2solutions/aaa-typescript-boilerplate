@@ -1,5 +1,17 @@
 /* istanbul ignore file */
-export type HTTPFramework = 'express';
+export type HTTPFramework =
+  | 'express'
+  | 'fastify'
+  | 'restify'
+  | 'hyper-express'
+  | 'cloudflare-workers'
+  | 'vercel-functions'
+  | 'loopback'
+  | 'sails-js'
+  | 'feathers'
+  | 'derby-js'
+  | 'adonis-js'
+  | 'total-js';
 
 export type RealtimeApiProtocol = 'websocket' | 'grpc';
 
@@ -12,9 +24,22 @@ function normalize(value: string | undefined): string {
 
 export function resolveHTTPFramework(env: NodeJS.ProcessEnv = process.env): HTTPFramework {
   const framework = normalize(env.AAA_HTTP_FRAMEWORK) || DEFAULT_HTTP_FRAMEWORK;
-  if (framework === 'express') return framework;
+  if (
+    framework === 'express'
+    || framework === 'fastify'
+    || framework === 'restify'
+    || framework === 'hyper-express'
+    || framework === 'cloudflare-workers'
+    || framework === 'vercel-functions'
+    || framework === 'loopback'
+    || framework === 'sails-js'
+    || framework === 'feathers'
+    || framework === 'derby-js'
+    || framework === 'adonis-js'
+    || framework === 'total-js'
+  ) return framework;
   throw new Error(
-    `Unsupported AAA_HTTP_FRAMEWORK "${env.AAA_HTTP_FRAMEWORK}". Supported: express.`
+    `Unsupported AAA_HTTP_FRAMEWORK "${env.AAA_HTTP_FRAMEWORK}".`
   );
 }
 

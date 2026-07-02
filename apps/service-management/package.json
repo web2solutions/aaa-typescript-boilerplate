@@ -1,0 +1,13 @@
+{
+  "name": "@jumentix/service-management",
+  "version": "0.0.2",
+  "private": true,
+  "description": "JumentiX service-management workspace app",
+  "scripts": {
+    "build": "echo \"service-management runtime uses node server entrypoint\"",
+    "test": "npm run test:integration:service-management --prefix ../..",
+    "lint": "npm run lint --prefix ../..",
+    "typecheck": "echo \"service-management is plain JavaScript server\"",
+    "dev": "npm run dev:service-management --prefix ../.."
+  }
+}

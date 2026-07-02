@@ -1,0 +1,20 @@
+{
+  "name": "@jumentix/sdk-rest-client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX REST SDK client",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run typecheck",
+    "lint": "echo \"sdk-rest-client: lint managed by root workspace\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "yaml": "^2.5.1"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@jumentix/shared-contracts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX shared OpenAPI/AsyncAPI contracts placeholder",
+  "scripts": {
+    "build": "echo \"shared-contracts placeholder: migration wave pending\"",
+    "test": "echo \"shared-contracts placeholder: migration wave pending\"",
+    "lint": "echo \"shared-contracts placeholder: migration wave pending\"",
+    "typecheck": "echo \"shared-contracts placeholder: migration wave pending\""
+  }
+}

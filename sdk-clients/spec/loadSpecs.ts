@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import YAML from 'yaml';
+import { loadSpecs as loadRestSpecs } from '@jumentix/sdk-rest-client';
+import { loadSpecs as loadWebSocketSpecs } from '@jumentix/sdk-websocket-client';
+import { loadSpecs as loadGrpcSpecs } from '@jumentix/sdk-grpc-client';
 
 export interface ILoadedSpecs {
   openApi: Record<string, any>;
@@ -8,16 +8,9 @@ export interface ILoadedSpecs {
   asyncApiGrpc: Record<string, any>;
 }
 
-export const loadSpecs = (
-  basePath = path.resolve(process.cwd(), 'spec')
-): ILoadedSpecs => {
-  const openApiPath = path.join(basePath, '1.0.0.yml');
-  const asyncApiWebSocketPath = path.join(basePath, 'asyncapi', '1.0.0.websocket.yml');
-  const asyncApiGrpcPath = path.join(basePath, 'asyncapi', '1.0.0.grpc.yml');
-
-  return {
-    openApi: YAML.parse(fs.readFileSync(openApiPath, 'utf8')),
-    asyncApiWebSocket: YAML.parse(fs.readFileSync(asyncApiWebSocketPath, 'utf8')),
-    asyncApiGrpc: YAML.parse(fs.readFileSync(asyncApiGrpcPath, 'utf8'))
-  };
+export const loadSpecs = (): ILoadedSpecs => {
+  const { openApi } = loadRestSpecs();
+  const { asyncApiWebSocket } = loadWebSocketSpecs();
+  const { asyncApiGrpc } = loadGrpcSpecs();
+  return { openApi, asyncApiWebSocket, asyncApiGrpc };
 };

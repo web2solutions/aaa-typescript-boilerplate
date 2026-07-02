@@ -1,0 +1,3 @@
+version: 2
+paths-ignore:
+  - test/unit/interface/WebSocket/redisStreamsAdapter.test.ts

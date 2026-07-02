@@ -1,0 +1,21 @@
+{
+  "name": "@jumentix/sdk-websocket-client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX WebSocket SDK client",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run typecheck",
+    "lint": "echo \"sdk-websocket-client: lint managed by root workspace\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.1",
+    "yaml": "^2.5.1"
+  }
+}

@@ -102,3 +102,33 @@ When creating a new custom error:
 3. Ensure `code` is covered in `EErrorStringCodes`/`EErrorNumberCodes`.
 4. Add `formatErrorMessage` branch if custom human-readable text is required.
 5. Keep HTTP and message-level error envelopes backward-compatible.
+
+## 8) Realtime Error Envelopes
+
+WebSocket (`ApiResponse`):
+
+```json
+{
+  "ok": false,
+  "operationId": "createOrganization",
+  "error": {
+    "name": "validation_error",
+    "message": "Invalid input data"
+  }
+}
+```
+
+gRPC (`AsyncApiResponse`):
+
+```json
+{
+  "ok": false,
+  "operationId": "createOrganization",
+  "errorName": "validation_error",
+  "errorMessage": "Invalid input data"
+}
+```
+
+See transport-specific contract references:
+- `documentation/md/contracts/WEBSOCKET-REALTIME-CONTRACTS.md`
+- `documentation/md/contracts/GRPC-REALTIME-CONTRACTS.md`

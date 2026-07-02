@@ -1,0 +1,15 @@
+{
+  "name": "@jumentix/config-ts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX shared TypeScript configuration placeholder",
+  "files": [
+    "tsconfig.base.json"
+  ],
+  "scripts": {
+    "build": "echo \"config-ts placeholder: migration wave pending\"",
+    "test": "echo \"config-ts placeholder: migration wave pending\"",
+    "lint": "echo \"config-ts placeholder: migration wave pending\"",
+    "typecheck": "echo \"config-ts placeholder: migration wave pending\""
+  }
+}

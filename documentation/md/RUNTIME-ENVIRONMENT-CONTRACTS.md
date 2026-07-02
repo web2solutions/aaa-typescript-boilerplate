@@ -14,26 +14,38 @@ All runtime startup entrypoints must follow this contract.
 
 ## Runtime Keys
 
-The following keys are mandatory across env files in `src/config/`:
+The following keys are mandatory across env files in `apps/backend-template/src/config/`:
 
 - `AAA_HTTP_FRAMEWORK`
   - default: `express`
-  - current supported values: `express`
-  - used by: `src/interface/HTTP/adapters/start-rest-api.ts`
+  - current supported values:
+    - `express`
+    - `fastify`
+    - `restify`
+    - `hyper-express`
+    - `cloudflare-workers`
+    - `vercel-functions`
+    - `loopback`
+    - `sails-js`
+    - `feathers`
+    - `derby-js`
+    - `adonis-js`
+    - `total-js`
+  - used by: `apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts`
 
 - `AAA_REALTIME_API`
   - default: `no`
   - supported values: `yes`, `no`
   - used by:
-    - `src/interface/WebSocket/adapters/start-websocket-api.ts`
-    - `src/interface/gRPC/adapters/start-grpc-api.ts`
+    - `apps/backend-template/src/interface/WebSocket/adapters/start-websocket-api.ts`
+    - `apps/backend-template/src/interface/gRPC/adapters/start-grpc-api.ts`
 
 - `AAA_REALTIME_API_PROTOCOL`
   - default: `websocket`
   - supported values: `websocket`, `grpc`
   - used by:
-    - `src/interface/WebSocket/adapters/start-websocket-api.ts`
-    - `src/interface/gRPC/adapters/start-grpc-api.ts`
+    - `apps/backend-template/src/interface/WebSocket/adapters/start-websocket-api.ts`
+    - `apps/backend-template/src/interface/gRPC/adapters/start-grpc-api.ts`
 
 - `AAA_REALTIME_API_DATABASE_DRIVER`
   - default: `Mongo`
@@ -47,16 +59,37 @@ The following keys are mandatory across env files in `src/config/`:
     - `Cassandra`
   - used by: runtime profile metadata and Service Management configuration workflows.
 
+- `AAA_WEBSOCKET_SOCKETIO_ADAPTER`
+  - default: empty (in-memory Socket.IO adapter)
+  - supported values: `cluster`, `redis-streams`
+  - used by: `apps/backend-template/src/interface/WebSocket/adapters/socket-io/socket-io.ts`
+
+- `AAA_WEBSOCKET_CLUSTER_WORKERS`
+  - optional worker count for Socket.IO cluster mode.
+  - default: CPU core count.
+  - used by: `apps/backend-template/src/interface/WebSocket/adapters/start-websocket-api.ts`
+
+- `AAA_WEBSOCKET_REDIS_URL`
+  - optional dedicated Redis connection URL for Socket.IO scaling adapter.
+  - example: `redis://127.0.0.1:6379/1`
+  - used by: `apps/backend-template/src/interface/WebSocket/adapters/socket-io/redisStreamsAdapter.ts`
+
+- `AAA_REDIS_URL`
+  - optional global Redis URL fallback used by WebSocket scaling adapter when
+    `AAA_WEBSOCKET_REDIS_URL` is not set.
+  - used by: `apps/backend-template/src/interface/WebSocket/adapters/socket-io/redisStreamsAdapter.ts`
+
 ## Startup Entrypoints
 
 - REST:
-  - `src/interface/HTTP/adapters/start-rest-api.ts`
+  - `apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts`
 - WebSocket:
-  - `src/interface/WebSocket/adapters/start-websocket-api.ts`
+  - `apps/backend-template/src/interface/WebSocket/adapters/start-websocket-api.ts`
 - gRPC:
-  - `src/interface/gRPC/adapters/start-grpc-api.ts`
+  - `apps/backend-template/src/interface/gRPC/adapters/start-grpc-api.ts`
 
 These files are the official process entrypoints used by PM2 ecosystem profiles.
+Single-protocol helper scripts also route through these entrypoints (`dev:http`, `prod:http`, `dev:websocket`, `dev:grpc`).
 
 ## PM2 Process Model
 
@@ -85,6 +118,7 @@ The env editor mutates only approved keys from this contract, preserving guardra
 ## Guardrails
 
 - Unsupported `AAA_HTTP_FRAMEWORK` must fail fast.
+- REST bootstrap must always resolve framework via `start-rest-api` loader.
 - Realtime boot must not start when:
   - `AAA_REALTIME_API` is not `yes`, or
   - `AAA_REALTIME_API_PROTOCOL` does not match the adapter entrypoint.
@@ -105,6 +139,18 @@ WebSocket + REST:
 AAA_HTTP_FRAMEWORK=express
 AAA_REALTIME_API=yes
 AAA_REALTIME_API_PROTOCOL=websocket
+AAA_WEBSOCKET_SOCKETIO_ADAPTER=cluster
+AAA_WEBSOCKET_CLUSTER_WORKERS=4
+```
+
+WebSocket + REST (multi-host via Redis Streams):
+
+```bash
+AAA_HTTP_FRAMEWORK=express
+AAA_REALTIME_API=yes
+AAA_REALTIME_API_PROTOCOL=websocket
+AAA_WEBSOCKET_SOCKETIO_ADAPTER=redis-streams
+AAA_WEBSOCKET_REDIS_URL=redis://127.0.0.1:6379/1
 ```
 
 gRPC + REST:

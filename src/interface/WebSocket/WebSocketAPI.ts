@@ -16,6 +16,8 @@ export interface IWebSocketAPIFactory extends IRealtimeAPIFactory {
   host?: string;
   port?: number;
   path?: string;
+  configureSocketIo?: (io: Server) => Promise<void> | void;
+  cleanupSocketIo?: () => Promise<void> | void;
 }
 
 export class WebSocketAPI extends RealtimeAPIBase {
@@ -29,6 +31,10 @@ export class WebSocketAPI extends RealtimeAPIBase {
 
   private io?: Server;
 
+  private readonly configureSocketIo?: (io: Server) => Promise<void> | void;
+
+  private readonly cleanupSocketIo?: () => Promise<void> | void;
+
   constructor(config: IWebSocketAPIFactory) {
     super({
       ...config,
@@ -38,6 +44,8 @@ export class WebSocketAPI extends RealtimeAPIBase {
     this.host = config.host || '0.0.0.0';
     this.port = config.port || Number(process.env.AAA_WEBSOCKET_PORT || (_HTTP_PORT_ + 1));
     this.path = config.path || '/ws';
+    this.configureSocketIo = config.configureSocketIo;
+    this.cleanupSocketIo = config.cleanupSocketIo;
   }
 
   private async handleOperationRequest(
@@ -127,10 +135,14 @@ export class WebSocketAPI extends RealtimeAPIBase {
     this.httpServer = http.createServer();
     this.io = new Server(this.httpServer, {
       path: this.path,
+      transports: ['websocket'],
       cors: {
         origin: '*'
       }
     });
+    if (this.configureSocketIo) {
+      await this.configureSocketIo(this.io);
+    }
 
     this.io.on('connection', (socket) => {
       this.bindSocket(socket);
@@ -151,6 +163,10 @@ export class WebSocketAPI extends RealtimeAPIBase {
     if (this.io) {
       this.io.close();
       this.io = undefined;
+    }
+
+    if (this.cleanupSocketIo) {
+      await this.cleanupSocketIo();
     }
 
     if (this.httpServer) {

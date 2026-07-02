@@ -1,0 +1,31 @@
+{
+  "name": "@jumentix/backend-template",
+  "version": "0.0.2",
+  "private": true,
+  "description": "JumentiX backend template workspace app",
+  "scripts": {
+    "build": "npm run build:dev --prefix ../..",
+    "build:dev": "npm run build:dev --prefix ../..",
+    "test": "npm run test:unit --prefix ../..",
+    "test:unit": "npm run test:unit --prefix ../..",
+    "test:integration": "npm run test:integration --prefix ../..",
+    "test:integration:smoke": "npm run ci:smoke --prefix ../..",
+    "lint": "npm run lint --prefix ../..",
+    "coverage:patch": "npm run coverage:patch --prefix ../..",
+    "ci:gate": "npm run ci:gate --prefix ../..",
+    "ci:gate:strict": "npm run ci:gate:strict --prefix ../..",
+    "typecheck": "npm run build:dev --prefix ../..",
+    "dev:rest": "npm run dev:http --prefix ../..",
+    "dev:websocket-rest": "npm run dev:websocket --prefix ../..",
+    "dev:grpc-rest": "npm run dev:grpc --prefix ../..",
+    "pm2:start:dev:restapi": "npm run pm2:start:dev:restapi --prefix ../..",
+    "pm2:start:dev:websocket-rest": "npm run pm2:start:dev:websocket-rest --prefix ../..",
+    "pm2:start:dev:grpc-rest": "npm run pm2:start:dev:grpc-rest --prefix ../..",
+    "pm2:start:staging:restapi": "npm run pm2:start:staging:restapi --prefix ../..",
+    "pm2:start:staging:websocket-rest": "npm run pm2:start:staging:websocket-rest --prefix ../..",
+    "pm2:start:staging:grpc-rest": "npm run pm2:start:staging:grpc-rest --prefix ../..",
+    "pm2:start:prod:restapi": "npm run pm2:start:prod:restapi --prefix ../..",
+    "pm2:start:prod:websocket-rest": "npm run pm2:start:prod:websocket-rest --prefix ../..",
+    "pm2:start:prod:grpc-rest": "npm run pm2:start:prod:grpc-rest --prefix ../.."
+  }
+}

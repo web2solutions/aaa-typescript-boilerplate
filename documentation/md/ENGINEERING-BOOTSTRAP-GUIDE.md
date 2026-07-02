@@ -8,6 +8,24 @@ This guide explains how to use this boilerplate to create a new backend service 
 
 The goal is to help software engineers move from idea to working service with the existing architecture and conventions.
 
+## Monorepo workspace map
+
+Current workspace layout:
+
+- `apps/backend-template`: runtime app ownership for backend bootstrap profiles and PM2 ecosystems.
+- `apps/service-management`: service management web app and runtime server.
+- `packages/*`: reusable internal packages (message mediator, SDK clients, infra adapters).
+- root `src/`: incremental migration bridge while app/package ownership is finalized.
+
+Core orchestration commands:
+
+```bash
+npm run mono:build
+npm run mono:test
+npm run mono:lint
+npm run mono:typecheck
+```
+
 ## 1. Before you start
 
 ### Runtime and tooling requirements
@@ -139,6 +157,16 @@ npm run dev:hyper-express
 npm run dev:serverless
 ```
 
+### PM2 multi-app (monorepo)
+
+```bash
+npm run pm2:start:dev:restapi
+npm run pm2:start:dev:websocket-rest
+npm run pm2:start:dev:grpc-rest
+```
+
+These profiles start service-management alongside backend adapters using `apps/backend-template/pm2/*`.
+
 ### Quality and CI parity
 
 ```bash
@@ -148,6 +176,7 @@ npm run oas:check-routes
 npm run build:dev
 npm run ci:smoke
 npm run ci:gate
+npm run ci:monorepo
 ```
 
 ## 9. Definition of done for new features

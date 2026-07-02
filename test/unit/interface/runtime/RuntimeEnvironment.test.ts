@@ -19,9 +19,9 @@ describe('runtime environment', () => {
     } as NodeJS.ProcessEnv)).toBe('grpc');
   });
 
-  it('throws for unsupported framework', () => {
+  it('supports non-express frameworks and throws for unknown framework', () => {
     expect.assertions(1);
-    expect(() => resolveHTTPFramework({ AAA_HTTP_FRAMEWORK: 'fastify' } as NodeJS.ProcessEnv))
+    expect(() => resolveHTTPFramework({ AAA_HTTP_FRAMEWORK: 'unknown-http' } as NodeJS.ProcessEnv))
       .toThrow('Unsupported AAA_HTTP_FRAMEWORK');
   });
 

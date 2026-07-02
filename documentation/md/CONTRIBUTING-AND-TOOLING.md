@@ -3,20 +3,29 @@
 ## Contributing
 
 1. Create a branch.
+2. Ensure there is a related GitHub Issue and it is added to the **Jumentix** project:
+
+```text
+https://github.com/users/web2solutions/projects/1
+```
+
+3. Set/update project fields for the issue (`Status`, `Priority`, `Size`, `Estimate`, `Start date`, `End date`).
 2. Run TDD mode:
 
 ```bash
 npm run tdd
 ```
 
-3. Make your changes.
-4. Commit using:
+4. Make your changes.
+5. Commit using:
 
 ```bash
 npm run commit
 ```
 
 This command runs lint/tests and then opens commitizen flow.
+
+PRs must include linked issue and project context (Jumentix project item).
 
 ## Tooling
 

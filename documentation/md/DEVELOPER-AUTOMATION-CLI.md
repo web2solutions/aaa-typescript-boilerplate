@@ -163,7 +163,7 @@ This ensures new CLI features and flows remain stable and coverage-compliant.
 
 The visual design surface moved to:
 
-- `servicemangement/`
+- `service-management/`
 
 See:
 

@@ -1,0 +1,15 @@
+{
+  "name": "@jumentix/config-eslint",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JumentiX shared ESLint configuration placeholder",
+  "files": [
+    "index.cjs"
+  ],
+  "scripts": {
+    "build": "echo \"config-eslint placeholder: migration wave pending\"",
+    "test": "echo \"config-eslint placeholder: migration wave pending\"",
+    "lint": "echo \"config-eslint placeholder: migration wave pending\"",
+    "typecheck": "echo \"config-eslint placeholder: migration wave pending\""
+  }
+}
