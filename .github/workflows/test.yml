@@ -47,6 +47,6 @@ jobs:
     - run: dockerize -wait tcp://localhost:6379 -timeout 1m
     - name: Run scope-aware monorepo CI
       run: |
-        git fetch origin main dev --depth=1
+        git fetch --unshallow origin main dev || git fetch origin main dev --depth=1000
         CHANGED_FILES="$(git diff --name-only origin/main...HEAD | tr '\n' ' ')"
         npm run ci:monorepo -- $CHANGED_FILES
