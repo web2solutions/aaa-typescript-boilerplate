@@ -626,6 +626,10 @@ Goal:
   - Changesets or equivalent release orchestration.
   - Independent vs locked version policy per package.
   - Changelog generation per package and aggregate product changelog.
+  - Progress:
+    - Added `ci-cd/check-release-governance.js` and `npm run release:governance:check` to enforce release scripts + package version/publish metadata.
+    - Integrated release governance check into `ci:gate`.
+    - Added unit tests for release governance validation rules.
 
 ### Phase 6 - Documentation and Product Positioning Alignment
 

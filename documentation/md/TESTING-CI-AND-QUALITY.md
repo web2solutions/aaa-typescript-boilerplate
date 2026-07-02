@@ -88,6 +88,7 @@ Included checks:
 - hexagonal boundary check
 - users legacy import check
 - workspace package quality check (required script contracts and no placeholder test scripts)
+- release governance check (required release scripts, semver validity, publish metadata for non-private packages)
 - unit tests
 - OpenAPI route resolution check
 - build
@@ -120,6 +121,7 @@ SonarQube Cloud coverage import:
 | Husky | Local Git hooks for quality checks | `.husky/*` | Installed by `npm run prepare` |
 | Commitlint + Commitizen | Conventional commits and guided commit flow | `commitlint.config.js`, `package.json` | `npm run commit` |
 | Changelog sync automation | Keeps `CHANGELOG.md` aligned with Git history | `ci-cd/update-changelog.js`, `.husky/post-commit` | `npm run changelog:update`, `npm run changelog:check` |
+| Release governance check | Enforces release script contracts and package publish metadata | `ci-cd/check-release-governance.js` | `npm run release:governance:check` |
 | OpenAPI route resolution check | Ensures each operationId maps to handlers and controller methods | `ci-cd/check-oas-route-resolution.js` | `npm run oas:check-routes` |
 | Hexagonal boundary check | Blocks controller-layer violations | `ci-cd/check-hexagonal-boundaries.js` | `npm run arch:check-boundaries` |
 | Core import cycle check | Prevents cyclic dependencies in core namespaces | `ci-cd/check-core-import-cycles.js` | `npm run deps:check-cycles` |
@@ -215,6 +217,7 @@ npm run deps:check-cycles
 npm run arch:check-boundaries
 npm run arch:check-users-legacy-imports
 npm run workspace:check-quality
+npm run release:governance:check
 npm run oas:check-routes
 npm run test:unit
 npm run ci:smoke
