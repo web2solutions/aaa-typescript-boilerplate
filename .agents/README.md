@@ -74,6 +74,7 @@ Use these files as living constraints for future maintenance and feature develop
 - [057-pr-grouping-by-priority](requirements/057-pr-grouping-by-priority.md)
 - [058-jumentix-migration-inventory-and-rollback-governance](requirements/058-jumentix-migration-inventory-and-rollback-governance.md)
 - [059-jumentix-service-factory-and-deploy-template-matrices](requirements/059-jumentix-service-factory-and-deploy-template-matrices.md)
+- [060-jumentix-release-versioning-policy-governance](requirements/060-jumentix-release-versioning-policy-governance.md)
 - [Data Entity Documentation Agent](data-entity-documentation-agent.md)
 - [Domain Modeling Agent](domain-modeling-agent.md)
 - [Domain Designer Agent](domain-designer-agent.md)

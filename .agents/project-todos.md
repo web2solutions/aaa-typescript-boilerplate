@@ -628,7 +628,7 @@ Goal:
   - Progress:
     - Added workspace package quality gate (`workspace:check-quality`) to CI flow, enforcing required package script contracts and blocking placeholder test scripts.
 
-- [ ] Define publishing/versioning strategy
+- [x] Define publishing/versioning strategy
   - Changesets or equivalent release orchestration.
   - Independent vs locked version policy per package.
   - Changelog generation per package and aggregate product changelog.
@@ -636,6 +636,10 @@ Goal:
     - Added `ci-cd/check-release-governance.js` and `npm run release:governance:check` to enforce release scripts + package version/publish metadata.
     - Integrated release governance check into `ci:gate`.
     - Added unit tests for release governance validation rules.
+    - Added `release-policy.json` as canonical strategy contract:
+      - packages use independent versioning
+      - apps use locked versioning against root version.
+    - Added `documentation/md/JUMENTIX-RELEASE-AND-VERSIONING-STRATEGY.md` and README index links.
 
 ### Phase 6 - Documentation and Product Positioning Alignment
 

@@ -445,6 +445,7 @@ Migration progress and wave-by-wave acceptance criteria are tracked in [JumentiX
 | Factory Planning | [Service Factory Capabilities Matrix](documentation/md/JUMENTIX-SERVICE-FACTORY-CAPABILITIES-MATRIX.md) | Canonical matrix for monolith, multi-service, hybrid, and frontend-only factory modes. |
 | Deploy Planning | [Deploy Target and Packaging Matrix](documentation/md/JUMENTIX-DEPLOY-TARGET-AND-PACKAGING-MATRIX.md) | Deploy target contracts across VM/SSH, cloud functions, and packaging requirements. |
 | Runtime Templates | [Bundler and Runtime Templates](documentation/md/JUMENTIX-BUNDLER-RUNTIME-TEMPLATES.md) | Artifact-type templates for backend, frontend, SSR, and npm libraries. |
+| Release Strategy | [Release and Versioning Strategy](documentation/md/JUMENTIX-RELEASE-AND-VERSIONING-STRATEGY.md) | Independent package versions + locked app versions with CI governance enforcement. |
 | SDK Migration | [SDK Compatibility Bridge](documentation/md/SDK-COMPATIBILITY-BRIDGE.md) | Transitional contract between legacy `sdk-clients/*` and new `@jumentix/sdk-*` packages. |
 | Project Management | [Project Management](documentation/md/PROJECT-MANAGEMENT.md) | Backlog references, requirement tracking, and governance links. |
 | Agents Registry | [.agents/README.md](.agents/README.md) | Technical requirements and specialized agents. |
@@ -477,6 +478,7 @@ Migration progress and wave-by-wave acceptance criteria are tracked in [JumentiX
 - [Service Factory Capabilities Matrix](documentation/md/JUMENTIX-SERVICE-FACTORY-CAPABILITIES-MATRIX.md)
 - [Deploy Target and Packaging Matrix](documentation/md/JUMENTIX-DEPLOY-TARGET-AND-PACKAGING-MATRIX.md)
 - [Bundler and Runtime Templates](documentation/md/JUMENTIX-BUNDLER-RUNTIME-TEMPLATES.md)
+- [Release and Versioning Strategy](documentation/md/JUMENTIX-RELEASE-AND-VERSIONING-STRATEGY.md)
 - [SDK Compatibility Bridge](documentation/md/SDK-COMPATIBILITY-BRIDGE.md)
 - [Realtime API Testing](documentation/md/REALTIME-API-TESTING.md)
 
