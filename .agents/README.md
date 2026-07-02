@@ -73,6 +73,7 @@ Use these files as living constraints for future maintenance and feature develop
 - [056-jumentix-project-single-source-of-truth](requirements/056-jumentix-project-single-source-of-truth.md)
 - [057-pr-grouping-by-priority](requirements/057-pr-grouping-by-priority.md)
 - [058-jumentix-migration-inventory-and-rollback-governance](requirements/058-jumentix-migration-inventory-and-rollback-governance.md)
+- [059-jumentix-service-factory-and-deploy-template-matrices](requirements/059-jumentix-service-factory-and-deploy-template-matrices.md)
 - [Data Entity Documentation Agent](data-entity-documentation-agent.md)
 - [Domain Modeling Agent](domain-modeling-agent.md)
 - [Domain Designer Agent](domain-designer-agent.md)

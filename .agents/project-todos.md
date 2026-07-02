@@ -586,26 +586,32 @@ Goal:
 
 ### Phase 4 - Product-Level Feature Planning (post-structure)
 
-- [ ] Define service factory capabilities matrix
+- [x] Define service factory capabilities matrix
   - Monolith modular
   - Multi-service backend
   - Hybrid backend + frontend
   - Frontend-only SPA/PWA offline.
+  - Progress:
+    - Added `documentation/md/JUMENTIX-SERVICE-FACTORY-CAPABILITIES-MATRIX.md` with canonical factory modes, contracts, and NFR guarantees.
 
-- [ ] Define deploy target matrix and packaging contracts
+- [x] Define deploy target matrix and packaging contracts
   - VM/SSH, EC2, Lambda, Vercel Functions, Cloudflare Workers.
   - Backend and frontend deployment metadata contracts for Service Management.
+  - Progress:
+    - Added `documentation/md/JUMENTIX-DEPLOY-TARGET-AND-PACKAGING-MATRIX.md` with deploy targets, packaging contracts, and service-management metadata schema.
 
-- [ ] Define bundler/runtime templates by artifact type
+- [x] Define bundler/runtime templates by artifact type
   - backend service
   - frontend SPA
   - frontend SSR
   - npm lib backend
   - npm lib frontend.
+  - Progress:
+    - Added `documentation/md/JUMENTIX-BUNDLER-RUNTIME-TEMPLATES.md` with artifact template matrix and runtime/build enforcement rules.
 
 ### Phase 5 - CI/CD, Quality Gates, and Release Management
 
-- [ ] Refactor CI pipelines for pnpm monorepo
+- [x] Refactor CI pipelines for pnpm monorepo
   - Cache pnpm store.
   - Matrix by changed workspace.
   - Keep required gates:

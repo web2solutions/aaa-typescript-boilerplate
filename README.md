@@ -442,6 +442,9 @@ Migration progress and wave-by-wave acceptance criteria are tracked in [JumentiX
 | JumentiX Wave 5 Path Map | [Wave 5 Path Delta Map](documentation/md/JUMENTIX-WAVE5-PATH-DELTA-MAP.md) | Exact path rewrite map for scripts, PM2, and docs during app re-homing. |
 | JumentiX Migration Inventory | [Migration Inventory and Rollback](documentation/md/JUMENTIX-MIGRATION-INVENTORY-AND-ROLLBACK.md) | Current-to-target mapping, wave guardrails, and rollback/tag strategy. |
 | JumentiX Governance | [Jumentix Project Governance](documentation/md/JUMENTIX-PROJECT-GOVERNANCE.md) | Official single source of truth policy using GitHub Project `Jumentix`. |
+| Factory Planning | [Service Factory Capabilities Matrix](documentation/md/JUMENTIX-SERVICE-FACTORY-CAPABILITIES-MATRIX.md) | Canonical matrix for monolith, multi-service, hybrid, and frontend-only factory modes. |
+| Deploy Planning | [Deploy Target and Packaging Matrix](documentation/md/JUMENTIX-DEPLOY-TARGET-AND-PACKAGING-MATRIX.md) | Deploy target contracts across VM/SSH, cloud functions, and packaging requirements. |
+| Runtime Templates | [Bundler and Runtime Templates](documentation/md/JUMENTIX-BUNDLER-RUNTIME-TEMPLATES.md) | Artifact-type templates for backend, frontend, SSR, and npm libraries. |
 | SDK Migration | [SDK Compatibility Bridge](documentation/md/SDK-COMPATIBILITY-BRIDGE.md) | Transitional contract between legacy `sdk-clients/*` and new `@jumentix/sdk-*` packages. |
 | Project Management | [Project Management](documentation/md/PROJECT-MANAGEMENT.md) | Backlog references, requirement tracking, and governance links. |
 | Agents Registry | [.agents/README.md](.agents/README.md) | Technical requirements and specialized agents. |
@@ -471,6 +474,9 @@ Migration progress and wave-by-wave acceptance criteria are tracked in [JumentiX
 - [Wave 5 Path Delta Map](documentation/md/JUMENTIX-WAVE5-PATH-DELTA-MAP.md)
 - [Migration Inventory and Rollback](documentation/md/JUMENTIX-MIGRATION-INVENTORY-AND-ROLLBACK.md)
 - [Jumentix Project Governance](documentation/md/JUMENTIX-PROJECT-GOVERNANCE.md)
+- [Service Factory Capabilities Matrix](documentation/md/JUMENTIX-SERVICE-FACTORY-CAPABILITIES-MATRIX.md)
+- [Deploy Target and Packaging Matrix](documentation/md/JUMENTIX-DEPLOY-TARGET-AND-PACKAGING-MATRIX.md)
+- [Bundler and Runtime Templates](documentation/md/JUMENTIX-BUNDLER-RUNTIME-TEMPLATES.md)
 - [SDK Compatibility Bridge](documentation/md/SDK-COMPATIBILITY-BRIDGE.md)
 - [Realtime API Testing](documentation/md/REALTIME-API-TESTING.md)
 
