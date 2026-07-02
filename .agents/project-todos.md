@@ -781,3 +781,4 @@ Goal:
     - Added `ci-cd/release-dry-run.js` and root `release:dry-run*` commands to validate package publish artifacts (dry-run pack) and app workspace release readiness contracts.
     - Added `ci-cd/run-monorepo-ci.js` + `npm run ci:monorepo` with scope-based execution (docs-only lightweight checks or strict gate + affected apps/packages workflow).
     - Updated CI pipelines to execute monorepo-aware flow (`ci:monorepo`) with pnpm dependency setup in GitHub Actions and CircleCI.
+    - Hardened `arch:check-boundaries` to scan real HTTP controllers under `adapters/in/http/controllers` and enforce application use-case imports.
