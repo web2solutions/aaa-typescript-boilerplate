@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-02 fix(ci): stabilize gate and add serverless handler path governance - web2solutions
 - 2026-07-02 fix(ci): unshallow fetch before patch coverage diff in GitHub Actions - web2solutions
 - 2026-07-02 fix(ci): remove pnpm cache lockfile dependency in GitHub Actions and CircleCI - web2solutions
 - 2026-07-02 fix(ci): remediate GitGuardian secret detection in websocket redis test - web2solutions

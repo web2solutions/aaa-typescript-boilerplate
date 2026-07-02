@@ -19,18 +19,18 @@ This boilerplate now supports runtime selection of multiple database drivers thr
 
 ## Runtime Client Compilation
 
-- Source: `src/infra/persistence/compileDatabaseClient.ts`
-- External stores now use fail-fast proxies (`src/infra/persistence/external/ExternalStoreProxy.ts`) instead of silently reusing in-memory stores.
-- Oracle has dedicated connector support (`src/infra/persistence/external/OracleRepository.ts`).
+- Source: `apps/backend-template/src/infra/persistence/compileDatabaseClient.ts`
+- External stores now use fail-fast proxies (`apps/backend-template/src/infra/persistence/external/ExternalStoreProxy.ts`) instead of silently reusing in-memory stores.
+- Oracle has dedicated connector support (`apps/backend-template/src/infra/persistence/external/OracleRepository.ts`).
 - Bootstrap adapters that inject `IDatabaseClient` from `AAA_DATABASE_DRIVER`:
-  - `src/interface/HTTP/adapters/*`
-  - `src/interface/WebSocket/adapters/socket-io/socket-io.ts`
-  - `src/interface/gRPC/adapters/grpc/grpc.ts`
-  - `src/modules/Users/interface/restapi/frameworks/aws/lambda/handlers/runtime.ts`
+  - `apps/backend-template/src/interface/HTTP/adapters/*`
+  - `apps/backend-template/src/interface/WebSocket/adapters/socket-io/socket-io.ts`
+  - `apps/backend-template/src/interface/gRPC/adapters/grpc/grpc.ts`
+  - `apps/backend-template/src/modules/Users/interface/restapi/frameworks/aws/lambda/handlers/runtime.ts`
 
 ## Smoke Test Suite
 
-- Test file: `test/smoke/database/DatabaseDrivers.smoke.test.ts`
+- Test file: `apps/backend-template/test/smoke/database/DatabaseDrivers.smoke.test.ts`
 - Run all configured smoke drivers:
 
 ```bash
@@ -66,16 +66,16 @@ AAA_DB_SMOKE_DRIVERS=PostgreSQL,MySQL npm run test:smoke:db
 
 ## Docker Compose Files Per Database
 
-- `docker-compose-postgresql.yml`
-- `docker-compose-mysql.yml`
-- `docker-compose-mssql.yml`
-- `docker-compose-oracle.yml`
-- `docker-compose-mongodb.yml`
-- `docker-compose-cassandra.yml`
-- `docker-compose-dynamodb.yml`
-- `docker-compose-firebase.yml`
-- `docker-compose-aurora.yml`
-- `docker-compose-rds.yml`
+- `apps/backend-template/docker-compose-postgresql.yml`
+- `apps/backend-template/docker-compose-mysql.yml`
+- `apps/backend-template/docker-compose-mssql.yml`
+- `apps/backend-template/docker-compose-oracle.yml`
+- `apps/backend-template/docker-compose-mongodb.yml`
+- `apps/backend-template/docker-compose-cassandra.yml`
+- `apps/backend-template/docker-compose-dynamodb.yml`
+- `apps/backend-template/docker-compose-firebase.yml`
+- `apps/backend-template/docker-compose-aurora.yml`
+- `apps/backend-template/docker-compose-rds.yml`
 
 ## One-command DB smoke workflows
 
@@ -96,7 +96,7 @@ npm run smoke:db:rds
 
 ## Environment Variables
 
-Add/update these keys in `src/config/.env.*` for driver-specific runtime:
+Add/update these keys in `apps/backend-template/src/config/.env.*` for driver-specific runtime:
 
 - `AAA_DATABASE_DRIVER`
 - `AAA_DATABASE_CONNECTION_URL`

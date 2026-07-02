@@ -224,44 +224,44 @@ export default async function handler(req: any, res: any) {
 ### LoopBack Runtime Adapter
 
 ```bash
-AAA_HTTP_FRAMEWORK=loopback node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
+AAA_HTTP_FRAMEWORK=loopback node -r ts-node/register -r tsconfig-paths/register ./apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Sails.js Runtime Adapter
 
 ```bash
-AAA_HTTP_FRAMEWORK=sails-js node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
+AAA_HTTP_FRAMEWORK=sails-js node -r ts-node/register -r tsconfig-paths/register ./apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Feathers Runtime Adapter
 
 ```bash
-AAA_HTTP_FRAMEWORK=feathers node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
+AAA_HTTP_FRAMEWORK=feathers node -r ts-node/register -r tsconfig-paths/register ./apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Derby.js Runtime Adapter
 
 ```bash
-AAA_HTTP_FRAMEWORK=derby-js node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
+AAA_HTTP_FRAMEWORK=derby-js node -r ts-node/register -r tsconfig-paths/register ./apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Adonis.js Runtime Bridge
 
 ```bash
-AAA_HTTP_FRAMEWORK=adonis-js node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
+AAA_HTTP_FRAMEWORK=adonis-js node -r ts-node/register -r tsconfig-paths/register ./apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### Total.js Runtime Bridge
 
 ```bash
-AAA_HTTP_FRAMEWORK=total-js node -r ts-node/register -r tsconfig-paths/register ./src/interface/HTTP/adapters/start-rest-api.ts
+AAA_HTTP_FRAMEWORK=total-js node -r ts-node/register -r tsconfig-paths/register ./apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts
 ```
 
 ### AWS Lambda Handler Example
 
 ```ts
 import type { APIGatewayProxyEvent, Context } from "aws-lambda";
-import createHandler from "@src/interface/aws/lambda/handlers/create";
+import { handler as createHandler } from "@src/modules/Users/interface/restapi/frameworks/aws/lambda/handlers/create";
 
 export async function handler(event: APIGatewayProxyEvent, context: Context) {
   return createHandler(event, context);

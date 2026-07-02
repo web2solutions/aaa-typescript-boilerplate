@@ -48,11 +48,11 @@ interface IMessageResponse<TResult = any> {
 - `rabbitmq`: queue-based request/reply + topic exchange publish.
 - `bullmq`: Redis queue-based request/reply + event queues.
 
-Selection is made by `AAA_MESSAGE_MEDIATOR_ADAPTER` in `src/infra/messages/compileMessageMediator.ts`.
+Selection is made by `AAA_MESSAGE_MEDIATOR_ADAPTER` in `apps/backend-template/src/infra/messages/compileMessageMediator.ts`.
 
 ## 4) Current Domain Event Map (Users)
 
-Producer: `UserService` (`src/modules/Users/service/UserService.ts`)
+Producer: `UserService` (`apps/backend-template/src/modules/Users/service/UserService.ts`)
 
 | Event Name | Published By | Trigger |
 |---|---|---|
@@ -61,7 +61,7 @@ Producer: `UserService` (`src/modules/Users/service/UserService.ts`)
 | `users.user.deleted` | `UserService.delete` | user deleted |
 | `users.user.credentialsUpdated` | `UserService.updatePassword` | password/credentials updated |
 
-Listeners are registered in `registerUserEventListeners` (`src/modules/Users/events/listeners/registerUserEventListeners.ts`) through:
+Listeners are registered in `registerUserEventListeners` (`apps/backend-template/src/modules/Users/events/listeners/registerUserEventListeners.ts`) through:
 - `onUserCreated`
 - `onUserUpdated`
 - `onUserDeleted`
@@ -69,7 +69,7 @@ Listeners are registered in `registerUserEventListeners` (`src/modules/Users/eve
 
 ## 5) Current Request/Response Contract Map (Users/Auth)
 
-Registered in `registerUserMessageHandlers` (`src/modules/Users/events/listeners/registerUserMessageHandlers.ts`):
+Registered in `registerUserMessageHandlers` (`apps/backend-template/src/modules/Users/events/listeners/registerUserMessageHandlers.ts`):
 
 | Contract | Handler Owner | Input Payload | Result / Error |
 |---|---|---|---|
@@ -78,7 +78,7 @@ Registered in `registerUserMessageHandlers` (`src/modules/Users/events/listeners
 
 ## 6) Where Contracts Are Consumed
 
-- `Authorize` decorator (`src/shared/decorators/guard/Authorize.ts`) calls:
+- `Authorize` decorator (`apps/backend-template/src/shared/decorators/guard/Authorize.ts`) calls:
   - `users.auth.ensure-access`
 - Composition root (`composeUsersAuthServices`) registers domain contracts when a mediator exists.
 

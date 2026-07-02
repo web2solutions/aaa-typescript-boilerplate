@@ -93,9 +93,9 @@ Detailed runtime contract:
 
 Startup entrypoints used by PM2:
 
-- `src/interface/HTTP/adapters/start-rest-api.ts`
-- `src/interface/WebSocket/adapters/start-websocket-api.ts`
-- `src/interface/gRPC/adapters/start-grpc-api.ts`
+- `apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts`
+- `apps/backend-template/src/interface/WebSocket/adapters/start-websocket-api.ts`
+- `apps/backend-template/src/interface/gRPC/adapters/start-grpc-api.ts`
 
 Behavior summary:
 
@@ -200,8 +200,8 @@ npm run prod:http
 Equivalent direct loader style:
 
 ```bash
-AAA_HTTP_FRAMEWORK=fastify pm2 start ./src/interface/HTTP/adapters/start-rest-api.ts --name aaa-dev-fastify --interpreter node --node-args='-r ts-node/register -r tsconfig-paths/register --env-file=./src/config/.env.dev' --update-env
-AAA_HTTP_FRAMEWORK=cloudflare-workers pm2 start ./src/interface/HTTP/adapters/start-rest-api.ts --name aaa-dev-cloudflare-workers --interpreter node --node-args='-r ts-node/register -r tsconfig-paths/register --env-file=./src/config/.env.dev' --update-env
+AAA_HTTP_FRAMEWORK=fastify pm2 start ./apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts --name aaa-dev-fastify --interpreter node --node-args='-r ts-node/register -r tsconfig-paths/register --env-file=./apps/backend-template/src/config/.env.dev' --update-env
+AAA_HTTP_FRAMEWORK=cloudflare-workers pm2 start ./apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts --name aaa-dev-cloudflare-workers --interpreter node --node-args='-r ts-node/register -r tsconfig-paths/register --env-file=./apps/backend-template/src/config/.env.dev' --update-env
 ```
 
 Combined service profiles:

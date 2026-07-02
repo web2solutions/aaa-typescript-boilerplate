@@ -28,7 +28,7 @@ src/
   - application orchestration -> `application/use-cases/*`
   - domain logic -> `domain/*` (where applicable)
 - Current `src/modules/Users/interface/controller/*` -> `adapters/in/http/controllers/*`
-- Current `src/modules/Users/interface/api/frameworks/*` -> `adapters/in/http/handlers/<framework>/*`
+- Current `src/modules/Users/interface/restapi/frameworks/*` -> `adapters/in/http/handlers/<framework>/*`
 - Current `src/modules/Users/infra/repository/*` -> `adapters/out/persistence/*`
 - Current `src/modules/Users/composition/*` -> `composition/*`
 

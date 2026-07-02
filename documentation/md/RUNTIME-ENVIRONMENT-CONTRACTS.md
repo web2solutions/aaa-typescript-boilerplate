@@ -14,7 +14,7 @@ All runtime startup entrypoints must follow this contract.
 
 ## Runtime Keys
 
-The following keys are mandatory across env files in `src/config/`:
+The following keys are mandatory across env files in `apps/backend-template/src/config/`:
 
 - `AAA_HTTP_FRAMEWORK`
   - default: `express`
@@ -31,21 +31,21 @@ The following keys are mandatory across env files in `src/config/`:
     - `derby-js`
     - `adonis-js`
     - `total-js`
-  - used by: `src/interface/HTTP/adapters/start-rest-api.ts`
+  - used by: `apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts`
 
 - `AAA_REALTIME_API`
   - default: `no`
   - supported values: `yes`, `no`
   - used by:
-    - `src/interface/WebSocket/adapters/start-websocket-api.ts`
-    - `src/interface/gRPC/adapters/start-grpc-api.ts`
+    - `apps/backend-template/src/interface/WebSocket/adapters/start-websocket-api.ts`
+    - `apps/backend-template/src/interface/gRPC/adapters/start-grpc-api.ts`
 
 - `AAA_REALTIME_API_PROTOCOL`
   - default: `websocket`
   - supported values: `websocket`, `grpc`
   - used by:
-    - `src/interface/WebSocket/adapters/start-websocket-api.ts`
-    - `src/interface/gRPC/adapters/start-grpc-api.ts`
+    - `apps/backend-template/src/interface/WebSocket/adapters/start-websocket-api.ts`
+    - `apps/backend-template/src/interface/gRPC/adapters/start-grpc-api.ts`
 
 - `AAA_REALTIME_API_DATABASE_DRIVER`
   - default: `Mongo`
@@ -62,31 +62,31 @@ The following keys are mandatory across env files in `src/config/`:
 - `AAA_WEBSOCKET_SOCKETIO_ADAPTER`
   - default: empty (in-memory Socket.IO adapter)
   - supported values: `cluster`, `redis-streams`
-  - used by: `src/interface/WebSocket/adapters/socket-io/socket-io.ts`
+  - used by: `apps/backend-template/src/interface/WebSocket/adapters/socket-io/socket-io.ts`
 
 - `AAA_WEBSOCKET_CLUSTER_WORKERS`
   - optional worker count for Socket.IO cluster mode.
   - default: CPU core count.
-  - used by: `src/interface/WebSocket/adapters/start-websocket-api.ts`
+  - used by: `apps/backend-template/src/interface/WebSocket/adapters/start-websocket-api.ts`
 
 - `AAA_WEBSOCKET_REDIS_URL`
   - optional dedicated Redis connection URL for Socket.IO scaling adapter.
   - example: `redis://127.0.0.1:6379/1`
-  - used by: `src/interface/WebSocket/adapters/socket-io/redisStreamsAdapter.ts`
+  - used by: `apps/backend-template/src/interface/WebSocket/adapters/socket-io/redisStreamsAdapter.ts`
 
 - `AAA_REDIS_URL`
   - optional global Redis URL fallback used by WebSocket scaling adapter when
     `AAA_WEBSOCKET_REDIS_URL` is not set.
-  - used by: `src/interface/WebSocket/adapters/socket-io/redisStreamsAdapter.ts`
+  - used by: `apps/backend-template/src/interface/WebSocket/adapters/socket-io/redisStreamsAdapter.ts`
 
 ## Startup Entrypoints
 
 - REST:
-  - `src/interface/HTTP/adapters/start-rest-api.ts`
+  - `apps/backend-template/src/interface/HTTP/adapters/start-rest-api.ts`
 - WebSocket:
-  - `src/interface/WebSocket/adapters/start-websocket-api.ts`
+  - `apps/backend-template/src/interface/WebSocket/adapters/start-websocket-api.ts`
 - gRPC:
-  - `src/interface/gRPC/adapters/start-grpc-api.ts`
+  - `apps/backend-template/src/interface/gRPC/adapters/start-grpc-api.ts`
 
 These files are the official process entrypoints used by PM2 ecosystem profiles.
 Single-protocol helper scripts also route through these entrypoints (`dev:http`, `prod:http`, `dev:websocket`, `dev:grpc`).

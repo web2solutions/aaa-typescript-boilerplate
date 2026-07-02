@@ -36,7 +36,7 @@ Symptoms:
 - ENOENT while loading env file during Jest startup
 
 Cause:
-- current `NODE_ENV` does not map to an existing file in `src/config`.
+- current `NODE_ENV` does not map to an existing file in `apps/backend-template/src/config`.
 
 Fix:
 
@@ -45,8 +45,8 @@ NODE_ENV=ci npm run test:unit
 ```
 
 Ensure at least one valid file exists for CI fallback:
-- `src/config/.env.ci`
-- `src/config/.env.dev.example`
+- `apps/backend-template/src/config/.env.ci`
+- `apps/backend-template/src/config/.env.dev.example`
 
 How this works:
 - `jest.config.js` loads `ci-cd/loadEnvironment.js`
@@ -67,7 +67,7 @@ npm run oas:check-routes
 Checklist:
 - each operation in `spec/*.yml` has `operationId`
 - each runtime has handler at:
-  - `src/modules/<Module>/interface/api/frameworks/<framework>/handlers/<operationId>.ts`
+  - `apps/backend-template/src/modules/<Module>/interface/restapi/frameworks/<framework>/handlers/<operationId>.ts`
 - controller implements methods invoked in those handlers
 
 Related file:
