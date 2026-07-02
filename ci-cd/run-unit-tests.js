@@ -3,27 +3,21 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const CANDIDATE_UNIT_DIRS = [
-  'apps/backend-template/test/unit',
-  'test/unit'
-];
+const CANDIDATE_UNIT_DIRS = ['apps/backend-template/test/unit', 'test/unit'];
 
 function run() {
   const root = process.cwd();
-  const testTargets = CANDIDATE_UNIT_DIRS
-    .map((target) => path.join(root, target))
-    .filter((absolutePath) => fs.existsSync(absolutePath))
-    .map((absolutePath) => path.relative(root, absolutePath));
+  const testTarget = CANDIDATE_UNIT_DIRS.find((target) => fs.existsSync(path.join(root, target)));
 
-  if (testTargets.length === 0) {
+  if (!testTarget) {
     console.error('[ci] unit tests: no test directories found.');
     console.error(`[ci] expected one of: ${CANDIDATE_UNIT_DIRS.join(', ')}`);
     process.exit(1);
   }
 
-  console.log(`[ci] unit tests targets: ${testTargets.join(', ')}`);
+  console.log(`[ci] unit tests target: ${testTarget}`);
 
-  const result = spawnSync('jest', [...testTargets, '--runInBand'], {
+  const result = spawnSync('jest', [testTarget, '--runInBand'], {
     stdio: 'inherit',
     env: { ...process.env, NODE_ENV: process.env.NODE_ENV || 'dev' }
   });

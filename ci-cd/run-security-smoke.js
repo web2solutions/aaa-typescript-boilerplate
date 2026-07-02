@@ -3,23 +3,30 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const CANDIDATE_TEST_FILES = [
-  'apps/backend-template/test/unit/config/security.test.ts',
-  'apps/backend-template/test/unit/shared/utils.errorExposure.test.ts',
-  'test/unit/config/security.test.ts',
-  'test/unit/shared/utils.errorExposure.test.ts'
+const CANDIDATE_SECURITY_ROOTS = ['apps/backend-template/test/unit', 'test/unit'];
+const SECURITY_TEST_SUFFIXES = [
+  'config/security.test.ts',
+  'shared/utils.errorExposure.test.ts'
 ];
 
 function run() {
   const root = process.cwd();
-  const existingTests = CANDIDATE_TEST_FILES
-    .map((target) => path.join(root, target))
-    .filter((absolutePath) => fs.existsSync(absolutePath))
-    .map((absolutePath) => path.relative(root, absolutePath));
+  const securityRoot = CANDIDATE_SECURITY_ROOTS.find((candidateRoot) =>
+    fs.existsSync(path.join(root, candidateRoot)),
+  );
+
+  const existingTests = securityRoot
+    ? SECURITY_TEST_SUFFIXES
+      .map((suffix) => path.join(securityRoot, suffix))
+      .filter((target) => fs.existsSync(path.join(root, target)))
+    : [];
 
   if (existingTests.length === 0) {
     console.error('[ci] security smoke: no matching tests were found.');
-    console.error(`[ci] expected one of: ${CANDIDATE_TEST_FILES.join(', ')}`);
+    const expected = CANDIDATE_SECURITY_ROOTS
+      .flatMap((candidateRoot) => SECURITY_TEST_SUFFIXES.map((suffix) => `${candidateRoot}/${suffix}`))
+      .join(', ');
+    console.error(`[ci] expected one of: ${expected}`);
     process.exit(1);
   }
 
