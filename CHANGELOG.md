@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-02 fix(ci): make smoke and unit test targets monorepo-path resilient - web2solutions
 - 2026-07-02 fix(ci): stabilize gate and add serverless handler path governance - web2solutions
 - 2026-07-02 fix(ci): unshallow fetch before patch coverage diff in GitHub Actions - web2solutions
 - 2026-07-02 fix(ci): remove pnpm cache lockfile dependency in GitHub Actions and CircleCI - web2solutions

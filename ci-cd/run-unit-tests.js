@@ -1,0 +1,36 @@
+/* eslint-disable no-console */
+const fs = require('fs');
+const path = require('path');
+const { spawnSync } = require('child_process');
+
+const CANDIDATE_UNIT_DIRS = [
+  'apps/backend-template/test/unit',
+  'test/unit'
+];
+
+function run() {
+  const root = process.cwd();
+  const testTargets = CANDIDATE_UNIT_DIRS
+    .map((target) => path.join(root, target))
+    .filter((absolutePath) => fs.existsSync(absolutePath))
+    .map((absolutePath) => path.relative(root, absolutePath));
+
+  if (testTargets.length === 0) {
+    console.error('[ci] unit tests: no test directories found.');
+    console.error(`[ci] expected one of: ${CANDIDATE_UNIT_DIRS.join(', ')}`);
+    process.exit(1);
+  }
+
+  console.log(`[ci] unit tests targets: ${testTargets.join(', ')}`);
+
+  const result = spawnSync('jest', [...testTargets, '--runInBand'], {
+    stdio: 'inherit',
+    env: { ...process.env, NODE_ENV: process.env.NODE_ENV || 'dev' }
+  });
+
+  if (result.status !== 0) {
+    process.exit(result.status || 1);
+  }
+}
+
+run();
