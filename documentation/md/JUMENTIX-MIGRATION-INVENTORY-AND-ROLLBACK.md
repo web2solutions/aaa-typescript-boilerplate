@@ -23,7 +23,8 @@ This document defines concrete migration guardrails for the JumentiX monorepo tr
 - CLI package name: `@jumentix/cli-init`.
 - Bootstrap command:
   - current compatibility command: `aaa-bootstrap`
-  - target distribution alias strategy: `jumentix@init` (to be published via npm dist-tag/alias policy).
+  - official global install target: `npm install -g @jumentix/cli-init`
+  - runtime command: `jumentix-init`
 
 ## Branch, Tag, and Rollback Strategy
 

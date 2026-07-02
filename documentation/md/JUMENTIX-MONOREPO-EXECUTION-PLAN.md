@@ -187,7 +187,7 @@ Exit Criteria:
 ## Phase 0/1 readiness status
 
 - Scope split defined for Wave 1 (must-have) vs Wave 2+ (enhancements).
-- Naming decisions locked (`JumentiX`, `@jumentix/cli-init`, `jumentix@init` alias strategy).
+- Naming decisions locked (`JumentiX`, `@jumentix/cli-init` as official install target, `jumentix-init` as runtime command).
 - Branch/tag/rollback procedure documented with pre/post-wave checkpoints.
 - Current -> target inventory mapping documented with blocker notes.
 

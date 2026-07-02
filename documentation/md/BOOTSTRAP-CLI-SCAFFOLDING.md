@@ -17,9 +17,9 @@ Workspace ownership:
 Install globally (or run with `npx` from package registry):
 
 ```bash
-npm install -g aaa-typescript-boilerplate
-aaa-bootstrap
+npm install -g @jumentix/cli-init
 jumentix-init
+aaa-bootstrap
 ```
 
 Local repository usage:

@@ -484,7 +484,7 @@ Goal:
   - Define what is in-scope for Wave 1 (must-haves) vs Wave 2+ (enhancements).
   - Lock naming decisions:
     - product: `JumentiX`
-    - npm init CLI package naming strategy (`jumentix@init` request requires npm alias/registry validation).
+    - npm init CLI package naming strategy resolved with official scoped package distribution (`@jumentix/cli-init`) and `jumentix-init` command.
   - Define migration policy:
     - no partial cutovers without complete functional parity in the same wave
     - docs and agents update in same wave
@@ -662,8 +662,11 @@ Goal:
 
 ### Risk Register and Anti-Waste Controls
 
-- [ ] Risk: package naming ambiguity (`jumentix@init`) may be invalid as npm install target
-  - Mitigation: validate npm naming strategy before implementation and lock decision in Phase 0.
+- [x] Risk: package naming ambiguity (`jumentix@init`) may be invalid as npm install target
+  - Mitigation implemented:
+    - Official install target standardized to scoped package `@jumentix/cli-init`.
+    - CLI execution command remains `jumentix-init` (plus compatibility alias `aaa-bootstrap`).
+    - Documentation updated to avoid relying on npm alias syntax ambiguity.
 
 - [ ] Risk: breaking imports during moves
   - Mitigation: move by waves with codemod-assisted import rewrites and strict compile gates.
