@@ -31,16 +31,16 @@ jobs:
         auto-start: true
         redis-version: "7.x"
         redis-conf: "requirepass ${{ env.AAA_REDIS_PASSWORD }}"
-    - run: redis-cli ping
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9.15.3
+    - run: redis-cli -a "${AAA_REDIS_PASSWORD}" ping
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 9.15.3
     - run: pnpm install --no-frozen-lockfile
     # - run: apt install redis-tools
     # - run: ./wait-for-redis.sh localhost:6379

@@ -10,7 +10,7 @@ jobs:
       - image: redis:latest
         environment:
           REDIS_ARGS: "--sysctl vm.overcommit_memory=1"
-        command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+        command: redis-server --save 20 1 --loglevel warning
     steps:
       - checkout
       - restore_cache:
@@ -19,7 +19,7 @@ jobs:
             - pnpm-store-v1-{{ .Branch }}
       - run:
           name: setup pnpm
-          command: npm install -g pnpm@9.15.3
+          command: corepack enable && corepack prepare pnpm@9.15.3 --activate
       - run:
           name: install packages
           command: pnpm install --no-frozen-lockfile

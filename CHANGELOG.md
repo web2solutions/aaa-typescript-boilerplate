@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-02 fix(ci): restore pnpm setup flow in GitHub Actions and CircleCI - web2solutions
 - 2026-07-02 feat(architecture): enforce use-case imports in HTTP controllers - web2solutions
 - 2026-07-02 docs(governance): close migration risks with implemented mitigations - web2solutions
 - 2026-07-02 docs(jumentix): standardize CLI package naming and install target - web2solutions
