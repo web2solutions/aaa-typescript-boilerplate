@@ -668,14 +668,23 @@ Goal:
     - CLI execution command remains `jumentix-init` (plus compatibility alias `aaa-bootstrap`).
     - Documentation updated to avoid relying on npm alias syntax ambiguity.
 
-- [ ] Risk: breaking imports during moves
-  - Mitigation: move by waves with codemod-assisted import rewrites and strict compile gates.
+- [x] Risk: breaking imports during moves
+  - Mitigation implemented:
+    - Wave-based migration with compatibility bridge exports and progressive path rewrites.
+    - CI compile + architecture gates enforce boundary validity after each move.
+    - Legacy namespace checks (`arch:check-users-legacy-imports`) prevent regressions.
 
-- [ ] Risk: CI instability due to monorepo migration
-  - Mitigation: per-wave CI hardening with mandatory green gates before next wave.
+- [x] Risk: CI instability due to monorepo migration
+  - Mitigation implemented:
+    - Added monorepo-aware CI orchestrator (`ci:monorepo`) with docs-only and affected-workspace flows.
+    - CircleCI and GitHub Actions aligned to pnpm and `ci:monorepo`.
+    - Strict local blocker kept via `ci:gate`/`ci:gate:strict`.
 
-- [ ] Risk: oversized PRs reduce review quality
-  - Mitigation: wave-based PRs with explicit acceptance criteria and rollback tags.
+- [x] Risk: oversized PRs reduce review quality
+  - Mitigation implemented:
+    - Enforced wave/priority-based issue decomposition in GitHub Project.
+    - PR grouping-by-priority requirement maintained in agents registry.
+    - Task-level traceability now requires commit + PR references on each backlog item.
 
 ### Acceptance Criteria for Starting Implementation
 
