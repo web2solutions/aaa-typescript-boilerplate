@@ -619,6 +619,8 @@ Goal:
 - [ ] Enforce per-package coverage and global policy
   - Keep current strict commit/push blockers.
   - Add per-workspace thresholds with fail-fast behavior.
+  - Progress:
+    - Added workspace package quality gate (`workspace:check-quality`) to CI flow, enforcing required package script contracts and blocking placeholder test scripts.
 
 - [ ] Define publishing/versioning strategy
   - Changesets or equivalent release orchestration.

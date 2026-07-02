@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 2026-07-01 docs(quality): document workspace package quality gate - web2solutions
 - 2026-07-01 feat(ci): enforce workspace package quality contracts in gate - web2solutions
 - 2026-07-01 docs(onboarding): refresh monorepo workspace and ci guidance - web2solutions
 - 2026-07-01 docs(monorepo): record pnpm ci pipeline alignment progress - web2solutions

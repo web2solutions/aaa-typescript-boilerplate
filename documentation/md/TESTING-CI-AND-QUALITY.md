@@ -87,6 +87,7 @@ Included checks:
 - core import cycle check
 - hexagonal boundary check
 - users legacy import check
+- workspace package quality check (required script contracts and no placeholder test scripts)
 - unit tests
 - OpenAPI route resolution check
 - build
@@ -213,6 +214,7 @@ Run targeted checks:
 npm run deps:check-cycles
 npm run arch:check-boundaries
 npm run arch:check-users-legacy-imports
+npm run workspace:check-quality
 npm run oas:check-routes
 npm run test:unit
 npm run ci:smoke
